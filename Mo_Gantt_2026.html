@@ -228,13 +228,13 @@ function build(filter){
       lbl.innerHTML=`<div class="tl-name">${pi} ${t.n}</div><div class="tl-meta">${t.p} · ${t.st}</div>`;
       row.appendChild(lbl);
       const grid=document.createElement('div');grid.className='task-grid-area';grid.style.width=gW+'px';
-      for(let i=0;i<totalWeeks;i++){const c=document.createElement('div');c.style.cssText=`position:absolute;left:${i*WW}px;width:${WW}px;height:100%;border-right:1px solid rgba(245,242,238,0.03);${Math.abs(i-TODAYW)<0.5?'background:rgba(232,93,4,0.04);':''}\`;grid.appendChild(c);}
+      for(let i=0;i<totalWeeks;i++){const c=document.createElement('div');c.style.cssText='position:absolute;left:'+(i*WW)+'px;width:'+WW+'px;height:100%;border-right:1px solid rgba(245,242,238,0.03);'+(Math.abs(i-TODAYW)<0.5?'background:rgba(232,93,4,0.04);':'');grid.appendChild(c);}
       const tl=document.createElement('div');tl.className='today-line';tl.style.left=(TODAYW*WW)+'px';grid.appendChild(tl);
       const bL=Math.max(0,sw)*WW,bW=Math.max((ew-Math.max(0,sw))*WW,WW*0.4);
       const catClass=cat.replace(/\s+/g,'-');
       const bar=document.createElement('div');bar.className=`bar ${done?'c-Done':ongoing?'c-Ongoing':'c-'+catClass}`;bar.style.left=bL+'px';bar.style.width=bW+'px';
       bar.innerHTML=`<span>${t.n}</span>`;
-      bar.addEventListener('mouseenter',()=>{const tt=document.getElementById('tt');tt.innerHTML=`<strong>${t.n}</strong><div class="td">📅 ${t.s} → ${t.e}</div><div class="ti">${t.cat} · ${t.p} · ${t.st}</div>${t.note?`<div style="margin-top:6px;font-size:0.67rem;color:var(--mid);line-height:1.5;">${t.note}</div>`:''}\`;tt.style.display='block';});
+      bar.addEventListener('mouseenter',()=>{const tt=document.getElementById('tt');tt.innerHTML='<strong>'+t.n+'</strong><div class="td">📅 '+t.s+' → '+t.e+'</div><div class="ti">'+t.cat+' · '+t.p+' · '+t.st+'</div>'+(t.note?'<div style="margin-top:6px;font-size:0.67rem;color:var(--mid);line-height:1.5;">'+t.note+'</div>':'');tt.style.display='block';});
       bar.addEventListener('mousemove',e=>{const tt=document.getElementById('tt');tt.style.left=(e.clientX+16)+'px';tt.style.top=(e.clientY-10)+'px';});
       bar.addEventListener('mouseleave',()=>{document.getElementById('tt').style.display='none';});
       grid.appendChild(bar);row.appendChild(grid);g.appendChild(row);
