@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mo Elwakil — Master Gantt 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080808;--navy:#0d1b2a;--teal:#1b6b6b;--teal2:#2e9090;--gold:#c8a951;--red:#e74c3c;--green:#27ae60;--orange:#e85d04;--purple:#8e44ad;--blue:#2980b9;--white:#f5f2ee;--mid:rgba(245,242,238,0.6);--dim:rgba(245,242,238,0.3);--border:rgba(245,242,238,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;overflow-x:auto;}
+.page{min-width:1300px;padding:24px;}
+.header{margin-bottom:16px;}
+.header h1{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;text-transform:uppercase;color:var(--teal);}
+.header p{font-size:0.75rem;color:var(--mid);margin-top:3px;}
+.stats{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin-bottom:12px;}
+.stat{padding:10px;background:rgba(245,242,238,0.03);border:1px solid var(--border);text-align:center;}
+.stat-n{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;color:var(--teal);display:block;line-height:1;}
+.stat-l{font-size:0.54rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-top:2px;}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.leg{display:flex;align-items:center;gap:5px;font-size:0.66rem;color:var(--mid);}
+.leg-dot{width:10px;height:10px;border-radius:2px;}
+.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.filter-btn{padding:4px 9px;font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--border);background:transparent;color:var(--mid);cursor:pointer;transition:all 0.2s;font-family:'Barlow',sans-serif;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--teal2);color:var(--teal2);background:rgba(46,144,144,0.08);}
+.gantt-wrap{background:var(--navy);border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.month-row,.week-row{display:grid;}
+.month-cell{padding:6px 8px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:0.63rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);border-right:1px solid var(--border);background:rgba(200,169,81,0.04);}
+.week-cell{padding:4px 2px;text-align:center;font-size:0.56rem;color:var(--dim);border-right:1px solid rgba(245,242,238,0.04);}
+.week-today{background:rgba(232,93,4,0.12);color:var(--orange);font-weight:700;}
+.cat-header{display:flex;align-items:center;gap:8px;padding:5px 12px;background:rgba(27,107,107,0.1);border-bottom:1px solid var(--border);border-top:1px solid var(--border);}
+.cat-icon{font-size:0.82rem;}
+.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal2);}
+.cat-count{font-size:0.6rem;color:var(--dim);margin-left:auto;}
+.task-row{display:grid;border-bottom:1px solid rgba(245,242,238,0.03);min-height:32px;align-items:center;}
+.task-row:hover{background:rgba(245,242,238,0.015);}
+.task-label{padding:4px 10px;font-size:0.71rem;color:var(--mid);border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:sticky;left:0;background:var(--navy);z-index:10;}
+.tl-name{color:var(--white);font-size:0.73rem;font-weight:500;}
+.tl-meta{font-size:0.6rem;color:var(--dim);margin-top:1px;}
+.task-grid-area{position:relative;height:32px;}
+.bar{position:absolute;top:4px;height:24px;border-radius:3px;display:flex;align-items:center;padding:0 7px;overflow:hidden;cursor:pointer;transition:filter 0.2s;z-index:5;}
+.bar:hover{filter:brightness(1.2);}
+.bar span{font-size:0.62rem;font-weight:600;white-space:nowrap;color:rgba(255,255,255,0.92);overflow:hidden;text-overflow:ellipsis;}
+.c-Health{background:linear-gradient(90deg,#16a085,#0e7a64);}
+.c-Patriots-Pitch{background:linear-gradient(90deg,#e85d04,#b04503);}
+.c-University{background:linear-gradient(90deg,#1b6b6b,#135050);}
+.c-Visa{background:linear-gradient(90deg,#c8a951,#a07830);}
+.c-Research{background:linear-gradient(90deg,#2e9090,#1a6060);}
+.c-France{background:linear-gradient(90deg,#2980b9,#1a5a8a);}
+.c-Funding{background:linear-gradient(90deg,#8e44ad,#622e85);}
+.c-Income{background:linear-gradient(90deg,#27ae60,#1a7a42);}
+.c-Partnerships{background:linear-gradient(90deg,#d35400,#a04000);}
+.c-Exhibitions{background:linear-gradient(90deg,#c0392b,#8a2218);}
+.c-Done{background:linear-gradient(90deg,#3a3a3a,#2a2a2a);opacity:0.55;}
+.c-Ongoing{background:linear-gradient(90deg,#2c5f2e,#1a3a1c);}
+.c-CT-Hub{background:linear-gradient(90deg,#e91e8c,#a0125f);}
+.today-line{position:absolute;top:0;bottom:0;width:2px;background:var(--orange);z-index:20;pointer-events:none;}
+.tooltip{position:fixed;background:rgba(13,27,42,0.97);border:1px solid var(--teal);padding:10px 14px;border-radius:4px;z-index:100;max-width:300px;pointer-events:none;display:none;font-size:0.73rem;line-height:1.6;color:var(--mid);}
+.tooltip strong{color:var(--white);display:block;margin-bottom:3px;font-size:0.79rem;}
+.tooltip .td{color:var(--gold);font-size:0.65rem;}
+.tooltip .ti{color:var(--teal2);font-size:0.65rem;}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="header">
+  <h1>Mo Elwakil — Master Gantt 2026</h1>
+  <p>Creative Coding South West · All Projects · Visa · Health · Income · Today: Sunday 10 May 2026 · Hover any bar · Use filters to focus</p>
+</div>
+<div class="stats">
+  <div class="stat"><span class="stat-n">81</span><span class="stat-l">Total Tasks</span></div>
+  <div class="stat"><span class="stat-n">10</span><span class="stat-l">Urgent Tonight</span></div>
+  <div class="stat"><span class="stat-n">13</span><span class="stat-l">High This Week</span></div>
+  <div class="stat"><span class="stat-n">9</span><span class="stat-l">Done</span></div>
+  <div class="stat"><span class="stat-n">ACE</span><span class="stat-l">Visa Route</span></div>
+  <div class="stat"><span class="stat-n">8wk</span><span class="stat-l">ACE Processing</span></div>
+  <div class="stat"><span class="stat-n">Sep</span><span class="stat-l">MA Starts</span></div>
+  <div class="stat"><span class="stat-n">11</span><span class="stat-l">Categories</span></div>
+</div>
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#16a085"></div>Health</div>
+  <div class="leg"><div class="leg-dot" style="background:#e85d04"></div>Patriots Pitch</div>
+  <div class="leg"><div class="leg-dot" style="background:#1b6b6b"></div>University</div>
+  <div class="leg"><div class="leg-dot" style="background:#c8a951"></div>Visa</div>
+  <div class="leg"><div class="leg-dot" style="background:#2e9090"></div>Research</div>
+  <div class="leg"><div class="leg-dot" style="background:#2980b9"></div>France</div>
+  <div class="leg"><div class="leg-dot" style="background:#8e44ad"></div>Funding</div>
+  <div class="leg"><div class="leg-dot" style="background:#27ae60"></div>Income</div>
+  <div class="leg"><div class="leg-dot" style="background:#d35400"></div>Partnerships</div>
+  <div class="leg"><div class="leg-dot" style="background:#c0392b"></div>Exhibitions</div>
+  <div class="leg"><div class="leg-dot" style="background:#e91e8c"></div>CT South West Hub</div>
+  <div class="leg"><div class="leg-dot" style="background:#3a3a3a"></div>Done</div>
+</div>
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="fc('All',this)">All</button>
+  <button class="filter-btn" onclick="fc('Health',this)">💊 Health</button>
+  <button class="filter-btn" onclick="fc('Patriots Pitch',this)">🏀 Patriots</button>
+  <button class="filter-btn" onclick="fc('University',this)">🎓 University</button>
+  <button class="filter-btn" onclick="fc('Visa',this)">🌍 Visa</button>
+  <button class="filter-btn" onclick="fc('Research',this)">🔬 Research</button>
+  <button class="filter-btn" onclick="fc('France',this)">🇫🇷 France</button>
+  <button class="filter-btn" onclick="fc('Funding',this)">💰 Funding</button>
+  <button class="filter-btn" onclick="fc('Income',this)">💵 Income</button>
+  <button class="filter-btn" onclick="fc('Partnerships',this)">🤝 Partners</button>
+  <button class="filter-btn" onclick="fc('Exhibitions',this)">🎨 Exhibitions</button>
+  <button class="filter-btn" onclick="fc('CT Hub',this)">🏛 CT Hub</button>
+</div>
+<div class="gantt-wrap" id="gantt"></div>
+</div>
+<div class="tooltip" id="tt"></div>
+<script>
+const LW=240,WW=66;
+const S0=new Date('2026-05-10'),TODAY=new Date('2026-05-10'),EDATE=new Date('2026-12-31');
+const TW=(EDATE-S0)/(7*86400000);
+const TODAYW=(TODAY-S0)/(7*86400000);
+function dw(d){return(new Date(d)-S0)/(7*86400000);}
+const TASKS=[
+  {n:"Daily Wellbeing: Feroglobin + Protein Shake + Amfexa",s:"2026-05-10",e:"2026-12-31",p:"Urgent",cat:"Health",st:"To Do"},
+  {n:"Daily Wellbeing: Wudu & Isha Prayers",s:"2026-05-10",e:"2026-12-31",p:"Urgent",cat:"Health",st:"To Do"},
+  {n:"NotebookLM: Extract Patriots Squarespace Data",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Adobe Express: Arena graphics (Pixel 9)",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Canva: Gameday + Community + Coach Templates",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Genially: Interactive Court Demo with Hotspots",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Gemini: Generate Demo Landing Page Copy",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Patriots Pitch Presentation Meeting",s:"2026-05-11",e:"2026-05-11",p:"Urgent",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Upload Patriots Case Study to YunoJuno & Upwork",s:"2026-05-12",e:"2026-05-16",p:"Medium",cat:"Patriots Pitch",st:"To Do"},
+  {n:"Submit MA Heritage Theory Application (UoP)",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"University",st:"To Do"},
+  {n:"Email Daniel Maudlin — Follow Up After MA",s:"2026-05-11",e:"2026-05-11",p:"Urgent",cat:"University",st:"To Do"},
+  {n:"MA Heritage Theory & Practice Enrolment",s:"2026-09-01",e:"2026-09-30",p:"High",cat:"University",st:"To Do"},
+  {n:"Email Mike Phillips — i-dat Affiliation",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Visa",st:"To Do"},
+  {n:"Register ACE Portal (Exceptional Talent)",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"Visa",st:"To Do"},
+  {n:"Write 1000-Word ACE Statement",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"Visa",st:"To Do"},
+  {n:"Request 4 Support Letters",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"Visa",st:"To Do"},
+  {n:"Submit ACE Endorsement Evidence Pack",s:"2026-06-01",e:"2026-06-30",p:"High",cat:"Visa",st:"To Do"},
+  {n:"ACE Global Talent Decision (8 weeks)",s:"2026-07-01",e:"2026-08-31",p:"High",cat:"Visa",st:"To Do"},
+  {n:"Apply Home Office Global Talent Visa",s:"2026-08-01",e:"2026-08-31",p:"High",cat:"Visa",st:"To Do"},
+  {n:"FLR Application — Awaiting Decision",s:"2026-04-14",e:"2026-09-01",p:"High",cat:"Visa",st:"Done"},
+  {n:"Master Strategy PDF Complete",s:"2026-04-01",e:"2026-05-10",p:"High",cat:"Visa",st:"Done"},
+  {n:"Email Dr Becky Stancer (TAWAF / NIHR)",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"Research",st:"To Do"},
+  {n:"Email Prof Alejandro (CelticArc / Warwick KTP)",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"Research",st:"To Do"},
+  {n:"TAWAF Concept Document Complete",s:"2026-04-01",e:"2026-05-10",p:"High",cat:"Research",st:"Done"},
+  {n:"CelticArc Proposal PDF Complete",s:"2026-04-01",e:"2026-05-10",p:"High",cat:"Research",st:"Done"},
+  {n:"WhatsApp Jade — TAWAF Collaboration",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Partnerships",st:"To Do"},
+  {n:"Email SEI — Creative Associate Application",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"Partnerships",st:"To Do"},
+  {n:"Email Stephanie Owens — AUP Workshop Proposal",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"Partnerships",st:"To Do"},
+  {n:"Coffee Meeting — Dean Stephanie Owens",s:"2026-05-24",e:"2026-06-06",p:"Medium",cat:"Partnerships",st:"To Do"},
+  {n:"Google Arts & Culture — Wearable Guide Pitch",s:"2026-06-01",e:"2026-07-01",p:"Medium",cat:"Partnerships",st:"To Do"},
+  {n:"Email Stephanie Owens — Casual (Done)",s:"2026-05-09",e:"2026-05-10",p:"Medium",cat:"Partnerships",st:"Done"},
+  {n:"Contact Plymouth-Brest Twinning Panel",s:"2026-05-17",e:"2026-05-23",p:"Medium",cat:"France",st:"To Do"},
+  {n:"Email EESAB Brest — Hosting Agreement",s:"2026-05-24",e:"2026-05-31",p:"Medium",cat:"France",st:"To Do"},
+  {n:"Apply French Researcher Talent Passport",s:"2026-06-15",e:"2026-07-15",p:"Medium",cat:"France",st:"To Do"},
+  {n:"First Visit to Brest — CelticArc Documentation",s:"2026-07-01",e:"2026-08-31",p:"Medium",cat:"France",st:"To Do"},
+  {n:"Register Santander X — CelticArc",s:"2026-05-17",e:"2026-05-23",p:"Medium",cat:"Funding",st:"To Do"},
+  {n:"Apply ACE DYCP Grant — TAWAF",s:"2026-05-24",e:"2026-05-31",p:"Medium",cat:"Funding",st:"To Do"},
+  {n:"Apply British Council — Heritage Futures",s:"2026-05-24",e:"2026-05-31",p:"Medium",cat:"Funding",st:"To Do"},
+  {n:"Email Tiki — Level 3 Diploma + Care Trainer",s:"2026-05-10",e:"2026-05-10",p:"Urgent",cat:"Income",st:"To Do",note:"tiki@yourchoicecare.net | 01752 278495. Free Level 3 Diploma in Adult Health & Social Care + Teacher Training Qualification for Healthcare."},
+  {n:"Level 3 Diploma — Adult Health & Social Care",s:"2026-06-01",e:"2026-12-31",p:"High",cat:"Income",st:"To Do"},
+  {n:"Teacher Training Qualification — Care Trainer",s:"2026-06-01",e:"2026-12-31",p:"High",cat:"Income",st:"To Do"},
+  {n:"Email The Cube — Agency Registration",s:"2026-05-11",e:"2026-05-11",p:"High",cat:"Income",st:"To Do"},
+  {n:"HMRC Self-Employment Registration (UTR)",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"Income",st:"To Do"},
+  {n:"Register Zen Educate & Randstad (UTR)",s:"2026-05-24",e:"2026-06-06",p:"High",cat:"Income",st:"To Do"},
+  {n:"FCN Group Care Shifts — Max 20hrs/Week",s:"2026-05-10",e:"2026-12-31",p:"High",cat:"Income",st:"In Progress"},
+  {n:"360 Virtual Tours — Estate Agents Pitch",s:"2026-05-17",e:"2026-12-31",p:"Medium",cat:"Income",st:"To Do"},
+  {n:"Portfolio Website Live",s:"2026-04-01",e:"2026-05-10",p:"High",cat:"Income",st:"Done"},
+  {n:"Contact The Box — Chloe Hughes / Stacey Anderson",s:"2026-05-24",e:"2026-06-06",p:"Medium",cat:"Exhibitions",st:"To Do"},
+  {n:"Apply KARST Residency — Smart Fab Node",s:"2026-06-01",e:"2026-06-30",p:"Medium",cat:"Exhibitions",st:"To Do"},
+  {n:"Heritage Futures AUP Workshop Delivery",s:"2026-07-01",e:"2026-08-31",p:"High",cat:"Exhibitions",st:"To Do"},
+  {n:"Heritage Futures — The Box Media Lab Exhibition",s:"2026-08-01",e:"2026-09-30",p:"High",cat:"Exhibitions",st:"To Do"},
+  {n:"360 Google Street View — Weekly Uploads",s:"2026-05-10",e:"2026-12-31",p:"Medium",cat:"Exhibitions",st:"In Progress"},
+  {n:"Heritage Futures Proposal PDF Complete",s:"2026-05-01",e:"2026-05-10",p:"High",cat:"Exhibitions",st:"Done"},
+  {n:"9 Photos Uploaded to Google Street View",s:"2026-04-19",e:"2026-05-10",p:"High",cat:"Exhibitions",st:"Done"},
+  {n:"Register Creative Coding SW as Trading Name",s:"2026-05-11",e:"2026-05-14",p:"High",cat:"CT Hub",st:"To Do",note:"Trading name under Mo360 Ltd. Free. Use on all invoices and comms."},
+  {n:"Email Creative Code Berlin — Sister Community",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"CT Hub",st:"To Do",note:"team@creativecode.berlin — reference NODE Forum Frankfurt 2017 shared history."},
+  {n:"Email Creative Coding Amsterdam — Sister Community",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"CT Hub",st:"To Do",note:"meetup.com/creative-coding-amsterdam — 2,806 members. Reference NODE Forum 2017."},
+  {n:"Message Creative Coding Cairo — Announce CCSW",s:"2026-05-11",e:"2026-05-16",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Create Meetup.com Group — Creative Coding SW",s:"2026-05-14",e:"2026-05-16",p:"High",cat:"CT Hub",st:"To Do",note:"~£14/month organiser fee. Category: Technology > Creative Technology. Location: Plymouth, Devon."},
+  {n:"Email Mike Phillips + Chris Bennewith — SWCTN Listing",s:"2026-05-14",e:"2026-05-16",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Register with VASW (vasw.org.uk)",s:"2026-05-17",e:"2026-05-21",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Register with Plymouth Culture Monthly Bulletin",s:"2026-05-17",e:"2026-05-21",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Email Gary Futcher — Real Ideas Market Hall Venue",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Email Watershed Bristol — Bristol Node Proposal",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Email Spike Island Bristol — Quarterly Showcase",s:"2026-05-17",e:"2026-05-23",p:"Medium",cat:"CT Hub",st:"To Do"},
+  {n:"Message Sameh Al Tawil — Peer Visa Letter",s:"2026-05-17",e:"2026-05-23",p:"High",cat:"CT Hub",st:"To Do",note:"samehaltawil.com — Egyptian artist Munich. Peer support letter for ACE Global Talent Visa."},
+  {n:"Build CCSW Website",s:"2026-05-24",e:"2026-06-06",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Set Up @creativecodingsw Instagram + LinkedIn",s:"2026-05-24",e:"2026-05-31",p:"Medium",cat:"CT Hub",st:"To Do"},
+  {n:"Email NODE Berlin — UK Affiliate Proposal",s:"2026-05-24",e:"2026-05-31",p:"Medium",cat:"CT Hub",st:"To Do"},
+  {n:"Research Schools Creative Coding Programme — SW",s:"2026-05-24",e:"2026-05-31",p:"Medium",cat:"CT Hub",st:"To Do"},
+  {n:"Contact London Creative Coding — Cross-Promotion",s:"2026-06-01",e:"2026-06-14",p:"Medium",cat:"CT Hub",st:"To Do",note:"lu.ma/london-creative — position CCSW as South West chapter."},
+  {n:"Announce First CCSW Meetup — All Channels",s:"2026-06-07",e:"2026-06-13",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Plan Processing Day South West",s:"2026-06-01",e:"2026-06-30",p:"Medium",cat:"CT Hub",st:"To Do"},
+  {n:"First CCSW Meetup — Real Ideas Plymouth",s:"2026-07-01",e:"2026-07-01",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Monthly CCSW Meetups — Plymouth & Bristol",s:"2026-07-01",e:"2026-12-31",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Schools Creative Coding Pilot Workshop — Plymouth",s:"2026-09-01",e:"2026-09-30",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"CCSW Quarterly Showcase — Market Hall / The Box",s:"2026-09-01",e:"2026-09-30",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"Processing Day South West — Plymouth + Bristol",s:"2026-10-01",e:"2026-10-31",p:"High",cat:"CT Hub",st:"To Do"},
+  {n:"CCSW Annual Conference — The Box / AUP",s:"2026-11-01",e:"2026-11-30",p:"Medium",cat:"CT Hub",st:"To Do"},
+  {n:"Consider CIC Conversion (review Jan 2027)",s:"2026-12-01",e:"2026-12-31",p:"Medium",cat:"CT Hub",st:"To Do",note:"Convert Mo360 Ltd to CIC once CCSW has 6 months activity evidence."},
+];
+const CAT_ORDER=["Health","Patriots Pitch","University","Visa","Research","Partnerships","France","Funding","Income","Exhibitions","CT Hub"];
+const CAT_ICONS={Health:"💊","Patriots Pitch":"🏀",University:"🎓",Visa:"🌍",Research:"🔬",France:"🇫🇷",Funding:"💰",Income:"💵",Partnerships:"🤝",Exhibitions:"🎨","CT Hub":"🏛"};
+const totalWeeks=Math.ceil(TW)+2;
+const weeks=[];
+for(let i=0;i<totalWeeks;i++){const d=new Date(S0.getTime()+i*7*86400000);weeks.push({label:d.toLocaleDateString('en-GB',{month:'short',day:'numeric'}),month:d.toLocaleDateString('en-GB',{month:'long',year:'numeric'})});}
+function build(filter){
+  const g=document.getElementById('gantt');g.innerHTML='';
+  const gW=totalWeeks*WW;
+  const months={};weeks.forEach((w,i)=>{if(!months[w.month])months[w.month]={c:0};months[w.month].c++;});
+  const mr=document.createElement('div');mr.className='month-row';mr.style.gridTemplateColumns=`${LW}px repeat(${totalWeeks},${WW}px)`;
+  const mb=document.createElement('div');mb.className='month-cell';mb.style.cssText='background:transparent;border-color:transparent;color:transparent;';mb.textContent='.';mr.appendChild(mb);
+  Object.entries(months).forEach(([m,{c}])=>{const el=document.createElement('div');el.className='month-cell';el.style.gridColumn=`span ${c}`;el.textContent=m;mr.appendChild(el);});
+  g.appendChild(mr);
+  const wr=document.createElement('div');wr.className='week-row';wr.style.gridTemplateColumns=`${LW}px repeat(${totalWeeks},${WW}px)`;
+  const wb=document.createElement('div');wb.className='week-cell';wb.style.cssText='text-align:left;padding-left:10px;color:var(--mid);font-weight:500;';wb.textContent='Task';wr.appendChild(wb);
+  weeks.forEach((w,i)=>{const c=document.createElement('div');const td=Math.abs(i-TODAYW)<0.5;c.className='week-cell'+(td?' week-today':'');c.textContent=td?'📍'+w.label:w.label;wr.appendChild(c);});
+  g.appendChild(wr);
+  CAT_ORDER.forEach(cat=>{
+    if(filter!=='All'&&filter!==cat)return;
+    const tasks=TASKS.filter(t=>t.cat===cat);if(!tasks.length)return;
+    const ch=document.createElement('div');ch.className='cat-header';
+    ch.innerHTML=`<span class="cat-icon">${CAT_ICONS[cat]||'📌'}</span><span class="cat-title">${cat}</span><span class="cat-count">${tasks.length} tasks</span>`;
+    g.appendChild(ch);
+    tasks.forEach(t=>{
+      const sw=dw(t.s),ew=Math.max(dw(t.s)+0.5,dw(t.e)+1);
+      const done=t.st==='Done',ongoing=t.st==='In Progress';
+      const row=document.createElement('div');row.className='task-row';row.style.gridTemplateColumns=`${LW}px ${gW}px`;
+      const pi=t.p==='Urgent'?'🔴':t.p==='High'?'🟡':'🟢';
+      const lbl=document.createElement('div');lbl.className='task-label'+(done?' done':'');
+      lbl.innerHTML=`<div class="tl-name">${pi} ${t.n}</div><div class="tl-meta">${t.p} · ${t.st}</div>`;
+      row.appendChild(lbl);
+      const grid=document.createElement('div');grid.className='task-grid-area';grid.style.width=gW+'px';
+      for(let i=0;i<totalWeeks;i++){const c=document.createElement('div');c.style.cssText=`position:absolute;left:${i*WW}px;width:${WW}px;height:100%;border-right:1px solid rgba(245,242,238,0.03);${Math.abs(i-TODAYW)<0.5?'background:rgba(232,93,4,0.04);':''}\`;grid.appendChild(c);}
+      const tl=document.createElement('div');tl.className='today-line';tl.style.left=(TODAYW*WW)+'px';grid.appendChild(tl);
+      const bL=Math.max(0,sw)*WW,bW=Math.max((ew-Math.max(0,sw))*WW,WW*0.4);
+      const catClass=cat.replace(/\s+/g,'-');
+      const bar=document.createElement('div');bar.className=`bar ${done?'c-Done':ongoing?'c-Ongoing':'c-'+catClass}`;bar.style.left=bL+'px';bar.style.width=bW+'px';
+      bar.innerHTML=`<span>${t.n}</span>`;
+      bar.addEventListener('mouseenter',()=>{const tt=document.getElementById('tt');tt.innerHTML=`<strong>${t.n}</strong><div class="td">📅 ${t.s} → ${t.e}</div><div class="ti">${t.cat} · ${t.p} · ${t.st}</div>${t.note?`<div style="margin-top:6px;font-size:0.67rem;color:var(--mid);line-height:1.5;">${t.note}</div>`:''}\`;tt.style.display='block';});
+      bar.addEventListener('mousemove',e=>{const tt=document.getElementById('tt');tt.style.left=(e.clientX+16)+'px';tt.style.top=(e.clientY-10)+'px';});
+      bar.addEventListener('mouseleave',()=>{document.getElementById('tt').style.display='none';});
+      grid.appendChild(bar);row.appendChild(grid);g.appendChild(row);
+    });
+  });
+}
+function fc(cat,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');build(cat);}
+build('All');
+</script>
+</body>
+</html>
