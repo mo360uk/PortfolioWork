@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>COMMERCIAL BRANDING &amp; SPATIAL WEB // Mo360 Immersive Studio</title>
+    <meta name="description" content="Immersive 360° digital branding, luxury WebGL 3D web architecture, and executive self-branding by Mo360 Immersive Studio. Creator of Plymouth Patriots platform.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons & Three.js via CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --bg-void: #060709;
+            --bg-dark-1: #0e1014;
+            --bg-dark-2: #16181f;
+            --bg-dark-3: #222631;
+            --bg-dark-4: #2e3442;
+            --ochre: #d49345;
+            --ochre-bright: #f0a952;
+            --ochre-glow: rgba(212, 147, 69, 0.4);
+            --ochre-subtle: rgba(212, 147, 69, 0.12);
+            --text-main: #f0f3f8;
+            --text-muted: #9ba4b5;
+            --text-dim: #606877;
+            --border-dark: rgba(255, 255, 255, 0.08);
+            --border-ochre: rgba(212, 147, 69, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            touch-action: none;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            outline: none;
+        }
+
+        /* MASTER NAVIGATION BRIDGE */
+        .master-dock {
+            position: fixed;
+            top: 1.25rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 0.55rem 1.15rem 0.55rem 1.4rem;
+            background: rgba(10, 12, 16, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 147, 69, 0.1);
+            width: calc(100% - 2.5rem);
+            max-width: 1080px;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .master-dock:hover {
+            border-color: rgba(212, 147, 69, 0.35);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(212, 147, 69, 0.2);
+        }
+
+        .dock-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .dock-logo {
+            height: 30px;
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(212, 147, 69, 0.45));
+        }
+
+        .dock-brand-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .dock-brand-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--ochre-bright);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .dock-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.3rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .dock-link {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.95rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .dock-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .dock-link.active {
+            color: var(--ochre-bright);
+            background: rgba(212, 147, 69, 0.15);
+            box-shadow: 0 0 16px rgba(212, 147, 69, 0.25);
+            border: 1px solid rgba(212, 147, 69, 0.38);
+        }
+
+        .dock-link.dock-store {
+            color: #fbbf24;
+        }
+
+        .dock-link.dock-store:hover {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fef08a;
+        }
+
+        .dock-cta-btn {
+            background: linear-gradient(135deg, var(--ochre) 0%, #df9b28 100%);
+            color: #060709;
+            padding: 0.48rem 1.15rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            letter-spacing: 0.04em;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 20px rgba(212, 147, 69, 0.3);
+            cursor: pointer;
+            border: none;
+        }
+
+        .dock-cta-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 28px rgba(212, 147, 69, 0.5);
+        }
+
+        /* 2D SPATIAL OVERLAYS BOUND TO 3D COORDS */
+        #spatial-overlays {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .spatial-overlay-anchor {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            max-width: 90vw;
+        }
+
+        .spatial-overlay-anchor.visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .chamber-card {
+            background: rgba(14, 16, 20, 0.88);
+            border: 1px solid var(--border-dark);
+            border-radius: 16px;
+            padding: 2.25rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 30px rgba(212, 147, 69, 0.12);
+            max-width: 600px;
+            position: relative;
+        }
+
+        .chamber-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--ochre), transparent);
+        }
+
+        .chamber-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            background: var(--ochre-subtle);
+            border: 1px solid var(--border-ochre);
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--ochre);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 1.25rem;
+        }
+
+        .chamber-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .chamber-title span {
+            color: var(--ochre-bright);
+            display: block;
+        }
+
+        .chamber-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+            margin-bottom: 1.5rem;
+        }
+
+        .chamber-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .chamber-stat-box {
+            background: rgba(22, 24, 31, 0.7);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 0.85rem;
+        }
+
+        .chamber-stat-box .k {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .chamber-stat-box .v {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--ochre-bright);
+            font-weight: 600;
+        }
+
+        .chamber-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-3d {
+            padding: 0.75rem 1.45rem;
+            background: linear-gradient(135deg, var(--ochre) 0%, #df9b28 100%);
+            border: none;
+            border-radius: 8px;
+            color: #060709;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.86rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 20px rgba(212, 147, 69, 0.35);
+        }
+
+        .btn-primary-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(212, 147, 69, 0.55);
+        }
+
+        .btn-secondary-3d {
+            padding: 0.75rem 1.35rem;
+            background: rgba(22, 24, 31, 0.8);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.86rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-secondary-3d:hover {
+            border-color: var(--ochre);
+            color: var(--ochre-bright);
+        }
+
+        /* SECTOR DOCK (RIGHT SIDE) */
+        .sector-dock {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 25;
+            pointer-events: auto;
+        }
+
+        .sector-btn {
+            background: rgba(14, 16, 20, 0.85);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 0.55rem 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .sector-btn:hover {
+            border-color: var(--ochre);
+            color: #fff;
+        }
+
+        .sector-btn.active {
+            background: rgba(212, 147, 69, 0.18);
+            border-color: var(--ochre);
+            color: var(--ochre-bright);
+            box-shadow: 0 0 15px rgba(212, 147, 69, 0.25);
+        }
+
+        /* BOTTOM FLIGHT CONTROLS */
+        .flight-hud-bottom {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: rgba(14, 16, 20, 0.85);
+            border: 1px solid var(--border-dark);
+            border-radius: 999px;
+            padding: 0.65rem 1.6rem;
+            backdrop-filter: blur(12px);
+            pointer-events: auto;
+        }
+
+        .flight-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            width: 320px;
+        }
+
+        .flight-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flight-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--ochre) 0%, #f0a952 100%);
+            box-shadow: 0 0 12px var(--ochre);
+            transition: width 0.1s linear;
+        }
+
+        .flight-percentage {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--ochre-bright);
+            min-width: 45px;
+        }
+
+        /* PROJECT MODAL */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(6, 7, 9, 0.88);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .project-modal.active {
+            display: flex;
+        }
+
+        .modal-body {
+            background: #12141a;
+            border: 1px solid var(--ochre);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(212, 147, 69, 0.25);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .modal-close:hover {
+            color: var(--ochre-bright);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sector-dock { display: none; }
+            .master-dock { width: calc(100% - 1.5rem); padding: 0.5rem 0.85rem; }
+            .dock-brand-name { display: none; }
+            .flight-progress-container { width: 160px; }
+            .chamber-card { padding: 1.5rem; }
+            .chamber-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- WebGL Rendering Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- MASTER NAVIGATION BRIDGE -->
+    <nav class="master-dock">
+        <a href="../index.html" class="dock-brand">
+            <img src="assets/mo360_mark.png" alt="Mo360 Immersive Studio" class="dock-logo">
+            <div>
+                <div class="dock-brand-name">Mo360immersive</div>
+                <div class="dock-brand-tag">Mo360 Immersive Studio</div>
+            </div>
+        </a>
+
+        <div class="dock-nav">
+            <a href="./index.html" class="dock-link active" title="Commercial Brand &amp; Web3D">
+                <span>✦</span> Studio
+            </a>
+            <a href="../surveys/" class="dock-link" title="Drone &amp; LiDAR Trade Surveys">
+                <span>⌖</span> Surveys
+            </a>
+            <a href="../lab/" class="dock-link" title="Artistic R&amp;D &amp; Spatial Research">
+                <span>⚗</span> Lab
+            </a>
+            <a href="https://shop.mo360immersivestudio.co.uk" target="_blank" rel="noopener noreferrer" class="dock-link dock-store" title="Curated Store (Shopify)">
+                <span>↗</span> Store
+            </a>
+        </div>
+
+        <button onclick="window.leapToChamber(4)" class="dock-cta-btn">
+            <i data-lucide="send" style="width:14px;height:14px"></i>
+            <span>Initiate Project</span>
+        </button>
+    </nav>
+
+    <!-- 2D PROJECTED SPATIAL OVERLAYS BOUND TO 3D SPACE -->
+    <div id="spatial-overlays">
+
+        <!-- CHAMBER 0: THRESHOLD & BRAND PHILOSOPHY -->
+        <div id="overlay-0" class="spatial-overlay-anchor visible" style="top: 50%; left: 32%;">
+            <div class="chamber-card">
+                <div class="chamber-badge">
+                    <i data-lucide="compass" style="width:14px;height:14px"></i>
+                    Chamber 01 // Commercial Spatial Threshold
+                </div>
+                <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,147,69,0.12); border:1px solid rgba(212,147,69,0.35); border-radius:6px; padding:0.35rem 0.75rem; margin-bottom:1rem; font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--ochre-bright);">
+                    <i data-lucide="award" style="width:14px;height:14px"></i>
+                    OFFICIAL CREATOR OF PLYMOUTH PATRIOTS BASKETBALL PLATFORM
+                </div>
+                <h1 class="chamber-title">
+                    IMMERSIVE. WORK THAT
+                    <span>RESONATES.</span>
+                </h1>
+                <p class="chamber-desc">
+                    Welcome to the commercial studio of <strong>Mo360 Immersive Studio</strong>. We engineer high-converting digital platforms, bespoke company 360° visual identities, and executive self-branding for athletes and industry leaders.
+                </p>
+                <div class="chamber-grid">
+                    <div class="chamber-stat-box">
+                        <div class="k">Enterprise Platform</div>
+                        <div class="v">plymouthpatriotsbasketball.com</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Design Systems</div>
+                        <div class="v">Behance Featured Series</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Graphics &amp; Video</div>
+                        <div class="v">Dynamic Motion Reels</div>
+                    </div>
+                </div>
+                <div class="chamber-actions">
+                    <button class="btn-primary-3d" onclick="window.leapToChamber(1)">
+                        <span>Explore Flagship Platform</span>
+                        <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+                    </button>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(2)">
+                        <span>Behance Series</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAMBER 1: PLYMOUTH PATRIOTS FLAGSHIP PLATFORM -->
+        <div id="overlay-1" class="spatial-overlay-anchor" style="top: 50%; left: 68%;">
+            <div class="chamber-card" style="border-color: rgba(212,147,69,0.5);">
+                <div class="chamber-badge" style="background:rgba(212,147,69,0.2);">
+                    <i data-lucide="zap" style="width:14px;height:14px"></i>
+                    Chamber 02 // Enterprise Showcase
+                </div>
+                <h2 class="chamber-title">
+                    PLYMOUTH CITY PATRIOTS
+                    <span>OFFICIAL PLATFORM</span>
+                </h2>
+                <p class="chamber-desc">
+                    Complete digital platform architecture for pro basketball franchise <strong>Plymouth City Patriots</strong>. Engineered with interactive ticketing funnel integrations, roster database systems, corporate sponsor showcases, and fan engagement architecture.
+                </p>
+                <div class="chamber-grid">
+                    <div class="chamber-stat-box">
+                        <div class="k">Platform URL</div>
+                        <div class="v">Live Pro Sports Hub</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Ticketing Funnel</div>
+                        <div class="v">High-Conversion UX</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Sponsor Ecosystem</div>
+                        <div class="v">Multi-Tier Integration</div>
+                    </div>
+                </div>
+                <div class="chamber-actions">
+                    <a href="https://plymouthpatriotsbasketball.com" target="_blank" rel="noopener noreferrer" class="btn-primary-3d">
+                        <span>Visit Live Platform</span>
+                        <i data-lucide="external-link" style="width:16px;height:16px"></i>
+                    </a>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(2)">
+                        <span>Next // Behance Design</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAMBER 2: BEHANCE DESIGN SERIES & HIGH-CRAFT BRANDING -->
+        <div id="overlay-2" class="spatial-overlay-anchor" style="top: 50%; left: 32%;">
+            <div class="chamber-card">
+                <div class="chamber-badge">
+                    <i data-lucide="layers" style="width:14px;height:14px"></i>
+                    Chamber 03 // Behance Design Series
+                </div>
+                <h2 class="chamber-title">
+                    BOLD COMMERCIAL BRANDING
+                    <span>&amp; DESIGN SYSTEMS</span>
+                </h2>
+                <p class="chamber-desc">
+                    Explore our curated Behance visual identities and high-craft design systems across high-end consumer hardware, footwear, and luxury goods.
+                </p>
+                <div class="chamber-grid">
+                    <div class="chamber-stat-box" style="cursor:pointer;" onclick="openProject('sneakers')">
+                        <div class="k">Campaign 01</div>
+                        <div class="v">Sneakers 3D Visuals &nearr;</div>
+                    </div>
+                    <div class="chamber-stat-box" style="cursor:pointer;" onclick="openProject('smartwatch')">
+                        <div class="k">Campaign 02</div>
+                        <div class="v">Smartwatch Spatial UI &nearr;</div>
+                    </div>
+                    <div class="chamber-stat-box" style="cursor:pointer;" onclick="openProject('audio')">
+                        <div class="k">Campaign 03</div>
+                        <div class="v">Luxury Audio Identity &nearr;</div>
+                    </div>
+                </div>
+                <div class="chamber-actions">
+                    <button class="btn-primary-3d" onclick="openProject('sneakers')">
+                        <i data-lucide="eye" style="width:16px;height:16px"></i>
+                        <span>Inspect Design Systems</span>
+                    </button>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(3)">
+                        <span>Motion &amp; Video Reels</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAMBER 3: MOTION REELS & EXECUTIVE BRANDING -->
+        <div id="overlay-3" class="spatial-overlay-anchor" style="top: 50%; left: 68%;">
+            <div class="chamber-card">
+                <div class="chamber-badge">
+                    <i data-lucide="film" style="width:14px;height:14px"></i>
+                    Chamber 04 // Dynamic Motion &amp; Video
+                </div>
+                <h2 class="chamber-title">
+                    GAMEDAY MOTION
+                    <span>&amp; EXECUTIVE SELF-BRANDING</span>
+                </h2>
+                <p class="chamber-desc">
+                    High-energy matchday cinematography, 4K promotional cinema, and bespoke digital self-branding for founders, professional athletes, and directors.
+                </p>
+                <div class="chamber-grid">
+                    <div class="chamber-stat-box">
+                        <div class="k">Sports Cinema</div>
+                        <div class="v">Matchday 4K Reels</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Executive Identity</div>
+                        <div class="v">Personal Digital Twins</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Broadcast Motion</div>
+                        <div class="v">Social Kinetic Cuts</div>
+                    </div>
+                </div>
+                <div class="chamber-actions">
+                    <button class="btn-primary-3d" onclick="window.leapToChamber(4)">
+                        <span>Initiate Project Consultation</span>
+                        <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+                    </button>
+                    <a href="../surveys/" class="btn-secondary-3d">
+                        <i data-lucide="crosshair" style="width:15px;height:15px"></i>
+                        <span>Drone Surveys Portal</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAMBER 4: INITIATE TRANSMISSION DOCK -->
+        <div id="overlay-4" class="spatial-overlay-anchor" style="top: 50%; left: 50%;">
+            <div class="chamber-card" style="text-align: center; max-width: 580px;">
+                <div class="chamber-badge" style="margin: 0 auto 1.25rem;">
+                    <i data-lucide="radio" style="width:14px;height:14px"></i>
+                    Chamber 05 // Transmission Dock
+                </div>
+                <h2 class="chamber-title">
+                    INITIATE COMMERCIAL
+                    <span>COLLABORATION</span>
+                </h2>
+                <p class="chamber-desc">
+                    Elevate your business or executive presence with <strong>Mo360 Immersive Studio</strong>. Available for bespoke high-performance websites, 360° company branding, and sports/executive portfolios.
+                </p>
+                <div style="background: rgba(22, 24, 31, 0.7); border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.75rem; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.75rem;">
+                        <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--text-dim);">DIRECT STUDIO CONTACT</span>
+                        <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--ochre-bright);">UK REGISTERED</span>
+                    </div>
+                    <div style="font-family:'Space Grotesk'; font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom: 0.35rem;">
+                        mo360immersivestudio@gmail.com
+                    </div>
+                    <div style="font-family:'JetBrains Mono'; font-size:0.85rem; color:var(--ochre-bright);">
+                        +44 7935 929850 // London &amp; Plymouth, UK
+                    </div>
+                </div>
+                <div class="chamber-actions" style="justify-content: center;">
+                    <a href="mailto:mo360immersivestudio@gmail.com" class="btn-primary-3d">
+                        <i data-lucide="mail" style="width:16px;height:16px"></i>
+                        <span>Transmit Email</span>
+                    </a>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(0)">
+                        <i data-lucide="rotate-ccw" style="width:15px;height:15px"></i>
+                        <span>Re-Traverse Chambers</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECTOR DOCK (RIGHT SIDE RADIAL HUD) -->
+    <div class="sector-dock">
+        <div class="sector-btn active" onclick="window.leapToChamber(0)">
+            <span>01 // THRESHOLD</span>
+        </div>
+        <div class="sector-btn" onclick="window.leapToChamber(1)">
+            <span>02 // PATRIOTS PLATFORM</span>
+        </div>
+        <div class="sector-btn" onclick="window.leapToChamber(2)">
+            <span>03 // BEHANCE DESIGN</span>
+        </div>
+        <div class="sector-btn" onclick="window.leapToChamber(3)">
+            <span>04 // MOTION &amp; REELS</span>
+        </div>
+        <div class="sector-btn" onclick="window.leapToChamber(4)">
+            <span>05 // TRANSMISSION</span>
+        </div>
+    </div>
+
+    <!-- FLIGHT PROGRESS HUD (BOTTOM) -->
+    <div class="flight-hud-bottom">
+        <div class="flight-progress-container">
+            <span style="font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--text-dim);">SECTOR</span>
+            <div class="flight-progress-bar">
+                <div id="flight-fill" class="flight-progress-fill"></div>
+            </div>
+            <span id="flight-pct" class="flight-percentage">0%</span>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+            <button onclick="stepChamber(-1)" class="btn-secondary-3d" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Prev</button>
+            <button onclick="stepChamber(1)" class="btn-primary-3d" style="padding:0.4rem 0.8rem; font-size:0.75rem;">Next</button>
+        </div>
+    </div>
+
+    <!-- PROJECT MODAL -->
+    <div id="projectModal" class="project-modal" onclick="if(event.target === this) closeProjectModal()">
+        <div class="modal-body">
+            <button class="modal-close" onclick="closeProjectModal()"><i data-lucide="x"></i></button>
+            <div id="m-tag" class="chamber-badge" style="margin-bottom: 0.75rem;">TAG</div>
+            <h3 id="m-title" style="font-family:'Space Grotesk'; font-size: 1.6rem; color: var(--text-main); margin-bottom: 1rem;">Project Title</h3>
+            <p id="m-desc" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">Project Description</p>
+            <div style="background: rgba(22, 24, 31, 0.7); border-radius: 8px; padding: 1rem; border-left: 2px solid var(--ochre); margin-bottom: 1.5rem;">
+                <div style="font-family:'JetBrains Mono'; font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.25rem;">Stack &amp; Discipline</div>
+                <div id="m-stack" style="font-family:'JetBrains Mono'; font-size: 0.85rem; color: var(--ochre-bright);">Stack</div>
+            </div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <a id="m-live-btn" href="https://plymouthpatriotsbasketball.com" target="_blank" rel="noopener noreferrer" class="btn-primary-3d" style="display:none;">
+                    <span>Visit Live Platform</span>
+                    <i data-lucide="external-link" style="width:15px;height:15px"></i>
+                </a>
+                <button class="btn-secondary-3d" onclick="closeProjectModal()">Close Telemetry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- THREE.JS 3D CHAMBER ENGINE -->
+    <script>
+        lucide.createIcons();
+
+        // 3D Scene Setup
+        const canvas = document.getElementById('webgl-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x060709, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // Chamber Camera Waypoints
+        const chamberWaypoints = [
+            { pos: new THREE.Vector3(-8, 2, 25), look: new THREE.Vector3(-4, 0, 0) },
+            { pos: new THREE.Vector3(12, 1, -15), look: new THREE.Vector3(6, 0, -35) },
+            { pos: new THREE.Vector3(-10, 3, -55), look: new THREE.Vector3(-4, 0, -75) },
+            { pos: new THREE.Vector3(10, 2, -95), look: new THREE.Vector3(4, 0, -115) },
+            { pos: new THREE.Vector3(0, 0, -135), look: new THREE.Vector3(0, 0, -165) }
+        ];
+
+        let currentChamber = 0;
+        let camTargetPos = chamberWaypoints[0].pos.clone();
+        let camTargetLook = chamberWaypoints[0].look.clone();
+        let currentLook = chamberWaypoints[0].look.clone();
+
+        camera.position.copy(camTargetPos);
+
+        // Architectural Chamber Grid Structures
+        const gridGroup = new THREE.Group();
+        scene.add(gridGroup);
+
+        const gridHelper1 = new THREE.GridHelper(260, 52, 0xd49345, 0x16181f);
+        gridHelper1.position.y = -6;
+        gridHelper1.position.z = -70;
+        gridGroup.add(gridHelper1);
+
+        const gridHelper2 = new THREE.GridHelper(260, 52, 0xd49345, 0x16181f);
+        gridHelper2.position.y = 14;
+        gridHelper2.position.z = -70;
+        gridGroup.add(gridHelper2);
+
+        // Floating Architectural Portals & Pillars along Z-axis
+        const portalGeo = new THREE.BoxGeometry(22, 18, 0.5);
+        const portalMat = new THREE.MeshBasicMaterial({
+            color: 0xd49345,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.25
+        });
+
+        for (let z = 15; z >= -160; z -= 35) {
+            const portal = new THREE.Mesh(portalGeo, portalMat);
+            portal.position.set(0, 4, z);
+            scene.add(portal);
+        }
+
+        // Ambient Amber Particles
+        const particleCount = 1200;
+        const partGeo = new THREE.BufferGeometry();
+        const partPos = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            partPos[i] = (Math.random() - 0.5) * 80;
+            partPos[i + 1] = (Math.random() - 0.5) * 40 + 4;
+            partPos[i + 2] = (Math.random() - 0.5) * 200 - 60;
+        }
+        partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
+        const partMat = new THREE.PointsMaterial({
+            color: 0xf0a952,
+            size: 0.35,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const particles = new THREE.Points(partGeo, partMat);
+        scene.add(particles);
+
+        // Project Modal Data
+        const projects = {
+            sneakers: {
+                tag: "BEHANCE // 3D BRAND CAMPAIGN",
+                title: "Next-Gen Footwear & Sneakers Campaign",
+                desc: "High-octane footwear visual identity combining tactile generative mesh shaders with kinetic typography and spatial product photography.",
+                stack: "Three.js, Blender 3D, WebGL Shaders, Adobe After Effects"
+            },
+            smartwatch: {
+                tag: "BEHANCE // SPATIAL UI & OS",
+                title: "Smartwatch OS & Spatial Interface",
+                desc: "Circular dark-mode UI with real-time biometric telemetry visualizers, fluid capacitive micro-interactions, and high-contrast ambient modes.",
+                stack: "Figma Design Systems, WebGL Canvas, CSS Hardware Acceleration"
+            },
+            audio: {
+                tag: "BEHANCE // LUXURY HARDWARE",
+                title: "Luxury Audio & Acoustic Product Branding",
+                desc: "Precision CNC aluminum CAD visualization, custom sound wave branding, and luxury editorial packaging for high-fidelity audio hardware.",
+                stack: "KeyShot 3D, SolidWorks, Cinema 4D, Industrial Brand Architecture"
+            }
+        };
+
+        window.openProject = function(key) {
+            const p = projects[key];
+            if (!p) return;
+            document.getElementById('m-tag').innerText = p.tag;
+            document.getElementById('m-title').innerText = p.title;
+            document.getElementById('m-desc').innerText = p.desc;
+            document.getElementById('m-stack').innerText = p.stack;
+            document.getElementById('m-live-btn').style.display = 'none';
+            document.getElementById('projectModal').classList.add('active');
+        };
+
+        window.closeProjectModal = function() {
+            document.getElementById('projectModal').classList.remove('active');
+        };
+
+        // Chamber Navigation
+        window.leapToChamber = function(idx) {
+            currentChamber = Math.max(0, Math.min(chamberWaypoints.length - 1, idx));
+            camTargetPos = chamberWaypoints[currentChamber].pos.clone();
+            camTargetLook = chamberWaypoints[currentChamber].look.clone();
+
+            // Update Overlays
+            document.querySelectorAll('.spatial-overlay-anchor').forEach((el, i) => {
+                el.classList.toggle('visible', i === currentChamber);
+            });
+
+            // Update Sector Dock
+            document.querySelectorAll('.sector-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === currentChamber);
+            });
+
+            // Update Progress Bar
+            const pct = Math.round((currentChamber / (chamberWaypoints.length - 1)) * 100);
+            document.getElementById('flight-fill').style.width = pct + '%';
+            document.getElementById('flight-pct').innerText = pct + '%';
+        };
+
+        window.stepChamber = function(delta) {
+            window.leapToChamber(currentChamber + delta);
+        };
+
+        // Scroll Wheel Navigation
+        let wheelTimeout;
+        window.addEventListener('wheel', (e) => {
+            if (wheelTimeout) return;
+            if (e.deltaY > 30) {
+                stepChamber(1);
+                wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 500);
+            } else if (e.deltaY < -30) {
+                stepChamber(-1);
+                wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 500);
+            }
+        }, { passive: true });
+
+        // Touch Swipe Navigation
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        window.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            if (touchStartY - touchEndY > 50) stepChamber(1);
+            if (touchEndY - touchStartY > 50) stepChamber(-1);
+        }, { passive: true });
+
+        // Mouse Parallax
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.0002;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.0002;
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Animation Loop
+        let clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            // Smooth Camera Easing
+            camera.position.lerp(camTargetPos, 0.05);
+            currentLook.lerp(camTargetLook, 0.05);
+            camera.lookAt(currentLook.x + mouseX * 20, currentLook.y - mouseY * 20, currentLook.z);
+
+            // Subtle particle drift
+            particles.rotation.y = time * 0.02;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
