@@ -6,11 +6,11 @@
 <title>Mo360 Immersive Studio · Plymouth</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--black:#0a0a0a;--gb:#C9A84C;--white:#f5f5f0;--grey:#888880;--dark:#141414;--border:rgba(201,168,76,0.15);}
+:root{--black:#0a0a0a;--gb:#D49345;--white:#f5f5f0;--grey:#888880;--dark:#141414;--border:rgba(212,147,69,0.15);}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(212,147,69,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(212,147,69,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;padding:1rem 2.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:200;}
@@ -50,7 +50,7 @@ nav{position:fixed;top:0;left:0;right:0;padding:1rem 2.5rem;display:flex;justify
 .studio-about-btn{display:inline-block;padding:.6rem 1.4rem;border:1px solid var(--border);background:transparent;color:var(--grey);font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
 .studio-about-btn:hover{border-color:var(--gb);color:var(--gb);}
 .studio-about-inner{display:flex;align-items:center;gap:2.5rem;text-align:left;}
-.studio-about-photo{flex-shrink:0;width:132px;height:132px;border-radius:50%;overflow:hidden;border:2px solid var(--gb);box-shadow:0 0 0 6px rgba(201,168,76,0.08);}
+.studio-about-photo{flex-shrink:0;width:132px;height:132px;border-radius:50%;overflow:hidden;border:2px solid var(--gb);box-shadow:0 0 0 6px rgba(212,147,69,0.08);}
 .studio-about-photo img{width:100%;height:100%;object-fit:cover;display:block;}
 .studio-about-inner .studio-about-text{margin:.4rem 0 1rem;}
 @media(max-width:640px){.studio-about-inner{flex-direction:column;text-align:center;gap:1.2rem;}.studio-about-photo{width:104px;height:104px;}}
@@ -82,7 +82,7 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,4vw,3.2rem);letter
 .dome-overlay{position:absolute;bottom:0;left:0;right:0;padding:.8rem 1rem;background:linear-gradient(transparent,rgba(0,0,0,.9));}
 .dome-tag{font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gb);margin-bottom:.2rem;}
 .dome-label{font-size:.62rem;color:var(--white);line-height:1.3;}
-.dome-badge{position:absolute;top:.7rem;right:.7rem;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;background:rgba(201,168,76,.9);color:var(--black);font-weight:700;}
+.dome-badge{position:absolute;top:.7rem;right:.7rem;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;background:rgba(212,147,69,.9);color:var(--black);font-weight:700;}
 
 /* 360 GALLERY */
 .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:200px;gap:.8rem;margin-top:2.5rem;}
@@ -115,7 +115,7 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,4vw,3.2rem);letter
 .svc{background:var(--dark);padding:2rem 1.8rem;position:relative;overflow:hidden;transition:background .3s;}
 .svc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gb);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
 .svc:hover{background:#181818;}.svc:hover::before{transform:scaleX(1);}
-.svc-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:rgba(201,168,76,.1);line-height:1;margin-bottom:.8rem;}
+.svc-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:rgba(212,147,69,.1);line-height:1;margin-bottom:.8rem;}
 .svc h3{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.04em;margin-bottom:.6rem;}
 .svc p{font-size:.63rem;line-height:1.8;color:var(--grey);}
 .svc-tag{display:inline-block;margin-top:.8rem;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .5rem;border:1px solid var(--border);color:var(--gb);}
@@ -150,7 +150,7 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,4vw,3.2rem);letter
 .process{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:3rem;border:1px solid var(--border);}
 .pstep{background:var(--dark);padding:2rem 1.5rem;position:relative;}
 .pstep:not(:last-child)::after{content:'→';position:absolute;right:-.6rem;top:50%;transform:translateY(-50%);color:var(--gb);font-size:.8rem;z-index:2;}
-.pnum{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:rgba(201,168,76,.1);line-height:1;margin-bottom:.7rem;}
+.pnum{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:rgba(212,147,69,.1);line-height:1;margin-bottom:.7rem;}
 .pstep h4{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;margin-bottom:.4rem;}
 .pstep p{font-size:.6rem;color:var(--grey);line-height:1.7;}
 
@@ -161,7 +161,7 @@ h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,4vw,3.2rem);letter
 .cred-ico{font-size:1.2rem;flex-shrink:0;margin-top:.1rem;}
 .cred-title{font-size:.68rem;color:var(--white);font-weight:500;margin-bottom:.2rem;line-height:1.4;}
 .cred-sub{font-size:.58rem;color:var(--grey);line-height:1.5;}
-.badge{display:inline-block;margin-top:.4rem;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .5rem;background:rgba(201,168,76,.1);color:var(--gb);border:1px solid rgba(201,168,76,.2);}
+.badge{display:inline-block;margin-top:.4rem;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .5rem;background:rgba(212,147,69,.1);color:var(--gb);border:1px solid rgba(212,147,69,.2);}
 
 /* CONTACT */
 .contact-wrap{background:var(--dark);border:1px solid var(--border);padding:4rem;margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
@@ -273,7 +273,7 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
 .vcard-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; filter: brightness(0.85); }
 .vcard:hover .vcard-thumb img { transform: scale(1.05); filter: brightness(1); }
 .vcard-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.vcard-play::before { content: ''; width: 36px; height: 36px; border-radius: 50%; background: rgba(201,168,76,0.2); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; }
+.vcard-play::before { content: ''; width: 36px; height: 36px; border-radius: 50%; background: rgba(212,147,69,0.2); border: 1px solid var(--gb); display: flex; align-items: center; justify-content: center; }
 .vcard-play { font-size: .7rem; color: var(--gb); opacity: 0; transition: opacity .3s; }
 .vcard:hover .vcard-play { opacity: 1; }
 .vcard-info { padding: .6rem 0; }
@@ -353,17 +353,11 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
 
 <nav>
   <a href="#" class="nav-logo">
-    <svg class="logo-mark" width="30" height="30" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="26" cy="26" r="23" stroke="#E89923" stroke-width="1.8" stroke-dasharray="128 14" stroke-dashoffset="10"/>
-      <circle cx="49" cy="26" r="2.5" fill="#E89923"/>
-      <circle cx="26" cy="26" r="16" stroke="#E89923" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="4 6"/>
-      <path d="M15 35V18L26 27L37 18V35" stroke="#E89923" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="26" cy="33" r="1.6" fill="#E89923"/>
-    </svg>
+    <img src="assets/mo360_mark.png" alt="Mo360 Logo" style="width:38px; height:38px; object-fit:contain; border-radius:50%; border:1px solid #D49345; box-shadow:0 0 12px rgba(212,147,69,0.4);">
     Mo360 Immersive Studio
   </a>
   <ul class="nav-links">
-    <li><a href="developer/" style="color:var(--gb);border:1px solid var(--border);padding:0.25rem 0.65rem;border-radius:14px;display:inline-flex;align-items:center;gap:5px;text-shadow:0 0 12px rgba(232,153,35,0.4);color:#E89923;border-color:rgba(232,153,35,0.3);">3D Web <span style="font-size:0.5rem;background:#E89923;color:#060709;padding:1px 4px;border-radius:4px;font-weight:bold;letter-spacing:0.05em;">NEW</span></a></li>
+    <li><a href="developer/" style="color:var(--gb);border:1px solid var(--border);padding:0.25rem 0.65rem;border-radius:14px;display:inline-flex;align-items:center;gap:5px;text-shadow:0 0 12px rgba(232,153,35,0.4);color:#D49345;border-color:rgba(232,153,35,0.3);">3D Web <span style="font-size:0.5rem;background:#D49345;color:#060709;padding:1px 4px;border-radius:4px;font-weight:bold;letter-spacing:0.05em;">NEW</span></a></li>
     <li><a href="#immersive">Immersive</a></li>
     <li><a href="#work360">360°</a></li>
     <li><a href="#photography">Photography</a></li>
@@ -398,7 +392,7 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
     <p class="hero-sub">Fulldome production. 360° worlds. Landscape photography. Motion &amp; design.
       <strong>Immersive media, creative direction and visual storytelling — built to move people.</strong></p>
     <div class="ctas">
-      <a href="developer/" class="btn-p" style="background:linear-gradient(135deg,var(--gb),#e8cc7a);color:#0a0a0a;box-shadow:0 0 20px rgba(201,168,76,0.35);">3D Web &amp; Brand ✦</a>
+      <a href="developer/" class="btn-p" style="background:linear-gradient(135deg,var(--gb),#e8cc7a);color:#0a0a0a;box-shadow:0 0 20px rgba(212,147,69,0.35);">3D Web &amp; Brand ✦</a>
       <a href="#design" class="btn-o">See the Work</a>
       <a href="#contact" class="btn-o">Let's Talk</a>
     </div>

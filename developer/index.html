@@ -14,8 +14,8 @@
   --bg-deep: #060709;
   --bg-surface: rgba(12, 14, 18, 0.78);
   --bg-card: rgba(18, 20, 26, 0.7);
-  --ochre: #E89923;
-  --ochre-glow: rgba(232, 153, 35, 0.45);
+  --ochre: #D49345;
+  --ochre-glow: rgba(212, 147, 69, 0.45);
   --ochre-light: #F5A834;
   --ochre-bright: #FFAF38;
   --cyan-accent: #38BDF8;
@@ -358,7 +358,7 @@ nav {
   transform: scale(1.25);
 }
 
-.palette-btn.ochre-btn { background: #E89923; }
+.palette-btn.ochre-btn { background: #D49345; }
 .palette-btn.sunlit-btn { background: #F59E0B; }
 .palette-btn.cyan-btn { background: #38BDF8; }
 
@@ -938,14 +938,7 @@ nav {
 <nav>
   <a href="https://mo360immersivestudio.co.uk/" class="brand-wrapper">
     <div class="logo-container">
-      <!-- VECTOR PERFECT, UNBROKEN MO360 EMBLEM WITH BRIGHT OCHRE PALETTE -->
-      <svg class="logo-mark" width="40" height="40" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Mo360 Logo">
-        <circle cx="26" cy="26" r="23" stroke="var(--ochre)" stroke-width="1.8" stroke-dasharray="128 14" stroke-dashoffset="10" opacity="0.9"/>
-        <circle cx="49" cy="26" r="2.5" fill="var(--ochre)"/>
-        <circle cx="26" cy="26" r="16" stroke="var(--ochre)" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="4 6"/>
-        <path d="M15 35V18L26 27L37 18V35" stroke="var(--ochre)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="26" cy="33" r="1.6" fill="var(--ochre)"/>
-      </svg>
+      <img src="assets/mo360_mark.png" alt="Mo360 Official Logo" style="width:44px; height:44px; object-fit:contain; border-radius:50%; border:1.5px solid var(--ochre); box-shadow:0 0 16px var(--ochre-glow);">
     </div>
     <div class="brand-title">
       <span class="brand-title-main">MO360 STUDIO</span>
@@ -1012,7 +1005,7 @@ nav {
   <div class="telemetry-item">
     <span class="telemetry-label">OCHRE SHADE</span>
     <div class="palette-swapper">
-      <button class="palette-btn ochre-btn" data-palette-set="default" title="Radiant Bright Ochre (#E89923)"></button>
+      <button class="palette-btn ochre-btn" data-palette-set="default" title="Radiant Bright Ochre (#D49345)"></button>
       <button class="palette-btn sunlit-btn" data-palette-set="sunlit" title="Sunlit Amber Ochre (#F59E0B)"></button>
       <button class="palette-btn cyan-btn" data-palette-set="electric" title="Electric Cyber Trace (#38BDF8)"></button>
     </div>
@@ -1276,8 +1269,8 @@ nav {
 let currentPalette = 'default';
 const palettes = {
   default: {
-    ochre: 0xE89923,
-    ochreHex: '#E89923',
+    ochre: 0xD49345,
+    ochreHex: '#D49345',
     ochreGlow: 'rgba(232, 153, 35, 0.45)',
     accent: 0x38BDF8,
     grid: 0x221a0e
