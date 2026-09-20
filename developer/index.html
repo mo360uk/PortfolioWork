@@ -1,1739 +1,1523 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mohamed Elwakil · 3D Experience Designer & Creative Director | Mo360</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;0,9..40,800;1,9..40,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-<style>
-:root {
-  --bg-deep: #060709;
-  --bg-surface: rgba(12, 14, 18, 0.78);
-  --bg-card: rgba(18, 20, 26, 0.7);
-  --ochre: #D49345;
-  --ochre-glow: rgba(212, 147, 69, 0.45);
-  --ochre-light: #F5A834;
-  --ochre-bright: #FFAF38;
-  --cyan-accent: #38BDF8;
-  --white: #F8FAFC;
-  --text-dim: #94A3B8;
-  --text-dark: #64748B;
-  --border-glass: rgba(232, 153, 35, 0.25);
-  --border-subtle: rgba(255, 255, 255, 0.09);
-  --font-display: 'Bebas Neue', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'Space Mono', monospace;
-}
-
-[data-palette="sunlit"] {
-  --ochre: #F59E0B;
-  --ochre-glow: rgba(245, 158, 11, 0.45);
-  --ochre-light: #FBBF24;
-  --ochre-bright: #FDE68A;
-}
-
-[data-palette="electric"] {
-  --ochre: #38BDF8;
-  --ochre-glow: rgba(56, 189, 248, 0.45);
-  --ochre-light: #7DD3FC;
-  --ochre-bright: #BAE6FD;
-  --cyan-accent: #F59E0B;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  width: 100%;
-  min-height: 100%;
-  background-color: var(--bg-deep);
-}
-
-body {
-  width: 100%;
-  min-height: 6000px;
-  background-color: var(--bg-deep);
-  color: var(--white);
-  font-family: var(--font-body);
-  overflow-x: hidden;
-  scrollbar-width: none;
-}
-body::-webkit-scrollbar { display: none; }
-
-/* 3D WEBGL CANVAS BACKGROUND */
-#webgl-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  pointer-events: auto;
-}
-
-/* NOISE FILM & VIGNETTE */
-.vignette-overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 40%, rgba(6, 7, 9, 0.85) 100%),
-              linear-gradient(to bottom, rgba(6, 7, 9, 0.6) 0%, transparent 20%, transparent 75%, rgba(6, 7, 9, 0.9) 100%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* TOP NAVIGATION */
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 76px;
-  padding: 0 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(6, 7, 9, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-glass);
-  z-index: 100;
-  transition: border-color 0.3s ease;
-}
-
-.brand-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  text-decoration: none;
-  color: var(--white);
-}
-
-.logo-container {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.brand-title {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-title-main {
-  font-family: var(--font-display);
-  font-size: 1.65rem;
-  letter-spacing: 0.08em;
-  color: var(--ochre);
-  line-height: 1;
-  text-shadow: 0 0 16px var(--ochre-glow);
-}
-
-.brand-title-sub {
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  color: var(--text-dim);
-  text-transform: uppercase;
-}
-
-.nav-stations {
-  display: flex;
-  align-items: center;
-  gap: 1.8rem;
-  list-style: none;
-}
-
-.nav-stations a {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  text-decoration: none;
-  transition: all 0.25s ease;
-  position: relative;
-  padding: 0.3rem 0;
-}
-
-.nav-stations a:hover,
-.nav-stations a.active {
-  color: var(--ochre);
-  text-shadow: 0 0 10px var(--ochre-glow);
-}
-
-.nav-stations a.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--ochre);
-  box-shadow: 0 0 8px var(--ochre);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.sound-toggle-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-glass);
-  color: var(--ochre);
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  padding: 0.45rem 0.85rem;
-  border-radius: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.25s ease;
-}
-
-.sound-toggle-btn:hover {
-  background: rgba(232, 153, 35, 0.15);
-  box-shadow: 0 0 14px var(--ochre-glow);
-}
-
-.sound-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ochre);
-  box-shadow: 0 0 6px var(--ochre);
-}
-
-.sound-indicator.active {
-  animation: pulseDot 1.4s infinite alternate;
-}
-
-@keyframes pulseDot {
-  from { opacity: 0.4; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1.3); }
-}
-
-.cta-contact-btn {
-  background: var(--ochre);
-  color: #060709;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.55rem 1.2rem;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 20px var(--ochre-glow);
-}
-
-.cta-contact-btn:hover {
-  background: var(--ochre-bright);
-  transform: translateY(-1px);
-  box-shadow: 0 0 28px var(--ochre);
-}
-
-/* SIDE TELEPORT RAIL */
-.teleport-rail {
-  position: fixed;
-  right: 2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.teleport-node {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  cursor: pointer;
-  flex-direction: row-reverse;
-}
-
-.teleport-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid var(--text-dark);
-  background: transparent;
-  transition: all 0.3s ease;
-}
-
-.teleport-label {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--text-dark);
-  opacity: 0;
-  transform: translateX(10px);
-  transition: all 0.3s ease;
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.teleport-node:hover .teleport-dot,
-.teleport-node.active .teleport-dot {
-  border-color: var(--ochre);
-  background: var(--ochre);
-  box-shadow: 0 0 10px var(--ochre);
-  transform: scale(1.35);
-}
-
-.teleport-node:hover .teleport-label,
-.teleport-node.active .teleport-label {
-  opacity: 1;
-  color: var(--ochre);
-  transform: translateX(0);
-}
-
-/* BOTTOM TELEMETRY HUD */
-.telemetry-hud {
-  position: fixed;
-  bottom: 1.8rem;
-  left: 2.5rem;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  background: rgba(12, 14, 18, 0.85);
-  backdrop-filter: blur(14px);
-  padding: 0.6rem 1.4rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-glass);
-}
-
-.telemetry-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.telemetry-label {
-  font-family: var(--font-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: var(--text-dark);
-  text-transform: uppercase;
-}
-
-.telemetry-val {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--ochre);
-  letter-spacing: 0.05em;
-}
-
-.palette-swapper {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.palette-btn {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.palette-btn:hover {
-  transform: scale(1.25);
-}
-
-.palette-btn.ochre-btn { background: #D49345; }
-.palette-btn.sunlit-btn { background: #F59E0B; }
-.palette-btn.cyan-btn { background: #38BDF8; }
-
-/* SPATIAL STATIONS OVERLAY SYSTEM */
-.scroll-track {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 6000px;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.spatial-station {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6rem 3rem 4rem;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateZ(-150px) scale(0.94);
-  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-  z-index: 10;
-}
-
-.spatial-station.current-station {
-  opacity: 1;
-  transform: translateZ(0) scale(1);
-  pointer-events: auto;
-}
-
-.spatial-station * {
-  pointer-events: auto;
-}
-
-/* STATION 0: HERO */
-.hero-content {
-  max-width: 1120px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.2rem;
-  background: rgba(12, 14, 18, 0.45);
-  backdrop-filter: blur(8px);
-  padding: 2.5rem;
-  border-radius: 16px;
-  border: 1px solid rgba(232, 153, 35, 0.15);
-}
-
-.badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.35rem 0.9rem;
-  background: rgba(232, 153, 35, 0.12);
-  border: 1px solid var(--border-glass);
-  border-radius: 30px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-  color: var(--ochre);
-  text-transform: uppercase;
-}
-
-.hero-heading {
-  font-family: var(--font-display);
-  font-size: clamp(3.2rem, 7vw, 6.2rem);
-  line-height: 0.92;
-  letter-spacing: 0.04em;
-  color: var(--white);
-  text-transform: uppercase;
-}
-
-.hero-heading span.ochre-text {
-  color: var(--ochre);
-  text-shadow: 0 0 35px var(--ochre-glow);
-}
-
-.hero-description {
-  max-width: 720px;
-  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
-  line-height: 1.65;
-  color: var(--text-dim);
-  font-weight: 300;
-}
-
-.hero-description strong {
-  color: var(--white);
-  font-weight: 500;
-}
-
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.4rem;
-  margin-top: 0.8rem;
-  flex-wrap: wrap;
-}
-
-.btn-primary-fly {
-  background: var(--ochre);
-  color: #060709;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  padding: 0.95rem 2.2rem;
-  border-radius: 6px;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 0 24px var(--ochre-glow);
-  transition: all 0.25s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-primary-fly:hover {
-  background: var(--ochre-bright);
-  transform: translateY(-2px);
-  box-shadow: 0 0 36px var(--ochre);
-}
-
-.btn-secondary-ghost {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--white);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  padding: 0.95rem 1.8rem;
-  border-radius: 6px;
-  text-decoration: none;
-  border: 1px solid var(--border-glass);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.btn-secondary-ghost:hover {
-  background: rgba(232, 153, 35, 0.1);
-  border-color: var(--ochre);
-  color: var(--ochre);
-}
-
-.scroll-indicator-prompt {
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.22em;
-  color: var(--ochre);
-  text-transform: uppercase;
-  animation: floatDown 2s infinite ease-in-out;
-}
-
-@keyframes floatDown {
-  0%, 100% { transform: translateY(0); opacity: 0.6; }
-  50% { transform: translateY(6px); opacity: 1; }
-}
-
-/* STATION 1: CREATIVE DIRECTION & SPATIAL BRANDING */
-.station-grid-2col {
-  max-width: 1200px;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3.5rem;
-  align-items: center;
-}
-
-.station-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(24px);
-  border: 1px solid var(--border-glass);
-  border-radius: 14px;
-  padding: 2.6rem;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-}
-
-.section-tag {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--ochre);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 0.8rem;
-  display: block;
-}
-
-.section-title {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  line-height: 0.95;
-  letter-spacing: 0.04em;
-  margin-bottom: 1.2rem;
-  text-transform: uppercase;
-}
-
-.pillars-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  margin-top: 1.5rem;
-}
-
-.pillar-item {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  padding: 0.9rem 1.1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  transition: border-color 0.25s ease;
-}
-
-.pillar-item:hover {
-  border-color: var(--border-glass);
-}
-
-.pillar-num {
-  font-family: var(--font-mono);
-  color: var(--ochre);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.pillar-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--white);
-  margin-bottom: 0.2rem;
-}
-
-.pillar-desc {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
-
-/* STATION 2: 3D WEBGL SHADER LAB (NO ROTATING SPHERES) */
-.lab-container {
-  max-width: 1200px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-}
-
-.lab-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 1px solid var(--border-glass);
-  padding-bottom: 1.2rem;
-}
-
-.lab-card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.8rem;
-}
-
-.lab-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  padding: 1.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.lab-card:hover {
-  border-color: var(--ochre);
-  box-shadow: 0 10px 30px rgba(232, 153, 35, 0.15);
-  transform: translateY(-4px);
-}
-
-.lab-card-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  background: rgba(232, 153, 35, 0.12);
-  border: 1px solid var(--border-glass);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ochre);
-}
-
-.lab-card-title {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  letter-spacing: 0.05em;
-  color: var(--white);
-}
-
-.lab-card-desc {
-  font-size: 0.85rem;
-  line-height: 1.55;
-  color: var(--text-dim);
-}
-
-.lab-interactive-bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-glass);
-  padding: 1rem 1.6rem;
-  border-radius: 10px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.control-group {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.control-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  color: var(--text-dim);
-  text-transform: uppercase;
-}
-
-.control-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  color: var(--white);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.control-btn.active, .control-btn:hover {
-  background: var(--ochre);
-  color: #060709;
-  border-color: var(--ochre);
-  font-weight: 700;
-}
-
-/* STATION 3: SPATIAL CASE STUDIES */
-.works-container {
-  max-width: 1280px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.works-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-}
-
-.work-card {
-  background: var(--bg-surface);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 2.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  position: relative;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-.work-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--ochre);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.work-card:hover {
-  border-color: var(--border-glass);
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6);
-  transform: translateY(-5px);
-}
-
-.work-card:hover::before {
-  opacity: 1;
-}
-
-.work-category {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--ochre);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.work-title {
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  color: var(--white);
-}
-
-.work-details {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--text-dim);
-}
-
-.work-tags {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-top: auto;
-}
-
-.work-tag {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  padding: 0.3rem 0.65rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  border-radius: 4px;
-  color: var(--text-dim);
-}
-
-/* STATION 4: DIRECT TRANSMISSION / COMMISSIONS */
-.terminal-container {
-  max-width: 900px;
-  width: 100%;
-  background: var(--bg-surface);
-  backdrop-filter: blur(28px);
-  border: 1px solid var(--border-glass);
-  border-radius: 14px;
-  padding: 3rem;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-}
-
-.terminal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border-glass);
-  padding-bottom: 1.2rem;
-}
-
-.terminal-title {
-  font-family: var(--font-display);
-  font-size: 2.8rem;
-  line-height: 1;
-  color: var(--white);
-  letter-spacing: 0.04em;
-}
-
-.terminal-contacts {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-top: 0.5rem;
-}
-
-.contact-box {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-decoration: none;
-  color: var(--white);
-  transition: all 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.contact-box:hover {
-  border-color: var(--ochre);
-  background: rgba(232, 153, 35, 0.06);
-  box-shadow: 0 0 20px var(--ochre-glow);
-  transform: translateY(-2px);
-}
-
-.contact-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--ochre);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.contact-val {
-  font-size: 1.05rem;
-  font-weight: 600;
-  word-break: break-all;
-}
-
-.terminal-footer-links {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--border-glass);
-  padding-top: 1.2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.btn-rewind {
-  background: transparent;
-  border: 1px solid var(--border-glass);
-  color: var(--ochre);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.6rem 1.4rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-rewind:hover {
-  background: var(--ochre);
-  color: #060709;
-  font-weight: 700;
-}
-
-/* RESPONSIVENESS */
-@media (max-width: 960px) {
-  nav { padding: 0 1.2rem; }
-  .nav-stations { display: none; }
-  .station-grid-2col { grid-template-columns: 1fr; gap: 2rem; }
-  .lab-card-grid { grid-template-columns: 1fr; }
-  .works-grid { grid-template-columns: 1fr; }
-  .terminal-contacts { grid-template-columns: 1fr; }
-  .telemetry-hud { left: 1.2rem; bottom: 1.2rem; gap: 1rem; padding: 0.5rem 1rem; }
-  .teleport-rail { right: 1rem; }
-  .hero-heading { font-size: 3.5rem; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MO360 IMMERSIVE STUDIO // 3D Architectural Computing</title>
+    <meta name="description" content="True 3D Spatial Computing & Real-time Architectural Worlds by Mohamed Omar. Traverse spatial chambers, digital twins, and custom WebGL shaders.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons & Three.js via CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --bg-void: #060709;
+            --bg-dark-1: #0e1014;
+            --bg-dark-2: #16181f;
+            --bg-dark-3: #222631;
+            --bg-dark-4: #2e3442;
+            --ochre: #d49345;
+            --ochre-bright: #f0a952;
+            --ochre-glow: rgba(212, 147, 69, 0.4);
+            --ochre-subtle: rgba(212, 147, 69, 0.12);
+            --text-main: #f0f3f8;
+            --text-muted: #9ba4b5;
+            --text-dim: #606877;
+            --border-dark: rgba(255, 255, 255, 0.08);
+            --border-ochre: rgba(212, 147, 69, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            touch-action: none;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            outline: none;
+        }
+
+        /* HUD & OVERLAYS */
+        .hud-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* HEADER */
+        header.hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2.25rem;
+            background: linear-gradient(180deg, rgba(6, 7, 9, 0.88) 0%, rgba(6, 7, 9, 0) 100%);
+            backdrop-filter: blur(8px);
+            pointer-events: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 1.15rem;
+            text-decoration: none;
+        }
+
+        .brand-logo-img {
+            height: 42px;
+            width: auto;
+            filter: drop-shadow(0 0 12px rgba(212, 147, 69, 0.45));
+            object-fit: contain;
+        }
+
+        .brand-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-meta .title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .brand-meta .sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ochre);
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .telemetry-cluster {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+
+        .telemetry-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .telemetry-item .label {
+            color: var(--text-dim);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+        }
+
+        .telemetry-item .value {
+            color: var(--ochre);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-nav-return {
+            padding: 0.55rem 1.15rem;
+            background: rgba(22, 24, 31, 0.75);
+            border: 1px solid var(--border-dark);
+            border-radius: 999px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-return:hover {
+            border-color: var(--ochre);
+            color: var(--ochre);
+            background: rgba(212, 147, 69, 0.08);
+            box-shadow: 0 0 16px rgba(212, 147, 69, 0.25);
+        }
+
+        /* SPATIAL RADIAL NAVIGATION (SECTORS) */
+        .sector-dock {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            z-index: 25;
+            pointer-events: auto;
+        }
+
+        .sector-btn {
+            position: relative;
+            background: rgba(22, 24, 31, 0.85);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 0.6rem 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            color: var(--text-muted);
+            text-align: left;
+            backdrop-filter: blur(10px);
+            min-width: 145px;
+            justify-content: space-between;
+        }
+
+        .sector-btn:hover {
+            border-color: var(--ochre);
+            color: var(--text-main);
+            background: rgba(34, 38, 49, 0.95);
+            transform: translateX(-4px);
+        }
+
+        .sector-btn.active {
+            border-color: var(--ochre);
+            background: rgba(212, 147, 69, 0.18);
+            color: var(--text-main);
+            box-shadow: 0 0 20px rgba(212, 147, 69, 0.28);
+            transform: translateX(-8px);
+        }
+
+        .sector-btn .sector-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .sector-btn .sector-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ochre);
+        }
+
+        .sector-btn .sector-title {
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .sector-btn .sector-indicator {
+            width: 4px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .sector-btn.active .sector-indicator {
+            background: var(--ochre);
+            height: 22px;
+            box-shadow: 0 0 8px var(--ochre);
+        }
+
+        /* 3D FLOATING SPATIAL HUD CARDS */
+        .spatial-overlay-anchor {
+            position: absolute;
+            pointer-events: auto;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 15;
+            max-width: 580px;
+            width: 90vw;
+        }
+
+        .spatial-overlay-anchor.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .chamber-card {
+            background: linear-gradient(135deg, rgba(22, 24, 31, 0.94) 0%, rgba(14, 16, 20, 0.96) 100%);
+            border: 1px solid var(--border-dark);
+            border-top: 1px solid rgba(212, 147, 69, 0.55);
+            border-radius: 14px;
+            padding: 2.2rem 2.4rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 147, 69, 0.12);
+            backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chamber-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 65px;
+            height: 2px;
+            background: var(--ochre);
+            box-shadow: 0 0 12px var(--ochre);
+        }
+
+        .chamber-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(212, 147, 69, 0.1);
+            border: 1px solid var(--border-ochre);
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ochre);
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-bottom: 1.25rem;
+        }
+
+        .chamber-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.05rem;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .chamber-title span {
+            color: var(--ochre);
+            display: block;
+        }
+
+        .chamber-desc {
+            font-size: 0.96rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+        }
+
+        .chamber-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .chamber-stat-box {
+            background: rgba(34, 38, 49, 0.5);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 0.9rem;
+            border-left: 2px solid var(--ochre);
+        }
+
+        .chamber-stat-box .k {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.25rem;
+        }
+
+        .chamber-stat-box .v {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .chamber-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-3d {
+            padding: 0.85rem 1.6rem;
+            background: linear-gradient(135deg, var(--ochre) 0%, #b87b32 100%);
+            color: #060709;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(212, 147, 69, 0.35);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary-3d:hover {
+            background: linear-gradient(135deg, #e5a454 0%, var(--ochre) 100%);
+            box-shadow: 0 6px 28px rgba(212, 147, 69, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-3d {
+            padding: 0.85rem 1.4rem;
+            background: rgba(34, 38, 49, 0.7);
+            border: 1px solid var(--border-dark);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-secondary-3d:hover {
+            border-color: var(--ochre);
+            color: var(--ochre);
+            background: rgba(212, 147, 69, 0.08);
+        }
+
+        /* PROJECT TILES IN CHAMBER 4 */
+        .project-carousel-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-tile {
+            background: rgba(34, 38, 49, 0.55);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 0.9rem;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .project-tile:hover {
+            border-color: var(--ochre);
+            background: rgba(46, 52, 66, 0.75);
+            transform: translateY(-2px);
+        }
+
+        .project-tile .p-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--ochre);
+            margin-bottom: 0.25rem;
+        }
+
+        .project-tile .p-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+
+        .project-tile .p-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+
+        /* CONTROLS CLUSTER BOTTOM */
+        .hud-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 1.5rem 2.25rem;
+            background: linear-gradient(0deg, rgba(6, 7, 9, 0.9) 0%, rgba(6, 7, 9, 0) 100%);
+            pointer-events: auto;
+        }
+
+        .traverse-hint {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .mouse-icon-pulse {
+            width: 22px;
+            height: 34px;
+            border: 2px solid var(--ochre);
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 0 10px rgba(212, 147, 69, 0.3);
+        }
+
+        .mouse-icon-pulse::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 6px;
+            background: var(--ochre);
+            border-radius: 2px;
+            animation: scrollWheel 1.5s infinite;
+        }
+
+        @keyframes scrollWheel {
+            0% { top: 6px; opacity: 1; }
+            100% { top: 18px; opacity: 0; }
+        }
+
+        .flight-progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            width: 380px;
+        }
+
+        .flight-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flight-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--ochre) 0%, #ffc078 100%);
+            box-shadow: 0 0 12px var(--ochre);
+            transition: width 0.1s linear;
+        }
+
+        .flight-percentage {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--ochre);
+            min-width: 45px;
+        }
+
+        /* SHADER CONTROLS (Chamber 3) */
+        .shader-controls-box {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1.25rem;
+        }
+
+        .shader-btn {
+            padding: 0.6rem 1rem;
+            background: rgba(34, 38, 49, 0.85);
+            border: 1px solid var(--border-dark);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shader-btn:hover {
+            border-color: var(--ochre);
+            color: var(--ochre);
+        }
+
+        .shader-btn.active {
+            border-color: var(--ochre);
+            background: rgba(212, 147, 69, 0.22);
+            color: var(--ochre);
+            box-shadow: 0 0 12px rgba(212, 147, 69, 0.25);
+        }
+
+        /* PROJECT MODAL DIALOG */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(6, 7, 9, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .project-modal.active {
+            display: flex;
+        }
+
+        .modal-body {
+            background: #16181f;
+            border: 1px solid var(--ochre);
+            border-radius: 14px;
+            padding: 2.5rem;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(212, 147, 69, 0.2);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .modal-close:hover {
+            color: var(--ochre);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sector-dock { display: none; }
+            .telemetry-cluster { display: none; }
+            .chamber-card { padding: 1.5rem; }
+            .chamber-title { font-size: 1.6rem; }
+            .flight-progress-container { width: 180px; }
+            .project-carousel-strip { grid-template-columns: 1fr; }
+            .spatial-overlay-anchor { left: 50% !important; }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- 3D WEBGL ENGINE CANVAS -->
-<canvas id="webgl-canvas"></canvas>
-<div class="vignette-overlay"></div>
+    <!-- WebGL Rendering Canvas -->
+    <canvas id="webgl-canvas"></canvas>
 
-<!-- HEADER / NAVIGATION -->
-<nav>
-  <a href="https://mo360immersivestudio.co.uk/" class="brand-wrapper">
-    <div class="logo-container">
-      <img src="assets/mo360_mark.png" alt="Mo360 Official Logo" style="width:44px; height:44px; object-fit:contain; border-radius:50%; border:1.5px solid var(--ochre); box-shadow:0 0 16px var(--ochre-glow);">
-    </div>
-    <div class="brand-title">
-      <span class="brand-title-main">MO360 STUDIO</span>
-      <span class="brand-title-sub">IMMERSIVE EXPERIENCES</span>
-    </div>
-  </a>
+    <!-- 2D Projected Spatial Overlay Anchors (Bound to 3D Space) -->
+    <div id="spatial-overlays">
 
-  <!-- TELEPORT NAVIGATION STATIONS -->
-  <ul class="nav-stations">
-    <li><a href="#station-hero" data-target-station="0" class="active">00 // Chamber</a></li>
-    <li><a href="#station-brand" data-target-station="1">01 // Direction</a></li>
-    <li><a href="#station-lab" data-target-station="2">02 // 3D Lab</a></li>
-    <li><a href="#station-works" data-target-station="3">03 // Case Studies</a></li>
-    <li><a href="#station-contact" data-target-station="4">04 // Terminal</a></li>
-  </ul>
-
-  <div class="nav-actions">
-    <button class="sound-toggle-btn" id="soundToggle" title="Toggle Generative Spatial Sound">
-      <span class="sound-indicator" id="soundDot"></span>
-      <span id="soundText">SOUND: OFF</span>
-    </button>
-    <a href="#station-contact" data-target-station="4" class="cta-contact-btn">COMMISSION ✦</a>
-  </div>
-</nav>
-
-<!-- SIDE QUICK-TELEPORT RAIL -->
-<div class="teleport-rail">
-  <div class="teleport-node active" data-station="0" title="Hero Chamber">
-    <div class="teleport-dot"></div>
-    <span class="teleport-label">00 // HERO CHAMBER</span>
-  </div>
-  <div class="teleport-node" data-station="1" title="Spatial Direction">
-    <div class="teleport-dot"></div>
-    <span class="teleport-label">01 // SPATIAL DIRECTION</span>
-  </div>
-  <div class="teleport-node" data-station="2" title="3D WebGL Lab">
-    <div class="teleport-dot"></div>
-    <span class="teleport-label">02 // SHADER &amp; WEBGL LAB</span>
-  </div>
-  <div class="teleport-node" data-station="3" title="Case Studies">
-    <div class="teleport-dot"></div>
-    <span class="teleport-label">03 // CASE STUDIES</span>
-  </div>
-  <div class="teleport-node" data-station="4" title="Commission Terminal">
-    <div class="teleport-dot"></div>
-    <span class="teleport-label">04 // TRANSMISSION</span>
-  </div>
-</div>
-
-<!-- TELEMETRY & PALETTE HUD -->
-<div class="telemetry-hud">
-  <div class="telemetry-item">
-    <span class="telemetry-label">SPATIAL DEPTH</span>
-    <span class="telemetry-val" id="hudDepth">0,000m</span>
-  </div>
-  <div class="telemetry-item">
-    <span class="telemetry-label">STATION</span>
-    <span class="telemetry-val" id="hudStation">00 // HERO</span>
-  </div>
-  <div class="telemetry-item">
-    <span class="telemetry-label">FRAME RATE</span>
-    <span class="telemetry-val" id="hudFps">144 FPS</span>
-  </div>
-  <div class="telemetry-item">
-    <span class="telemetry-label">OCHRE SHADE</span>
-    <div class="palette-swapper">
-      <button class="palette-btn ochre-btn" data-palette-set="default" title="Radiant Bright Ochre (#D49345)"></button>
-      <button class="palette-btn sunlit-btn" data-palette-set="sunlit" title="Sunlit Amber Ochre (#F59E0B)"></button>
-      <button class="palette-btn cyan-btn" data-palette-set="electric" title="Electric Cyber Trace (#38BDF8)"></button>
-    </div>
-  </div>
-</div>
-
-<!-- SCROLL CONTAINER TO DRIVE 3D CAMERA TRAVEL -->
-<div class="scroll-track" id="scrollTrack"></div>
-
-<!-- SPATIAL STATIONS OVERLAY (Z-INDEX: 10) -->
-
-<!-- 00 // HERO -->
-<div class="spatial-station current-station" id="station-0">
-  <div class="hero-content">
-    <div class="badge-pill">
-      <span style="width:8px; height:8px; border-radius:50%; background:var(--ochre); box-shadow:0 0 8px var(--ochre);"></span>
-      CREATIVE TECHNOLOGIST &amp; SPATIAL ARTIST · PLYMOUTH, UK
-    </div>
-    <h1 class="hero-heading">
-      ARCHITECTING <span class="ochre-text">3D WORLDS</span><br>
-      &amp; IMMERSIVE BRAND SPACES.
-    </h1>
-    <p class="hero-description">
-      I engineer real-time <strong>WebGL spatial web environments</strong>, digital twins, and cinematic 3D digital brand identities. Merging computational front-end precision with luxury spatial storytelling.
-    </p>
-    <div class="hero-actions">
-      <button class="btn-primary-fly" id="startFlyBtn">
-        ENTER 3D CORRIDOR
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <button class="btn-secondary-ghost" onclick="teleportToStation(2)">
-        EXPLORE 3D LAB ✦
-      </button>
-    </div>
-    <div class="scroll-indicator-prompt">
-      <span>↓ SCROLL WHEEL TO ZOOM THROUGH 3D SPACE ↓</span>
-    </div>
-  </div>
-</div>
-
-<!-- 01 // CREATIVE DIRECTION & SPATIAL BRANDING -->
-<div class="spatial-station" id="station-1">
-  <div class="station-grid-2col">
-    <div class="station-panel">
-      <span class="section-tag">01 // PHILOSOPHY &amp; METHODOLOGY</span>
-      <h2 class="section-title">FROM BLUEPRINT<br>TO <span style="color:var(--ochre);">METAVERSE</span>.</h2>
-      <p style="color:var(--text-dim); line-height:1.7; font-size:0.95rem;">
-        Flat websites fail to communicate volume, prestige, and tangible atmosphere. As an <strong>Immersive Branding Experience Consultant &amp; Creative Director</strong>, I transform corporate architectures into explorable interactive universes that drive deep emotional engagement.
-      </p>
-      <div class="pillars-list">
-        <div class="pillar-item">
-          <span class="pillar-num">01</span>
-          <div>
-            <h4 class="pillar-title">Spatial Architecture &amp; Digital Twins</h4>
-            <p class="pillar-desc">Turning CAD, drone point clouds, and LiDAR reality capture into lightweight, 60+ FPS interactive WebGL twins.</p>
-          </div>
+        <!-- CHAMBER 0: ARRIVAL THRESHOLD -->
+        <div id="overlay-0" class="spatial-overlay-anchor visible" style="top: 50%; left: 32%;">
+            <div class="chamber-card">
+                <div class="chamber-badge">
+                    <i data-lucide="compass" style="width:14px;height:14px"></i>
+                    Chamber 01 // Spatial Threshold
+                </div>
+                <h1 class="chamber-title">
+                    ARCHITECTURAL COMPUTING
+                    <span>& IMMERSIVE WORLDS</span>
+                </h1>
+                <p class="chamber-desc">
+                    Welcome to the spatial dimension of MO360 Immersive Studio. Here, code meets form. We construct real-time 3D environments, digital twins, and browser-native GPU architectures designed for high-performance spatial exploration.
+                </p>
+                <div class="chamber-grid">
+                    <div class="chamber-stat-box">
+                        <div class="k">Engine</div>
+                        <div class="v">WebGL / Three.js</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Coordinate Space</div>
+                        <div class="v">3D Spline Flight</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Performance</div>
+                        <div class="v">60 FPS Native</div>
+                    </div>
+                </div>
+                <div class="chamber-actions">
+                    <button class="btn-primary-3d" onclick="window.leapToChamber(1)">
+                        <span>Enter Chamber 02</span>
+                        <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+                    </button>
+                    <a href="../index.html" class="btn-secondary-3d">
+                        <i data-lucide="layout-grid" style="width:15px;height:15px"></i>
+                        <span>Main Portfolio</span>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="pillar-item">
-          <span class="pillar-num">02</span>
-          <div>
-            <h4 class="pillar-title">Real-Time Atmospheric Shaders</h4>
-            <p class="pillar-desc">Zero video files. Pure mathematical GLSL shaders delivering volumetric god rays, fog, and light reflection.</p>
-          </div>
+
+        <!-- CHAMBER 1: CREATIVE DIRECTION & SPATIAL BRANDING -->
+        <div id="overlay-1" class="spatial-overlay-anchor" style="top: 50%; left: 32%;">
+            <div class="chamber-card">
+                <div class="chamber-badge">
+                    <i data-lucide="box" style="width:14px;height:14px"></i>
+                    Chamber 02 // Spatial Direction & BIM
+                </div>
+                <h2 class="chamber-title">
+                    ARCHITECTURAL DNA
+                    <span>BRIDGING REALITY & CODE</span>
+                </h2>
+                <p class="chamber-desc">
+                    Trained in architecture and computation, Mohamed Omar directs immersive installations, interactive brand pavilions, and physical-to-digital spatial twins. We design spatial systems where form follows computational experience.
+                </p>
+                <div class="chamber-grid">
+                    <div class="chamber-stat-box">
+                        <div class="k">Spatial Twins</div>
+                        <div class="v">BIM & Unreal 5</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Interactive</div>
+                        <div class="v">TouchDesigner & WebGL</div>
+                    </div>
+                    <div class="chamber-stat-box">
+                        <div class="k">Geometry</div>
+                        <div class="v">Parametric & Polyhedral</div>
+                    </div>
+                </div>
+                <div class="chamber-actions">
+                    <button class="btn-primary-3d" onclick="window.leapToChamber(2)">
+                        <span>Explore Shader Lab</span>
+                        <i data-lucide="cpu" style="width:16px;height:16px"></i>
+                    </button>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(0)">
+                        <i data-lucide="arrow-left" style="width:15px;height:15px"></i>
+                        <span>Back</span>
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <!-- CHAMBER 2: SHADER & GEOMETRY NEXUS (Placed on left, so 3D rotating core is on the right) -->
+        <div id="overlay-2" class="spatial-overlay-anchor" style="top: 50%; left: 32%;">
+            <div class="chamber-card">
+                <div class="chamber-badge">
+                    <i data-lucide="cpu" style="width:14px;height:14px"></i>
+                    Chamber 03 // Real-time Shader Core
+                </div>
+                <h2 class="chamber-title">
+                    PROCEDURAL GEOMETRY
+                    <span>& REAL-TIME SHADERS</span>
+                </h2>
+                <p class="chamber-desc">
+                    Observe the dynamic sacred polyhedral core hovering in physical 3D space to the right. No pre-baked video textures—everything is computed in real time on your GPU with custom lighting shaders and parametric node oscillations.
+                </p>
+                <div class="shader-controls-box">
+                    <button class="shader-btn active" id="btn-geom-prism" onclick="window.setCoreShape('prism')">Octahedral Prism</button>
+                    <button class="shader-btn" id="btn-geom-torus" onclick="window.setCoreShape('torus')">Lattice Torus</button>
+                    <button class="shader-btn" id="btn-geom-pylon" onclick="window.setCoreShape('pylon')">Hyper Pylon</button>
+                </div>
+                <div class="chamber-actions" style="margin-top: 1.75rem;">
+                    <button class="btn-primary-3d" onclick="window.leapToChamber(3)">
+                        <span>View Project Gallery</span>
+                        <i data-lucide="layers" style="width:16px;height:16px"></i>
+                    </button>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(1)">
+                        <i data-lucide="arrow-left" style="width:15px;height:15px"></i>
+                        <span>Back</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAMBER 3: CASE STUDIES & SPATIAL INSTALLATIONS -->
+        <div id="overlay-3" class="spatial-overlay-anchor" style="top: 50%; left: 50%;">
+            <div class="chamber-card" style="max-width: 680px;">
+                <div class="chamber-badge">
+                    <i data-lucide="layers" style="width:14px;height:14px"></i>
+                    Chamber 04 // Spatial Case Studies
+                </div>
+                <h2 class="chamber-title" style="font-size: 1.85rem;">
+                    ENGINEERED EXPERIENCES
+                    <span>ACROSS PHYSICAL & VIRTUAL</span>
+                </h2>
+                
+                <div class="project-carousel-strip">
+                    <div class="project-tile" onclick="window.openProjectModal('Red Sea Coastal Digital Twin', 'Geospatial Twin // 2024', 'High-precision hydrological simulation and GIS terrain engine designed for coastal resilience, climate telemetry, and real-time sensor ingestion running at 60 FPS in WebGL.', 'CesiumJS, Unreal Engine 5, Custom GLSL Shaders')">
+                        <div class="p-tag">GEOSPATIAL TWIN // 2024</div>
+                        <div class="p-title">Red Sea Coastal Twin</div>
+                        <div class="p-desc">High-precision hydrological simulation & GIS terrain engine running at 60FPS.</div>
+                    </div>
+                    <div class="project-tile" onclick="window.openProjectModal('Patriots Mega-Arena', 'Spatial Computing // 2024', 'Digital twin for venue operations, dynamic crowd flow routing, and acoustic ray-tracing visualization for high-capacity stadium architecture.', 'BIM Revit, WebGL, WebSocket Telemetry')">
+                        <div class="p-tag">SPATIAL COMPUTING // 2024</div>
+                        <div class="p-title">Patriots Mega-Arena</div>
+                        <div class="p-desc">Real-time dynamic crowd simulation & acoustic ray-tracing visualization.</div>
+                    </div>
+                    <div class="project-tile" onclick="window.openProjectModal('BMW Ocean Pavilion', 'Brand Pavilion // 2023', 'Generative parametric facade with real-time biometric attendee interaction, responsive LED choreography, and interactive spatial soundscapes.', 'TouchDesigner, Parametric Rhino, WebGL')">
+                        <div class="p-tag">BRAND PAVILION // 2023</div>
+                        <div class="p-title">BMW Ocean Pavilion</div>
+                        <div class="p-desc">Generative parametric facade with real-time biometric attendee interaction.</div>
+                    </div>
+                    <div class="project-tile" onclick="window.openProjectModal('PrintCraft 360 Studio', 'WebGL Configurator // 2023', 'In-browser real-time 3D print slicing engine, automated mesh validation, and custom volumetric GLSL shaders for additive manufacturing.', 'Three.js, WebAssembly, GLSL Shaders')">
+                        <div class="p-tag">WEBGL CONFIGURATOR // 2023</div>
+                        <div class="p-title">PrintCraft 360 Studio</div>
+                        <div class="p-desc">In-browser real-time 3D print slicing & custom GLSL volumetric shaders.</div>
+                    </div>
+                </div>
+
+                <div class="chamber-actions">
+                    <button class="btn-primary-3d" onclick="window.leapToChamber(4)">
+                        <span>Transmit Message</span>
+                        <i data-lucide="radio" style="width:16px;height:16px"></i>
+                    </button>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(2)">
+                        <i data-lucide="arrow-left" style="width:15px;height:15px"></i>
+                        <span>Shader Lab</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAMBER 4: TRANSMISSION TERMINAL -->
+        <div id="overlay-4" class="spatial-overlay-anchor" style="top: 50%; left: 50%;">
+            <div class="chamber-card" style="text-align: center; max-width: 520px;">
+                <div class="chamber-badge" style="margin: 0 auto 1.25rem;">
+                    <i data-lucide="radio" style="width:14px;height:14px"></i>
+                    Chamber 05 // Transmission Dock
+                </div>
+                <h2 class="chamber-title">
+                    INITIATE SPATIAL
+                    <span>COLLABORATION</span>
+                </h2>
+                <p class="chamber-desc">
+                    Available for architectural digital twins, custom WebGL real-time engines, experiential design direction, and enterprise virtual worlds.
+                </p>
+                <div style="background: rgba(34, 38, 49, 0.6); border: 1px solid var(--border-dark); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.75rem;">
+                        <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:var(--text-dim);">DIRECT TRANSMISSION</span>
+                        <span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:var(--ochre);">SECURE TLS</span>
+                    </div>
+                    <div style="font-family:'Space Grotesk'; font-size:1.05rem; font-weight:700; color:var(--text-main); margin-bottom: 0.35rem;">
+                        mo360immersivestudio@gmail.com
+                    </div>
+                    <div style="font-family:'JetBrains Mono'; font-size:0.85rem; color:var(--ochre);">
+                        +44 7935 929850 // London, UK
+                    </div>
+                </div>
+                <div class="chamber-actions" style="justify-content: center;">
+                    <a href="mailto:mo360immersivestudio@gmail.com" class="btn-primary-3d">
+                        <i data-lucide="mail" style="width:16px;height:16px"></i>
+                        <span>Transmit Email</span>
+                    </a>
+                    <button class="btn-secondary-3d" onclick="window.leapToChamber(0)">
+                        <i data-lucide="rotate-ccw" style="width:15px;height:15px"></i>
+                        <span>Re-Traverse from Chamber 01</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="station-panel" style="border-color: rgba(232,153,35,0.3);">
-      <span class="section-tag">CREATIVE DIRECTION RECORD</span>
-      <div style="display:flex; flex-direction:column; gap:1.5rem; margin-top:1rem;">
-        <div>
-          <span style="font-family:var(--font-display); font-size:2.6rem; color:var(--ochre);">100%</span>
-          <p style="color:var(--text-dim); font-size:0.85rem;">Proprietary procedural code with zero heavy video buffers</p>
+    <!-- PROJECT MODAL -->
+    <div id="projectModal" class="project-modal" onclick="if(event.target === this) window.closeProjectModal()">
+        <div class="modal-body">
+            <button class="modal-close" onclick="window.closeProjectModal()"><i data-lucide="x"></i></button>
+            <div id="m-tag" class="chamber-badge" style="margin-bottom: 0.75rem;">TAG</div>
+            <h3 id="m-title" style="font-family:'Space Grotesk'; font-size: 1.6rem; color: var(--text-main); margin-bottom: 1rem;">Project Title</h3>
+            <p id="m-desc" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">Project Description</p>
+            <div style="background: rgba(34, 38, 49, 0.6); border-radius: 8px; padding: 1rem; border-left: 2px solid var(--ochre); margin-bottom: 1.5rem;">
+                <div style="font-family:'JetBrains Mono'; font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.25rem;">Stack & Tech</div>
+                <div id="m-stack" style="font-family:'JetBrains Mono'; font-size: 0.85rem; color: var(--ochre);">Stack</div>
+            </div>
+            <button class="btn-primary-3d" onclick="window.closeProjectModal()">Close Project Telemetry</button>
         </div>
-        <div>
-          <span style="font-family:var(--font-display); font-size:2.6rem; color:var(--white);">144 FPS</span>
-          <p style="color:var(--text-dim); font-size:0.85rem;">Silky smooth hardware-accelerated GPU performance</p>
-        </div>
-        <div>
-          <span style="font-family:var(--font-display); font-size:2.6rem; color:var(--ochre);">4K SPATIAL</span>
-          <p style="color:var(--text-dim); font-size:0.85rem;">Multi-dimensional branding experiences for luxury brands &amp; sports clubs</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 02 // 3D WEBGL SHADER LAB (NO ROTATING SPHERES) -->
-<div class="spatial-station" id="station-2">
-  <div class="lab-container">
-    <div class="lab-header">
-      <div>
-        <span class="section-tag">02 // REAL-TIME CREATIVE CODING</span>
-        <h2 class="section-title" style="margin-bottom:0;">INTERACTIVE <span style="color:var(--ochre);">3D LAB</span></h2>
-      </div>
-      <p style="max-width:400px; color:var(--text-dim); font-size:0.85rem; text-align:right;">
-        Live GPU geometry &amp; procedural shader control without pre-rendered assets.
-      </p>
     </div>
 
-    <div class="lab-card-grid">
-      <div class="lab-card">
-        <div class="lab-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        </div>
-        <h3 class="lab-card-title">POLYHEDRAL MONOLITH</h3>
-        <p class="lab-card-desc">Procedural faceted prism with dynamic light refraction and reactive vertex displacement.</p>
-        <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--ochre);">VERTEX COUNT: 1,840</span>
-      </div>
+    <!-- HUD OVERLAY LAYER -->
+    <div class="hud-layer">
+        <!-- HEADER -->
+        <header class="hud-header">
+            <a href="../index.html" class="brand-cluster">
+                <img src="assets/mo360_mark.png" alt="MO360 Logo" class="brand-logo-img">
+                <div class="brand-meta">
+                    <span class="title">MO360 Immersive Studio</span>
+                    <span class="sub">Architectural Computing</span>
+                </div>
+            </a>
 
-      <div class="lab-card">
-        <div class="lab-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
-        </div>
-        <h3 class="lab-card-title">LIGHT HIGHWAY GRID</h3>
-        <p class="lab-card-desc">Infinite perspectival light grid with distance fog and real-time cursor gravitational pull.</p>
-        <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--ochre);">INSTANCED NODES: 6,400</span>
-      </div>
+            <div class="telemetry-cluster">
+                <div class="telemetry-item">
+                    <span class="label">COORDINATE Z</span>
+                    <span class="value" id="tel-z">-0000.0 m</span>
+                </div>
+                <div class="telemetry-item">
+                    <span class="label">CHAMBER SECTOR</span>
+                    <span class="value" id="tel-sector">01 // THRESHOLD</span>
+                </div>
+                <div class="telemetry-item">
+                    <span class="label">FRAME METRIC</span>
+                    <span class="value" id="tel-fps">60 FPS</span>
+                </div>
+            </div>
 
-      <div class="lab-card">
-        <div class="lab-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <div class="header-actions">
+                <a href="../index.html" class="btn-nav-return">
+                    <i data-lucide="arrow-left" style="width:14px;height:14px"></i>
+                    <span>Return to Overview</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- SECTOR QUICK-DOCK (RIGHT SIDEBAR) -->
+        <div class="sector-dock">
+            <button class="sector-btn active" id="sec-btn-0" onclick="window.leapToChamber(0)">
+                <div class="sector-left">
+                    <span class="sector-num">01</span>
+                    <span class="sector-title">Threshold</span>
+                </div>
+                <span class="sector-indicator"></span>
+            </button>
+            <button class="sector-btn" id="sec-btn-1" onclick="window.leapToChamber(1)">
+                <div class="sector-left">
+                    <span class="sector-num">02</span>
+                    <span class="sector-title">Spatial DNA</span>
+                </div>
+                <span class="sector-indicator"></span>
+            </button>
+            <button class="sector-btn" id="sec-btn-2" onclick="window.leapToChamber(2)">
+                <div class="sector-left">
+                    <span class="sector-num">03</span>
+                    <span class="sector-title">Shader Lab</span>
+                </div>
+                <span class="sector-indicator"></span>
+            </button>
+            <button class="sector-btn" id="sec-btn-3" onclick="window.leapToChamber(3)">
+                <div class="sector-left">
+                    <span class="sector-num">04</span>
+                    <span class="sector-title">Case Studies</span>
+                </div>
+                <span class="sector-indicator"></span>
+            </button>
+            <button class="sector-btn" id="sec-btn-4" onclick="window.leapToChamber(4)">
+                <div class="sector-left">
+                    <span class="sector-num">05</span>
+                    <span class="sector-title">Transmission</span>
+                </div>
+                <span class="sector-indicator"></span>
+            </button>
         </div>
-        <h3 class="lab-card-title">VOLUMETRIC GOD RAYS</h3>
-        <p class="lab-card-desc">Simulated crepuscular sun shafts rendered using additive blending and harmonic sine oscillation.</p>
-        <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--ochre);">RAY DENSITY: 18 CONES</span>
-      </div>
+
+        <!-- FOOTER PROGRESS & HINTS -->
+        <footer class="hud-footer">
+            <div class="traverse-hint">
+                <div class="mouse-icon-pulse"></div>
+                <span>SCROLL WHEEL OR DRAG TO TRAVERSE 3D ENVIRONMENT</span>
+            </div>
+
+            <div class="flight-progress-container">
+                <div class="flight-progress-bar">
+                    <div class="flight-progress-fill" id="flight-progress-fill"></div>
+                </div>
+                <div class="flight-percentage" id="flight-pct">00%</div>
+            </div>
+        </footer>
     </div>
 
-    <div class="lab-interactive-bar">
-      <div class="control-group">
-        <span class="control-label">GEOMETRY CORE:</span>
-        <button class="control-btn active" data-geo="prism">FACETED PRISM</button>
-        <button class="control-btn" data-geo="hypercube">HYPER-CUBE</button>
-        <button class="control-btn" data-geo="torus">TORUS LENS</button>
-      </div>
-      <div class="control-group">
-        <span class="control-label">DISPLAY MODE:</span>
-        <button class="control-btn active" id="wireToggle">WIREFRAME</button>
-        <button class="control-btn" id="particlesToggle">PARTICLE FIELD</button>
-      </div>
-      <div class="control-group">
-        <span class="control-label">VELOCITY:</span>
-        <button class="control-btn" data-speed="0.5">0.5X</button>
-        <button class="control-btn active" data-speed="1.0">1.0X</button>
-        <button class="control-btn" data-speed="2.0">2.0X</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 03 // CASE STUDIES -->
-<div class="spatial-station" id="station-3">
-  <div class="works-container">
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--border-glass); padding-bottom:1rem;">
-      <div>
-        <span class="section-tag">03 // SELECTED SPATIAL WORKS</span>
-        <h2 class="section-title" style="margin-bottom:0;">CASE <span style="color:var(--ochre);">STUDIES</span></h2>
-      </div>
-      <span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim);">IMMERSIVE PORTFOLIO 2026</span>
-    </div>
-
-    <div class="works-grid">
-      <div class="work-card">
-        <span class="work-category">01 // LUXURY REAL ESTATE</span>
-        <h3 class="work-title">SPATIAL ARCHITECTURAL TWIN</h3>
-        <p class="work-details">
-          High-fidelity WebGL interactive walkthrough for high-end coastal developments. Allows prospective buyers to navigate daylight cycles, inspect materials, and view panoramic vistas in real time.
-        </p>
-        <div class="work-tags">
-          <span class="work-tag">Three.js</span>
-          <span class="work-tag">GLSL Shaders</span>
-          <span class="work-tag">Volumetric Lighting</span>
-        </div>
-      </div>
-
-      <div class="work-card">
-        <span class="work-category">02 // SPORTS &amp; CULTURE</span>
-        <h3 class="work-title">PLYMOUTH PATRIOTS 3D ARENA</h3>
-        <p class="work-details">
-          Interactive virtual court configurator and fan engagement portal for Plymouth's premier professional basketball club. Real-time court seating exploration and dynamic 3D jersey visualizer.
-        </p>
-        <div class="work-tags">
-          <span class="work-tag">Sports Digital Twin</span>
-          <span class="work-tag">Interactive 3D</span>
-          <span class="work-tag">Squarespace Integration</span>
-        </div>
-      </div>
-
-      <div class="work-card">
-        <span class="work-category">03 // AUTOMOTIVE &amp; MARINE</span>
-        <h3 class="work-title">BMW OCEAN CONFIGURATOR</h3>
-        <p class="work-details">
-          Real-time physical asset rendering showcasing paint metallic flake reflectivity, real-time reflection mapping, and interior ergonomics in a high-performance browser environment.
-        </p>
-        <div class="work-tags">
-          <span class="work-tag">PBR Materials</span>
-          <span class="work-tag">HDR Environment</span>
-          <span class="work-tag">Hardware Acceleration</span>
-        </div>
-      </div>
-
-      <div class="work-card">
-        <span class="work-category">04 // E-COMMERCE BRANDING</span>
-        <h3 class="work-title">PRINTCRAFT 360 UK SHOWROOM</h3>
-        <p class="work-details">
-          Generative 3D personalized product customizer with live UV texture projection and instant 360° inspection, deployed directly into Shopify architecture.
-        </p>
-        <div class="work-tags">
-          <span class="work-tag">Shopify 3D Engine</span>
-          <span class="work-tag">WebGL Decals</span>
-          <span class="work-tag">Instant Rendering</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 04 // DIRECT TRANSMISSION / COMMISSIONS -->
-<div class="spatial-station" id="station-4">
-  <div class="terminal-container">
-    <div class="terminal-header">
-      <div>
-        <span class="section-tag">04 // TRANSMISSION &amp; BOOKING</span>
-        <h2 class="terminal-title">INITIATE <span style="color:var(--ochre);">COMMISSION</span></h2>
-      </div>
-      <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--ochre);">STATUS: AVAILABLE FOR SELECT COMMISSIONS</span>
-    </div>
-
-    <p style="color:var(--text-dim); line-height:1.7; font-size:1rem;">
-      Whether you require a bespoke 3D WebGL website, an architectural digital twin, or complete creative direction for an immersive brand universe — transmit your project scope directly to my terminal.
-    </p>
-
-    <div class="terminal-contacts">
-      <a href="mailto:Mohamed.h.elwakil6@gmail.com" class="contact-box">
-        <span class="contact-label">DIRECT EMAIL ENQUIRY</span>
-        <span class="contact-val">Mohamed.h.elwakil6@gmail.com</span>
-      </a>
-
-      <a href="tel:+447311895562" class="contact-box">
-        <span class="contact-label">DIRECT TELEPHONE / WHATSAPP</span>
-        <span class="contact-val">+44 7311 895562</span>
-      </a>
-    </div>
-
-    <div class="terminal-footer-links">
-      <div style="display:flex; gap:1.2rem; align-items:center;">
-        <a href="https://mo360immersivestudio.co.uk/" style="color:var(--text-dim); text-decoration:none; font-family:var(--font-mono); font-size:0.72rem;">← RETURN TO MAIN STUDIO</a>
-        <a href="https://www.instagram.com/mo360.ixstudio/" target="_blank" style="color:var(--text-dim); text-decoration:none; font-family:var(--font-mono); font-size:0.72rem;">INSTAGRAM @MO360.IXSTUDIO</a>
-      </div>
-      <button class="btn-rewind" onclick="teleportToStation(0)">
-        ▲ REWIND TO START
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- THREE.JS TRUE 3D ZOOM FLY-THROUGH ENGINE -->
-<script>
-// --- CONFIGURATION & PALETTE ---
-let currentPalette = 'default';
-const palettes = {
-  default: {
-    ochre: 0xD49345,
-    ochreHex: '#D49345',
-    ochreGlow: 'rgba(232, 153, 35, 0.45)',
-    accent: 0x38BDF8,
-    grid: 0x221a0e
-  },
-  sunlit: {
-    ochre: 0xF59E0B,
-    ochreHex: '#F59E0B',
-    ochreGlow: 'rgba(245, 158, 11, 0.45)',
-    accent: 0xFDE68A,
-    grid: 0x241b0d
-  },
-  electric: {
-    ochre: 0x38BDF8,
-    ochreHex: '#38BDF8',
-    ochreGlow: 'rgba(56, 189, 248, 0.45)',
-    accent: 0xF59E0B,
-    grid: 0x0a1c29
-  }
-};
-
-// --- INITIALIZE THREE.JS SCENE ---
-const canvas = document.getElementById('webgl-canvas');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x060709);
-scene.fog = new THREE.FogExp2(0x060709, 0.00045);
-
-const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 8000);
-camera.position.set(0, 0, 1000);
-
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-// --- LIGHTING ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
-scene.add(ambientLight);
-
-const dirLight = new THREE.DirectionalLight(palettes.default.ochre, 1.8);
-dirLight.position.set(100, 300, 200);
-scene.add(dirLight);
-
-const pointLight = new THREE.PointLight(palettes.default.ochre, 2.5, 2500);
-pointLight.position.set(0, 200, 0);
-scene.add(pointLight);
-
-// --- 1. PERSPECTIVE NEON LIGHT HIGHWAY & FLOATING WAYPOINTS ---
-const highwayGroup = new THREE.Group();
-scene.add(highwayGroup);
-
-// Infinite floor grid
-const gridGeometry = new THREE.PlaneGeometry(3200, 9500, 64, 190);
-const gridMaterial = new THREE.MeshBasicMaterial({
-  color: palettes.default.ochre,
-  wireframe: true,
-  transparent: true,
-  opacity: 0.13
-});
-const floorGrid = new THREE.Mesh(gridGeometry, gridMaterial);
-floorGrid.rotation.x = -Math.PI / 2;
-floorGrid.position.set(0, -320, -2500);
-highwayGroup.add(floorGrid);
-
-// Ceiling reflection grid
-const ceilingGrid = new THREE.Mesh(gridGeometry, gridMaterial);
-ceilingGrid.rotation.x = Math.PI / 2;
-ceilingGrid.position.set(0, 520, -2500);
-highwayGroup.add(ceilingGrid);
-
-// Light Highway Side Rails (Neon Tracers)
-const railGeo = new THREE.BufferGeometry();
-const railCount = 1200;
-const railPos = new Float32Array(railCount * 3);
-for (let i = 0; i < railCount; i++) {
-  const side = (i % 2 === 0) ? -480 : 480;
-  const z = 1500 - (i * 7);
-  const y = -300 + (Math.sin(i * 0.05) * 40);
-  railPos[i * 3] = side;
-  railPos[i * 3 + 1] = y;
-  railPos[i * 3 + 2] = z;
-}
-railGeo.setAttribute('position', new THREE.BufferAttribute(railPos, 3));
-const railMat = new THREE.PointsMaterial({
-  color: palettes.default.ochre,
-  size: 3.5,
-  transparent: true,
-  opacity: 0.75,
-  blending: THREE.AdditiveBlending
-});
-const highwayRails = new THREE.Points(railGeo, railMat);
-highwayGroup.add(highwayRails);
-
-// --- 2. VOLUMETRIC ATMOSPHERIC GOD RAY BEAMS ---
-const raysGroup = new THREE.Group();
-scene.add(raysGroup);
-
-const rayConeGeo = new THREE.CylinderGeometry(8, 280, 2400, 16, 1, true);
-const rayMat = new THREE.MeshBasicMaterial({
-  color: palettes.default.ochre,
-  transparent: true,
-  opacity: 0.045,
-  wireframe: false,
-  side: THREE.DoubleSide,
-  blending: THREE.AdditiveBlending,
-  depthWrite: false
-});
-
-const rayCones = [];
-for (let r = 0; r < 8; r++) {
-  const cone = new THREE.Mesh(rayConeGeo, rayMat);
-  const angle = (r / 8) * Math.PI * 2;
-  cone.position.set(Math.cos(angle) * 700, 300, -r * 700);
-  cone.rotation.z = Math.PI / 3 + (r * 0.1);
-  cone.rotation.x = 0.2;
-  raysGroup.add(cone);
-  rayCones.push(cone);
-}
-
-// --- 3. 3D SPATIAL ARCHITECTURAL WAYPOINTS (NO ROTATING SPHERES) ---
-const waypointsGroup = new THREE.Group();
-scene.add(waypointsGroup);
-
-// Station 0: Outer framing horizon archway at z = -200 (Framing behind text)
-const portalGeo = new THREE.TorusGeometry(620, 6, 16, 100);
-const portalMat = new THREE.MeshBasicMaterial({
-  color: palettes.default.ochre,
-  wireframe: true,
-  transparent: true,
-  opacity: 0.2
-});
-const portal0 = new THREE.Mesh(portalGeo, portalMat);
-portal0.position.set(0, 0, -200);
-waypointsGroup.add(portal0);
-
-// Station 1: Architectural Pavilion at z = -1000
-const archGroup = new THREE.Group();
-archGroup.position.set(0, 0, -1000);
-for (let a = 0; a < 5; a++) {
-  const ringGeo = new THREE.RingGeometry(300 + a * 60, 304 + a * 60, 4);
-  const ring = new THREE.Mesh(ringGeo, portalMat);
-  ring.rotation.z = Math.PI / 4;
-  ring.position.z = -a * 100;
-  archGroup.add(ring);
-}
-waypointsGroup.add(archGroup);
-
-// Station 2: 3D LAB Core Structure at z = -2200
-const labCoreGroup = new THREE.Group();
-labCoreGroup.position.set(0, 0, -2200);
-
-let coreMesh;
-function createCoreGeometry(type) {
-  if (coreMesh) labCoreGroup.remove(coreMesh);
-  let geo;
-  if (type === 'hypercube') {
-    geo = new THREE.BoxGeometry(260, 260, 260, 4, 4, 4);
-  } else if (type === 'torus') {
-    geo = new THREE.TorusKnotGeometry(160, 35, 128, 32);
-  } else {
-    geo = new THREE.IcosahedronGeometry(220, 1);
-  }
-  const mat = new THREE.MeshStandardMaterial({
-    color: palettes[currentPalette].ochre,
-    wireframe: true,
-    roughness: 0.3,
-    metalness: 0.8
-  });
-  coreMesh = new THREE.Mesh(geo, mat);
-  labCoreGroup.add(coreMesh);
-}
-createCoreGeometry('prism');
-waypointsGroup.add(labCoreGroup);
-
-// Station 3: Digital Twin Frame Cluster at z = -3400
-const twinGroup = new THREE.Group();
-twinGroup.position.set(0, 0, -3400);
-for (let c = 0; c < 4; c++) {
-  const frameGeo = new THREE.BoxGeometry(340, 200, 12);
-  const frameMat = new THREE.MeshBasicMaterial({
-    color: (c % 2 === 0) ? palettes.default.ochre : 0x38BDF8,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.25
-  });
-  const frame = new THREE.Mesh(frameGeo, frameMat);
-  const side = (c % 2 === 0) ? -380 : 380;
-  frame.position.set(side, (c > 1 ? -120 : 120), -c * 200);
-  twinGroup.add(frame);
-}
-waypointsGroup.add(twinGroup);
-
-// Station 4: Terminal Docking Chamber at z = -4600
-const terminalDockGeo = new THREE.CylinderGeometry(480, 480, 900, 8, 10, true);
-const terminalDockMat = new THREE.MeshBasicMaterial({
-  color: palettes.default.ochre,
-  wireframe: true,
-  transparent: true,
-  opacity: 0.15
-});
-const terminalDock = new THREE.Mesh(terminalDockGeo, terminalDockMat);
-terminalDock.rotation.x = Math.PI / 2;
-terminalDock.position.set(0, 0, -4800);
-waypointsGroup.add(terminalDock);
-
-// --- 4. FLOATING PERSPECTIVE PARTICLES ---
-const particlesGeo = new THREE.BufferGeometry();
-const pCount = 5000;
-const pPositions = new Float32Array(pCount * 3);
-for (let p = 0; p < pCount; p++) {
-  pPositions[p * 3] = (Math.random() - 0.5) * 2400;
-  pPositions[p * 3 + 1] = (Math.random() - 0.5) * 1500;
-  pPositions[p * 3 + 2] = 1200 - Math.random() * 6800;
-}
-particlesGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
-const particlesMat = new THREE.PointsMaterial({
-  color: palettes.default.ochre,
-  size: 2.8,
-  transparent: true,
-  opacity: 0.6,
-  blending: THREE.AdditiveBlending
-});
-const particleSystem = new THREE.Points(particlesGeo, particlesMat);
-scene.add(particleSystem);
-
-// --- CAMERA FLIGHT CONTROL & SCROLL INTERPOLATION ---
-const stationDepths = [1000, 0, -1200, -2600, -4000];
-const stationLabels = ['00 // HERO', '01 // DIRECTION', '02 // 3D LAB', '03 // WORKS', '04 // TERMINAL'];
-
-let targetCamZ = 1000;
-let currentCamZ = 1000;
-let currentCamY = 0;
-let targetCamY = 0;
-let targetCamX = 0;
-let currentCamX = 0;
-let scrollProgress = 0;
-
-function updateCameraFromScroll() {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  const scrolled = window.scrollY;
-  scrollProgress = Math.min(Math.max(scrolled / (maxScroll || 1), 0), 1);
-  
-  targetCamZ = 1000 - (scrollProgress * 5000);
-  
-  let activeIndex = 0;
-  let minDiff = Infinity;
-  stationDepths.forEach((d, idx) => {
-    const diff = Math.abs(currentCamZ - d);
-    if (diff < minDiff) {
-      minDiff = diff;
-      activeIndex = idx;
-    }
-  });
-
-  document.querySelectorAll('.spatial-station').forEach((st, idx) => {
-    if (idx === activeIndex) {
-      st.classList.add('current-station');
-    } else {
-      st.classList.remove('current-station');
-    }
-  });
-
-  document.querySelectorAll('.nav-stations a').forEach((a, idx) => {
-    if (idx === activeIndex) a.classList.add('active');
-    else a.classList.remove('active');
-  });
-
-  document.querySelectorAll('.teleport-node').forEach((node, idx) => {
-    if (idx === activeIndex) node.classList.add('active');
-    else node.classList.remove('active');
-  });
-
-  const depthMeters = Math.max(0, Math.round((1000 - currentCamZ) * 1.2));
-  document.getElementById('hudDepth').innerText = `${depthMeters.toLocaleString()}m`;
-  document.getElementById('hudStation').innerText = stationLabels[activeIndex];
-}
-
-window.addEventListener('scroll', updateCameraFromScroll, { passive: true });
-
-let mouseX = 0;
-let mouseY = 0;
-window.addEventListener('mousemove', (e) => {
-  mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-  mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-  targetCamX = mouseX * 120;
-  targetCamY = -mouseY * 80;
-});
-
-window.teleportToStation = function(index) {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  const targetFraction = index / (stationDepths.length - 1);
-  window.scrollTo({
-    top: targetFraction * maxScroll,
-    behavior: 'smooth'
-  });
-};
-
-document.querySelectorAll('[data-target-station]').forEach(el => {
-  el.addEventListener('click', (e) => {
-    e.preventDefault();
-    const idx = parseInt(el.getAttribute('data-target-station'), 10);
-    teleportToStation(idx);
-  });
-});
-
-document.querySelectorAll('.teleport-node').forEach(node => {
-  node.addEventListener('click', () => {
-    const idx = parseInt(node.getAttribute('data-station'), 10);
-    teleportToStation(idx);
-  });
-});
-
-document.getElementById('startFlyBtn').addEventListener('click', () => {
-  teleportToStation(1);
-});
-
-// --- PALETTE SWAPPER LOGIC ---
-document.querySelectorAll('.palette-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const palName = btn.getAttribute('data-palette-set');
-    currentPalette = palName;
-    document.documentElement.setAttribute('data-palette', palName);
-    
-    const cfg = palettes[palName];
-    dirLight.color.setHex(cfg.ochre);
-    pointLight.color.setHex(cfg.ochre);
-    gridMaterial.color.setHex(cfg.ochre);
-    railMat.color.setHex(cfg.ochre);
-    rayMat.color.setHex(cfg.ochre);
-    portalMat.color.setHex(cfg.ochre);
-    particlesMat.color.setHex(cfg.ochre);
-    if (coreMesh) coreMesh.material.color.setHex(cfg.ochre);
-  });
-});
-
-// --- 3D LAB CONTROLS ---
-let coreRotationSpeed = 0.01;
-document.querySelectorAll('[data-geo]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-geo]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    createCoreGeometry(btn.getAttribute('data-geo'));
-  });
-});
-
-document.getElementById('wireToggle').addEventListener('click', function() {
-  this.classList.toggle('active');
-  if (coreMesh) coreMesh.material.wireframe = this.classList.contains('active');
-});
-
-document.getElementById('particlesToggle').addEventListener('click', function() {
-  this.classList.toggle('active');
-  particleSystem.visible = this.classList.contains('active');
-});
-
-document.querySelectorAll('[data-speed]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-speed]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    coreRotationSpeed = 0.01 * parseFloat(btn.getAttribute('data-speed'));
-  });
-});
-
-// --- AUDIO SYNTHESIZER ---
-let audioCtx = null;
-let osc1 = null, osc2 = null, gainNode = null;
-let isAudioPlaying = false;
-const soundToggle = document.getElementById('soundToggle');
-const soundDot = document.getElementById('soundDot');
-const soundText = document.getElementById('soundText');
-
-soundToggle.addEventListener('click', () => {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (!isAudioPlaying) {
-    audioCtx.resume();
-    osc1 = audioCtx.createOscillator();
-    osc2 = audioCtx.createOscillator();
-    gainNode = audioCtx.createGain();
-
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(110, audioCtx.currentTime);
-
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(164.81, audioCtx.currentTime);
-
-    gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 2);
-
-    osc1.connect(gainNode);
-    osc2.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    osc1.start();
-    osc2.start();
-
-    isAudioPlaying = true;
-    soundDot.classList.add('active');
-    soundText.innerText = 'SOUND: ON';
-  } else {
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
-    setTimeout(() => {
-      osc1.stop();
-      osc2.stop();
-      isAudioPlaying = false;
-      soundDot.classList.remove('active');
-      soundText.innerText = 'SOUND: OFF';
-    }, 500);
-  }
-});
-
-// --- ANIMATION LOOP ---
-let lastTime = performance.now();
-let frameCount = 0;
-let lastFpsUpdate = 0;
-
-function animate(time) {
-  requestAnimationFrame(animate);
-
-  frameCount++;
-  if (time - lastFpsUpdate > 800) {
-    const fps = Math.round((frameCount * 1000) / (time - lastFpsUpdate));
-    document.getElementById('hudFps').innerText = `${fps} FPS`;
-    frameCount = 0;
-    lastFpsUpdate = time;
-  }
-
-  currentCamZ += (targetCamZ - currentCamZ) * 0.08;
-  currentCamX += (targetCamX - currentCamX) * 0.06;
-  currentCamY += (targetCamY - currentCamY) * 0.06;
-
-  camera.position.z = currentCamZ;
-  camera.position.x = currentCamX;
-  camera.position.y = currentCamY;
-  camera.lookAt(currentCamX * 0.3, currentCamY * 0.3, currentCamZ - 1000);
-
-  portal0.rotation.z += 0.003;
-  archGroup.rotation.z += 0.002;
-  if (coreMesh) {
-    coreMesh.rotation.y += coreRotationSpeed;
-    coreMesh.rotation.x += coreRotationSpeed * 0.5;
-  }
-  twinGroup.children.forEach((c, idx) => {
-    c.rotation.z = Math.sin(time * 0.001 + idx) * 0.05;
-  });
-
-  rayCones.forEach((cone, idx) => {
-    cone.rotation.z += Math.sin(time * 0.0008 + idx) * 0.0006;
-  });
-
-  particleSystem.rotation.y = time * 0.00004;
-
-  renderer.render(scene, camera);
-}
-
-requestAnimationFrame(animate);
-
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-});
-</script>
-
+    <!-- THREE.JS 3D ENGINE SCRIPT -->
+    <script>
+        lucide.createIcons();
+
+        // SCENE, CAMERA, RENDERER SETUP
+        const canvas = document.getElementById('webgl-canvas');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x060709, 0.00045);
+
+        const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.5, 9000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            powerPreference: "high-performance"
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+
+        // LIGHTING PALETTE: Deep Dark Grays, Warm Radiant Ochre (#D49345)
+        const ambientLight = new THREE.AmbientLight(0x16181f, 2.0);
+        scene.add(ambientLight);
+
+        const ochreKeyLight = new THREE.DirectionalLight(0xd49345, 2.6);
+        ochreKeyLight.position.set(200, 400, 100);
+        scene.add(ochreKeyLight);
+
+        const coolFillLight = new THREE.DirectionalLight(0x2b3140, 2.2);
+        coolFillLight.position.set(-300, -200, -500);
+        scene.add(coolFillLight);
+
+        // 3D FLIGHT SPLINE THROUGH 5 ARCHITECTURAL CHAMBERS
+        const splinePoints = [
+            new THREE.Vector3(0, 0, 180),         // Approaching
+            new THREE.Vector3(0, 0, 0),           // Chamber 0: Threshold
+            new THREE.Vector3(-160, 20, -650),    // Transition Turn Left
+            new THREE.Vector3(-320, -15, -1400),  // Chamber 1: Spatial DNA Atrium
+            new THREE.Vector3(-80, 80, -2100),    // Banking Right & Rising
+            new THREE.Vector3(260, 30, -2850),    // Chamber 2: Shader Core Lab
+            new THREE.Vector3(120, -30, -3600),   // Swooping Down & Centering
+            new THREE.Vector3(0, -20, -4300),     // Chamber 3: Case Studies Colonnade
+            new THREE.Vector3(0, 10, -5000),      // Acceleration corridor
+            new THREE.Vector3(0, 0, -5700)        // Chamber 4: Transmission Terminal
+        ];
+
+        const flightCurve = new THREE.CatmullRomCurve3(splinePoints, false, 'catmullrom', 0.15);
+
+        // STATIONS DATA WITH PRECISE CURVE PARAMETER 'T'
+        const stations = [
+            { id: 0, t: 0.10, name: "01 // THRESHOLD", overlayId: "overlay-0", pos: new THREE.Vector3(0, 0, 0) },
+            { id: 1, t: 0.33, name: "02 // SPATIAL DNA", overlayId: "overlay-1", pos: new THREE.Vector3(-320, -15, -1400) },
+            { id: 2, t: 0.55, name: "03 // SHADER LAB", overlayId: "overlay-2", pos: new THREE.Vector3(260, 30, -2850) },
+            { id: 3, t: 0.77, name: "04 // CASE STUDIES", overlayId: "overlay-3", pos: new THREE.Vector3(0, -20, -4300) },
+            { id: 4, t: 1.00, name: "05 // TRANSMISSION", overlayId: "overlay-4", pos: new THREE.Vector3(0, 0, -5700) }
+        ];
+
+        let currentStationIndex = 0;
+        let progress = 0.10;
+        let targetProgress = 0.10;
+        let mouseX = 0, mouseY = 0;
+        let targetMouseX = 0, targetMouseY = 0;
+
+        // MATERIALS
+        const matDarkGrayMatte = new THREE.MeshStandardMaterial({
+            color: 0x16181f,
+            roughness: 0.65,
+            metalness: 0.35
+        });
+
+        const matDarkGraySlab = new THREE.MeshStandardMaterial({
+            color: 0x222631,
+            roughness: 0.5,
+            metalness: 0.5
+        });
+
+        const matOchreGlow = new THREE.MeshBasicMaterial({
+            color: 0xd49345,
+            wireframe: true
+        });
+
+        const matOchreSolid = new THREE.MeshStandardMaterial({
+            color: 0xd49345,
+            emissive: 0x8a581c,
+            roughness: 0.2,
+            metalness: 0.8
+        });
+
+        // -------------------------------------------------------------
+        // 1. PARTICLES FIELD & FLIGHT GUIDE CONDUITS
+        // -------------------------------------------------------------
+        const particleCount = 2600;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        const particleColors = new Float32Array(particleCount * 3);
+
+        const ochreCol = new THREE.Color(0xd49345);
+        const grayCol = new THREE.Color(0x3a404f);
+
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i * 3] = (Math.random() - 0.5) * 2200;
+            particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 1600;
+            particlePositions[i * 3 + 2] = -Math.random() * 6600 + 400;
+
+            const c = Math.random() > 0.65 ? ochreCol : grayCol;
+            particleColors[i * 3] = c.r;
+            particleColors[i * 3 + 1] = c.g;
+            particleColors[i * 3 + 2] = c.b;
+        }
+
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        particleGeo.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+
+        const particleMat = new THREE.PointsMaterial({
+            size: 3.5,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.65,
+            fog: true
+        });
+        const particles = new THREE.Points(particleGeo, particleMat);
+        scene.add(particles);
+
+        // Spline Guide Ribbons
+        const tubeGeo = new THREE.TubeGeometry(flightCurve, 240, 2.5, 8, false);
+        const tubeWireMat = new THREE.MeshBasicMaterial({
+            color: 0xd49345,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.22
+        });
+        const flightTube = new THREE.Mesh(tubeGeo, tubeWireMat);
+        scene.add(flightTube);
+
+        // -------------------------------------------------------------
+        // TRAJECTORY FRAME CALCULATOR
+        // Computes position, forward, right, and up vectors along the spline
+        // -------------------------------------------------------------
+        function getFrameAt(t) {
+            const p = flightCurve.getPointAt(t);
+            const pNext = flightCurve.getPointAt(Math.min(1.0, t + 0.035));
+            const fwd = new THREE.Vector3().subVectors(pNext, p).normalize();
+            const upGuide = new THREE.Vector3(0, 1, 0);
+            const right = new THREE.Vector3().crossVectors(fwd, upGuide).normalize();
+            const trueUp = new THREE.Vector3().crossVectors(right, fwd).normalize();
+            return { p, fwd, right, up: trueUp };
+        }
+
+        // -------------------------------------------------------------
+        // 2. CHAMBER 0 ARCHITECTURE: THE ARRIVAL PORTAL & SACRED PRISMS
+        // -------------------------------------------------------------
+        const f0 = getFrameAt(0.10);
+        const chamber0Group = new THREE.Group();
+        chamber0Group.position.copy(f0.p);
+
+        // Dark Gray Floating Gate Pylons Flanking the Flight Path
+        const pylonGeo = new THREE.BoxGeometry(18, 200, 18);
+        const leftPylon = new THREE.Mesh(pylonGeo, matDarkGraySlab);
+        leftPylon.position.copy(new THREE.Vector3().addScaledVector(f0.right, -120).addScaledVector(f0.fwd, 110));
+        chamber0Group.add(leftPylon);
+
+        const rightPylon = new THREE.Mesh(pylonGeo, matDarkGraySlab);
+        rightPylon.position.copy(new THREE.Vector3().addScaledVector(f0.right, 120).addScaledVector(f0.fwd, 110));
+        chamber0Group.add(rightPylon);
+
+        // Lintel arch spanning between pylons
+        const lintelGeo = new THREE.BoxGeometry(260, 14, 24);
+        const archLintel = new THREE.Mesh(lintelGeo, matDarkGraySlab);
+        archLintel.position.copy(new THREE.Vector3().addScaledVector(f0.fwd, 110).addScaledVector(f0.up, 105));
+        chamber0Group.add(archLintel);
+
+        // Glowing Ochre Beam Seams
+        const beamGeo = new THREE.BoxGeometry(2, 198, 20);
+        const leftBeam = new THREE.Mesh(beamGeo, matOchreSolid);
+        leftBeam.position.copy(leftPylon.position);
+        chamber0Group.add(leftBeam);
+
+        const rightBeam = new THREE.Mesh(beamGeo, matOchreSolid);
+        rightBeam.position.copy(rightPylon.position);
+        chamber0Group.add(rightBeam);
+
+        // Center Sacred Octahedral Prism (Right of the viewport card)
+        const octaGeo = new THREE.OctahedronGeometry(42, 0);
+        const octaCoreMesh = new THREE.Mesh(octaGeo, matDarkGraySlab);
+        const octaWireMesh = new THREE.Mesh(octaGeo, matOchreGlow);
+        octaWireMesh.scale.set(1.15, 1.15, 1.15);
+
+        const octaGroup = new THREE.Group();
+        octaGroup.position.copy(new THREE.Vector3().addScaledVector(f0.right, 45).addScaledVector(f0.fwd, 100).addScaledVector(f0.up, 5));
+        octaGroup.add(octaCoreMesh);
+        octaGroup.add(octaWireMesh);
+        chamber0Group.add(octaGroup);
+
+        scene.add(chamber0Group);
+
+        // -------------------------------------------------------------
+        // 3. CHAMBER 1 ARCHITECTURE: SPATIAL BRANDING & BIM ATRIUM
+        // -------------------------------------------------------------
+        const f1 = getFrameAt(0.33);
+        const chamber1Group = new THREE.Group();
+        chamber1Group.position.copy(f1.p);
+
+        // Colonnade of dark gray monoliths framing the flight turn
+        for (let i = 0; i < 6; i++) {
+            const h = 160 + (i % 2) * 40;
+            const mGeo = new THREE.BoxGeometry(24, h, 24);
+            const mMesh = new THREE.Mesh(mGeo, matDarkGrayMatte);
+            const offset = (i - 2.5) * 45;
+            mMesh.position.copy(new THREE.Vector3().addScaledVector(f1.right, offset).addScaledVector(f1.fwd, 140).addScaledVector(f1.up, h / 2 - 60));
+            chamber1Group.add(mMesh);
+
+            // Ochre crown trim
+            const cGeo = new THREE.BoxGeometry(26, 6, 26);
+            const cMesh = new THREE.Mesh(cGeo, matOchreSolid);
+            cMesh.position.copy(mMesh.position);
+            cMesh.position.y += h / 2 + 3;
+            chamber1Group.add(cMesh);
+        }
+
+        // Floating Kinetic 3D BIM Wireframe Structure (Framed to the right of the card)
+        const hexTowerGeo = new THREE.CylinderGeometry(35, 48, 140, 6, 4, true);
+        const hexTowerMesh = new THREE.Mesh(hexTowerGeo, matOchreGlow);
+        hexTowerMesh.position.copy(new THREE.Vector3().addScaledVector(f1.right, 48).addScaledVector(f1.fwd, 95).addScaledVector(f1.up, 8));
+        chamber1Group.add(hexTowerMesh);
+
+        scene.add(chamber1Group);
+
+        // -------------------------------------------------------------
+        // 4. CHAMBER 2 ARCHITECTURE: SHADER LABORATORY & PROCEDURAL CORE
+        // -------------------------------------------------------------
+        const f2 = getFrameAt(0.55);
+        const chamber2Group = new THREE.Group();
+        chamber2Group.position.copy(f2.p);
+
+        // Interactive Procedural Core Objects (Framed right in the camera frustum at x = +45 right)
+        const coreContainer = new THREE.Group();
+        coreContainer.position.copy(new THREE.Vector3().addScaledVector(f2.right, 45).addScaledVector(f2.fwd, 95).addScaledVector(f2.up, 5));
+
+        // 1. Octahedral Prism Core
+        const prismGeo = new THREE.OctahedronGeometry(38, 1);
+        const corePrism = new THREE.Mesh(prismGeo, matDarkGraySlab);
+        const corePrismWire = new THREE.Mesh(prismGeo, matOchreGlow);
+        corePrismWire.scale.set(1.12, 1.12, 1.12);
+        const prismGroup = new THREE.Group();
+        prismGroup.add(corePrism);
+        prismGroup.add(corePrismWire);
+        coreContainer.add(prismGroup);
+
+        // 2. Gyroscopic Torus Lattice
+        const torusGeo = new THREE.TorusGeometry(36, 10, 16, 48);
+        const coreTorus = new THREE.Mesh(torusGeo, matDarkGraySlab);
+        const coreTorusWire = new THREE.Mesh(torusGeo, matOchreGlow);
+        coreTorusWire.scale.set(1.1, 1.1, 1.1);
+        const torusGroup = new THREE.Group();
+        torusGroup.add(coreTorus);
+        torusGroup.add(coreTorusWire);
+        torusGroup.visible = false;
+        coreContainer.add(torusGroup);
+
+        // 3. Hyper-Pylon
+        const pylonShapeGeo = new THREE.CylinderGeometry(16, 36, 110, 6);
+        const corePylon = new THREE.Mesh(pylonShapeGeo, matDarkGraySlab);
+        const corePylonWire = new THREE.Mesh(pylonShapeGeo, matOchreGlow);
+        corePylonWire.scale.set(1.1, 1.1, 1.1);
+        const hyperPylonGroup = new THREE.Group();
+        hyperPylonGroup.add(corePylon);
+        hyperPylonGroup.add(corePylonWire);
+        hyperPylonGroup.visible = false;
+        coreContainer.add(hyperPylonGroup);
+
+        chamber2Group.add(coreContainer);
+
+        // Surrounding Shader Lab Energy Rings
+        const ringGeo1 = new THREE.RingGeometry(75, 77, 48);
+        const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xd49345, side: THREE.DoubleSide });
+        const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+        ring1.position.copy(coreContainer.position);
+        ring1.rotation.x = Math.PI / 2;
+        chamber2Group.add(ring1);
+
+        const ring2 = ring1.clone();
+        ring2.rotation.x = 0;
+        ring2.rotation.y = Math.PI / 4;
+        chamber2Group.add(ring2);
+
+        scene.add(chamber2Group);
+
+        // -------------------------------------------------------------
+        // 5. CHAMBER 3 ARCHITECTURE: SPATIAL CASE STUDIES COLONNADE
+        // -------------------------------------------------------------
+        const f3 = getFrameAt(0.77);
+        const chamber3Group = new THREE.Group();
+        chamber3Group.position.copy(f3.p);
+
+        // 4 Physical 3D Project Pedestals floating in space
+        const pedestalOffsetsX = [-90, -30, 30, 90];
+        const projectPedestalMeshes = [];
+
+        pedestalOffsetsX.forEach((offX, idx) => {
+            const pGroup = new THREE.Group();
+            pGroup.position.copy(new THREE.Vector3().addScaledVector(f3.right, offX).addScaledVector(f3.fwd, 110).addScaledVector(f3.up, -28));
+
+            // Dark Gray Pedestal Base
+            const baseGeo = new THREE.BoxGeometry(32, 10, 32);
+            const baseMesh = new THREE.Mesh(baseGeo, matDarkGraySlab);
+            pGroup.add(baseMesh);
+
+            // Glowing Ochre Trim Line
+            const trimGeo = new THREE.BoxGeometry(33.5, 2, 33.5);
+            const trimMesh = new THREE.Mesh(trimGeo, matOchreSolid);
+            trimMesh.position.y = 5;
+            pGroup.add(trimMesh);
+
+            // Floating 3D Holographic Artifact
+            let artGeo;
+            if (idx === 0) artGeo = new THREE.DodecahedronGeometry(13);
+            else if (idx === 1) artGeo = new THREE.IcosahedronGeometry(13);
+            else if (idx === 2) artGeo = new THREE.OctahedronGeometry(15);
+            else artGeo = new THREE.BoxGeometry(18, 18, 18);
+
+            const artMesh = new THREE.Mesh(artGeo, matDarkGrayMatte);
+            artMesh.position.y = 26;
+            pGroup.add(artMesh);
+
+            const artWire = new THREE.Mesh(artGeo, matOchreGlow);
+            artWire.position.y = 26;
+            artWire.scale.set(1.15, 1.15, 1.15);
+            pGroup.add(artWire);
+
+            chamber3Group.add(pGroup);
+            projectPedestalMeshes.push({ group: pGroup, artifact: artMesh, wire: artWire });
+        });
+
+        // Architectural scale grid
+        const gridHelper = new THREE.GridHelper(360, 20, 0xd49345, 0x222631);
+        gridHelper.position.copy(new THREE.Vector3().addScaledVector(f3.fwd, 110).addScaledVector(f3.up, -45));
+        chamber3Group.add(gridHelper);
+
+        scene.add(chamber3Group);
+
+        // -------------------------------------------------------------
+        // 6. CHAMBER 4 ARCHITECTURE: TRANSMISSION TERMINAL PORTAL
+        // -------------------------------------------------------------
+        const f4 = getFrameAt(1.00);
+        const chamber4Group = new THREE.Group();
+        chamber4Group.position.copy(f4.p);
+
+        // Concentric Ochre Docking Portal Rings
+        const portalRingGeo1 = new THREE.TorusGeometry(80, 3, 16, 64);
+        const portalRing1 = new THREE.Mesh(portalRingGeo1, matOchreSolid);
+        portalRing1.position.copy(new THREE.Vector3().addScaledVector(f4.fwd, 80));
+        chamber4Group.add(portalRing1);
+
+        const portalRingGeo2 = new THREE.TorusGeometry(110, 2, 16, 64);
+        const portalRing2 = new THREE.Mesh(portalRingGeo2, matOchreGlow);
+        portalRing2.position.copy(new THREE.Vector3().addScaledVector(f4.fwd, 105));
+        chamber4Group.add(portalRing2);
+
+        // Monolithic Docking Pillars
+        const dockPillarGeo = new THREE.BoxGeometry(28, 260, 28);
+        const dpLeft = new THREE.Mesh(dockPillarGeo, matDarkGraySlab);
+        dpLeft.position.copy(new THREE.Vector3().addScaledVector(f4.right, -125).addScaledVector(f4.fwd, 80));
+        chamber4Group.add(dpLeft);
+
+        const dpRight = new THREE.Mesh(dockPillarGeo, matDarkGraySlab);
+        dpRight.position.copy(new THREE.Vector3().addScaledVector(f4.right, 125).addScaledVector(f4.fwd, 80));
+        chamber4Group.add(dpRight);
+
+        scene.add(chamber4Group);
+
+        // -------------------------------------------------------------
+        // INPUT CONTROLS: SMOOTH 3D WHEEL, TOUCH DRAG, KEYS
+        // -------------------------------------------------------------
+        window.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY * 0.00035;
+            targetProgress = Math.max(0.02, Math.min(0.999, targetProgress + delta));
+        }, { passive: false });
+
+        let touchStartY = 0;
+        let isTouching = false;
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                touchStartY = e.touches[0].clientY;
+                isTouching = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isTouching || e.touches.length !== 1) return;
+            const currentY = e.touches[0].clientY;
+            const deltaY = (touchStartY - currentY) * 0.00085;
+            touchStartY = currentY;
+            targetProgress = Math.max(0.02, Math.min(0.999, targetProgress + deltaY));
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => { isTouching = false; });
+
+        // Keyboard arrow & WASD navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'PageDown') {
+                targetProgress = Math.min(0.999, targetProgress + 0.08);
+            } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'PageUp') {
+                targetProgress = Math.max(0.02, targetProgress - 0.08);
+            }
+        });
+
+        // Mouse Parallax
+        window.addEventListener('mousemove', (e) => {
+            targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            targetMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Leap to Chamber API
+        window.leapToChamber = function(index) {
+            if (index >= 0 && index < stations.length) {
+                targetProgress = stations[index].t;
+            }
+        };
+
+        // Switch Shader Laboratory Core Shape
+        window.setCoreShape = function(shape) {
+            prismGroup.visible = (shape === 'prism');
+            torusGroup.visible = (shape === 'torus');
+            hyperPylonGroup.visible = (shape === 'pylon');
+
+            document.getElementById('btn-geom-prism').classList.toggle('active', shape === 'prism');
+            document.getElementById('btn-geom-torus').classList.toggle('active', shape === 'torus');
+            document.getElementById('btn-geom-pylon').classList.toggle('active', shape === 'pylon');
+        };
+
+        // Modal Controls
+        window.openProjectModal = function(title, tag, desc, stack) {
+            document.getElementById('m-title').innerText = title;
+            document.getElementById('m-tag').innerText = tag;
+            document.getElementById('m-desc').innerText = desc;
+            document.getElementById('m-stack').innerText = stack;
+            document.getElementById('projectModal').classList.add('active');
+            lucide.createIcons();
+        };
+
+        window.closeProjectModal = function() {
+            document.getElementById('projectModal').classList.remove('active');
+        };
+
+        // RESIZE HANDLER
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // -------------------------------------------------------------
+        // ANIMATION RENDER LOOP (60+ FPS WEBGL)
+        // -------------------------------------------------------------
+        let lastTime = performance.now();
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+
+        const telZ = document.getElementById('tel-z');
+        const telSector = document.getElementById('tel-sector');
+        const telFps = document.getElementById('tel-fps');
+        const flightFill = document.getElementById('flight-progress-fill');
+        const flightPct = document.getElementById('flight-pct');
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            // FPS Counter
+            frameCount++;
+            if (time - lastFpsUpdate > 1000) {
+                telFps.innerText = frameCount + " FPS";
+                frameCount = 0;
+                lastFpsUpdate = time;
+            }
+
+            // Smooth Lerp for camera progress along the 3D spline
+            progress += (targetProgress - progress) * 0.055;
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+
+            // Compute Camera Position on Curve
+            const camPos = flightCurve.getPointAt(progress);
+            const lookAheadT = Math.min(1.0, progress + 0.035);
+            const lookPos = flightCurve.getPointAt(lookAheadT);
+
+            // Add subtle mouse parallax
+            camera.position.set(
+                camPos.x + mouseX * 24,
+                camPos.y + mouseY * 18,
+                camPos.z
+            );
+
+            camera.lookAt(
+                lookPos.x + mouseX * 12,
+                lookPos.y + mouseY * 8,
+                lookPos.z
+            );
+
+            // Bank camera slightly into turns
+            const tangent = flightCurve.getTangentAt(progress);
+            camera.rotation.z = -tangent.x * 0.45;
+
+            // Kinetic Rotations of 3D Objects
+            octaCoreMesh.rotation.y += 0.008;
+            octaCoreMesh.rotation.x += 0.004;
+            octaWireMesh.rotation.y -= 0.006;
+            octaWireMesh.rotation.z += 0.005;
+
+            hexTowerMesh.rotation.y += 0.004;
+
+            coreContainer.rotation.y += 0.012;
+            coreContainer.rotation.x += 0.006;
+            ring1.rotation.z += 0.008;
+            ring2.rotation.z -= 0.006;
+
+            portalRing1.rotation.z += 0.003;
+            portalRing2.rotation.z -= 0.004;
+
+            projectPedestalMeshes.forEach((item, idx) => {
+                item.artifact.rotation.y += 0.01 * (idx % 2 === 0 ? 1 : -1);
+                item.wire.rotation.y -= 0.008;
+            });
+
+            // Particles Drift
+            particles.rotation.y += 0.0003;
+
+            // DETERMINE ACTIVE CHAMBER
+            let closestStation = 0;
+            let minDist = 999999;
+            stations.forEach((st, idx) => {
+                const d = Math.abs(st.t - progress);
+                if (d < minDist) {
+                    minDist = d;
+                    closestStation = idx;
+                }
+            });
+
+            // Update UI & Overlays
+            if (closestStation !== currentStationIndex) {
+                currentStationIndex = closestStation;
+
+                // Update Dock Active States
+                stations.forEach((st, idx) => {
+                    const btn = document.getElementById(`sec-btn-${idx}`);
+                    if (btn) btn.classList.toggle('active', idx === currentStationIndex);
+                });
+
+                telSector.innerText = stations[currentStationIndex].name;
+            }
+
+            // Update Overlay Visibility based on proximity
+            stations.forEach((st, idx) => {
+                const overlay = document.getElementById(st.overlayId);
+                if (overlay) {
+                    const distToStation = Math.abs(progress - st.t);
+                    const isVisible = distToStation < 0.11;
+                    overlay.classList.toggle('visible', isVisible);
+                }
+            });
+
+            // HUD Progress Update
+            const pct = Math.round(progress * 100);
+            flightFill.style.width = pct + '%';
+            flightPct.innerText = (pct < 10 ? '0' : '') + pct + '%';
+            telZ.innerText = camera.position.z.toFixed(1) + ' m';
+
+            renderer.render(scene, camera);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
 </body>
 </html>
