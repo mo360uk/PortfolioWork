@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mo360 Immersive Tours | Guided Cornish Expeditions, Steam Railways & Spatial 360 VR</title>
+  <meta name="description" content="Official travel division of Mo360 Immersive Studio Ltd. Guided small group tours from Plymouth to Cornwall, Bodmin steam railway, Eden Project, Looe beaches, and winter light trails with complimentary 360 VR spatial capture.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js CDN for interactive spatial effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              amber: '#F59E0B',
+              amberDark: '#D97706',
+              teal: '#14B8A6',
+              tealDark: '#0D9488',
+              gyg: '#FF5533',
+              dark: '#08080C',
+              card: '#121218',
+              cardBorder: 'rgba(255, 255, 255, 0.08)'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            hand: ['"Caveat"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #08080C;
+      color: #F3F4F6;
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.65;
+    }
+    .glass-nav {
+      background: rgba(14, 14, 18, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glass-card {
+      background: rgba(18, 18, 24, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 16px 45px -10px rgba(245, 158, 11, 0.18);
+      transform: translateY(-4px);
+    }
+    .glass-card-teal:hover {
+      border-color: rgba(20, 184, 166, 0.45);
+      box-shadow: 0 16px 45px -10px rgba(20, 184, 166, 0.18);
+      transform: translateY(-4px);
+    }
+    .glass-card-gyg:hover {
+      border-color: rgba(255, 85, 51, 0.55);
+      box-shadow: 0 16px 45px -10px rgba(255, 85, 51, 0.25);
+      transform: translateY(-4px);
+    }
+    .filter-btn.active {
+      background: #F59E0B;
+      color: #000000;
+      font-weight: 700;
+      border-color: #F59E0B;
+    }
+    .badge-glow {
+      box-shadow: 0 0 25px -4px rgba(245, 158, 11, 0.4);
+    }
+    .gyg-glow {
+      box-shadow: 0 0 30px -5px rgba(255, 85, 51, 0.45);
+    }
+  </style>
+</head>
+<body class="relative selection:bg-amber-400 selection:text-black">
+
+  <!-- Ambient Three.js Background Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Sticky Top Navigation Bar -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-4 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between glass-nav rounded-full px-5 py-3 border border-white/10 shadow-2xl">
+      
+      <!-- Logo and Studio Hierarchy -->
+      <a href="/index.html" class="flex items-center gap-3 group" title="Return to Mo360 Immersive Studio Homepage">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-teal-400 flex items-center justify-center font-bold text-black text-xs font-display shadow-lg group-hover:scale-105 transition">
+          360
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-display font-extrabold tracking-tight text-white text-base">Mo360</span>
+            <span class="font-display font-light text-amber-400 text-base">Tours</span>
+          </div>
+          <span class="text-[9px] uppercase tracking-widest text-teal-400 font-semibold -mt-1 flex items-center gap-1">
+            <span>&larr; Studio Subpage</span>
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="hidden md:flex items-center gap-6 text-xs uppercase tracking-wider font-semibold text-slate-300">
+        <a href="#tours" class="hover:text-amber-400 transition text-amber-400">Expeditions</a>
+        <a href="#steam-railway" class="hover:text-amber-400 transition">Steam Train</a>
+        <a href="#winter-lights" class="hover:text-rose-400 transition flex items-center gap-1">
+          <span>✨</span> Winter Lights
+        </a>
+        <a href="#experience" class="hover:text-teal-400 transition">360 VR Capture</a>
+        <a href="#reviews" class="hover:text-amber-400 transition">Reviews</a>
+        <a href="#faq" class="hover:text-slate-200 transition">FAQ</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="https://supplier.getyourguide.com/" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-bold text-[11px] uppercase tracking-wider transition gyg-glow">
+          <span>🎟️</span> GetYourGuide
+        </a>
+        <a href="#booking" class="px-5 py-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs uppercase tracking-wider transition badge-glow">
+          Book Direct
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="relative z-10 pt-28 sm:pt-36 pb-24">
+
+    <!-- HERO SECTION -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-14 text-center">
+      
+      <!-- Category & Authority Pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/30 bg-amber-950/40 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        Official GetYourGuide Activity Provider &bull; Devon &amp; Cornwall Small Groups
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-5xl mx-auto leading-[1.08] mb-4">
+        Extraordinary Cornish Expeditions, <br class="hidden sm:inline">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-400 to-teal-400">Steam Heritage &amp; 360 Spatial</span> Memories.
+      </h1>
+
+      <!-- Personal Host Note -->
+      <p class="font-hand text-2xl sm:text-3xl text-amber-300 max-w-2xl mx-auto mb-6 -rotate-1">
+        Friendly, relaxed, small group journeys hosted by local creative technologist &amp; photographer Mohamed
+      </p>
+
+      <!-- Subheadline -->
+      <p class="text-slate-300 text-base sm:text-lg max-w-3xl mx-auto font-normal leading-relaxed mb-8">
+        Leave parking stress and narrow country lanes behind. Journey from Plymouth into Cornwall to experience the Bodmin Heritage Steam Railway, East Looe beaches, the Eden Project biomes, and evening winter light trails. Every guest receives a complimentary, high resolution 360 VR spatial photo album of their day.
+      </p>
+
+      <!-- UK Tour Operator Gold Standard Trust Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto mb-10 text-left">
+        <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+          <div class="text-2xl p-2 rounded-xl bg-amber-400/10 text-amber-400">🛡️</div>
+          <div>
+            <div class="text-xs font-bold text-white">Free 24h Cancellation</div>
+            <div class="text-[11px] text-slate-400">100% full refund guarantee</div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+          <div class="text-2xl p-2 rounded-xl bg-teal-400/10 text-teal-400">👥</div>
+          <div>
+            <div class="text-xs font-bold text-white">Intimate Small Groups</div>
+            <div class="text-[11px] text-slate-400">Strictly 6 to 8 guests max</div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+          <div class="text-2xl p-2 rounded-xl bg-purple-400/10 text-purple-400">📸</div>
+          <div>
+            <div class="text-xs font-bold text-white">Free 360 VR Spatial Album</div>
+            <div class="text-[11px] text-slate-400">Included on every booking</div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 flex items-center gap-3">
+          <div class="text-2xl p-2 rounded-xl bg-[#FF5533]/15 text-[#FF5533]">🎟️</div>
+          <div>
+            <div class="text-xs font-bold text-white">GetYourGuide Partner</div>
+            <div class="text-[11px] text-slate-400">Verified official activity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="#tours" class="px-8 py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs uppercase tracking-wider transition badge-glow">
+          Explore Tour Itineraries
+        </a>
+        <a href="https://supplier.getyourguide.com/" target="_blank" class="px-8 py-4 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-extrabold text-xs uppercase tracking-wider transition gyg-glow flex items-center gap-2">
+          <span>🎟️</span> Book on GetYourGuide
+        </a>
+        <a href="https://wa.me/447000000000?text=Hi%20Mohamed,%20I%20would%20like%20to%20ask%20about%20Mo360%20Immersive%20Tours" target="_blank" class="px-6 py-4 rounded-full glass-card hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-wider border border-white/20 transition flex items-center gap-2">
+          <span>💬</span> Chat on WhatsApp
+        </a>
+      </div>
+
+    </section>
+
+    <!-- INTERACTIVE TOUR FILTER TABS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
+      <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">Curated Excursions</span>
+          <h2 class="font-display text-2xl sm:text-4xl font-extrabold text-white mt-1">
+            Choose Your Cornish Journey
+          </h2>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="filterCategory('all', this)" class="filter-btn active px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            All Tours
+          </button>
+          <button onclick="filterCategory('steam', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            🚂 Steam Railway
+          </button>
+          <button onclick="filterCategory('gardens', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            🌿 Eden &amp; Heligan
+          </button>
+          <button onclick="filterCategory('coast', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            🌊 Looe &amp; Coast
+          </button>
+          <button onclick="filterCategory('marine', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            🚢 Marine Cruises
+          </button>
+          <button onclick="filterCategory('winter', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            ❄️ Winter Lights
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLAGSHIP TOURS GRID -->
+    <section id="tours" class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- TOUR 1: EDEN PROJECT & LOST GARDENS OF HELIGAN -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="gardens">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-amber-400 text-black font-extrabold text-[10px] uppercase tracking-wider">
+                &starf; Flagship Day Tour
+              </span>
+              <span class="text-xs text-slate-400">7.5 Hours &bull; Central Cornwall</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              From Plymouth: Eden Project &amp; Lost Gardens of Heligan Day Tour
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Cross the historic Tamar river into Cornwall for the ultimate twin botanical expedition. Walk the high canopy walkway inside Eden's colossal indoor Rainforest biome, followed by Heligan's romantic 1990s sleeping Victorian estate, Mud Maid moss sculpture, and subtropical jungle valley.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="/assets/eden_biomes.jpg" alt="Eden Project Geodesic Biomes" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
+                Botanical Wonder
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Direct Plymouth Railway Station pickup</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Admission to Eden Project Biomes &amp; Heligan Jungle</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> Complimentary 360 VR photo album included</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Halal friendly Cornish pasty &amp; lunch stop</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">All Inclusive Tour</span>
+              <div class="font-display text-2xl font-extrabold text-white">£89 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="#booking" onclick="preselectTour('eden_heligan')" class="px-4 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs uppercase transition">
+                Reserve
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOUR 2: BODMIN HERITAGE STEAM RAILWAY & WILD MOOR SAFARI -->
+        <div id="steam-railway" class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="steam">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-[10px] uppercase tracking-wider border border-amber-500/30">
+                🚂 Steam Train &amp; Moors
+              </span>
+              <span class="text-xs text-slate-400">7 Hours &bull; Central Cornwall</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              From Plymouth: Bodmin Steam Railway, Camel Valley &amp; Wild Bodmin Moor Safari
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Step back into the golden age of steam on Cornwall's only standard gauge heritage steam railway. Ride vintage 1950s carriages through the wooded Camel Valley, explore 18th century smugglers' tales at Jamaica Inn on wild Bodmin Moor, and visit King Arthur's mystical Dozmary Pool.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="/assets/bodmin_steam_railway.jpg" alt="Bodmin & Wenford Heritage Steam Railway" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-300">
+                Vintage Heritage
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Return vintage steam locomotive ticket included</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Bodmin General 1950s branch station &amp; engine shed</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Bodmin Moor safari: wild ponies &amp; Dozmary Pool</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> 360 VR spatial photo capture at historic train platforms</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">Steam Train + Safari</span>
+              <div class="font-display text-2xl font-extrabold text-white">£68 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('bodmin_steam')" class="px-4 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs uppercase transition">
+              Reserve
+            </a>
+          </div>
+        </div>
+
+        <!-- TOUR 3: LOOE FISHING HARBOUR & GOLITHA FALLS -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="coast">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-teal-500/20 text-teal-300 font-extrabold text-[10px] uppercase tracking-wider border border-teal-500/30">
+                🌊 Coastal Beaches &amp; Waterfalls
+              </span>
+              <span class="text-xs text-slate-400">6.5 Hours &bull; South East Cornwall</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              From Plymouth: Looe Historic Fishing Harbour, Golden Beaches &amp; Golitha Falls
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Experience the best of coastal South East Cornwall. Stroll along the golden sands and iconic Banjo Pier of East Looe, explore narrow smuggler alleys, and sample fresh local seafood. Then journey up the wooded valley to the ancient oak temperate rainforest and cascading waterfalls of Golitha Falls.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="/assets/looe_beach.jpg" alt="East Looe sandy beach and Banjo Pier" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
+                Cornish Coast
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> East Looe sandy beach, Banjo Pier &amp; Looe Island views</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Golitha Falls ancient oak woodland &amp; river walk</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Looe smuggler quarter &amp; artisan bakeries</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> Free 360 coastal VR panorama delivered to your phone</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">Round Trip Excursion</span>
+              <div class="font-display text-2xl font-extrabold text-white">£58 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('looe_liskeard')" class="px-4 py-2.5 rounded-full bg-teal-400 hover:bg-teal-300 text-black font-extrabold text-xs uppercase transition">
+              Reserve
+            </a>
+          </div>
+        </div>
+
+        <!-- TOUR 4: PLYMOUTH SOUND & NAVAL WARSHIPS CRUISE -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="marine">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-blue-500/20 text-blue-300 font-extrabold text-[10px] uppercase tracking-wider border border-blue-500/30">
+                🚢 Marine Park &amp; Warships
+              </span>
+              <span class="text-xs text-slate-400">2 Hours &bull; Plymouth Barbican</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              Plymouth Sound &amp; Devonport Naval Dockyard Warships Cruise
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Depart from the historic Barbican and sail across the UK's first National Marine Park. Sail past Drake's Island, the 17th century Royal Citadel, and into the River Hamoaze alongside active Royal Navy frigates and submarines.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="/assets/plymouth_sound.jpg" alt="Plymouth Sound and Naval Waterfront" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-blue-300">
+                National Marine Park
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Barbican historic Mayflower steps departure</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Up close water views of Royal Navy warships</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Drake's Island fortress circumnavigation</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> Live commentary and marine wildlife spotting</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">Boat Cruise Ticket</span>
+              <div class="font-display text-2xl font-extrabold text-white">£25 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('boat_warships')" class="px-4 py-2.5 rounded-full bg-blue-400 hover:bg-blue-300 text-black font-extrabold text-xs uppercase transition">
+              Reserve
+            </a>
+          </div>
+        </div>
+
+        <!-- TOUR 5: CHARLESTOWN GEORGIAN PORT & POLDARK TRAIL -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="coast">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-extrabold text-[10px] uppercase tracking-wider border border-amber-400/30">
+                ⚓ Poldark Tall Ships Harbour
+              </span>
+              <span class="text-xs text-slate-400">4 Hours &bull; St Austell Bay</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              Charlestown Georgian Tall Ships Harbour &amp; Coastal Cliff Walk
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Explore the pristine 18th century granite port famous from Poldark and maritime cinema. Stroll along classic wooden tall ships, discover salvaged artifacts, and walk the dramatic coastal cliff paths overlooking St Austell Bay.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="/assets/charlestown_ships.jpg" alt="Charlestown tall ships and granite harbour" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-300">
+                Poldark Heritage
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Historic Georgian granite lock gates &amp; tall ships</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Poldark filming locations &amp; audio stories</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Coastal cliff path panorama photo stops</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> 360 harbour panorama photo included</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">Guided Heritage Walk</span>
+              <div class="font-display text-2xl font-extrabold text-white">£34 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('charlestown')" class="px-4 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs uppercase transition">
+              Reserve
+            </a>
+          </div>
+        </div>
+
+        <!-- TOUR 6: DRAKE'S ISLAND & WILDLIFE SAFARI -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="marine">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-teal-500/20 text-teal-300 font-extrabold text-[10px] uppercase tracking-wider border border-teal-500/30">
+                🏝️ Volcanic Island &amp; Seals
+              </span>
+              <span class="text-xs text-slate-400">2.5 Hours &bull; Plymouth Sound</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              Drake's Island Mystery &amp; Plymouth Sound Marine Wildlife Safari
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Cruise out to legendary Drake's Island, a volcanic rock fortress fortified since Tudor times. Circumnavigate the fortress, heading toward the giant Plymouth Breakwater to spot Atlantic grey seals and bottle nosed dolphins.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="/assets/drakes_island.jpg" alt="Drake's Island volcanic fortress" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
+                Marine Safari
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Drake's Island historic Tudor fortifications</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Plymouth Breakwater lighthouse vantage</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Wildlife spotting: grey seals &amp; seabirds</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> 360 marine panorama delivered to your phone</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">Island &amp; Wildlife Cruise</span>
+              <div class="font-display text-2xl font-extrabold text-white">£32 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('boat_drakes')" class="px-4 py-2.5 rounded-full bg-teal-400 hover:bg-teal-300 text-black font-extrabold text-xs uppercase transition">
+              Reserve
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WINTER LIGHT TRAILS SPECIAL SECTION -->
+    <section id="winter-lights" class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border-2 border-rose-500/40 relative overflow-hidden">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+          <div>
+            <div class="inline-flex items-center gap-2 text-rose-400 font-extrabold text-xs uppercase tracking-widest mb-2">
+              <span>❄️</span> Winter &amp; Holiday Season Special 2026
+            </div>
+            <h2 class="font-display text-3xl sm:text-5xl font-extrabold text-white">
+              Spectacular Winter Light Trails &amp; Night Photo Walks
+            </h2>
+          </div>
+          <p class="text-slate-300 text-sm max-w-md mt-4 md:mt-0 leading-relaxed">
+            Wrap up warm! We coordinate comfortable, stress free evening excursions to the UK's most magical illuminated winter gardens.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <!-- Winter Trail 1: Heligan Night Garden -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border border-rose-500/30">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 font-bold text-[10px] uppercase tracking-wider border border-rose-500/30">
+                  Cornwall &bull; Evening Lantern Trail
+                </span>
+                <span class="text-xs text-slate-400">4 Hours</span>
+              </div>
+              <h3 class="font-display text-xl font-bold text-white mb-2">
+                The Heligan Night Garden: Giant Lantern Trail &amp; Winter Woodland
+              </h3>
+              <p class="text-slate-300 text-xs leading-relaxed mb-4">
+                Wander through an enchanting world of illuminated giant wildlife lanterns, glowing flora, and atmospheric soundscapes in the historic gardens of Heligan. Cozy fire pits for toasting marshmallows and warm spiced apple cider stops.
+              </p>
+
+              <div class="w-full h-36 rounded-xl overflow-hidden mb-4 border border-white/10">
+                <img src="/assets/heligan_night_garden.jpg" alt="Heligan Night Garden illuminated lantern trail" class="w-full h-full object-cover">
+              </div>
+
+              <ul class="text-xs space-y-1.5 text-slate-300 mb-6">
+                <li class="flex items-center gap-1.5 text-rose-300">&starf; Direct evening minibus from Plymouth Station</li>
+                <li class="flex items-center gap-1.5 text-rose-300">&starf; Night photography coaching with Mohamed included</li>
+                <li class="flex items-center gap-1.5 text-rose-300">&starf; Halal friendly warm drinks &amp; festive snacks</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase text-slate-400">Evening Package</span>
+                <div class="font-display text-xl font-bold text-white">£48 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+              </div>
+              <a href="#booking" onclick="preselectTour('heligan_lights')" class="px-4 py-2 rounded-full bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs uppercase transition">
+                Book Evening
+              </a>
+            </div>
+          </div>
+
+          <!-- Winter Trail 2: Eden Project Biomes After Dark -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border border-amber-500/30">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-[10px] uppercase tracking-wider border border-amber-500/30">
+                  Cornwall &bull; Domes After Dark
+                </span>
+                <span class="text-xs text-slate-400">5 Hours</span>
+              </div>
+              <h3 class="font-display text-xl font-bold text-white mb-2">
+                Eden Project: Winter Lights, Biomes After Dark &amp; Twilight Ice Skating
+              </h3>
+              <p class="text-slate-300 text-xs leading-relaxed mb-4">
+                See the colossal geodesic domes transform under thousands of ambient jewel colored lights. Listen to live seasonal music under the warm rainforest canopy, explore Christmas craft stalls, and take a spin on the glittering indoor ice rink.
+              </p>
+
+              <div class="w-full h-36 rounded-xl overflow-hidden mb-4 border border-white/10">
+                <img src="/assets/eden_biomes.jpg" alt="Eden Project Winter Lights" class="w-full h-full object-cover">
+              </div>
+
+              <ul class="text-xs space-y-1.5 text-slate-300 mb-6">
+                <li class="flex items-center gap-1.5 text-amber-300">&starf; Heated indoor tropical rainforest light experience</li>
+                <li class="flex items-center gap-1.5 text-amber-300">&starf; Optional indoor ice skating session add on</li>
+                <li class="flex items-center gap-1.5 text-amber-300">&starf; Artisan hot chocolate &amp; festive treats</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase text-slate-400">Transport &amp; Entry</span>
+                <div class="font-display text-xl font-bold text-white">£54 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+              </div>
+              <a href="#booking" onclick="preselectTour('eden_lights')" class="px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs uppercase transition">
+                Book Evening
+              </a>
+            </div>
+          </div>
+
+          <!-- Winter Trail 3: Bath Christmas Market & Longleat -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border border-teal-500/30">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 font-bold text-[10px] uppercase tracking-wider border border-teal-500/30">
+                  Somerset &bull; Weekend Special
+                </span>
+                <span class="text-xs text-slate-400">Full Day Weekend</span>
+              </div>
+              <h3 class="font-display text-xl font-bold text-white mb-2">
+                Bath Christmas Market &amp; Longleat Festival of Light Extravaganza
+              </h3>
+              <p class="text-slate-300 text-xs leading-relaxed mb-4">
+                Travel from Plymouth to the world famous Bath Christmas Market surrounding the Roman Baths and Georgian Abbey, followed by the UK's biggest illuminated lantern festival across the historic Longleat estate.
+              </p>
+
+              <div class="w-full h-36 rounded-xl overflow-hidden mb-4 border border-white/10 bg-teal-950/30 flex items-center justify-center text-teal-300 text-3xl">
+                🏮 ✨ 🏰
+              </div>
+
+              <ul class="text-xs space-y-1.5 text-slate-300 mb-6">
+                <li class="flex items-center gap-1.5 text-teal-300">&starf; Over 150 artisan chalets &amp; Georgian architecture</li>
+                <li class="flex items-center gap-1.5 text-teal-300">&starf; Spectacular giant illuminated silk lanterns at Longleat</li>
+                <li class="flex items-center gap-1.5 text-teal-300">&starf; Stress free group train or minibus departure</li>
+              </ul>
+            </div>
+            <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase text-slate-400">Special Weekend Trip</span>
+                <div class="font-display text-xl font-bold text-white">£95 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+              </div>
+              <a href="#booking" onclick="preselectTour('bath_longleat')" class="px-4 py-2 rounded-full bg-teal-400 hover:bg-teal-300 text-black font-bold text-xs uppercase transition">
+                Book Weekend
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- THE MO360 SPATIAL DIFFERENCE (UK TOUR OPERATOR GOLD STANDARD COMPARISON) -->
+    <section id="experience" class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">The Mo360 Difference</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mt-1 mb-3">
+          Why Tour With a Creative Technologist?
+        </h2>
+        <p class="text-slate-300 text-sm leading-relaxed">
+          See how our bespoke small group expeditions compare to typical 50 passenger commercial bus tours.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6 sm:p-10 border border-white/10 overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead>
+            <tr class="border-b border-white/10 text-slate-400 uppercase tracking-wider text-[11px]">
+              <th class="py-4 font-semibold">Experience Feature</th>
+              <th class="py-4 font-bold text-amber-400">Mo360 Immersive Tours</th>
+              <th class="py-4 font-semibold text-slate-500">Typical 50 Person Bus Tour</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-slate-300">
+            <tr>
+              <td class="py-4 font-bold text-white">Group Size</td>
+              <td class="py-4 text-amber-300 font-semibold">&check; Intimate (Strictly 6 to 8 Guests Max)</td>
+              <td class="py-4 text-slate-500">Crowded coach with 50+ tourists</td>
+            </tr>
+            <tr>
+              <td class="py-4 font-bold text-white">Holiday Memories</td>
+              <td class="py-4 text-teal-300 font-semibold">&starf; Free 360 VR Spatial Photo Album Included</td>
+              <td class="py-4 text-slate-500">None (rushed smartphone selfies)</td>
+            </tr>
+            <tr>
+              <td class="py-4 font-bold text-white">Travel Pacing</td>
+              <td class="py-4 text-amber-300 font-semibold">&check; Relaxed, flexible photo stops &amp; tea breaks</td>
+              <td class="py-4 text-slate-500">Strict 20 minute whistle stops</td>
+            </tr>
+            <tr>
+              <td class="py-4 font-bold text-white">Local Pickup</td>
+              <td class="py-4 text-amber-300 font-semibold">&check; Plymouth Railway Station &amp; Central Hotels</td>
+              <td class="py-4 text-slate-500">Inconvenient fixed bus depots</td>
+            </tr>
+            <tr>
+              <td class="py-4 font-bold text-white">Host &amp; Guide</td>
+              <td class="py-4 text-teal-300 font-semibold">&check; Guided in person by Mohamed with storytelling</td>
+              <td class="py-4 text-slate-500">Generic recorded audio headset</td>
+            </tr>
+            <tr>
+              <td class="py-4 font-bold text-white">Food &amp; Inclusivity</td>
+              <td class="py-4 text-amber-300 font-semibold">&check; Halal friendly pasties, prayer pauses, student rates</td>
+              <td class="py-4 text-slate-500">One size fits all roadside services</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- OFFICIAL GETYOURGUIDE INTEGRATION BANNER -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border-2 border-[#FF5533]/50 relative overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF5533]/20 text-[#FF5533] font-extrabold text-xs uppercase tracking-wider mb-4 border border-[#FF5533]/30">
+              Official Partner &bull; Book With Confidence
+            </div>
+            <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mb-3">
+              Book on GetYourGuide with Guaranteed Buyer Protection
+            </h2>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+              Prefer booking through global platforms? All Mo360 tours can be booked directly through our verified supplier profile on GetYourGuide, supporting all international payment methods, multi currency checkout, instant mobile vouchers, and guaranteed 24 hour free cancellation.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
+              <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                <div class="text-[#FF5533] font-bold text-sm mb-1">Instant E-Ticket</div>
+                <div>Sent straight to your mobile device or GetYourGuide app.</div>
+              </div>
+              <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                <div class="text-teal-400 font-bold text-sm mb-1">Full Flexibility</div>
+                <div>100% refund if cancelled up to 24 hours prior to departure.</div>
+              </div>
+              <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                <div class="text-amber-400 font-bold text-sm mb-1">Direct Host Chat</div>
+                <div>Direct communication with Mohamed for meeting instructions.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 flex flex-col items-center justify-center text-center p-8 rounded-2xl bg-black/60 border border-white/10">
+            <div class="w-16 h-16 rounded-2xl bg-[#FF5533] text-white flex items-center justify-center font-bold text-2xl mb-4 shadow-xl font-display">
+              GYG
+            </div>
+            <h4 class="font-display text-xl font-bold text-white mb-1">GetYourGuide Verified</h4>
+            <div class="text-amber-400 text-sm font-bold mb-4">&starf;&starf;&starf;&starf;&starf; 5.0 Rating</div>
+            <a href="https://supplier.getyourguide.com/" target="_blank" class="w-full py-3.5 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-extrabold text-xs uppercase tracking-wider transition shadow-lg gyg-glow">
+              Open GetYourGuide Profile &rarr;
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- VERIFIED TRAVELER REVIEWS -->
+    <section id="reviews" class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="text-xs uppercase tracking-widest text-teal-400 font-bold">Social Proof &amp; Verified Feedback</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mt-1 mb-3">
+          What Guests Say About Traveling With Mohamed
+        </h2>
+        <div class="flex items-center justify-center gap-2 text-amber-400 text-sm font-bold">
+          <span>&starf;&starf;&starf;&starf;&starf;</span>
+          <span class="text-white">5.0 Out of 5.0</span>
+          <span class="text-slate-400 font-normal">&bull; Verified Travelers &amp; Students</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Review 1: Student -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">&starf;&starf;&starf;&starf;&starf;</div>
+            <p class="text-slate-300 text-xs leading-relaxed italic mb-4">
+              "As an international postgraduate student from Nigeria without a car in Plymouth, getting to the Eden Project seemed impossible. Mohamed made the entire day so easy, played great music, and took stunning 360 photos for my family back home!"
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-teal-500/20 text-teal-300 font-bold text-xs flex items-center justify-center">
+              TO
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">Tolu O.</div>
+              <div class="text-[10px] text-slate-400">Postgraduate &bull; Plymouth Uni</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 2: Family -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">&starf;&starf;&starf;&starf;&starf;</div>
+            <p class="text-slate-300 text-xs leading-relaxed italic mb-4">
+              "We joined the Looe and Liskeard tour with our two kids. Golitha Falls was pure magic, and eating fresh pasties on Looe beach without having to worry about Cornish parking was such a relief. Highly recommended!"
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-amber-500/20 text-amber-300 font-bold text-xs flex items-center justify-center">
+              EW
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">Emma &amp; David W.</div>
+              <div class="text-[10px] text-slate-400">Family Explorer &bull; Devon</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 3: Steam Railway Guest -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">&starf;&starf;&starf;&starf;&starf;</div>
+            <p class="text-slate-300 text-xs leading-relaxed italic mb-4">
+              "The Bodmin Steam Railway through the Camel Valley was unforgettable. Mohamed knows all the hidden historic spots, and the stop at Jamaica Inn on Bodmin Moor was incredible. The 360 photo VR gallery is brilliant."
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-rose-500/20 text-rose-300 font-bold text-xs flex items-center justify-center">
+              JM
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">James M.</div>
+              <div class="text-[10px] text-slate-400">Railway Enthusiast &bull; London</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 4: Community Elder -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">&starf;&starf;&starf;&starf;&starf;</div>
+            <p class="text-slate-300 text-xs leading-relaxed italic mb-4">
+              "Mohamed was so attentive and kind. The pacing was gentle with step free paths and plenty of tea stops. It brought so much joy to our community group. We felt truly looked after from start to finish."
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-purple-500/20 text-purple-300 font-bold text-xs flex items-center justify-center">
+              FS
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">Fatima S.</div>
+              <div class="text-[10px] text-slate-400">Community Member &bull; Plymouth</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FREQUENTLY ASKED QUESTIONS (UK BEST PRACTICES) -->
+    <section id="faq" class="max-w-4xl mx-auto px-4 sm:px-6 py-14">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <span class="text-xs uppercase tracking-widest text-teal-400 font-bold">Clear Answers &bull; Zero Surprises</span>
+        <h2 class="font-display text-3xl font-extrabold text-white mt-1 mb-2">Frequently Asked Questions</h2>
+        <p class="text-slate-400 text-sm">Everything you need to know before joining us on tour.</p>
+      </div>
+
+      <div class="space-y-4">
+        
+        <div class="glass-card rounded-2xl p-6">
+          <h4 class="font-display text-base font-bold text-white mb-2">Where do we meet in Plymouth?</h4>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            Our primary departure location is right outside Plymouth Railway Station main entrance (convenient for train and bus arrivals). We also offer pickups outside Sherwell United Church on North Hill (convenient for university students) or direct pickup from central Plymouth hotels and Derriford.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <h4 class="font-display text-base font-bold text-white mb-2">What if it rains on the day of the tour?</h4>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            Cornish weather can be unpredictable, but our tours are rainproof! The Eden Project features colossal heated indoor rainforest and Mediterranean biomes that are completely dry and warm. At Heligan, we provide umbrellas and have warm indoor tearooms. The Bodmin steam train features fully enclosed, heated vintage carriages.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <h4 class="font-display text-base font-bold text-white mb-2">Can I book on GetYourGuide or directly with you?</h4>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            Both! If you hold GetYourGuide gift credits or prefer international payment options, you can book via our verified GetYourGuide link. If you prefer to book directly with Mohamed, submit the form below or message via WhatsApp for zero booking fees.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <h4 class="font-display text-base font-bold text-white mb-2">How does the free 360 VR Spatial Album work?</h4>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            Because Mohamed runs Mo360 Immersive Studio, he captures professional high resolution 360 degree spherical photos of your group at the most breathtaking vantage points. Within 24 hours of your tour, you receive a private, interactive web link you can open on any smartphone, tablet, or VR headset.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <h4 class="font-display text-base font-bold text-white mb-2">What is your cancellation policy?</h4>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            We follow the UK gold standard: 100% full refund if you cancel up to 24 hours before your tour departure time. No hidden cancellation penalties.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE DIRECT RESERVATION SECTION -->
+    <section id="booking" class="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-white/10">
+        
+        <div class="text-center max-w-xl mx-auto mb-10">
+          <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">Direct Studio Reservation</span>
+          <h2 class="font-display text-3xl font-extrabold text-white mt-1 mb-2">Reserve Your Tour or Custom Group</h2>
+          <p class="text-slate-400 text-sm">
+            Fill in your details below. We confirm availability, pickup timing, and briefing within 2 hours.
+          </p>
+        </div>
+
+        <form id="tour-booking-form" onsubmit="handleTourBooking(event)" class="space-y-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Your Full Name *</label>
+              <input type="text" id="guest-name" required placeholder="e.g. Sarah Jenkins" class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition text-sm">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Email Address *</label>
+              <input type="email" id="guest-email" required placeholder="name@example.com" class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition text-sm">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Select Tour Experience *</label>
+              <select id="tour-select" required class="w-full px-4 py-3.5 rounded-xl bg-[#121218] border border-white/10 text-white focus:outline-none focus:border-amber-400 transition text-sm">
+                <option value="eden_heligan">From Plymouth: Eden Project &amp; Lost Gardens of Heligan (£89)</option>
+                <option value="bodmin_steam">🚂 From Plymouth: Bodmin Steam Railway &amp; Wild Bodmin Moor Safari (£68)</option>
+                <option value="looe_liskeard">🌊 From Plymouth: Looe Harbour, Beaches &amp; Golitha Falls (£58)</option>
+                <option value="boat_warships">🚢 Plymouth Sound &amp; Naval Dockyard Warships Cruise (£25)</option>
+                <option value="charlestown">Charlestown Georgian Harbour &amp; Poldark Trail (£34)</option>
+                <option value="boat_drakes">Drake's Island Mystery &amp; Marine Wildlife Safari (£32)</option>
+                <option value="heligan_lights">🎄 Heligan Night Garden Magical Lantern Trail (£48)</option>
+                <option value="eden_lights">❄️ Eden Project Winter Lights &amp; Twilight Skating (£54)</option>
+                <option value="bath_longleat">🏮 Bath Christmas Market &amp; Longleat Festival of Light (£95)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Preferred Tour Date *</label>
+              <input type="date" id="tour-date" required class="w-full px-4 py-3.5 rounded-xl bg-[#121218] border border-white/10 text-white focus:outline-none focus:border-amber-400 transition text-sm">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Group Size *</label>
+              <select id="group-size" required class="w-full px-4 py-3.5 rounded-xl bg-[#121218] border border-white/10 text-white focus:outline-none focus:border-amber-400 transition text-sm">
+                <option value="1">1 Person</option>
+                <option value="2">2 People (Couple / Friends)</option>
+                <option value="3-4">3 to 4 People (Family / Small Group)</option>
+                <option value="5-8">5 to 8 People (Standard Small Group)</option>
+                <option value="9+">9+ People (Custom Group / Society)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Pickup Location Preference</label>
+              <select id="pickup-location" class="w-full px-4 py-3.5 rounded-xl bg-[#121218] border border-white/10 text-white focus:outline-none focus:border-amber-400 transition text-sm">
+                <option value="plymouth_station">Plymouth Railway Station (Main Entrance)</option>
+                <option value="north_hill">North Hill / Sherwell Church (Plymouth University)</option>
+                <option value="barbican">The Barbican Tourist Centre</option>
+                <option value="hotel">Plymouth Hotel / AirBnB Pickup</option>
+                <option value="derriford">Derriford Hospital (Staff Pickup)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Special Notes (Halal Food Stops, Camera Tips, Accessibility)</label>
+            <textarea id="special-notes" rows="3" placeholder="Tell us if you want night photography coaching, Halal meal stops, prayer pauses, or have step free access needs..." class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition text-sm"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-4 rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-teal-400 hover:opacity-95 text-black font-extrabold text-sm uppercase tracking-wider transition badge-glow">
+            Submit Booking Request &rarr;
+          </button>
+        </form>
+
+        <div id="booking-success-msg" class="hidden text-center py-8">
+          <div class="w-16 h-16 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center text-3xl mx-auto mb-4 border border-teal-500/40">
+            &check;
+          </div>
+          <h3 class="font-display text-2xl font-bold text-white mb-2">Booking Request Received!</h3>
+          <p class="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
+            Thank you! Mohamed from Mo360 Immersive Studio will contact you within 2 hours to confirm pickup details, schedule, and tour briefing.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STUDIO FOOTER -->
+  <footer class="relative z-10 border-t border-white/10 py-12 text-center text-xs text-slate-500 bg-[#060608]">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-teal-400 flex items-center justify-center font-bold text-black text-xs font-display">
+          360
+        </div>
+        <div class="text-left">
+          <div class="text-slate-300 font-semibold">Mo360 Immersive Tours</div>
+          <div class="text-[11px] text-slate-500">&copy; 2026 Mo360 Immersive Studio Ltd. Registered in England &amp; Wales.</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6 text-slate-400 text-xs">
+        <a href="/index.html" class="hover:text-teal-400 transition">&larr; Main Studio</a>
+        <a href="#tours" class="hover:text-amber-400 transition">Cornish Tours</a>
+        <a href="#winter-lights" class="hover:text-rose-400 transition">Winter Lights</a>
+        <a href="https://supplier.getyourguide.com/" target="_blank" class="hover:text-[#FF5533] transition">GetYourGuide Partner</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- THREE.JS PARTICLES & FILTER SCRIPTS -->
+  <script>
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const particleCount = 850;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const amberColor = new THREE.Color(0xF59E0B);
+    const tealColor = new THREE.Color(0x14B8A6);
+    const roseColor = new THREE.Color(0xF43F5E);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 45;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 45;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 45;
+
+      const rand = Math.random();
+      const col = rand > 0.6 ? amberColor : (rand > 0.3 ? tealColor : roseColor);
+      colors[i * 3] = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.12,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.7
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    camera.position.z = 24;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.8;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.8;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      particles.rotation.y += 0.0006;
+      particles.rotation.x += 0.0002;
+
+      camera.position.x += (mouseX * 3 - camera.position.x) * 0.05;
+      camera.position.y += (-mouseY * 3 - camera.position.y) * 0.05;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.tour-card');
+      cards.forEach(card => {
+        const itemCat = card.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function preselectTour(val) {
+      const select = document.getElementById('tour-select');
+      if (select) {
+        select.value = val;
+      }
+    }
+
+    function handleTourBooking(e) {
+      e.preventDefault();
+      document.getElementById('tour-booking-form').classList.add('hidden');
+      document.getElementById('booking-success-msg').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
