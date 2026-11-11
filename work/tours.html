@@ -222,8 +222,11 @@
         <a href="https://supplier.getyourguide.com/" target="_blank" class="px-8 py-4 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-extrabold text-xs uppercase tracking-wider transition gyg-glow flex items-center gap-2">
           <span>🎟️</span> Book on GetYourGuide
         </a>
-        <a href="https://wa.me/447000000000?text=Hi%20Mohamed,%20I%20would%20like%20to%20ask%20about%20Mo360%20Immersive%20Tours" target="_blank" class="px-6 py-4 rounded-full glass-card hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-wider border border-white/20 transition flex items-center gap-2">
-          <span>💬</span> Chat on WhatsApp
+        <a href="https://wa.me/447568668918?text=Hi%20Mohamed,%20I%20would%20like%20to%20ask%20about%20Mo360%20Immersive%20Tours" target="_blank" class="px-6 py-4 rounded-full glass-card hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-wider border border-white/20 transition flex items-center gap-2">
+          <span>💬</span> WhatsApp: +44 7568 668918
+        </a>
+        <a href="https://www.instagram.com/mo360.uk/" target="_blank" class="px-6 py-4 rounded-full glass-card hover:bg-white/10 text-amber-300 font-semibold text-xs uppercase tracking-wider border border-amber-400/30 transition flex items-center gap-2">
+          <span>📸</span> Insta: @mo360.uk
         </a>
       </div>
 
@@ -233,9 +236,9 @@
     <section class="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
       <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
         <div>
-          <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">Curated Excursions</span>
+          <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">Curated Excursions &bull; Plymouth &amp; Cornwall</span>
           <h2 class="font-display text-2xl sm:text-4xl font-extrabold text-white mt-1">
-            Choose Your Cornish Journey
+            Choose Your Guided Plymouth &amp; Cornish Journey
           </h2>
         </div>
 
@@ -243,6 +246,9 @@
         <div class="flex items-center gap-2 flex-wrap">
           <button onclick="filterCategory('all', this)" class="filter-btn active px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
             All Tours
+          </button>
+          <button onclick="filterCategory('plymouth', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+            🏛️ Plymouth Cultural &amp; The Box
           </button>
           <button onclick="filterCategory('steam', this)" class="filter-btn px-4 py-2 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
             🚂 Steam Railway
@@ -267,6 +273,96 @@
     <section id="tours" class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
+        <!-- PLYMOUTH TOUR 1 (OUTDOOR WALKING TOUR): PLYMOUTH GUIDED ART, ARCHITECTURE & CULTURAL WALKING TOUR -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between border border-amber-400/30" data-category="plymouth">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-amber-400 text-black font-extrabold text-[10px] uppercase tracking-wider">
+                &starf; Plymouth Outdoor Walking Tour
+              </span>
+              <span class="text-xs text-slate-400">2 Hours &bull; Plymouth, Devon</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              Plymouth: Guided Art, Architecture &amp; Cultural Walking Tour
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              Led by Mohamed (Google Maps Local Guide Level 5, 305,000+ views). Walk from the Cultural Quarter outside The Box through Post-War Civic Architecture, Charles Church monument, Elizabethan New Street, the Mayflower Steps on the Barbican, and up to Smeaton's Tower on Plymouth Hoe.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="assets/02_smeatons_tower_plymouth_hoe_real.jpg" alt="Smeaton's Tower on Plymouth Hoe, Plymouth, Devon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-300">
+                Plymouth Hoe &amp; Barbican
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Charles Church, Civic Centre, Barbican &amp; Mayflower Steps</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Smeaton's Tower &amp; Plymouth Sound panoramic finish</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> Complimentary 360° VR spatial photo capture included</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Step-free route options &amp; UK HSE compliant pacing</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">2-Hour Guided Walk</span>
+              <div class="font-display text-2xl font-extrabold text-white">£30 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="#booking" onclick="preselectTour('plymouth_walking')" class="px-4 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs uppercase transition">
+                Reserve
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLYMOUTH TOUR 2 (INDOOR MUSEUM TOUR): INSIDE THE BOX PLYMOUTH -->
+        <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between border border-teal-400/30" data-category="plymouth">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3.5 py-1 rounded-full bg-teal-400 text-black font-extrabold text-[10px] uppercase tracking-wider">
+                🏛️ Separate Indoor Museum Tour
+              </span>
+              <span class="text-xs text-slate-400">1.5–2 Hours &bull; PL4 8AX</span>
+            </div>
+            
+            <h3 class="font-display text-2xl font-bold text-white mb-2 leading-snug">
+              Inside The Box Plymouth: Guided Museum, Art Gallery &amp; Archive Tour
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-4">
+              A dedicated indoor cultural experience inside Plymouth's flagship museum and art gallery (Tavistock Place, PL4 8AX). Explore the suspended Royal Navy figureheads flotilla, furry woolly mammoth, Cottonian fine art collection, St Luke's contemporary gallery, and historic stained glass.
+            </p>
+
+            <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
+              <img src="assets/01_the_box_plymouth_real.jpg" alt="The Box Plymouth Museum and Art Gallery, Tavistock Place, PL4 8AX" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
+                100% Indoor &amp; Step-Free
+              </div>
+            </div>
+
+            <ul class="space-y-2 text-xs text-slate-300 mb-6">
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> 14 Monumental Naval Figureheads, Mammoth &amp; 100 Journeys</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Media Lab archives, Cottonian Art &amp; Stained Glass</li>
+              <li class="flex items-center gap-2"><span class="text-teal-400 font-bold">&check;</span> Full lift access, step-free galleries &amp; weather-proof</li>
+              <li class="flex items-center gap-2"><span class="text-amber-400 font-bold">&starf;</span> Exterior plaza 360° spatial portrait &amp; photography tips</li>
+            </ul>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 font-semibold">Guided Museum Tour</span>
+              <div class="font-display text-2xl font-extrabold text-white">£25 <span class="text-xs font-normal text-slate-400">/ person</span></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="#booking" onclick="preselectTour('the_box_indoor')" class="px-4 py-2.5 rounded-full bg-teal-400 hover:bg-teal-300 text-black font-extrabold text-xs uppercase transition">
+                Reserve
+              </a>
+            </div>
+          </div>
+        </div>
+
         <!-- TOUR 1: EDEN PROJECT & LOST GARDENS OF HELIGAN -->
         <div class="tour-card glass-card rounded-3xl p-7 flex flex-col justify-between" data-category="gardens">
           <div>
@@ -285,7 +381,7 @@
             </p>
 
             <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
-              <img src="/assets/eden_biomes.jpg" alt="Eden Project Geodesic Biomes" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <img src="assets/eden_biomes.jpg" alt="Eden Project Botanical Gardens" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
                 Botanical Wonder
               </div>
@@ -330,7 +426,7 @@
             </p>
 
             <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
-              <img src="/assets/bodmin_steam_railway.jpg" alt="Bodmin & Wenford Heritage Steam Railway" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <img src="assets/bodmin_steam_railway.jpg" alt="Bodmin & Wenford Heritage Steam Railway" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-300">
                 Vintage Heritage
               </div>
@@ -373,9 +469,9 @@
             </p>
 
             <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
-              <img src="/assets/looe_beach.jpg" alt="East Looe sandy beach and Banjo Pier" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <img src="assets/03_mayflower_steps_plymouth_real.jpg" alt="Mayflower Steps and Plymouth Waterfront Departure" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
-                Cornish Coast
+                Plymouth &amp; Cornish Coast
               </div>
             </div>
 
@@ -416,7 +512,7 @@
             </p>
 
             <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
-              <img src="/assets/plymouth_sound.jpg" alt="Plymouth Sound and Naval Waterfront" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <img src="assets/05_plymouth_barbican_harbour_real.jpg" alt="Plymouth Sound and Naval Waterfront at the Barbican" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-blue-300">
                 National Marine Park
               </div>
@@ -459,9 +555,9 @@
             </p>
 
             <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
-              <img src="/assets/charlestown_ships.jpg" alt="Charlestown tall ships and granite harbour" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <img src="assets/08_royal_william_yard_plymouth_real.jpg" alt="Historic Georgian Harbour and Maritime Architecture" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-300">
-                Poldark Heritage
+                Maritime Heritage
               </div>
             </div>
 
@@ -502,7 +598,7 @@
             </p>
 
             <div class="w-full h-44 rounded-2xl overflow-hidden mb-4 border border-white/10 relative group">
-              <img src="/assets/drakes_island.jpg" alt="Drake's Island volcanic fortress" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <img src="assets/09_plymouth_sound_mount_edgcumbe_real.jpg" alt="Drake's Island and Plymouth Sound viewed from Mount Edgcumbe" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-teal-300">
                 Marine Safari
               </div>
@@ -567,7 +663,7 @@
               </p>
 
               <div class="w-full h-36 rounded-xl overflow-hidden mb-4 border border-white/10">
-                <img src="/assets/heligan_night_garden.jpg" alt="Heligan Night Garden illuminated lantern trail" class="w-full h-full object-cover">
+                <img src="assets/heligan_night_garden.jpg" alt="Heligan Night Garden illuminated lantern trail" class="w-full h-full object-cover">
               </div>
 
               <ul class="text-xs space-y-1.5 text-slate-300 mb-6">
@@ -604,7 +700,7 @@
               </p>
 
               <div class="w-full h-36 rounded-xl overflow-hidden mb-4 border border-white/10">
-                <img src="/assets/eden_biomes.jpg" alt="Eden Project Winter Lights" class="w-full h-full object-cover">
+                <img src="assets/eden_biomes.jpg" alt="Eden Project Winter Lights" class="w-full h-full object-cover">
               </div>
 
               <ul class="text-xs space-y-1.5 text-slate-300 mb-6">
@@ -943,6 +1039,8 @@
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Select Tour Experience *</label>
               <select id="tour-select" required class="w-full px-4 py-3.5 rounded-xl bg-[#121218] border border-white/10 text-white focus:outline-none focus:border-amber-400 transition text-sm">
+                <option value="plymouth_walking">🏛️ Plymouth: Guided Art, Architecture &amp; Cultural Walking Tour (£30)</option>
+                <option value="the_box_indoor">🖼️ Inside The Box Plymouth: Guided Museum, Art Gallery &amp; Archive Tour (£25)</option>
                 <option value="eden_heligan">From Plymouth: Eden Project &amp; Lost Gardens of Heligan (£89)</option>
                 <option value="bodmin_steam">🚂 From Plymouth: Bodmin Steam Railway &amp; Wild Bodmin Moor Safari (£68)</option>
                 <option value="looe_liskeard">🌊 From Plymouth: Looe Harbour, Beaches &amp; Golitha Falls (£58)</option>
@@ -1023,10 +1121,11 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-6 text-slate-400 text-xs">
+      <div class="flex flex-wrap items-center justify-center gap-6 text-slate-400 text-xs">
         <a href="/index.html" class="hover:text-teal-400 transition">&larr; Main Studio</a>
-        <a href="#tours" class="hover:text-amber-400 transition">Cornish Tours</a>
-        <a href="#winter-lights" class="hover:text-rose-400 transition">Winter Lights</a>
+        <a href="#tours" class="hover:text-amber-400 transition">Plymouth &amp; Cornish Tours</a>
+        <a href="tel:+447568668918" class="hover:text-teal-400 transition font-semibold text-slate-300">📞 +44 7568 668918</a>
+        <a href="https://www.instagram.com/mo360.uk/" target="_blank" class="hover:text-amber-400 transition font-semibold text-amber-300">📸 Insta: @mo360.uk</a>
         <a href="https://supplier.getyourguide.com/" target="_blank" class="hover:text-[#FF5533] transition">GetYourGuide Partner</a>
       </div>
     </div>

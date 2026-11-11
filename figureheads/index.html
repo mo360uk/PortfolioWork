@@ -11,8 +11,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@800;900&display=swap" rel="stylesheet">
   
-  <!-- model-viewer CDN v4 -->
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+  <!-- Preload 3D Models for Instant Switching -->
+  <link rel="preload" href="./models/sphinx.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="./models/royal_william.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="./models/windsor_castle.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="./models/tamar.glb" as="fetch" crossorigin="anonymous">
+
+  <!-- model-viewer Fast Google CDN v4 -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
   <style>
     :root {
@@ -366,15 +372,15 @@
           id="figurehead-viewer"
           src="./models/sphinx.glb"
           alt="3D figurehead from HMS Sphinx"
+          loading="eager"
+          reveal="auto"
           camera-controls
           auto-rotate
           auto-rotate-delay="0"
           rotation-per-second="16deg"
           camera-orbit="90deg 82deg auto"
-          environment-image="neutral"
-          tone-mapping="aces"
-          shadow-intensity="1"
-          shadow-softness="0.8"
+          exposure="1.05"
+          shadow-intensity="0.8"
           interaction-prompt="none"
           tabindex="0"
         ></model-viewer>
