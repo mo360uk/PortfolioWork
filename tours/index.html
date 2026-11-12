@@ -117,7 +117,7 @@
       </a>
 
       <nav class="hidden lg:flex items-center gap-7 text-xs uppercase tracking-wider font-semibold text-stone-300">
-        <a href="#programme" class="hover:text-[#D4882A] transition text-[#D4882A]">6 Tour Programme</a>
+        <a href="#programme" class="hover:text-[#D4882A] transition text-[#D4882A]">7 Tour Programme</a>
         <a href="#guide-bio" class="hover:text-[#D4882A] transition">About Your Guide</a>
         <a href="#interactive-tech" class="hover:text-[#D4882A] transition">Interactive Arts Tech</a>
         <a href="#compliance" class="hover:text-[#D4882A] transition">UK Standards</a>
@@ -189,7 +189,7 @@
       <!-- Centered Action Bar -->
       <div class="flex flex-wrap items-center justify-center gap-4">
         <a href="#programme" class="px-8 py-4 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition ochre-glow">
-          Explore All 6 Devon Tours
+          Explore All 7 Devon &amp; Cornwall Tours
         </a>
         <a href="https://supplier.getyourguide.com/" target="_blank" class="px-8 py-4 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-extrabold text-xs uppercase tracking-wider transition gyg-glow flex items-center gap-2">
           <span>🎟️</span> Book on GetYourGuide
@@ -210,7 +210,7 @@
     <section id="programme" class="max-w-7xl mx-auto py-12">
       
       <div class="text-center max-w-3xl mx-auto mb-10">
-        <span class="text-xs uppercase tracking-widest text-[#D4882A] font-extrabold">Complete 6 Tour Programme · Plymouth, Devon &amp; South West</span>
+        <span class="text-xs uppercase tracking-widest text-[#D4882A] font-extrabold">Complete 7 Tour Programme · Plymouth, Devon &amp; Cornwall</span>
         <h2 class="font-display text-3xl sm:text-5xl font-extrabold text-[#FAF7F2] mt-2 mb-4">
           Authentic UK Heritage, Architecture &amp; Nature Walks
         </h2>
@@ -222,7 +222,7 @@
       <!-- Category Filter Buttons -->
       <div class="flex items-center justify-center gap-2.5 flex-wrap mb-12">
         <button onclick="filterCategory('all', this)" class="filter-btn active px-5 py-2.5 rounded-full glass-card text-xs font-bold tracking-wider uppercase transition">
-          All 6 Tours
+          All 7 Tours
         </button>
         <button onclick="filterCategory('city_museum', this)" class="filter-btn px-5 py-2.5 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
           01 &amp; 02 · Plymouth City &amp; The Box Museum
@@ -232,6 +232,9 @@
         </button>
         <button onclick="filterCategory('dartmoor_exeter', this)" class="filter-btn px-5 py-2.5 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
           05 &amp; 06 · Dartmoor, Tavistock &amp; Exeter
+        </button>
+        <button onclick="filterCategory('cornwall_day_trips', this)" class="filter-btn px-5 py-2.5 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+          07 · Eden Project &amp; Charlestown Harbour
         </button>
       </div>
 
@@ -496,6 +499,50 @@
           </div>
         </article>
 
+        <!-- TOUR 07: ST AUSTELL, EDEN PROJECT & CHARLESTOWN HISTORIC HARBOUR DAY TRIP -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="cornwall_day_trips">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 07 · Cornwall Day Trip
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">8 Hours · Biomes &amp; Harbour</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/eden_biomes.jpg" alt="The Eden Project Geodesic Rainforest and Mediterranean Biomes in Cornwall" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                Eden Project Biomes · Charlestown Tall Ships Harbour
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              St Austell, Eden Project &amp; Charlestown Historic Harbour Day Trip
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Leave Plymouth behind and cross the River Tamar into Cornwall for an unforgettable full day discovery of world celebrated botanical biomes, Cornish mining heritage, and the Georgian tall ships harbour of Charlestown.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Landmarks</div>
+              <p class="leading-relaxed">
+                Central Plymouth Railway Station Forecourt (<code class="text-[#FAF7F2]">PL4 6AB</code>) · Scenic Tamar Bridge Crossing · <strong class="text-[#FAF7F2]">The Eden Project</strong> Rainforest &amp; Mediterranean Biomes · St Austell Victorian China Clay Country · <strong class="text-[#FAF7F2]">Charlestown</strong> Georgian Harbour Basin &amp; Square Rigged Tall Ships (Poldark Filming Location)
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">8 Hour Cornish Day Trip</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£75 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_07_eden_charlestown')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 07
+            </a>
+          </div>
+        </article>
+
+
       </div>
     </section>
 
@@ -658,7 +705,7 @@
           <span class="text-xs uppercase tracking-widest text-[#D4882A] font-extrabold">Direct Studio Reservation · +44 7568 668918</span>
           <h2 class="font-display text-3xl font-extrabold text-[#FAF7F2] mt-2 mb-2">Reserve Your Guided Devon Tour</h2>
           <p class="text-stone-400 text-sm">
-            Select from our 6 official Plymouth, Dartmoor, Tavistock, and Exeter tours below. Mohamed responds within 2 hours.
+            Select from our 7 official Plymouth, Devon, and Cornwall tours below. Mohamed responds within 2 hours.
           </p>
         </div>
 
@@ -758,7 +805,7 @@
 
       <div class="flex flex-wrap items-center justify-center gap-6 text-stone-300 text-xs">
         <a href="/index.html" class="hover:text-[#D4882A] transition">Main Studio</a>
-        <a href="#programme" class="hover:text-[#D4882A] transition">6 Tour Programme</a>
+        <a href="#programme" class="hover:text-[#D4882A] transition">7 Tour Programme</a>
         <a href="#guide-bio" class="hover:text-[#D4882A] transition">Guide Bio</a>
         <a href="tel:+447568668918" class="hover:text-[#D4882A] transition font-bold text-[#FAF7F2]">📞 +44 7568 668918</a>
         <a href="https://www.instagram.com/mo360.uk/" target="_blank" class="hover:text-[#D4882A] transition font-bold text-[#E5A145]">📸 Insta: @mo360.uk</a>
