@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mo360 Immersive Tours · Plymouth, Devon &amp; South West Guided Cultural, Museum &amp; Nature Tours</title>
+  <meta name="description" content="Official guided cultural, museum, maritime, and outdoor nature tours across Plymouth, Devon, Dartmoor, Tavistock, and Exeter. Led by Mohamed, Visual Artist, Creative Technologist, Curator, and Creative Director of Mo360 Studio.">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ochre: '#C87D28',
+              ochreLight: '#D4882A',
+              ochreWarm: '#E5A145',
+              surface: '#FAF7F2',
+              charcoal: '#111111',
+              ink: '#141414',
+              stone: '#57534E',
+              teal: '#14B8A6',
+              gyg: '#FF5533'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            hand: ['"Caveat"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #111111;
+      color: #FAF7F2;
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .glass-nav {
+      background: rgba(17, 17, 17, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(200, 125, 40, 0.28);
+    }
+    .glass-card {
+      background: rgba(20, 20, 20, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(250, 247, 242, 0.1);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(200, 125, 40, 0.65);
+      box-shadow: 0 18px 48px -12px rgba(200, 125, 40, 0.24);
+      transform: translateY(-4px);
+    }
+    .ochre-rule {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #C87D28, #D4882A, transparent);
+    }
+    .filter-btn.active {
+      background: #C87D28;
+      color: #111111;
+      font-weight: 800;
+      border-color: #D4882A;
+    }
+    .ochre-glow {
+      box-shadow: 0 0 28px -4px rgba(200, 125, 40, 0.5);
+    }
+    .gyg-glow {
+      box-shadow: 0 0 28px -5px rgba(255, 85, 51, 0.45);
+    }
+  </style>
+</head>
+<body class="relative selection:bg-[#C87D28] selection:text-black">
+
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Sticky Editorial Header with Balanced 4 Side Safe Margins -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 py-5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-between glass-nav rounded-full px-6 py-3.5 shadow-2xl">
+      
+      <a href="/index.html" class="flex items-center gap-3.5 group" title="Return to Mo360 Immersive Studio">
+        <div class="w-10 h-10 rounded-full bg-[#C87D28] flex items-center justify-center font-extrabold text-[#111111] text-xs font-display shadow-lg group-hover:scale-105 transition">
+          360
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-display font-extrabold tracking-tight text-[#FAF7F2] text-base">Mo360</span>
+            <span class="font-display font-medium text-[#D4882A] text-base">Tours</span>
+          </div>
+          <span class="text-[10px] uppercase tracking-widest text-[#D4882A] font-semibold">
+            Plymouth · Devon · United Kingdom
+          </span>
+        </div>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-7 text-xs uppercase tracking-wider font-semibold text-stone-300">
+        <a href="#programme" class="hover:text-[#D4882A] transition text-[#D4882A]">6 Tour Programme</a>
+        <a href="#guide-bio" class="hover:text-[#D4882A] transition">About Your Guide</a>
+        <a href="#interactive-tech" class="hover:text-[#D4882A] transition">Interactive Arts Tech</a>
+        <a href="#compliance" class="hover:text-[#D4882A] transition">UK Standards</a>
+        <a href="#booking" class="hover:text-[#D4882A] transition">Reserve</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="https://supplier.getyourguide.com/" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-bold text-[11px] uppercase tracking-wider transition gyg-glow">
+          <span>🎟️</span> GetYourGuide
+        </a>
+        <a href="#booking" class="px-5 py-2 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition ochre-glow">
+          Book Direct
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="relative z-10 pt-32 sm:pt-40 pb-28 px-6 sm:px-12 lg:px-16">
+
+    <!-- HERO SECTION · CENTERED BRITISH EDITORIAL HIERARCHY -->
+    <section class="max-w-6xl mx-auto py-8 sm:py-12 text-center">
+      
+      <div class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[#C87D28]/50 bg-[#C87D28]/15 text-[#E5A145] text-xs font-bold uppercase tracking-widest mb-8">
+        <span class="w-2 h-2 rounded-full bg-[#D4882A] animate-pulse"></span>
+        🇬🇧 Plymouth, Devon, United Kingdom · Official GetYourGuide Supplier · Google Maps Level 5 Local Guide
+      </div>
+
+      <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#FAF7F2] max-w-5xl mx-auto leading-[1.08] mb-6">
+        Curated Architecture, Museum &amp; <br class="hidden sm:inline">
+        <span class="text-[#D4882A]">Devon Heritage</span> Walking Tours.
+      </h1>
+
+      <p class="font-hand text-2xl sm:text-3xl text-[#E5A145] max-w-3xl mx-auto mb-6">
+        Led by Mohamed (Mo) · Visual Artist, Creative Technologist, Curator &amp; Creative Director of Mo360 Studio
+      </p>
+
+      <p class="text-stone-300 text-base sm:text-lg max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+        Led by <strong class="text-[#FAF7F2]">Mohamed (Mo)</strong>, a Devon based <strong class="text-[#FAF7F2]">Visual Artist, Creative Technologist, Curator, and Creative Director</strong>, founder of <strong class="text-[#FAF7F2]">Mo360 Studio</strong>, and <strong class="text-[#FAF7F2]">Google Maps Level 5 Local Guide</strong> with over <strong class="text-[#FAF7F2]">305,000 photo views</strong>. Drawing on his past experience working, volunteering, and guiding visitors at <strong class="text-[#D4882A]">The Box Museum</strong>, leading gallery tours at <strong class="text-[#D4882A]">KARST</strong>, <strong class="text-[#D4882A]">MIRROR</strong>, <strong class="text-[#D4882A]">Ars Electronica</strong>, and the <strong class="text-[#D4882A]">Egyptian Museum in Cairo</strong>, and guiding walking tours across <strong class="text-[#D4882A]">Plymouth</strong> and <strong class="text-[#D4882A]">Exeter</strong>, Mohamed combines deep local heritage knowledge with interactive digital storytelling.
+      </p>
+
+      <!-- Studio Ochre Editorial Trust Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto mb-12 text-center">
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-1">01 · Guide Pedigree</div>
+          <div class="text-sm font-bold text-[#FAF7F2]">The Box · KARST · MIRROR</div>
+          <div class="text-xs text-stone-400 mt-1">Ars Electronica &amp; Cairo Museum</div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-1">02 · Local Authority</div>
+          <div class="text-sm font-bold text-[#FAF7F2]">Level 5 Local Guide</div>
+          <div class="text-xs text-stone-400 mt-1">353 Contributions · 305,000+ Views</div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-1">03 · Interactive Arts</div>
+          <div class="text-sm font-bold text-[#FAF7F2]">Mo360 Studio Apps &amp; 360°</div>
+          <div class="text-xs text-stone-400 mt-1">Spatial Memories &amp; Archival Overlays</div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-1">04 · Direct Contact</div>
+          <div class="text-sm font-bold text-[#FAF7F2]">+44 7568 668918</div>
+          <div class="text-xs text-stone-400 mt-1">Instagram: @mo360.uk</div>
+        </div>
+      </div>
+
+      <!-- Centered Action Bar -->
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="#programme" class="px-8 py-4 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition ochre-glow">
+          Explore All 6 Devon Tours
+        </a>
+        <a href="https://supplier.getyourguide.com/" target="_blank" class="px-8 py-4 rounded-full bg-[#FF5533] hover:bg-[#e04525] text-white font-extrabold text-xs uppercase tracking-wider transition gyg-glow flex items-center gap-2">
+          <span>🎟️</span> Book on GetYourGuide
+        </a>
+        <a href="https://wa.me/447568668918?text=Hi%20Mohamed,%20I%20would%20like%20to%20enquire%20about%20Mo360%20Immersive%20Tours" target="_blank" class="px-7 py-4 rounded-full glass-card hover:bg-white/10 text-[#FAF7F2] font-semibold text-xs uppercase tracking-wider border border-[#C87D28]/40 transition flex items-center gap-2">
+          <span>💬</span> WhatsApp: +44 7568 668918
+        </a>
+        <a href="https://www.instagram.com/mo360.uk/" target="_blank" class="px-7 py-4 rounded-full glass-card hover:bg-white/10 text-[#E5A145] font-semibold text-xs uppercase tracking-wider border border-[#C87D28]/40 transition flex items-center gap-2">
+          <span>📸</span> Insta: @mo360.uk
+        </a>
+      </div>
+
+    </section>
+
+    <div class="max-w-6xl mx-auto my-8 ochre-rule"></div>
+
+    <!-- COMPLETE 6 TOUR PROGRAMME · PLYMOUTH, DEVON & SOUTH WEST -->
+    <section id="programme" class="max-w-7xl mx-auto py-12">
+      
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-xs uppercase tracking-widest text-[#D4882A] font-extrabold">Complete 6 Tour Programme · Plymouth, Devon &amp; South West</span>
+        <h2 class="font-display text-3xl sm:text-5xl font-extrabold text-[#FAF7F2] mt-2 mb-4">
+          Authentic UK Heritage, Architecture &amp; Nature Walks
+        </h2>
+        <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+          Every tour is illustrated exclusively with verified real public photographs of our Plymouth and Devon landmarks, adhering to UK Health and Safety Executive standards and the Equality Act 2010.
+        </p>
+      </div>
+
+      <!-- Category Filter Buttons -->
+      <div class="flex items-center justify-center gap-2.5 flex-wrap mb-12">
+        <button onclick="filterCategory('all', this)" class="filter-btn active px-5 py-2.5 rounded-full glass-card text-xs font-bold tracking-wider uppercase transition">
+          All 6 Tours
+        </button>
+        <button onclick="filterCategory('city_museum', this)" class="filter-btn px-5 py-2.5 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+          01 &amp; 02 · Plymouth City &amp; The Box Museum
+        </button>
+        <button onclick="filterCategory('maritime_bridges', this)" class="filter-btn px-5 py-2.5 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+          03 &amp; 04 · Plymouth Sound Boats &amp; Tamar Bridges
+        </button>
+        <button onclick="filterCategory('dartmoor_exeter', this)" class="filter-btn px-5 py-2.5 rounded-full glass-card text-xs font-semibold tracking-wider uppercase transition">
+          05 &amp; 06 · Dartmoor, Tavistock &amp; Exeter
+        </button>
+      </div>
+
+      <!-- 6 TOUR EDITORIAL GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-9">
+
+        <!-- TOUR 01: PLYMOUTH CULTURAL ARCHITECTURE & HISTORIC WATERFRONT WALK -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="city_museum">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 01 · GYG ID 1495589
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">2 Hours · Max 12 Guests</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/real_plymouth/02_smeatons_tower_plymouth_hoe_real.jpg" alt="Smeaton's Tower Lighthouse on Plymouth Hoe, Plymouth, Devon, United Kingdom" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                Plymouth Hoe &amp; Historic Barbican · PL4 8AX to PL1 2LR
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              Plymouth Cultural Architecture &amp; Historic Waterfront Walk
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Explore Plymouth's architectural evolution from Elizabethan merchant lanes to postwar modernist landmarks, enhanced by Mohamed's visual arts curation and interactive archival comparisons.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Landmarks</div>
+              <p class="leading-relaxed">
+                The Box External Piazza (<code class="text-[#FAF7F2]">Tavistock Place, PL4 8AX</code>) · Charles Church Blitz Memorial · Civic Square &amp; Guildhall · Elizabethan New Street · The Barbican · Mayflower Steps (<code class="text-[#FAF7F2]">PL1 2LR</code>) · Smeaton's Tower on Plymouth Hoe
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">2 Hour Guided Walk</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£30 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_01_plymouth_walk')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 01
+            </a>
+          </div>
+        </article>
+
+        <!-- TOUR 02: INSIDE THE BOX PLYMOUTH: GUIDED MUSEUM, ART GALLERY & ARCHIVE TOUR -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="city_museum">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 02 · GYG ID 1560532
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">1.5 to 2 Hours · Indoor</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/real_plymouth/01_the_box_plymouth_real.jpg" alt="The Box Plymouth Museum, Art Gallery and Archive, Tavistock Place, PL4 8AX" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                The Box Plymouth · Tavistock Place, PL4 8AX
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              Inside The Box Plymouth: Guided Museum, Art Gallery &amp; Archive Tour
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Step inside Plymouth's flagship museum alongside someone who has worked and volunteered inside The Box, uncovering curatorial stories behind the collections on a fully step free indoor route (Equality Act 2010 compliant).
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Galleries</div>
+              <p class="leading-relaxed">
+                Tavistock Place Piazza &amp; St Luke's Gallery · Main Atrium &amp; 14 Royal Naval Figureheads · Mammoth &amp; Ice Age Devon Gallery · Port of Plymouth Maritime Collection · Cottonian Fine Art &amp; Photography · Active Memory Box Archive
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">Indoor Curatorial Tour</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£25 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_02_the_box')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 02
+            </a>
+          </div>
+        </article>
+
+        <!-- TOUR 03: PLYMOUTH SOUND MARITIME HISTORY & BOAT CROSSING TOUR -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="maritime_bridges">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 03 · Land &amp; Sea
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">3.5 Hours · Boat Crossings</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/real_plymouth/12_mount_batten_plymouth_real.jpg" alt="Mount Batten 17th Century Artillery Tower on Plymouth Sound, Devon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                Mount Batten · Mount Wise · Royal William Yard · Mount Edgcumbe
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              Plymouth Sound Maritime History &amp; Boat Crossing Tour: Barbican, Mount Batten, Mount Wise, Royal William Yard &amp; Mount Edgcumbe
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Experience Britain's Ocean City from both land and water, combining historic passenger ferry crossings across Plymouth Sound with guided walks through Plymouth's grandest naval fortifications and coastal estates.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Crossings</div>
+              <p class="leading-relaxed">
+                Plymouth Barbican Landing Stage · Scenic Boat Crossing to <strong class="text-[#FAF7F2]">Mount Batten</strong> Peninsula &amp; 17th Century Artillery Tower · <strong class="text-[#FAF7F2]">Royal William Yard</strong> (Rennie's Grade I Listed Victualling Yard) · <strong class="text-[#FAF7F2]">Mount Wise</strong> Admiralty House &amp; Redoubt · Cremyll Ferry Boat Crossing to <strong class="text-[#FAF7F2]">Mount Edgcumbe Country Park</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">3.5 Hour Maritime Tour</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£45 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_03_plymouth_sound_boats')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 03
+            </a>
+          </div>
+        </article>
+
+        <!-- TOUR 04: TAMAR BRIDGE & BRUNEL'S ROYAL ALBERT BRIDGE HERITAGE WALK -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="maritime_bridges">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 04 · Engineering Heritage
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">2 Hours · Step Free Bridge Walk</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/real_plymouth/14_tamar_bridge_royal_albert_bridge_real.jpg" alt="Brunel's 1859 Royal Albert Bridge and Tamar Suspension Bridge over the River Tamar" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                Tamar Suspension Bridge &amp; 1859 Royal Albert Bridge
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              Tamar Bridge &amp; Brunel's Royal Albert Bridge Heritage Walk
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Walk suspended high above the River Tamar separating Devon and Cornwall while examining two centuries of British civil engineering, Victorian railway heritage, and panoramic estuary views.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Landmarks</div>
+              <p class="leading-relaxed">
+                Saltash Passage &amp; Devonport Foreshore · Cantilevered Pedestrian Walkway Across the <strong class="text-[#FAF7F2]">Tamar Suspension Bridge</strong> · Close Up Structural View of Isambard Kingdom Brunel's 1859 <strong class="text-[#FAF7F2]">Royal Albert Bridge</strong> · Saltash Waterside &amp; Jubilee Green
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">2 Hour Bridge &amp; Estuary Walk</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£28 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_04_tamar_brunel_bridges')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 04
+            </a>
+          </div>
+        </article>
+
+        <!-- TOUR 05: DARTMOOR NATIONAL PARK & HISTORIC TAVISTOCK NATURE & HERITAGE WALK -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="dartmoor_exeter">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 05 · Moorland &amp; Abbey
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">4 Hours · Nature &amp; UNESCO Town</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/real_plymouth/16_dartmoor_tors_devon_real.jpg" alt="Granite Tors of Dartmoor National Park, Devon, United Kingdom" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                Dartmoor National Park &amp; Historic Tavistock Abbey
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              Dartmoor National Park &amp; Historic Tavistock Nature &amp; Heritage Walk
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Share Mohamed's love for outdoor nature walks and ancient landscapes across Dartmoor's dramatic moorland and historic Tavistock, fully aligned with the UK Countryside Code and moorland safety practices.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Landmarks</div>
+              <p class="leading-relaxed">
+                UNESCO World Heritage Stannary Town of <strong class="text-[#FAF7F2]">Tavistock</strong> (Tavistock Abbey Ruins, Pannier Market &amp; River Tavy) · Guided Outdoor Nature &amp; Heritage Walk across <strong class="text-[#FAF7F2]">Dartmoor National Park</strong> (Granite Tors, Ancient Oak Woodlands, Bronze Age Stone Rows &amp; Moorland Streams)
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">4 Hour Nature &amp; Heritage Walk</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£55 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_05_dartmoor_tavistock')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 05
+            </a>
+          </div>
+        </article>
+
+        <!-- TOUR 06: HISTORIC EXETER CATHEDRAL QUARTER, ROMAN WALL & QUAYSIDE WALKING TOUR -->
+        <article class="tour-card glass-card rounded-3xl p-8 flex flex-col justify-between border border-[#C87D28]/40" data-category="dartmoor_exeter">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <span class="px-3.5 py-1.5 rounded-full bg-[#C87D28] text-[#111111] font-extrabold text-[11px] uppercase tracking-wider">
+                Tour 06 · Historic Devon Capital
+              </span>
+              <span class="text-xs text-[#E5A145] font-semibold">2 Hours · Paved Heritage Walk</span>
+            </div>
+
+            <div class="w-full h-52 rounded-2xl overflow-hidden mb-6 border border-white/10 relative group">
+              <img src="assets/real_plymouth/17_exeter_cathedral_quayside_real.jpg" alt="Historic Custom House on Exeter Quayside, Exeter, Devon, United Kingdom" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#E5A145]">
+                Exeter Cathedral Green · Roman Wall · Custom House Quayside
+              </div>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3 leading-snug">
+              Historic Exeter Cathedral Quarter, Roman Wall &amp; Quayside Walking Tour
+            </h3>
+            <p class="text-stone-300 text-xs leading-relaxed mb-5">
+              Building on Mohamed's experience leading guided walking tours in Exeter, discover two millennia of Devon's county capital from Roman fortress to medieval wool port along a paved city and waterside route.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6 text-xs text-stone-300 space-y-2">
+              <div class="text-[#D4882A] font-bold uppercase tracking-wider text-[10px]">Verified Route &amp; Landmarks</div>
+              <p class="leading-relaxed">
+                <strong class="text-[#FAF7F2]">Exeter Cathedral Green</strong> · 2,000 Year Old <strong class="text-[#FAF7F2]">Roman City Wall</strong> · Historic Guildhall &amp; Parliament Street · St Nicholas Priory · <strong class="text-[#FAF7F2]">Exeter Historic Quayside</strong> &amp; Custom House on the River Exe
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-5 border-t border-white/10 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-stone-400 font-semibold">2 Hour Exeter City Walk</span>
+              <div class="font-display text-2xl font-extrabold text-[#FAF7F2]">£30 <span class="text-xs font-normal text-stone-400">/ person</span></div>
+            </div>
+            <a href="#booking" onclick="preselectTour('tour_06_exeter_cathedral_quay')" class="px-5 py-2.5 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+              Reserve Tour 06
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- VERIFIED REAL PLYMOUTH & DEVON LANDMARK GALLERY STRIP -->
+    <section class="max-w-7xl mx-auto py-12">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <span class="text-xs uppercase tracking-widest text-[#D4882A] font-extrabold">100% Authentic UK Location Photography</span>
+        <h3 class="font-display text-2xl sm:text-3xl font-bold text-[#FAF7F2] mt-1">
+          Real Landmarks Across Plymouth, Tavistock, Dartmoor &amp; Exeter
+        </h3>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="rounded-2xl overflow-hidden border border-white/10 h-40 relative group">
+          <img src="assets/real_plymouth/04_barbican_new_street_plymouth_real.jpg" alt="Elizabethan New Street, Plymouth Barbican" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
+            <span class="text-[11px] font-bold text-[#FAF7F2]">Barbican New Street</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-white/10 h-40 relative group">
+          <img src="assets/real_plymouth/08_royal_william_yard_plymouth_real.jpg" alt="Royal William Yard, Plymouth" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
+            <span class="text-[11px] font-bold text-[#FAF7F2]">Royal William Yard</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-white/10 h-40 relative group">
+          <img src="assets/real_plymouth/13_mount_wise_plymouth_real.jpg" alt="Mount Wise, Devonport, Plymouth" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
+            <span class="text-[11px] font-bold text-[#FAF7F2]">Mount Wise Plymouth</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-white/10 h-40 relative group">
+          <img src="assets/real_plymouth/09_plymouth_sound_mount_edgcumbe_real.jpg" alt="Mount Edgcumbe and Drake's Island in Plymouth Sound" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
+            <span class="text-[11px] font-bold text-[#FAF7F2]">Mount Edgcumbe &amp; Sound</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-white/10 h-40 relative group">
+          <img src="assets/real_plymouth/15_tavistock_abbey_devon_real.jpg" alt="Tavistock Abbey Ruins, Tavistock, Devon" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
+            <span class="text-[11px] font-bold text-[#FAF7F2]">Tavistock Abbey Ruins</span>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-white/10 h-40 relative group">
+          <img src="assets/real_plymouth/10_the_box_stained_glass_stairwell_real.jpg" alt="1925 Lady Winnicott Stained Glass inside The Box Plymouth" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent flex items-end p-3">
+            <span class="text-[11px] font-bold text-[#FAF7F2]">The Box Stained Glass</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT YOUR GUIDE · MOHAMED'S APPROVED BIO & PERSONAL STORY -->
+    <section id="guide-bio" class="max-w-6xl mx-auto py-16">
+      <div class="glass-card rounded-3xl p-8 sm:p-14 border-2 border-[#C87D28]/50 relative overflow-hidden">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <div class="lg:col-span-7 space-y-5 text-left">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C87D28]/20 text-[#E5A145] font-extrabold text-xs uppercase tracking-widest border border-[#C87D28]/40">
+              About Your Guide · Mohamed Hossam Elwakil (Mo)
+            </div>
+
+            <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-[#FAF7F2] leading-tight">
+              Visual Artist, Creative Technologist, Curator &amp; Creative Director
+            </h2>
+
+            <p class="text-stone-200 text-sm sm:text-base leading-relaxed">
+              I am a <strong class="text-[#FAF7F2]">Visual Artist, Creative Technologist, Curator, and Creative Director</strong> based here in Devon, and the founder of <strong class="text-[#D4882A]">Mo360 Studio</strong>, where we create interactive and immersive arts experiences.
+            </p>
+
+            <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+              Long before launching Mo360 Tours, I spent years giving guided tours inside major museums, contemporary galleries, and international festivals. My background includes working and volunteering at <strong class="text-[#FAF7F2]">The Box Museum</strong> right here in Plymouth, leading gallery tours at <strong class="text-[#FAF7F2]">KARST</strong> and <strong class="text-[#FAF7F2]">MIRROR</strong> in Plymouth, guiding visitors at international exhibitions including <strong class="text-[#FAF7F2]">Ars Electronica</strong>, and giving artistic and historical tours across the <strong class="text-[#FAF7F2]">Egyptian Museum in Cairo</strong>, alongside leading walking tours through <strong class="text-[#FAF7F2]">Plymouth</strong> and <strong class="text-[#FAF7F2]">Exeter</strong>.
+            </p>
+
+            <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+              Whenever I have travelled across the world, I have always been drawn to heritage sites, historic architecture, coastal landscapes, and outdoor nature walks. Living in Devon for a long time, I fell deeply in love with the history, nature, and coastline of Plymouth and the South West. I started these tours to share that genuine passion with both local residents and visitors. Through my studio's work in creative technology and interactive arts, I also integrate custom interactive apps and spatial storytelling into my tours to make every walk and museum visit even more vivid and memorable.
+            </p>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-5 p-7 rounded-2xl bg-[#141414] border border-[#C87D28]/35 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-[#C87D28] text-[#111111] flex items-center justify-center font-extrabold text-2xl mx-auto shadow-xl font-display">
+              Mo
+            </div>
+            <div>
+              <h3 class="font-display text-xl font-bold text-[#FAF7F2]">Verified Curatorial &amp; Guiding Credentials</h3>
+              <p class="text-xs text-[#E5A145] font-semibold mt-1">Google Maps Local Guide Level 5 · 305,000+ Views</p>
+            </div>
+
+            <ul class="text-left text-xs text-stone-300 space-y-3 border-t border-b border-white/10 py-5">
+              <li class="flex items-start gap-2.5">
+                <span class="text-[#D4882A] font-bold">✦</span>
+                <span><strong class="text-[#FAF7F2]">Plymouth Museums &amp; Galleries:</strong> Past experience working, volunteering, and guiding at <strong class="text-[#E5A145]">The Box Museum</strong>, plus gallery tours at <strong class="text-[#E5A145]">KARST</strong> and <strong class="text-[#E5A145]">MIRROR</strong>.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-[#D4882A] font-bold">✦</span>
+                <span><strong class="text-[#FAF7F2]">International Exhibitions:</strong> Guided visitors at <strong class="text-[#E5A145]">Ars Electronica</strong> and the <strong class="text-[#E5A145]">Egyptian Museum in Cairo</strong>.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-[#D4882A] font-bold">✦</span>
+                <span><strong class="text-[#FAF7F2]">Devon Walking Tours:</strong> Experienced walking tour leader across historic <strong class="text-[#E5A145]">Plymouth</strong> and <strong class="text-[#E5A145]">Exeter</strong>.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-[#D4882A] font-bold">✦</span>
+                <span><strong class="text-[#FAF7F2]">Mo360 Studio Interactive Tech:</strong> Custom interactive apps, archival comparisons, and 360° spatial photography.</span>
+              </li>
+            </ul>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+              <a href="tel:+447568668918" class="w-full py-3 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-xs uppercase tracking-wider transition">
+                📞 +44 7568 668918
+              </a>
+              <a href="https://www.instagram.com/mo360.uk/" target="_blank" class="w-full py-3 rounded-full glass-card hover:bg-white/10 text-[#E5A145] font-bold text-xs uppercase tracking-wider border border-[#C87D28]/40 transition">
+                📸 @mo360.uk
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE ARTS TECHNOLOGY & UK COMPLIANCE SECTION -->
+    <section id="interactive-tech" class="max-w-6xl mx-auto py-12">
+      <div id="compliance" class="grid grid-cols-1 md:grid-cols-3 gap-7 text-center">
+        
+        <div class="glass-card rounded-3xl p-8 border border-[#C87D28]/30 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-2">Interactive Arts &amp; Apps</div>
+          <h3 class="font-display text-xl font-bold text-[#FAF7F2] mb-3">Mo360 Studio Spatial Storytelling</h3>
+          <p class="text-stone-300 text-xs leading-relaxed">
+            Every tour integrates Mo360 Studio's interactive web apps, historical archival overlays, and complimentary 360° spherical memory portraits captured outdoors at Plymouth and Devon's iconic viewpoints.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 border border-[#C87D28]/30 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-2">Equality Act 2010 &amp; HSE</div>
+          <h3 class="font-display text-xl font-bold text-[#FAF7F2] mb-3">Step Free &amp; Safety Compliant</h3>
+          <p class="text-stone-300 text-xs leading-relaxed">
+            Small groups (max 6 to 12 guests), signal controlled pedestrian crossings, step free gallery lift routing inside The Box, and UK Countryside Code compliance across Dartmoor and coastal trails.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 border border-[#C87D28]/30 flex flex-col items-center justify-center">
+          <div class="text-xs font-extrabold uppercase tracking-widest text-[#D4882A] mb-2">GetYourGuide Verified</div>
+          <h3 class="font-display text-xl font-bold text-[#FAF7F2] mb-3">24 Hour Free Cancellation</h3>
+          <p class="text-stone-300 text-xs leading-relaxed">
+            Book via our verified GetYourGuide supplier profile (ID 810525) or directly with Mohamed via WhatsApp on +44 7568 668918 with full 24 hour refund flexibility.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DIRECT RESERVATION FORM -->
+    <section id="booking" class="max-w-4xl mx-auto py-16">
+      <div class="glass-card rounded-3xl p-8 sm:p-14 border border-[#C87D28]/40">
+        
+        <div class="text-center max-w-xl mx-auto mb-10">
+          <span class="text-xs uppercase tracking-widest text-[#D4882A] font-extrabold">Direct Studio Reservation · +44 7568 668918</span>
+          <h2 class="font-display text-3xl font-extrabold text-[#FAF7F2] mt-2 mb-2">Reserve Your Guided Devon Tour</h2>
+          <p class="text-stone-400 text-sm">
+            Select from our 6 official Plymouth, Dartmoor, Tavistock, and Exeter tours below. Mohamed responds within 2 hours.
+          </p>
+        </div>
+
+        <form id="tour-booking-form" onsubmit="handleTourBooking(event)" class="space-y-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Your Full Name *</label>
+              <input type="text" id="guest-name" required placeholder="e.g. Sarah Jenkins" class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/15 text-[#FAF7F2] placeholder-stone-500 focus:outline-none focus:border-[#D4882A] transition text-sm">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Email Address *</label>
+              <input type="email" id="guest-email" required placeholder="name@example.com" class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/15 text-[#FAF7F2] placeholder-stone-500 focus:outline-none focus:border-[#D4882A] transition text-sm">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Select Tour Experience *</label>
+              <select id="tour-select" required class="w-full px-4 py-3.5 rounded-xl bg-[#141414] border border-white/15 text-[#FAF7F2] focus:outline-none focus:border-[#D4882A] transition text-sm">
+                <option value="tour_01_plymouth_walk">Tour 01 · Plymouth Cultural Architecture &amp; Historic Waterfront Walk (£30)</option>
+                <option value="tour_02_the_box">Tour 02 · Inside The Box Plymouth: Guided Museum, Art Gallery &amp; Archive Tour (£25)</option>
+                <option value="tour_03_plymouth_sound_boats">Tour 03 · Plymouth Sound Maritime History &amp; Boat Crossing Tour (£45)</option>
+                <option value="tour_04_tamar_brunel_bridges">Tour 04 · Tamar Bridge &amp; Brunel's Royal Albert Bridge Heritage Walk (£28)</option>
+                <option value="tour_05_dartmoor_tavistock">Tour 05 · Dartmoor National Park &amp; Historic Tavistock Nature &amp; Heritage Walk (£55)</option>
+                <option value="tour_06_exeter_cathedral_quay">Tour 06 · Historic Exeter Cathedral Quarter, Roman Wall &amp; Quayside Walk (£30)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Preferred Tour Date *</label>
+              <input type="date" id="tour-date" required class="w-full px-4 py-3.5 rounded-xl bg-[#141414] border border-white/15 text-[#FAF7F2] focus:outline-none focus:border-[#D4882A] transition text-sm">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Group Size *</label>
+              <select id="group-size" required class="w-full px-4 py-3.5 rounded-xl bg-[#141414] border border-white/15 text-[#FAF7F2] focus:outline-none focus:border-[#D4882A] transition text-sm">
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests (Couple / Friends)</option>
+                <option value="3_4">3 to 4 Guests (Small Group)</option>
+                <option value="5_8">5 to 8 Guests (Standard Group)</option>
+                <option value="9_12">9 to 12 Guests (Private Cultural Group)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Meeting Point Preference</label>
+              <select id="pickup-location" class="w-full px-4 py-3.5 rounded-xl bg-[#141414] border border-white/15 text-[#FAF7F2] focus:outline-none focus:border-[#D4882A] transition text-sm">
+                <option value="the_box_piazza">The Box Plymouth Piazza (Tavistock Place, PL4 8AX)</option>
+                <option value="barbican_mayflower">Plymouth Barbican Landing Stage &amp; Mayflower Steps (PL1 2LR)</option>
+                <option value="plymouth_station">Plymouth Railway Station Main Concourse (PL4 6AB)</option>
+                <option value="exeter_cathedral">Exeter Cathedral Green (For Tour 06)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">Accessibility, Curation Interests or Special Notes</label>
+            <textarea id="special-notes" rows="3" placeholder="Let Mohamed know if you require step free lift routing, photography guidance, or have specific historical interests..." class="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/15 text-[#FAF7F2] placeholder-stone-500 focus:outline-none focus:border-[#D4882A] transition text-sm"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-4 rounded-full bg-[#C87D28] hover:bg-[#D4882A] text-[#111111] font-extrabold text-sm uppercase tracking-wider transition ochre-glow">
+            Submit Reservation Request
+          </button>
+        </form>
+
+        <div id="booking-success-msg" class="hidden text-center py-8">
+          <div class="w-16 h-16 rounded-full bg-[#C87D28]/20 text-[#D4882A] flex items-center justify-center text-3xl mx-auto mb-4 border border-[#C87D28]/40">
+            ✓
+          </div>
+          <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-2">Reservation Request Received</h3>
+          <p class="text-stone-300 text-sm max-w-md mx-auto leading-relaxed">
+            Thank you. Mohamed from Mo360 Studio will contact you within 2 hours via email or +44 7568 668918 to confirm your meeting point and schedule.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- EDITORIAL FOOTER WITH BALANCED PADDING -->
+  <footer class="relative z-10 border-t border-[#C87D28]/25 py-14 px-6 sm:px-12 text-center text-xs text-stone-400 bg-[#0C0C0E]">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3.5">
+        <div class="w-8 h-8 rounded-full bg-[#C87D28] flex items-center justify-center font-extrabold text-[#111111] text-xs font-display">
+          360
+        </div>
+        <div class="text-left">
+          <div class="text-[#FAF7F2] font-bold">Mo360 Immersive Tours · Mo360 Studio</div>
+          <div class="text-[11px] text-stone-400">Plymouth, Devon, United Kingdom · © 2026 Mo360 Immersive Studio Ltd</div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-6 text-stone-300 text-xs">
+        <a href="/index.html" class="hover:text-[#D4882A] transition">Main Studio</a>
+        <a href="#programme" class="hover:text-[#D4882A] transition">6 Tour Programme</a>
+        <a href="#guide-bio" class="hover:text-[#D4882A] transition">Guide Bio</a>
+        <a href="tel:+447568668918" class="hover:text-[#D4882A] transition font-bold text-[#FAF7F2]">📞 +44 7568 668918</a>
+        <a href="https://www.instagram.com/mo360.uk/" target="_blank" class="hover:text-[#D4882A] transition font-bold text-[#E5A145]">📸 Insta: @mo360.uk</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const particleCount = 700;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const ochrePrimary = new THREE.Color(0xC87D28);
+    const ochreLight = new THREE.Color(0xD4882A);
+    const warmCream = new THREE.Color(0xFAF7F2);
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 45;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 45;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 45;
+
+      const rand = Math.random();
+      const col = rand > 0.45 ? ochrePrimary : (rand > 0.15 ? ochreLight : warmCream);
+      colors[i * 3] = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.12,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.65
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    camera.position.z = 24;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 0.8;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 0.8;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      particles.rotation.y += 0.0005;
+      particles.rotation.x += 0.0002;
+
+      camera.position.x += (mouseX * 3 - camera.position.x) * 0.05;
+      camera.position.y += (-mouseY * 3 - camera.position.y) * 0.05;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.tour-card');
+      cards.forEach(card => {
+        const itemCat = card.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function preselectTour(val) {
+      const select = document.getElementById('tour-select');
+      if (select) {
+        select.value = val;
+      }
+    }
+
+    function handleTourBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById('guest-name').value;
+      const email = document.getElementById('guest-email').value;
+      const tour = document.getElementById('tour-select').selectedOptions[0].text;
+      const date = document.getElementById('tour-date').value;
+      const size = document.getElementById('group-size').value;
+      
+      const booking = { name, email, tour, date, size, timestamp: new Date().toISOString() };
+      try {
+        const existing = JSON.parse(localStorage.getItem('mo360_tour_bookings') || '[]');
+        existing.push(booking);
+        localStorage.setItem('mo360_tour_bookings', JSON.stringify(existing));
+      } catch(err) {}
+
+      document.getElementById('tour-booking-form').classList.add('hidden');
+      const successBox = document.getElementById('booking-success-msg');
+      successBox.classList.remove('hidden');
+
+      const textMsg = encodeURIComponent('Hi Mohamed, I would like to reserve a tour with Mo360!\n\nName: ' + name + '\nEmail: ' + email + '\nTour: ' + tour + '\nPreferred Date: ' + date + '\nGroup Size: ' + size + ' guest(s)');
+      const waUrl = 'https://wa.me/447568668918?text=' + textMsg;
+      
+      const waBtn = document.createElement('div');
+      waBtn.className = 'mt-6';
+      waBtn.innerHTML = '<a href="' + waUrl + '" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-black font-extrabold text-sm uppercase tracking-wider shadow-lg transition"><span>💬</span> Open WhatsApp to Confirm Booking Instantly</a>';
+      successBox.appendChild(waBtn);
+
+      window.open(waUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
