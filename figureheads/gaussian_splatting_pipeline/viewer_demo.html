@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plymouth Chronicles 3D — WebGL .splat Viewer Demo</title>
+  <style>
+    :root {
+      --bg: #11161d;
+      --panel: rgba(20, 26, 35, 0.88);
+      --accent: #c87d28;
+      --text: #e8eaed;
+      --muted: #9aa0a6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+    }
+    #canvas-wrap { position: fixed; inset: 0; }
+    #hud {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: var(--panel);
+      border: 1px solid rgba(200, 125, 40, 0.35);
+      border-radius: 10px;
+      padding: 14px 16px;
+      width: 310px;
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.03em; color: var(--accent); margin-bottom: 4px; }
+    .sub { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+    label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    select, button {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: #1a222d;
+      color: var(--text);
+      font-size: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); }
+    .row { display: flex; gap: 8px; }
+    .row button { flex: 1; margin-bottom: 8px; }
+    #stats {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 8px;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas-wrap"></div>
+  <div id="hud">
+    <h1>PLYMOUTH CHRONICLES 3D</h1>
+    <div class="sub">2DGS / 3DGS .splat WebGL Demo · The Box, Plymouth</div>
+    <label for="fig-select">Select Figurehead (.splat)</label>
+    <select id="fig-select">
+      <option value="windsor-castle">HMS Windsor Castle (1858)</option>
+      <option value="royal-william">HMS Royal William (1833)</option>
+      <option value="sphinx">HMS Sphinx (1846)</option>
+      <option value="tamar">HMS Tamar (1863)</option>
+      <option value="aurora">HMS Aurora (1861)</option>
+      <option value="basilisk">HMS Basilisk (1848)</option>
+      <option value="cadmus">HMS Cadmus (1856)</option>
+      <option value="calcutta">HMS Calcutta (1831)</option>
+      <option value="calliope">HMS Calliope (1837)</option>
+      <option value="centaur">HMS Centaur (1845)</option>
+      <option value="defiance">HMS Defiance (1861)</option>
+      <option value="minerva">HMS Minerva (1820)</option>
+      <option value="sybille">HMS Sybille (1847)</option>
+      <option value="topaze">HMS Topaze (1858)</option>
+    </select>
+    <div class="row">
+      <button id="btn-rotate">Auto-Rotate: ON</button>
+      <button id="btn-reset">Reset Camera</button>
+    </div>
+    <div id="stats">Loading...</div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const wrap = document.getElementById('canvas-wrap');
+    const select = document.getElementById('fig-select');
+    const statsEl = document.getElementById('stats');
+    const btnRotate = document.getElementById('btn-rotate');
+    const btnReset = document.getElementById('btn-reset');
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    wrap.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#11161d');
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.05, 100);
+    camera.position.set(0, 0.25, 3.2);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.6;
+
+    const grid = new THREE.GridHelper(4, 16, 0x334155, 0x1e293b);
+    grid.position.y = -1.25;
+    scene.add(grid);
+
+    let currentPoints = null;
+
+    function parseSplatBinary(buffer) {
+      const count = Math.floor(buffer.byteLength / 32);
+      const dv = new DataView(buffer);
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const sizes = new Float32Array(count);
+
+      for (let i = 0; i < count; i++) {
+        const off = i * 32;
+        positions[i * 3] = dv.getFloat32(off, true);
+        positions[i * 3 + 1] = dv.getFloat32(off + 4, true);
+        positions[i * 3 + 2] = dv.getFloat32(off + 8, true);
+
+        const sx = dv.getFloat32(off + 12, true);
+        const sy = dv.getFloat32(off + 16, true);
+        sizes[i] = Math.max(sx, sy) * 2.4;
+
+        colors[i * 3] = dv.getUint8(off + 24) / 255.0;
+        colors[i * 3 + 1] = dv.getUint8(off + 25) / 255.0;
+        colors[i * 3 + 2] = dv.getUint8(off + 26) / 255.0;
+      }
+      return { count, positions, colors, sizes };
+    }
+
+    async function loadSplat(slug) {
+      const t0 = performance.now();
+      statsEl.textContent = `Fetching ../splats/${slug}.splat ...`;
+      try {
+        const res = await fetch(`../splats/${slug}.splat`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = await res.arrayBuffer();
+        const { count, positions, colors, sizes } = parseSplatBinary(buf);
+
+        if (currentPoints) {
+          scene.remove(currentPoints);
+          currentPoints.geometry.dispose();
+          currentPoints.material.dispose();
+        }
+
+        const geom = new THREE.BufferGeometry();
+        geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geom.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+
+        const mat = new THREE.ShaderMaterial({
+          vertexColors: true,
+          transparent: true,
+          depthWrite: true,
+          uniforms: {
+            uPixelRatio: { value: renderer.getPixelRatio() },
+          },
+          vertexShader: `
+            attribute float aSize;
+            varying vec3 vColor;
+            uniform float uPixelRatio;
+            void main() {
+              vColor = color;
+              vec4 mv = modelViewMatrix * vec4(position, 1.0);
+              gl_PointSize = clamp((aSize * 460.0 * uPixelRatio) / max(-mv.z, 0.2), 1.5, 22.0);
+              gl_Position = projectionMatrix * mv;
+            }
+          `,
+          fragmentShader: `
+            varying vec3 vColor;
+            void main() {
+              vec2 d = gl_PointCoord - vec2(0.5);
+              float r2 = dot(d, d);
+              if (r2 > 0.25) discard;
+              float alpha = exp(-r2 * 8.5);
+              gl_FragColor = vec4(vColor, alpha);
+            }
+          `,
+        });
+
+        currentPoints = new THREE.Points(geom, mat);
+        scene.add(currentPoints);
+
+        const dt = (performance.now() - t0).toFixed(1);
+        statsEl.innerHTML =
+          `Slug: <b>${slug}</b><br>` +
+          `Splats: ${count.toLocaleString()}<br>` +
+          `Binary: ${(buf.byteLength / 1024).toFixed(1)} KB<br>` +
+          `Load: ${dt} ms`;
+      } catch (err) {
+        statsEl.textContent = `Load error: ${err.message} (serve via local HTTP server from PortfolioWork/figureheads/)`;
+      }
+    }
+
+    select.addEventListener('change', () => loadSplat(select.value));
+    btnRotate.addEventListener('click', () => {
+      controls.autoRotate = !controls.autoRotate;
+      btnRotate.textContent = `Auto-Rotate: ${controls.autoRotate ? 'ON' : 'OFF'}`;
+    });
+    btnReset.addEventListener('click', () => {
+      camera.position.set(0, 0.25, 3.2);
+      controls.target.set(0, 0, 0);
+      controls.update();
+    });
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    loadSplat(select.value);
+    (function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    })();
+  </script>
+</body>
+</html>

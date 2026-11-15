@@ -1,0 +1,79 @@
+{
+  "spec_version": "2.0.0",
+  "project": "Plymouth Chronicles 3D — Full-Body Figurehead 3D Gaussian Splatting Pipeline",
+  "studio": "Mo360 Immersive Studio Ltd (Plymouth, UK)",
+  "cultural_anchor": "The Box, Tavistock Place, Plymouth, PL4 8AX (Devonport Naval Heritage Collection on long-term loan from NMRN)",
+  "directors": {
+    "higgsfield": "higgsfield-cinema-director",
+    "google_flow": "google-flow-director"
+  },
+  "stages": [
+    {
+      "stage": 1,
+      "name": "Multi-Angle Turnaround Generation",
+      "tools": ["Higgsfield AI Cinema Studio (Soul ID 0.96, 85mm f/11)", "Google Flow (Veo 2/3 Ingredients)"],
+      "prompt_pack": "higgsfield_google_flow_14_figureheads_prompts.json",
+      "camera_rig": {
+        "elevation_rings_deg": [-15, 0, 20],
+        "keyframes_per_ring": 24,
+        "total_views": 72,
+        "backdrop": "#11161d"
+      }
+    },
+    {
+      "stage": 2,
+      "name": "3D Mesh Reconstruction & Normalization",
+      "tools": ["Tripo3D / Rodin Multi-View", "Blender 4.2.16 LTS", "glTF-Transform v4.5.1"],
+      "coordinate_standard": {
+        "up_axis": "+Y",
+        "origin": "bottom-center (0, 0, 0) for WebXR GLB; centered [-1.25, +1.25] for standalone splat viewer",
+        "validation": "Khronos gltf-validator (0 errors, 0 warnings)"
+      }
+    },
+    {
+      "stage": 3,
+      "name": "2DGS Surface-Aligned Surfel Splatting & Dorsal Enrichment",
+      "script": "gaussian_splat_enhancer.py",
+      "target_splats_per_figurehead": 24000,
+      "ply_max_points": 12000,
+      "surfel_flatness_target_ratio": 5.0,
+      "outputs": {
+        "splat_dir": "../splats",
+        "manifest": "../splats/enhancement_manifest.json"
+      }
+    },
+    {
+      "stage": 4,
+      "name": "Binary Conversion, QA Validation & WebGL Delivery",
+      "converter": "ply_to_splat.py",
+      "viewer_demo": "viewer_demo.html",
+      "integration_test": "test_pipeline.py",
+      "formats": {
+        "splat": {
+          "record_bytes": 32,
+          "layout": "pos(3x float32) + scale(3x float32) + rgba(4x uint8) + rot(4x uint8 mapped [-1,1]->[0,255])"
+        },
+        "ply": {
+          "format": "binary_little_endian 1.0 (Inria 3DGS)",
+          "properties": ["x", "y", "z", "nx", "ny", "nz", "f_dc_0", "f_dc_1", "f_dc_2", "opacity", "scale_0", "scale_1", "scale_2", "rot_0", "rot_1", "rot_2", "rot_3"]
+        }
+      }
+    }
+  ],
+  "canonical_figureheads": [
+    {"id": "aurora", "slug": "aurora", "ship": "HMS Aurora (1861)", "height_m": 2.5, "hull_class": "1-strake frigate"},
+    {"id": "basilisk", "slug": "basilisk", "ship": "HMS Basilisk (1848)", "height_m": 2.5, "hull_class": "paddle sloop"},
+    {"id": "cadmus", "slug": "cadmus", "ship": "HMS Cadmus (1856)", "height_m": 2.5, "hull_class": "1-strake corvette"},
+    {"id": "calcutta", "slug": "calcutta", "ship": "HMS Calcutta (1831)", "height_m": 4.0, "hull_class": "2-strake 2nd-rate"},
+    {"id": "calliope", "slug": "calliope", "ship": "HMS Calliope (1837)", "height_m": 2.0, "hull_class": "1-strake frigate"},
+    {"id": "centaur", "slug": "centaur", "ship": "HMS Centaur (1845)", "height_m": 2.0, "hull_class": "paddle frigate"},
+    {"id": "defiance", "slug": "defiance", "ship": "HMS Defiance (1861)", "height_m": 4.0, "hull_class": "2-strake 2nd-rate"},
+    {"id": "minerva", "slug": "minerva", "ship": "HMS Minerva (1820)", "height_m": 2.5, "hull_class": "shore statue (1-strake ref)"},
+    {"id": "royal_william", "slug": "royal-william", "ship": "HMS Royal William (1833)", "height_m": 4.0, "hull_class": "3-strake 1st-rate"},
+    {"id": "sphinx", "slug": "sphinx", "ship": "HMS Sphinx (1846)", "height_m": 2.5, "hull_class": "paddle sloop"},
+    {"id": "sybille", "slug": "sybille", "ship": "HMS Sybille (1847)", "height_m": 2.5, "hull_class": "1-strake frigate"},
+    {"id": "tamar", "slug": "tamar", "ship": "HMS Tamar (1863)", "height_m": 4.0, "hull_class": "white+blue troopship"},
+    {"id": "topaze", "slug": "topaze", "ship": "HMS Topaze (1858)", "height_m": 2.5, "hull_class": "1-strake frigate"},
+    {"id": "windsor_castle", "slug": "windsor-castle", "ship": "HMS Windsor Castle (1858)", "height_m": 4.0, "hull_class": "3-strake 1st-rate"}
+  ]
+}

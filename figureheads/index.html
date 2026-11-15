@@ -1,533 +1,75 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>The Figureheads of The Box in 3D | Plymouth Chronicles | Mo360 Immersive Studio</title>
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@800;900&display=swap" rel="stylesheet">
-  
-  <!-- Preload 3D Models for Instant Switching -->
-  <link rel="preload" href="./models/sphinx.glb" as="fetch" crossorigin="anonymous">
-  <link rel="preload" href="./models/royal_william.glb" as="fetch" crossorigin="anonymous">
-  <link rel="preload" href="./models/windsor_castle.glb" as="fetch" crossorigin="anonymous">
-  <link rel="preload" href="./models/tamar.glb" as="fetch" crossorigin="anonymous">
-
-  <!-- model-viewer Fast Google CDN v4 -->
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-
-  <style>
-    :root {
-      --color-dark-blue: #0B2545;
-      --color-blue-hover: #1F4E8C;
-      --color-ochre: #C8862A;
-      --color-ochre-text: #94591A;
-      --color-panel: #F4F1EA;
-      --color-border: #E2DDD5;
-      --color-bg: #FFFFFF;
-      --color-text: #1C2430;
-      --color-muted: #5C6779;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      border-radius: 0 !important; /* Strict square corners */
-    }
-
-    body {
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      font-size: 18px;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Focus visible */
-    a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
-      outline: 3px solid var(--color-ochre) !important;
-      outline-offset: 3px !important;
-    }
-
-    /* Header */
-    header.site-header {
-      background-color: var(--color-dark-blue);
-      color: #FFFFFF;
-      border-bottom: 4px solid var(--color-ochre);
-      padding: 16px 24px;
-    }
-    .header-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-    .logo-text {
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 900;
-      font-size: 22px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .logo-text span {
-      color: var(--color-ochre);
-    }
-    .wip-tag {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #E2DDD5;
-      font-weight: 600;
-    }
-
-    /* Main Container */
-    main.main-content {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 40px 24px 60px;
-    }
-
-    /* Page Titles */
-    .lead-meta {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--color-ochre-text);
-      margin-bottom: 8px;
-    }
-    h1.page-title {
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 900;
-      font-size: clamp(32px, 5vw, 54px);
-      line-height: 1.1;
-      color: var(--color-dark-blue);
-      margin-bottom: 14px;
-      letter-spacing: -0.02em;
-    }
-    .page-subtitle {
-      font-size: 19px;
-      color: var(--color-muted);
-      max-width: 900px;
-      line-height: 1.45;
-      margin-bottom: 32px;
-    }
-
-    /* Tabs */
-    .tabs-bar {
-      display: flex;
-      gap: 32px;
-      border-bottom: 2px solid var(--color-border);
-      margin-bottom: 36px;
-      overflow-x: auto;
-      scrollbar-width: thin;
-    }
-    .tab-button {
-      background: none;
-      border: none;
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      color: var(--color-muted);
-      padding: 12px 4px;
-      cursor: pointer;
-      position: relative;
-      white-space: nowrap;
-      transition: color 0.15s ease;
-    }
-    .tab-button:hover {
-      color: var(--color-dark-blue);
-    }
-    .tab-button.active {
-      color: var(--color-dark-blue);
-    }
-    .tab-button.active::after {
-      content: "";
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background-color: var(--color-ochre);
-    }
-
-    /* Exhibition Display Grid */
-    .exhibition-layout {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 40px;
-      align-items: start;
-    }
-
-    /* Left: 3D Stage */
-    .stage-wrapper {
-      position: relative;
-      background-color: var(--color-panel);
-      border: none;
-      box-shadow: none;
-    }
-    model-viewer {
-      width: 100%;
-      height: 580px;
-      background-color: var(--color-panel);
-      --poster-color: transparent;
-      outline: none;
-    }
-    .viewer-helper-tag {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background-color: var(--color-dark-blue);
-      color: #FFFFFF;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 12px;
-      letter-spacing: 0.04em;
-      pointer-events: none;
-    }
-
-    /* Right: Museum Label */
-    .museum-label {
-      padding: 8px 0;
-    }
-    .object-number {
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--color-ochre-text);
-      margin-bottom: 12px;
-    }
-    .object-heading-wrapper {
-      border-left: 6px solid var(--color-ochre);
-      padding-left: 16px;
-      margin-bottom: 12px;
-    }
-    h2.object-name {
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 900;
-      font-size: clamp(28px, 3.5vw, 40px);
-      line-height: 1.1;
-      color: var(--color-dark-blue);
-    }
-    .object-subject {
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 24px;
-    }
-
-    /* Details Table */
-    .museum-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 32px;
-    }
-    .museum-table tr {
-      border-bottom: 1px solid var(--color-border);
-    }
-    .museum-table th {
-      text-align: left;
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--color-muted);
-      padding: 12px 12px 12px 0;
-      width: 28%;
-      vertical-align: top;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .museum-table td {
-      font-size: 16px;
-      color: var(--color-text);
-      padding: 12px 0;
-      line-height: 1.45;
-    }
-
-    /* Controls */
-    .controls-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      padding: 14px 28px;
-      cursor: pointer;
-      border: none;
-      transition: background-color 0.15s ease, color 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-    }
-    .btn-primary {
-      background-color: var(--color-dark-blue);
-      color: #FFFFFF;
-    }
-    .btn-primary:hover {
-      background-color: var(--color-blue-hover);
-    }
-    .btn-secondary {
-      background-color: var(--color-panel);
-      color: var(--color-dark-blue);
-      border: 1px solid var(--color-border);
-    }
-    .btn-secondary:hover {
-      background-color: #EAE5DB;
-    }
-
-    /* Footer */
-    footer.site-footer {
-      background-color: var(--color-dark-blue);
-      color: #E2DDD5;
-      border-top: 4px solid var(--color-ochre);
-      padding: 36px 24px;
-      font-size: 15px;
-      line-height: 1.6;
-      margin-top: 60px;
-    }
-    .footer-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .footer-inner p strong {
-      color: #FFFFFF;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .exhibition-layout {
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
-      model-viewer {
-        height: 440px;
-      }
-      .tabs-bar {
-        gap: 20px;
-      }
-      .museum-table th {
-        width: 35%;
-      }
-    }
-
-    /* Reduced Motion */
-    @media (prefers-reduced-motion: reduce) {
-      model-viewer {
-        --auto-rotate: none;
-      }
-      * {
-        transition: none !important;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Header -->
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="logo-text">
-        PLYMOUTH <span>CHRONICLES</span>
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Plymouth Chronicles · The Box, Plymouth</title>
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="style.css?v=131">
+<script>self.ModelViewerElement=self.ModelViewerElement||{};self.ModelViewerElement.meshoptDecoderLocation=new URL('meshopt_decoder.js',location.href).href;</script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head><body>
+<header class="top">
+  <div class="top-row">
+    <div>
+      <span class="eyebrow">The Box, Plymouth</span>
+      <h1>Plymouth <em>Chronicles</em></h1>
+    </div>
+    <div class="ai-controls">
+      <button id="gemini-btn" class="gemini-pill" title="Start bidirectional voice & visual chat with Google Gemini Live">
+        <span class="gemini-sparkle">✨</span>
+        <span id="gemini-btn-label">Live Gemini AR</span>
+      </button>
+    </div>
+  </div>
+</header>
+<main>
+ <section class="stage" id="stage">
+  <button id="narrator-btn" class="narrator-pill" title="Toggle audio tour guide narration">
+    <div class="sound-bars" aria-hidden="true"><span></span><span></span><span></span></div>
+    <span id="narrator-label">Narrator Ready</span>
+  </button>
+  <button id="intro-btn" class="intro-pill" title="Listen to The Box Curator Introduction (Bloomberg Connects)">
+    <span>🎙️ The Box Intro</span>
+  </button>
+  <div id="audio-prompt-overlay" class="audio-prompt-overlay" role="button" aria-label="Tap to listen">
+    <div class="audio-prompt-card">
+      <div class="audio-prompt-icon">🎧</div>
+      <div class="audio-prompt-text">
+        <strong>Tap to Listen · Curator Intro</strong>
+        <span>Official audio guide from The Box, Plymouth</span>
       </div>
-      <div class="wip-tag">Work in progress</div>
     </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="lead-meta">BEHIND THE SCENES · NOVEMBER 2026</div>
-    <h1 class="page-title">The figureheads of The Box, in 3D</h1>
-    <p class="page-subtitle">A first look at four 3D figureheads I'm making for Plymouth Chronicles, my augmented reality web app about Plymouth's heritage.</p>
-
-    <!-- Tabs -->
-    <nav class="tabs-bar" aria-label="Figurehead Selection">
-      <button class="tab-button active" onclick="switchModel(0)" id="tab-0">Sphinx</button>
-      <button class="tab-button" onclick="switchModel(1)" id="tab-1">Royal William</button>
-      <button class="tab-button" onclick="switchModel(2)" id="tab-2">Windsor Castle</button>
-      <button class="tab-button" onclick="switchModel(3)" id="tab-3">Tamar</button>
-    </nav>
-
-    <!-- Display Stage & Label -->
-    <div class="exhibition-layout">
-      
-      <!-- 3D Model Viewer on Left (Top on Mobile) -->
-      <div class="stage-wrapper">
-        <div class="viewer-helper-tag">Drag to turn · Pinch or scroll to zoom</div>
-        <model-viewer
-          id="figurehead-viewer"
-          src="./models/sphinx.glb"
-          alt="3D figurehead from HMS Sphinx"
-          loading="eager"
-          reveal="auto"
-          camera-controls
-          auto-rotate
-          auto-rotate-delay="0"
-          rotation-per-second="16deg"
-          camera-orbit="90deg 82deg auto"
-          exposure="1.05"
-          shadow-intensity="0.8"
-          interaction-prompt="none"
-          tabindex="0"
-        ></model-viewer>
+  </div>
+  <video id="viewfinder" playsinline autoplay muted hidden></video>
+  <canvas id="viewfinder-canvas" hidden></canvas>
+  <div id="gemini-hud" class="gemini-hud" hidden>
+    <div class="gemini-hud-header">
+      <div class="gemini-status-indicator">
+        <span class="gemini-dot"></span>
+        <span id="gemini-status-text">Gemini 3.8 Live</span>
       </div>
-
-      <!-- Museum Label on Right (Bottom on Mobile) -->
-      <article class="museum-label">
-        <div class="object-number" id="label-number">OBJECT 01 / 04</div>
-        <div class="object-heading-wrapper">
-          <h2 class="object-name" id="label-name">Sphinx</h2>
-        </div>
-        <div class="object-subject" id="label-subject">Figurehead from HMS Sphinx</div>
-
-        <table class="museum-table">
-          <tbody>
-            <tr>
-              <th>Process</th>
-              <td>Archival photographs, AI-assisted 3D reconstruction, then cleaned and optimised by hand for the web</td>
-            </tr>
-            <tr>
-              <th>Format</th>
-              <td>GLB, optimised for the web</td>
-            </tr>
-            <tr>
-              <th>File size</th>
-              <td id="label-size">480 KB</td>
-            </tr>
-            <tr>
-              <th>Status</th>
-              <td>Prototype</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="controls-row">
-          <button class="btn btn-primary" id="btn-toggle-rotate" onclick="toggleRotation()">Pause rotation</button>
-          <button class="btn btn-secondary" onclick="resetFrontView()">Front view</button>
-        </div>
-      </article>
-
+      <button id="gemini-close-btn" class="gemini-close-btn" aria-label="Disconnect Gemini Live">&times;</button>
     </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p><strong>About these models.</strong> Built from archival photographs with AI-assisted 3D reconstruction. Not official museum scans.</p>
-      <p>The figureheads are on display at The Box, Plymouth.</p>
-      <p>Mohamed Elwakil, Mo360 Immersive Studio. Work in progress.</p>
-    </div>
-  </footer>
-
-  <script>
-    const modelsData = [
-      {
-        id: "sphinx",
-        name: "Sphinx",
-        number: "OBJECT 01 / 04",
-        subject: "Figurehead from HMS Sphinx",
-        file: "./models/sphinx.glb",
-        size: "480 KB",
-        orbit: "90deg 82deg auto"
-      },
-      {
-        id: "royal-william",
-        name: "Royal William",
-        number: "OBJECT 02 / 04",
-        subject: "King William IV, known as 'King Billy'",
-        file: "./models/royal_william.glb",
-        size: "618 KB",
-        orbit: "90deg 82deg auto"
-      },
-      {
-        id: "windsor-castle",
-        name: "Windsor Castle",
-        number: "OBJECT 03 / 04",
-        subject: "Queen Victoria",
-        file: "./models/windsor_castle.glb",
-        size: "708 KB",
-        orbit: "90deg 82deg auto"
-      },
-      {
-        id: "tamar",
-        name: "Tamar",
-        number: "OBJECT 04 / 04",
-        subject: "Figurehead from HMS Tamar",
-        file: "./models/tamar.glb",
-        size: "546 KB",
-        orbit: "180deg 82deg auto"
-      }
-    ];
-
-    let currentIndex = 0;
-    const viewer = document.getElementById('figurehead-viewer');
-    const labelNum = document.getElementById('label-number');
-    const labelName = document.getElementById('label-name');
-    const labelSubject = document.getElementById('label-subject');
-    const labelSize = document.getElementById('label-size');
-    const btnRotate = document.getElementById('btn-toggle-rotate');
-
-    function switchModel(index) {
-      currentIndex = index;
-      const data = modelsData[index];
-
-      // Update tabs
-      for (let i = 0; i < 4; i++) {
-        const btn = document.getElementById('tab-' + i);
-        if (btn) {
-          if (i === index) btn.classList.add('active');
-          else btn.classList.remove('active');
-        }
-      }
-
-      // Update viewer
-      viewer.src = data.file;
-      viewer.alt = "3D model of " + data.name + " (" + data.subject + ")";
-      viewer.cameraOrbit = data.orbit;
-      viewer.jumpCameraToGoal();
-
-      // Update label
-      labelNum.textContent = data.number;
-      labelName.textContent = data.name;
-      labelSubject.textContent = data.subject;
-      labelSize.textContent = data.size;
-    }
-
-    function toggleRotation() {
-      if (viewer.autoRotate) {
-        viewer.autoRotate = false;
-        btnRotate.textContent = "Start rotation";
-      } else {
-        viewer.autoRotate = true;
-        btnRotate.textContent = "Pause rotation";
-      }
-    }
-
-    function resetFrontView() {
-      const data = modelsData[currentIndex];
-      viewer.cameraOrbit = data.orbit;
-      viewer.jumpCameraToGoal();
-    }
-
-    // Reduced motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      viewer.autoRotate = false;
-      if (btnRotate) btnRotate.textContent = "Start rotation";
-    }
-  </script>
-</body>
-</html>
+    <div id="gemini-transcript" class="gemini-transcript">Tap to speak or show a figurehead to Gemini…</div>
+  </div>
+  <model-viewer id="mv" camera-controls touch-action="pan-y" camera-orbit="90deg 75deg auto" auto-rotate rotation-per-second="20deg" auto-rotate-delay="1200" shadow-intensity="1" exposure="1.05" interaction-prompt="none" alt="3D figurehead"></model-viewer>
+  <div id="splat" class="splat" hidden></div>
+  <div class="loading" id="loading">Loading object…</div>
+  <div class="mode" role="group" aria-label="Viewing mode">
+   <button id="m-mesh" class="on">Figurehead</button><button id="m-ship" title="View figurehead mounted on its 3D warship bow">⛵ Ship Bow</button>
+  </div>
+ </section>
+ <article class="card" id="card" aria-live="polite">
+  <p class="eyebrow" id="c-acc"></p><h2 id="c-ship"></h2><p class="lede" id="c-blurb"></p>
+  <dl><div><dt>Object</dt><dd id="c-type"></dd></div><div><dt>Date</dt><dd id="c-date"></dd></div>
+  <div><dt>Material</dt><dd id="c-mat"></dd></div><div><dt>Launched</dt><dd id="c-launch"></dd></div></dl>
+  <p class="note" id="c-detail"></p>
+  <p class="draft">Draft interpretation text: pending curatorial review.</p>
+  <div class="ship-archive" id="c-ship-wrap" hidden>
+   <p class="eyebrow">Original Warship · Archival View</p>
+   <img id="c-ship-img" alt="Original Royal Navy ship" loading="lazy">
+   <p class="ship-cap" id="c-ship-cap"></p>
+  </div>
+ </article>
+</main>
+<nav class="drawer" aria-label="Collection"><div class="handle"></div><ul id="carousel"></ul></nav>
+<script src="data.js?v=131"></script><script src="app.js?v=131"></script>
+</body></html>

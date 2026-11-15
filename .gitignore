@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+figureheads/backups_uncompressed/
+*.log

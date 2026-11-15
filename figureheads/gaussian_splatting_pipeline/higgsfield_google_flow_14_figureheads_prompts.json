@@ -1,0 +1,148 @@
+{
+  "pipeline_version": "2.0.0",
+  "studio": "Mo360 Immersive Studio — Plymouth Chronicles 3D Gaussian Splatting & Full-Body Turnaround Pipeline",
+  "higgsfield_global_settings": {
+    "camera_preset": "360 Orbital Pan (Bullet-Time Turntable)",
+    "focal_length": "85mm Prime (Zero Barrel Distortion)",
+    "aperture": "f/11 Deep Photogrammetry Focus (Zero Bokeh Blur)",
+    "soul_id_weight": 0.96,
+    "elevation_rings_deg": [-15, 0, 20],
+    "keyframes_per_ring": 24,
+    "total_views": 72,
+    "backdrop": "#11161d matte conservation charcoal"
+  },
+  "google_flow_veo_global_settings": {
+    "model": "Veo 2 / Veo 3 Ingredient-to-Video Turnaround",
+    "mode": "Ingredients (Front Studio Photo + Sparse Splat Render + Material Swatch)",
+    "camera_motion": "Smooth 360-degree counter-clockwise orbital camera around vertical Z-axis at constant 3.5m radius",
+    "lighting": "Even 3-point museum conservation lighting with subtle specular rim for 24k gold leaf and varnished naval timber"
+  },
+  "figureheads": [
+    {
+      "slug": "windsor-castle",
+      "id": "windsor_castle",
+      "ship": "HMS Windsor Castle (1858)",
+      "input_photo": "thumbs/windsor-castle.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 4-metre carved English oak figurehead of young Queen Victoria from HMS Windsor Castle (1858) at The Box, Plymouth. Soul ID locked to input photo: crowned portrait holding a 24k gold leaf Royal Orb, crimson and white royal sash, full dorsal flowing royal mantle folds down the back, carved oak stem-knee mounting pedestal, 85mm f/11 deep focus, photogrammetry-ready.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Windsor Castle (Queen Victoria), generate a smooth 360-degree orbital turnaround on a dark neutral conservation backdrop. Reconstruct the complete back of her gilded crown, braided hair bun, crimson and white royal robe folds, and heavy English oak stem-knee bracket with consistent Victorian gloss enamel and gold leaf.",
+      "palette_rgb": [[218, 178, 88], [176, 42, 48], [238, 232, 220], [82, 54, 36]]
+    },
+    {
+      "slug": "royal-william",
+      "id": "royal_william",
+      "ship": "HMS Royal William (1833)",
+      "input_photo": "thumbs/royal-william.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the monumental 2-tonne carved English oak figurehead of King William IV ('King Billy') from HMS Royal William (1833) at The Box, Plymouth. Soul ID locked to input photo: Royal Navy Admiral uniform with gold bullion epaulets, Garter star, white breeches, full dorsal navy coattails and heavy iron-bolted oak stem-knee pedestal at the back, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Royal William (King William IV), generate a smooth 360-degree orbital turnaround on a dark conservation studio backdrop. Preserve the full standing body, Admiral coattails, rear gold bullion epaulets, and massive carved oak pedestal base.",
+      "palette_rgb": [[28, 48, 88], [218, 175, 72], [236, 230, 216], [164, 38, 42]]
+    },
+    {
+      "slug": "sphinx",
+      "id": "sphinx",
+      "ship": "HMS Sphinx (1846)",
+      "input_photo": "thumbs/sphinx.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2.5-metre carved timber figurehead of HMS Sphinx (1846) by Hellyer & Sons of Portsmouth, housed at The Box, Plymouth. Soul ID locked to input photo: bearded Eastern male bust with white turban, crimson cap, white and gold tunic, black scabbard (no nemes headdress), and complete dorsal turban folds and carved timber stem-knee scroll at the back, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Sphinx (1846), generate a smooth 360-degree orbital turnaround showing the front, sides, and full dorsal carved timber mount with crisp white turban, crimson cap, gold trim, and black scabbard.",
+      "palette_rgb": [[184, 52, 44], [235, 225, 210], [212, 168, 74], [98, 66, 44]]
+    },
+    {
+      "slug": "tamar",
+      "id": "tamar",
+      "ship": "HMS Tamar (1863)",
+      "input_photo": "thumbs/tamar.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 4-metre carved hardwood figurehead of the bearded River God of the Tamar from HMS Tamar (1863) at The Box, Plymouth. Soul ID locked to input photo: long flowing white beard, river-weed crown, muscular torso, hands clasping waist drapery, and complete dorsal cascading hair and acanthus scroll stem-knee base at the back, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Tamar (1863), generate a smooth 360-degree orbital turnaround revealing the full 4-metre River God torso, back hair locks, and lower scroll bracket.",
+      "palette_rgb": [[228, 222, 212], [74, 118, 138], [198, 158, 76], [84, 62, 46]]
+    },
+    {
+      "slug": "aurora",
+      "id": "aurora",
+      "ship": "HMS Aurora (1861)",
+      "input_photo": "thumbs/aurora.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2.5-metre polychrome carved figurehead of the Roman Goddess of the Dawn from HMS Aurora (1861) at The Box, Plymouth. Soul ID locked to input photo: half-length bare-breasted Aurora with pink rose garland, peach skirt, blue ruffled sash, and full dorsal drapery folds and timber cutwater bracket at the back, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Aurora (1861), generate a smooth 360-degree orbital turnaround reconstructing her full classical bust, pink rose garland, peach skirt, blue sash, and dorsal timber scroll.",
+      "palette_rgb": [[236, 224, 208], [218, 174, 78], [186, 88, 76], [68, 96, 132]]
+    },
+    {
+      "slug": "basilisk",
+      "id": "basilisk",
+      "ship": "HMS Basilisk (1848)",
+      "input_photo": "thumbs/basilisk.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2.5-metre carved polychrome figurehead of HMS Basilisk (1848) at The Box, Plymouth. Soul ID locked to input photo: classical female bust with curly brown hair, gold fillet headband, blue collar, triangular ruby pendant, spiral chiton drapery, and full dorsal coiled curls and carved timber stem-knee mount, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Basilisk (1848), generate a smooth 360-degree orbital turnaround showing the classical female bust, curly brown hair with gold fillet, blue collar, ruby pendant, and rear stem-knee timber mount.",
+      "palette_rgb": [[46, 108, 74], [216, 172, 68], [178, 44, 42], [42, 54, 48]]
+    },
+    {
+      "slug": "cadmus",
+      "id": "cadmus",
+      "ship": "HMS Cadmus (1856)",
+      "input_photo": "thumbs/cadmus.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2.5-metre carved timber figurehead of bearded King Cadmus from HMS Cadmus (1856) at The Box, Plymouth. Soul ID locked to input photo: spiky gold and crimson crown, Prussian-blue cloak with gold trim, visible adze and chisel woodcarving marks, and complete dorsal cloak folds and oak stem bracket, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Cadmus (1856), generate a smooth 360-degree orbital turnaround preserving the spiky gold/crimson crown, Prussian-blue cloak, and authentic carved timber texture across the front, sides, and back.",
+      "palette_rgb": [[196, 154, 112], [156, 52, 48], [212, 172, 82], [92, 64, 42]]
+    },
+    {
+      "slug": "calcutta",
+      "id": "calcutta",
+      "ship": "HMS Calcutta (1831)",
+      "input_photo": "thumbs/calcutta.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the monumental 4-metre Malabar teak figurehead of HMS Calcutta (1831) built in Bombay, housed at The Box, Plymouth. Soul ID locked to input photo: turbaned Indian nobleman with moustache, pearl and emerald turban, saffron angarkha tunic, and full dorsal carved Malabar teak turban tail and stem-knee bracket, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Calcutta (1831), generate a smooth 360-degree orbital turnaround showing the complete Malabar teak bust, pearl/emerald turban, saffron angarkha, and rear turban folds.",
+      "palette_rgb": [[142, 88, 52], [218, 172, 72], [176, 44, 44], [228, 218, 202]]
+    },
+    {
+      "slug": "calliope",
+      "id": "calliope",
+      "ship": "HMS Calliope (1837)",
+      "input_photo": "thumbs/calliope.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2-metre carved polychrome timber figurehead of the Greek Muse Calliope from HMS Calliope (1837) at The Box, Plymouth. Soul ID locked to input photo: female Muse with 5-pointed gold crown, pearl choker, green bodice with gold zigzag trim, and full dorsal hair and carved scroll base, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Calliope (1837), generate a smooth 360-degree orbital turnaround reconstructing the full classical bust, 5-pointed gold crown, pearl choker, green bodice with gold zigzag trim, and timber bracket.",
+      "palette_rgb": [[234, 224, 210], [214, 172, 76], [72, 104, 138], [168, 64, 58]]
+    },
+    {
+      "slug": "centaur",
+      "id": "centaur",
+      "ship": "HMS Centaur (1845)",
+      "input_photo": "thumbs/centaur.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2-metre carved oak figurehead of the half-man, half-horse Centaur from HMS Centaur (1845) at The Box, Plymouth. Soul ID locked to input photo: left hand shading brow in lookout pose, right hand on hip (no bow), muscular torso, equine chest, and full dorsal back musculature and oak stem-knee mount, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Centaur (1845), generate a smooth 360-degree orbital turnaround showing the Centaur lookout pose with left hand shading brow, right hand on hip, equine shoulders, and rear oak mounting knee.",
+      "palette_rgb": [[168, 118, 78], [208, 162, 72], [112, 68, 42], [224, 212, 196]]
+    },
+    {
+      "slug": "defiance",
+      "id": "defiance",
+      "ship": "HMS Defiance (1861)",
+      "input_photo": "thumbs/defiance.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 4-metre carved English oak figurehead of the bearded warrior from HMS Defiance (1861) at The Box, Plymouth. Soul ID locked to input photo: gilded helmet with 3 white ostrich plumes, gold scale cuirass, crimson cloak, and full dorsal sweeping helmet plumes and heavy oak stem-knee bracket, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Defiance (1861), generate a smooth 360-degree orbital turnaround showing the full 4-metre warrior bust, 3 white ostrich plumes on gilded helmet, gold scale cuirass, and dorsal cloak folds.",
+      "palette_rgb": [[218, 174, 74], [178, 42, 44], [226, 218, 204], [78, 56, 40]]
+    },
+    {
+      "slug": "minerva",
+      "id": "minerva",
+      "ship": "HMS Minerva (1820)",
+      "input_photo": "thumbs/minerva.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the monochrome all-white carved timber figurehead of the Roman Goddess Minerva from HMS Minerva (1820) at The Box, Plymouth. Soul ID locked to input photo: full-length all-white dockyard-painted Minerva in Corinthian helmet holding vertical/diagonal spear and Medusa shield, with full dorsal helmet crest and fluted drapery, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Minerva (1820), generate a smooth 360-degree orbital turnaround preserving the monochrome all-white paint, Corinthian helmet, spear, Medusa shield, and full dorsal drapery.",
+      "palette_rgb": [[238, 234, 226], [204, 164, 78], [148, 152, 158], [88, 72, 54]]
+    },
+    {
+      "slug": "sybille",
+      "id": "sybille",
+      "ship": "HMS Sybille (1847)",
+      "input_photo": "thumbs/sybille.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the carved polychrome figurehead of the prophetic Sibyl from HMS Sybille (1847) at The Box, Plymouth. Soul ID locked to input photo: 3/4 Sibyl prophetess with blonde hair, sky-blue veil, celadon chiton robes, and full dorsal cascading veil and timber volute scroll at the back, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Sybille (1847), generate a smooth 360-degree orbital turnaround reconstructing her blonde hair, sky-blue head-veil, and celadon chiton over the shoulders and back.",
+      "palette_rgb": [[232, 224, 212], [68, 98, 136], [212, 170, 78], [164, 58, 54]]
+    },
+    {
+      "slug": "topaze",
+      "id": "topaze",
+      "ship": "HMS Topaze (1858)",
+      "input_photo": "thumbs/topaze.png",
+      "higgsfield_prompt": "Full-body 360-degree constant-radius orbital turntable studio scan of the 2.5-metre carved polychrome pine and oak figurehead of HMS Topaze (1858) at The Box, Plymouth. Soul ID locked to input photo: 3/4 classical female bust with gold tiara, white veil, teal bodice, crimson cloak, and full dorsal braided coiffure, cloak folds, and Devonport oak stem bracket, 85mm f/11 deep focus.",
+      "google_flow_veo_prompt": "Using the uploaded museum figurehead ingredient of HMS Topaze (1858), generate a smooth 360-degree orbital turnaround showing the complete classical female bust, gold tiara, white veil, teal bodice, crimson cloak, and dorsal oak mounting knee.",
+      "palette_rgb": [[222, 176, 72], [172, 48, 52], [234, 226, 214], [74, 98, 134]]
+    }
+  ]
+}
