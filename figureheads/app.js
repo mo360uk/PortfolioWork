@@ -263,7 +263,9 @@ function captureAndSendGeminiFrame() {
       canvas.height = Math.round((video.videoHeight / video.videoWidth) * 480);
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-      geminiWs.send(JSON.stringify({ type: 'image', data: base64 }));
+      if (base64 && base64.length > 100) {
+        geminiWs.send(JSON.stringify({ type: 'image', image: base64, data: base64 }));
+      }
     }
   } else if (mv && !mv.hidden) {
     // Snapshot the 3D model canvas
@@ -272,15 +274,139 @@ function captureAndSendGeminiFrame() {
         const dataUrl = mv.toDataURL('image/jpeg', 0.75);
         if (dataUrl && dataUrl.includes(',')) {
           const base64 = dataUrl.split(',')[1];
-          geminiWs.send(JSON.stringify({ type: 'image', data: base64 }));
+          if (base64 && base64.length > 100) {
+            geminiWs.send(JSON.stringify({ type: 'image', image: base64, data: base64 }));
+          }
         }
       }
     } catch (_) {}
   }
 }
 
+let userRequestedGeminiStop = false;
+let geminiWorkletLoaded = false;
+
+function connectGeminiSocket() {
+  if (userRequestedGeminiStop) return;
+  if (geminiWs) {
+    try { geminiWs.onclose = null; geminiWs.close(); } catch (_) {}
+    geminiWs = null;
+  }
+
+  // Primary WSS tunnel (Plymouth Chronicles port 8086)
+  const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = (location.hostname === 'mo360immersivestudio.co.uk' || location.hostname.endsWith('.github.io'))
+    ? 'wss://suit-article-barrel-pat.trycloudflare.com/ws'
+    : `${wsProto}//${location.host}/ws`;
+
+  try {
+    geminiWs = new WebSocket(wsUrl);
+    geminiWs.binaryType = 'arraybuffer';
+
+    geminiWs.onopen = async () => {
+      isGeminiActive = true;
+      $('gemini-btn').classList.add('connected');
+      $('gemini-btn-label').textContent = 'Listening… · AR';
+
+      // Start periodic visual frame streaming
+      if (!geminiFrameInterval) {
+        geminiFrameInterval = setInterval(captureAndSendGeminiFrame, 2200);
+      }
+
+      // Attach already-permitted Microphone Stream via AudioWorklet
+      try {
+        if (geminiAudioCtx && geminiAudioCtx.state === 'suspended') {
+          await geminiAudioCtx.resume();
+        }
+        if (!geminiWorkletLoaded) {
+          await geminiAudioCtx.audioWorklet.addModule('recorder-worklet.js?v=145');
+          geminiWorkletLoaded = true;
+        }
+        if (geminiRecorderNode) {
+          try { geminiRecorderNode.disconnect(); } catch (_) {}
+        }
+        const micSource = geminiAudioCtx.createMediaStreamSource(geminiMicStream);
+        geminiRecorderNode = new AudioWorkletNode(geminiAudioCtx, 'recorder');
+        micSource.connect(geminiRecorderNode);
+
+        geminiRecorderNode.port.onmessage = (e) => {
+          if (geminiWs && geminiWs.readyState === WebSocket.OPEN) {
+            const i16 = new Int16Array(e.data);
+            let sumSq = 0;
+            for (let i = 0; i < i16.length; i++) {
+              const val = i16[i] / 32768;
+              sumSq += val * val;
+            }
+            const rms = Math.sqrt(sumSq / i16.length);
+            if (rms > 0.05 && geminiSources.length > 0) {
+              flushGeminiAudio();
+              geminiWs.send(JSON.stringify({ type: 'interrupt' }));
+            }
+            geminiWs.send(e.data);
+          }
+        };
+      } catch (workletErr) {
+        console.warn('AudioWorklet error:', workletErr);
+      }
+    };
+
+    geminiWs.onmessage = (event) => {
+      if (event.data instanceof ArrayBuffer) {
+        playGeminiAudioChunk(event.data);
+        return;
+      }
+
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'ready') {
+          const activeName = cur ? `${cur.ship} (${cur.date})` : 'HMS Sphinx (1846)';
+          geminiWs.send(JSON.stringify({
+            type: 'text',
+            text: `[System Context: Visitor opened Live Gemini AR camera and microphone while viewing ${activeName}. Greet them warmly in 1 brief sentence and invite their question.]`
+          }));
+          setTimeout(captureAndSendGeminiFrame, 400);
+        } else if (msg.type === 'coach' || msg.type === 'transcript') {
+          if (msg.text) {
+            $('gemini-transcript').textContent = msg.text;
+            const t = msg.text.toLowerCase();
+            C.forEach((fig, idx) => {
+              if (t.includes(fig.id.replace('_', ' ')) || t.includes(fig.short.toLowerCase())) {
+                select(idx);
+              }
+            });
+          }
+        } else if (msg.type === 'interrupted') {
+          flushGeminiAudio();
+        }
+      } catch (_) {}
+    };
+
+    geminiWs.onerror = () => {
+      $('gemini-status-text').textContent = 'Gemini Reconnecting…';
+    };
+
+    geminiWs.onclose = () => {
+      if (!userRequestedGeminiStop && isGeminiActive) {
+        $('gemini-btn-label').textContent = 'Reconnecting… · AR';
+        setTimeout(() => {
+          if (!userRequestedGeminiStop) connectGeminiSocket();
+        }, 1500);
+      } else if (userRequestedGeminiStop) {
+        stopGeminiLive();
+      }
+    };
+  } catch (err) {
+    console.error('Gemini WS Connection error:', err);
+    if (!userRequestedGeminiStop) {
+      setTimeout(connectGeminiSocket, 2000);
+    }
+  }
+}
+
 // Connect to Gemini Live Backend (requests Camera & Mic immediately inside user tap)
 async function startGeminiLive(showHud = false) {
+  userRequestedGeminiStop = false;
+  isGeminiActive = true;
   initGeminiAudio();
   $('gemini-hud').hidden = true;
   $('gemini-hud').style.display = 'none';
@@ -321,104 +447,21 @@ async function startGeminiLive(showHud = false) {
       } catch (micErr) {
         console.warn('Camera/Mic permission denied:', micErr);
         alert('Please allow Camera and Microphone access in Chrome when prompted to use Gemini Live.');
+        userRequestedGeminiStop = true;
         stopGeminiLive();
         return;
       }
     }
   }
 
-  // Primary WSS tunnel (Plymouth Chronicles port 8086)
-  const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsUrl = (location.hostname === 'mo360immersivestudio.co.uk' || location.hostname.endsWith('.github.io'))
-    ? 'wss://storage-polymer-abs-validity.trycloudflare.com/ws'
-    : `${wsProto}//${location.host}/ws`;
-
-  try {
-    geminiWs = new WebSocket(wsUrl);
-    geminiWs.binaryType = 'arraybuffer';
-
-    geminiWs.onopen = async () => {
-      isGeminiActive = true;
-      $('gemini-btn-label').textContent = 'Listening… · AR';
-
-      // Start periodic visual frame streaming
-      if (!geminiFrameInterval) {
-        geminiFrameInterval = setInterval(captureAndSendGeminiFrame, 2200);
-      }
-
-      // Attach already-permitted Microphone Stream via AudioWorklet
-      try {
-        if (geminiAudioCtx && geminiAudioCtx.state === 'suspended') {
-          await geminiAudioCtx.resume();
-        }
-        await geminiAudioCtx.audioWorklet.addModule('recorder-worklet.js');
-        const micSource = geminiAudioCtx.createMediaStreamSource(geminiMicStream);
-        geminiRecorderNode = new AudioWorkletNode(geminiAudioCtx, 'recorder');
-        micSource.connect(geminiRecorderNode);
-
-        geminiRecorderNode.port.onmessage = (e) => {
-          if (geminiWs && geminiWs.readyState === WebSocket.OPEN) {
-            const i16 = new Int16Array(e.data);
-            let sumSq = 0;
-            for (let i = 0; i < i16.length; i++) {
-              const val = i16[i] / 32768;
-              sumSq += val * val;
-            }
-            const rms = Math.sqrt(sumSq / i16.length);
-            if (rms > 0.05 && geminiSources.length > 0) {
-              flushGeminiAudio();
-              geminiWs.send(JSON.stringify({ type: 'interrupt' }));
-            }
-            geminiWs.send(e.data);
-          }
-        };
-      } catch (workletErr) {
-        console.warn('AudioWorklet error:', workletErr);
-      }
-    };
-
-    geminiWs.onmessage = (event) => {
-      if (event.data instanceof ArrayBuffer) {
-        playGeminiAudioChunk(event.data);
-        return;
-      }
-
-      try {
-        const msg = JSON.parse(event.data);
-        if (msg.type === 'coach' || msg.type === 'transcript') {
-          if (msg.text) {
-            $('gemini-transcript').textContent = msg.text;
-            // Check if Gemini mentions a figurehead and auto-focus on it
-            const t = msg.text.toLowerCase();
-            C.forEach((fig, idx) => {
-              if (t.includes(fig.id.replace('_', ' ')) || t.includes(fig.short.toLowerCase())) {
-                select(idx);
-              }
-            });
-          }
-        } else if (msg.type === 'interrupted') {
-          flushGeminiAudio();
-        }
-      } catch (_) {}
-    };
-
-    geminiWs.onerror = () => {
-      $('gemini-status-text').textContent = 'Gemini Reconnecting…';
-    };
-
-    geminiWs.onclose = () => {
-      stopGeminiLive();
-    };
-  } catch (err) {
-    console.error('Gemini WS Connection error:', err);
-    stopGeminiLive();
-  }
+  connectGeminiSocket();
 }
 
 function stopGeminiLive() {
+  userRequestedGeminiStop = true;
   isGeminiActive = false;
   if (geminiWs) {
-    try { geminiWs.close(); } catch (_) {}
+    try { geminiWs.onclose = null; geminiWs.close(); } catch (_) {}
     geminiWs = null;
   }
   if (geminiFrameInterval) {
