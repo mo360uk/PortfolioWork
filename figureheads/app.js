@@ -328,7 +328,10 @@ async function startGeminiLive(showHud = false) {
   }
 
   // Primary WSS tunnel (Plymouth Chronicles port 8086)
-  const wsUrl = 'wss://evaluation-outlined-pursuit-simpson.trycloudflare.com/ws';
+  const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = (location.hostname === 'mo360immersivestudio.co.uk' || location.hostname.endsWith('.github.io'))
+    ? 'wss://storage-polymer-abs-validity.trycloudflare.com/ws'
+    : `${wsProto}//${location.host}/ws`;
 
   try {
     geminiWs = new WebSocket(wsUrl);
