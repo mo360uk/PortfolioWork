@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Plymouth Chronicles · Cinematic 3D Scroll Storytelling | The Box, Plymouth</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- GSAP + ScrollTrigger + Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Three.js + GLTFLoader + PostProcessing (EffectComposer + UnrealBloomPass) -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --abyss: #070f18;
+      --ink: #0d1b2a;
+      --ink-glass: rgba(13, 27, 42, 0.78);
+      --ink-deep: rgba(7, 15, 24, 0.9);
+      --paper: #f2ece1;
+      --muted: #98a4b3;
+      --gold: #b08d4a;
+      --gold-bright: #e6af4b;
+      --gold-soft: rgba(230, 175, 75, 0.18);
+      --gold-border: rgba(176, 141, 74, 0.36);
+      --accent: #c8a45d;
+      --font-serif: 'Cinzel', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html.lenis, html.lenis body {
+      height: auto;
+    }
+
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+
+    body {
+      background-color: var(--abyss);
+      color: var(--paper);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      selection-background-color: var(--gold);
+    }
+
+    /* 1. Fixed Full-Screen 3D WebGL Canvas (100vw x 100vh) */
+    #webgl-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #webgl-container canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Live AR Camera Feed (behind 3D canvas when Gemini Live AR is active) */
+    #viewfinder {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.42;
+    }
+
+    /* 2. Cinematic Post-Process Vignette & Atmospheric Grain Overlay */
+    .cinematic-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 48%, transparent 48%, rgba(4, 9, 15, 0.78) 100%),
+        linear-gradient(180deg, rgba(7, 15, 24, 0.65) 0%, transparent 14%, transparent 86%, rgba(7, 15, 24, 0.82) 100%);
+    }
+
+    /* 3. Branded Preloader Screen */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: radial-gradient(ellipse at 50% 40%, #15283d 0%, var(--abyss) 75%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 24px;
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.8s ease;
+    }
+
+    .preloader.loaded {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .preloader-crest {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: grid;
+      place-items: center;
+      background: rgba(13, 27, 42, 0.8);
+      box-shadow: 0 0 36px rgba(230, 175, 75, 0.25);
+      font-size: 1.8rem;
+    }
+
+    .preloader-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .preloader-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+      font-weight: 600;
+      color: var(--paper);
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    .preloader-title em {
+      color: var(--gold-bright);
+      font-style: normal;
+    }
+
+    .preloader-bar-wrap {
+      width: min(320px, 80vw);
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .preloader-bar-fill {
+      height: 100%;
+      width: 12%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+      border-radius: 99px;
+      transition: width 0.25s ease;
+    }
+
+    .preloader-status {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* 4. Fixed Top Plymouth Chronicles Header */
+    .story-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 28px;
+      background: linear-gradient(180deg, rgba(7, 15, 24, 0.92) 0%, rgba(7, 15, 24, 0.45) 75%, transparent 100%);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--paper);
+    }
+
+    .brand-eyebrow {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .brand-h1 {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-h1 em {
+      color: var(--gold-bright);
+      font-style: normal;
+    }
+
+    .header-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--gold-border);
+      background: rgba(13, 27, 42, 0.82);
+      color: var(--paper);
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .pill-btn:hover {
+      border-color: var(--gold-bright);
+      background: rgba(25, 46, 68, 0.92);
+      transform: translateY(-1px);
+    }
+
+    .pill-btn.active {
+      background: linear-gradient(135deg, rgba(176, 141, 74, 0.35), rgba(230, 175, 75, 0.22));
+      border-color: var(--gold-bright);
+      color: #ffd97d;
+      box-shadow: 0 0 16px rgba(230, 175, 75, 0.28);
+    }
+
+    .gemini-pill {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      border-color: rgba(147, 197, 253, 0.45);
+      color: #ffffff;
+      box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .gemini-pill.connected {
+      background: linear-gradient(135deg, #065f46, #10b981);
+      border-color: rgba(52, 211, 153, 0.65);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+    }
+
+    /* 5. Right-Side Interactive Chapter Progress Rail (01 - 14) */
+    .chapter-rail {
+      position: fixed;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 7px;
+      border-radius: 999px;
+      background: rgba(7, 15, 24, 0.72);
+      border: 1px solid rgba(176, 141, 74, 0.25);
+      backdrop-filter: blur(12px);
+    }
+
+    .rail-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--font-sans);
+      font-size: 0.64rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .rail-dot:hover {
+      color: var(--paper);
+      border-color: rgba(230, 175, 75, 0.4);
+    }
+
+    .rail-dot.active {
+      background: var(--gold-bright);
+      color: #070f18;
+      box-shadow: 0 0 12px rgba(230, 175, 75, 0.6);
+      transform: scale(1.12);
+    }
+
+    .rail-dot::before {
+      content: attr(data-ship);
+      position: absolute;
+      right: 34px;
+      white-space: nowrap;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(7, 15, 24, 0.92);
+      border: 1px solid var(--gold-border);
+      color: var(--paper);
+      font-size: 0.7rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(6px);
+      transition: all 0.2s ease;
+    }
+
+    .rail-dot:hover::before {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Top Scroll Progress Line */
+    .scroll-progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      z-index: 40;
+      background: linear-gradient(90deg, var(--gold), var(--gold-bright), #fff2c2);
+      box-shadow: 0 0 10px rgba(230, 175, 75, 0.7);
+    }
+
+    /* 6. Scrollable Story Container & Chapter Sections */
+    .story-main {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    /* Hero Prologue Section */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 120px 24px 80px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-card {
+      max-width: 720px;
+      padding: 32px 36px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(13, 27, 42, 0.78) 0%, rgba(7, 15, 24, 0.88) 100%);
+      border: 1px solid var(--gold-border);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.74rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4.5vw, 3.3rem);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--paper);
+      margin-bottom: 14px;
+    }
+
+    .hero-title em {
+      color: var(--gold-bright);
+      font-style: normal;
+    }
+
+    .hero-lede {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #d4dce6;
+      margin-bottom: 22px;
+    }
+
+    .scroll-cue {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-bright);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .scroll-mouse {
+      width: 22px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1.5px solid var(--gold-bright);
+      display: flex;
+      justify-content: center;
+      padding-top: 6px;
+    }
+
+    .scroll-wheel {
+      width: 3px;
+      height: 8px;
+      border-radius: 99px;
+      background: var(--gold-bright);
+      animation: wheelDrop 1.6s infinite ease-in-out;
+    }
+
+    @keyframes wheelDrop {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(12px); }
+    }
+
+    /* Chapter Section (14 Figurehead Chapters) */
+    .chapter-section {
+      min-height: 125vh;
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 100px 64px 100px 36px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .chapter-section.align-left {
+      justify-content: flex-start;
+    }
+
+    .chapter-section.align-right {
+      justify-content: flex-end;
+    }
+
+    .chapter-card {
+      width: min(510px, 100%);
+      padding: 28px 30px;
+      border-radius: 22px;
+      background: linear-gradient(165deg, rgba(13, 27, 42, 0.84) 0%, rgba(7, 15, 24, 0.92) 100%);
+      border: 1px solid var(--gold-border);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.65);
+      opacity: 0;
+      transform: translateY(48px);
+      transition: border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .chapter-card.is-active {
+      border-color: var(--gold-bright);
+      box-shadow: 0 24px 68px rgba(0, 0, 0, 0.75), 0 0 28px rgba(230, 175, 75, 0.16);
+    }
+
+    .chapter-meta-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .chapter-badge {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .chapter-accession {
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: rgba(176, 141, 74, 0.16);
+      border: 1px solid rgba(176, 141, 74, 0.38);
+      color: #ebd5a7;
+      font-weight: 600;
+    }
+
+    .chapter-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+      font-weight: 700;
+      color: var(--paper);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .chapter-lede {
+      font-size: 0.98rem;
+      line-height: 1.58;
+      color: #e5dec9;
+      margin-bottom: 16px;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .chapter-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 14px;
+    }
+
+    .spec-item dt {
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .spec-item dd {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--paper);
+    }
+
+    .chapter-story {
+      font-size: 0.86rem;
+      line-height: 1.62;
+      color: #c5d0dc;
+      margin-bottom: 12px;
+    }
+
+    .chapter-bow-note {
+      font-size: 0.8rem;
+      line-height: 1.52;
+      color: #dfd0b2;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(176, 141, 74, 0.1);
+      border-left: 3px solid var(--gold-bright);
+      margin-bottom: 14px;
+    }
+
+    .chapter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .chapter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 99px;
+      border: 1px solid var(--gold-border);
+      background: rgba(18, 36, 56, 0.85);
+      color: var(--paper);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .chapter-btn:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+    }
+
+    .chapter-btn.playing {
+      background: linear-gradient(135deg, rgba(176, 141, 74, 0.4), rgba(230, 175, 75, 0.25));
+      border-color: var(--gold-bright);
+      color: #ffe39e;
+    }
+
+    /* Archival Warship Thumbnail Strip inside Card */
+    .archival-plate {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(5, 12, 20, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .archival-plate img {
+      width: 78px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(176, 141, 74, 0.35);
+      flex-shrink: 0;
+    }
+
+    .archival-caption {
+      font-size: 0.72rem;
+      line-height: 1.4;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Bottom Floating HUD Bar (Active Figurehead + Depth Z Coordinate) */
+    .bottom-hud {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(7, 15, 24, 0.84);
+      border: 1px solid var(--gold-border);
+      backdrop-filter: blur(12px);
+      font-size: 0.76rem;
+      color: var(--muted);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+    }
+
+    .bottom-hud strong {
+      color: var(--gold-bright);
+      font-family: var(--font-serif);
+      letter-spacing: 0.04em;
+    }
+
+    /* Epilogue Section */
+    .epilogue-section {
+      min-height: 75vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 120px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .chapter-section {
+        padding: 80px 20px;
+        justify-content: center !important;
+        min-height: 115vh;
+      }
+      .chapter-rail {
+        display: none;
+      }
+      .story-header {
+        padding: 10px 16px;
+      }
+      .bottom-hud {
+        font-size: 0.7rem;
+        padding: 6px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Scroll Progress Bar -->
+  <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+
+  <!-- Branded Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-crest">⚓</div>
+    <span class="preloader-eyebrow">The Box, Plymouth · Royal Navy Monumental Flotilla</span>
+    <h1 class="preloader-title">Plymouth <em>Chronicles</em> 3D</h1>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar-fill" id="preloaderBar"></div>
+    </div>
+    <p class="preloader-status" id="preloaderStatus">Initializing Three.js WebGL Corridor &amp; Meshopt 3D Models…</p>
+  </div>
+
+  <!-- Live AR Camera Feed (Activated when Live Gemini AR is toggled) -->
+  <video id="viewfinder" playsinline autoplay muted hidden></video>
+  <canvas id="viewfinder-canvas" hidden></canvas>
+
+  <!-- Fixed 100vw x 100vh Three.js WebGL Stage -->
+  <div id="webgl-container" aria-hidden="true"></div>
+  <div class="cinematic-vignette"></div>
+
+  <!-- Fixed Top Header -->
+  <header class="story-header">
+    <a href="#top" class="brand-cluster">
+      <div>
+        <span class="brand-eyebrow">The Box, Plymouth · 3D Scroll Story</span>
+        <div class="brand-h1">Plymouth <em>Chronicles</em></div>
+      </div>
+    </a>
+
+    <div class="header-controls">
+      <button type="button" class="pill-btn" id="shipBowModeBtn" title="Switch all 14 sculptures between Figurehead and Mounted on 3D Warship Bow">
+        <span>⛵ 3D Ship Bow Mode</span>
+      </button>
+
+      <button type="button" class="pill-btn" id="autoNarrateBtn" title="Automatically play curator voice narration as you scroll into each chapter">
+        <span>🎙️ Auto-Voice on Scroll</span>
+      </button>
+
+      <button type="button" class="pill-btn gemini-pill" id="geminiLiveBtn" title="Start bidirectional voice & camera chat with Google Gemini 3.8 Live">
+        <span>✨</span>
+        <span id="geminiBtnLabel">Live Gemini AR</span>
+      </button>
+
+      <a href="index.html?v=150" class="pill-btn" title="Open classic 3D & WebXR AR Figurehead Stage">
+        <span>🏛️ Interactive 3D Stage</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Right-Hand Chapter Progress Rail (01 - 14) -->
+  <nav class="chapter-rail" id="chapterRail" aria-label="Figurehead Chapters"></nav>
+
+  <!-- Bottom Telemetry & Active Chapter HUD -->
+  <div class="bottom-hud" id="bottomHud">
+    <span>ACTIVE CHAPTER: <strong id="hudActiveShip">Prologue · The Grand Atrium Flotilla</strong></span>
+    <span>·</span>
+    <span id="hudCameraZ">3D Corridor Z: +9.0m</span>
+  </div>
+
+  <!-- Scroll-Driven Narrative Overlay -->
+  <main class="story-main" id="top">
+    <!-- Hero Prologue -->
+    <section class="hero-section" id="prologueSection">
+      <div class="hero-card">
+        <div class="hero-eyebrow">The Box, Plymouth · 14 Monumental Carved Ships' Figureheads</div>
+        <h2 class="hero-title">Carved in Oak, Pine &amp; Teak.<br/><em>Sailing Through Time.</em></h2>
+        <p class="hero-lede">
+          Scroll downward to push your 3D camera through the mist-shrouded maritime gallery of Plymouth. Experience all fourteen monumental Royal Navy figureheads — from the two-tonne oak portrait of King William IV to the Malabar teak prow of <em>HMS Calcutta</em> and the paddle sloop <em>HMS Sphinx</em> — in one unbroken 3D WebGL camera journey.
+        </p>
+        <div class="scroll-cue">
+          <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+          <span>Scroll to Fly Through the 14 Figureheads</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dynamically Populated 14 Figurehead Chapters -->
+    <div id="chaptersContainer"></div>
+
+    <!-- Epilogue -->
+    <section class="epilogue-section">
+      <div class="hero-card">
+        <div class="hero-eyebrow">Mo360 Immersive Studio · The Box, Plymouth</div>
+        <h2 class="hero-title">Fourteen Vessels. <em>One Maritime Legacy.</em></h2>
+        <p class="hero-lede">
+          Every figurehead in this 3D corridor has been reconstructed from conservation archives and archival ship draughts for WebGL, WebXR Augmented Reality, and live voice interaction.
+        </p>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:16px;">
+          <button type="button" class="pill-btn active" id="backToTopBtn">↑ Fly Back to Chapter 01</button>
+          <a href="index.html?v=150#sphinx" class="pill-btn">🏛️ Open Interactive 3D &amp; AR Viewer</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Load Official Plymouth Chronicles Figurehead Catalogue -->
+  <script src="data.js?v=150"></script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+    const COLLECTION = window.COLLECTION || [];
+    const CHAPTER_SPACING_Z = 24.0; // 24 meters between each figurehead along the Z corridor
+    const FIGUREHEAD_X_OFFSET = 1.85; // Stagger left/right opposite the story card
+
+    // DOM References
+    const container = document.getElementById('webgl-container');
+    const preloader = document.getElementById('preloader');
+    const preloaderBar = document.getElementById('preloaderBar');
+    const preloaderStatus = document.getElementById('preloaderStatus');
+    const chaptersContainer = document.getElementById('chaptersContainer');
+    const chapterRail = document.getElementById('chapterRail');
+    const scrollProgressBar = document.getElementById('scrollProgressBar');
+    const hudActiveShip = document.getElementById('hudActiveShip');
+    const hudCameraZ = document.getElementById('hudCameraZ');
+    const shipBowModeBtn = document.getElementById('shipBowModeBtn');
+    const autoNarrateBtn = document.getElementById('autoNarrateBtn');
+    const backToTopBtn = document.getElementById('backToTopBtn');
+
+    // -------------------------------------------------------------------------
+    // 1. Build HTML Narrative Chapters & Right-Hand Progress Rail
+    // -------------------------------------------------------------------------
+    COLLECTION.forEach((item, idx) => {
+      const chapNum = String(idx + 1).padStart(2, '0');
+      const alignClass = (idx % 2 === 0) ? 'align-left' : 'align-right';
+      const audioFile = `audio/${item.id}.wav`;
+
+      const sec = document.createElement('section');
+      sec.className = `chapter-section ${alignClass}`;
+      sec.id = `chapter-${item.id}`;
+      sec.dataset.index = String(idx);
+
+      sec.innerHTML = `
+        <article class="chapter-card" id="card-${idx}">
+          <div class="chapter-meta-top">
+            <span class="chapter-badge">CHAPTER ${chapNum} / ${COLLECTION.length} · ROYAL NAVY</span>
+            <span class="chapter-accession">${item.accession} · Launched ${item.launched}</span>
+          </div>
+          <h2 class="chapter-title">${item.ship}</h2>
+          <p class="chapter-lede">${item.blurb}</p>
+          <dl class="chapter-specs">
+            <div class="spec-item"><dt>Launched</dt><dd>${item.launched}</dd></div>
+            <div class="spec-item"><dt>Era</dt><dd>${item.date}</dd></div>
+            <div class="spec-item"><dt>Material</dt><dd>${item.material.split('(')[0].trim()}</dd></div>
+          </dl>
+          <p class="chapter-story">${item.shipStory || item.detail}</p>
+          <div class="chapter-bow-note">
+            <strong>Bow Stem Mounting:</strong> ${item.bowMount || item.detail}
+          </div>
+          <div class="chapter-actions">
+            <button type="button" class="chapter-btn btn-play-audio" data-idx="${idx}" data-audio="${audioFile}">
+              <span>🎙️ Listen to Curator</span>
+            </button>
+            <button type="button" class="chapter-btn btn-spin-model" data-idx="${idx}">
+              <span>🔄 360° Spin Sculpture</span>
+            </button>
+            <a href="index.html?v=150#${item.id}" class="chapter-btn">
+              <span>🏛️ Open in AR Stage</span>
+            </a>
+          </div>
+          <div class="archival-plate">
+            <img src="${item.shipImage}" alt="${item.ship} archival view" loading="lazy" />
+            <div class="archival-caption">${item.shipCaption}</div>
+          </div>
+        </article>
+      `;
+      chaptersContainer.appendChild(sec);
+
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'rail-dot';
+      dot.dataset.idx = String(idx);
+      dot.dataset.ship = `${chapNum} · ${item.ship}`;
+      dot.textContent = chapNum;
+      chapterRail.appendChild(dot);
+    });
+
+    // -------------------------------------------------------------------------
+    // 2. Initialize Lenis Smooth Scroll + GSAP ScrollTrigger
+    // -------------------------------------------------------------------------
+    gsap.registerPlugin(ScrollTrigger);
+
+    const lenis = new Lenis({
+      duration: 1.25,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 0.95,
+      touchMultiplier: 1.5
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+
+    // Rail dot click -> smooth Lenis scroll to chapter
+    Array.from(document.querySelectorAll('.rail-dot')).forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.idx, 10);
+        const targetEl = document.getElementById(`chapter-${COLLECTION[idx].id}`);
+        if (targetEl) lenis.scrollTo(targetEl, { offset: -40, duration: 1.5 });
+      });
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+      lenis.scrollTo('#top', { duration: 1.8 });
+    });
+
+    // -------------------------------------------------------------------------
+    // 3. Three.js 3D Corridor Scene, Fog, Lighting & Post-Processing
+    // -------------------------------------------------------------------------
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x070f18);
+    scene.fog = new THREE.FogExp2(0x070f18, 0.024);
+
+    const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 140);
+    camera.position.set(0, 1.8, 9.0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+    container.appendChild(renderer.domElement);
+
+    // EffectComposer with UnrealBloomPass for Polished Filmic Finish
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.28, // strength
+      0.55, // radius
+      0.82  // threshold
+    );
+    composer.addPass(bloomPass);
+
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
+
+    // Cinematic Museum Lighting Setup
+    const ambientLight = new THREE.HemisphereLight(0xd9e8f5, 0x0a1520, 1.35);
+    scene.add(ambientLight);
+
+    const mainKeyLight = new THREE.DirectionalLight(0xfff1d6, 2.3);
+    mainKeyLight.position.set(6, 12, 10);
+    scene.add(mainKeyLight);
+
+    const navalFillLight = new THREE.DirectionalLight(0x4b7cb8, 1.15);
+    navalFillLight.position.set(-8, 4, 6);
+    scene.add(navalFillLight);
+
+    // Dynamic Camera-Tracking Golden Rim & Chapter Spotlight
+    const activeSpotLight = new THREE.SpotLight(0xffe4b5, 18.0, 28.0, Math.PI * 0.24, 0.65, 1.2);
+    activeSpotLight.position.set(0, 6.5, 5.0);
+    scene.add(activeSpotLight);
+    scene.add(activeSpotLight.target);
+
+    const rimPointLight = new THREE.PointLight(0xe6af4b, 8.5, 18.0, 1.4);
+    scene.add(rimPointLight);
+
+    // -------------------------------------------------------------------------
+    // 4. Floating 3D Sea Mist, Golden Dust Motes & Atrium Corridor Guides
+    // -------------------------------------------------------------------------
+    const totalCorridorLength = COLLECTION.length * CHAPTER_SPACING_Z + 40;
+    const particleCount = 1500;
+    const pPositions = new Float32Array(particleCount * 3);
+    const pColors = new Float32Array(particleCount * 3);
+
+    const goldCol = new THREE.Color(0xe6af4b);
+    const mistCol = new THREE.Color(0x8ab4d8);
+
+    for (let i = 0; i < particleCount; i++) {
+      pPositions[i * 3] = (Math.random() - 0.5) * 22.0;
+      pPositions[i * 3 + 1] = Math.random() * 9.0 - 2.0;
+      pPositions[i * 3 + 2] = 14.0 - Math.random() * totalCorridorLength;
+
+      const c = Math.random() > 0.38 ? goldCol : mistCol;
+      pColors[i * 3] = c.r;
+      pColors[i * 3 + 1] = c.g;
+      pColors[i * 3 + 2] = c.b;
+    }
+
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.065,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.58,
+      depthWrite: false
+    });
+    const ambientParticles = new THREE.Points(particleGeo, particleMat);
+    scene.add(ambientParticles);
+
+    // -------------------------------------------------------------------------
+    // 5. Build 14 Figurehead Chapter Zones Along the Camera's Z-Axis Path
+    // -------------------------------------------------------------------------
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+
+    const chapterNodes = [];
+    let isShipBowMode = false;
+
+    function parseFrontOrbitRadians(orbitStr) {
+      if (!orbitStr) return 0;
+      const m = String(orbitStr).match(/([-\d.]+)deg/);
+      if (!m) return 0;
+      const deg = parseFloat(m[1]);
+      // Convert model-viewer azimuth degrees to Three.js Y rotation so front faces +Z camera
+      return THREE.MathUtils.degToRad(90 - deg);
+    }
+
+    COLLECTION.forEach((item, idx) => {
+      const zoneZ = -idx * CHAPTER_SPACING_Z;
+      // If card is on the left (even idx), place 3D figurehead on the right (+X), and vice versa
+      const zoneX = (idx % 2 === 0) ? FIGUREHEAD_X_OFFSET : -FIGUREHEAD_X_OFFSET;
+
+      const chapterGroup = new THREE.Group();
+      chapterGroup.position.set(zoneX, 0, zoneZ);
+      scene.add(chapterGroup);
+
+      // Golden Museum Pedestal Halo Ring beneath each figurehead
+      const ringGeo = new THREE.RingGeometry(1.15, 1.24, 48);
+      ringGeo.rotateX(-Math.PI / 2);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xe6af4b,
+        transparent: true,
+        opacity: 0.42,
+        side: THREE.DoubleSide
+      });
+      const pedestalRing = new THREE.Mesh(ringGeo, ringMat);
+      pedestalRing.position.y = -0.35;
+      chapterGroup.add(pedestalRing);
+
+      // Inner subtle glow disc
+      const discGeo = new THREE.CircleGeometry(1.15, 32);
+      discGeo.rotateX(-Math.PI / 2);
+      const discMat = new THREE.MeshBasicMaterial({
+        color: 0xb08d4a,
+        transparent: true,
+        opacity: 0.08,
+        side: THREE.DoubleSide
+      });
+      const discMesh = new THREE.Mesh(discGeo, discMat);
+      discMesh.position.y = -0.36;
+      chapterGroup.add(discMesh);
+
+      const modelHolder = new THREE.Group();
+      chapterGroup.add(modelHolder);
+
+      const baseYaw = parseFrontOrbitRadians(item.orbit);
+
+      chapterNodes.push({
+        idx,
+        item,
+        zoneX,
+        zoneZ,
+        chapterGroup,
+        modelHolder,
+        pedestalRing,
+        baseYaw,
+        extraSpin: 0,
+        figureheadScene: null,
+        shipBowScene: null,
+        loadedFigurehead: false,
+        loadedShipBow: false
+      });
+    });
+
+    function normalizeAndCenterModel(rootScene, targetHeight = 3.6) {
+      const box = new THREE.Box3().setFromObject(rootScene);
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
+
+      const maxDim = Math.max(size.x, size.y, size.z, 0.001);
+      const scale = targetHeight / maxDim;
+      rootScene.scale.setScalar(scale);
+
+      // Recompute after scaling
+      const box2 = new THREE.Box3().setFromObject(rootScene);
+      const center2 = new THREE.Vector3();
+      box2.getCenter(center2);
+
+      rootScene.position.x -= center2.x;
+      rootScene.position.y -= center2.y - 1.55; // Center at camera eye height (~1.55m)
+      rootScene.position.z -= center2.z;
+
+      rootScene.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+          if (child.material.roughness !== undefined) {
+            child.material.roughness = Math.min(child.material.roughness, 0.72);
+          }
+        }
+      });
+
+      const wrapper = new THREE.Group();
+      wrapper.add(rootScene);
+      return wrapper;
+    }
+
+    // Normalize lowercase glb url from data.js
+    function getNormalizedGlbUrl(item, useShipBow = false) {
+      if (useShipBow) {
+        return `ships3d/${item.id}.glb?v=150`;
+      }
+      const raw = item.glb.split('?')[0];
+      return `${raw.toLowerCase()}?v=150`;
+    }
+
+    async function loadChapterModel(node, useShipBow = false) {
+      if (!useShipBow && node.loadedFigurehead) {
+        node.modelHolder.clear();
+        node.modelHolder.add(node.figureheadScene);
+        return;
+      }
+      if (useShipBow && node.loadedShipBow) {
+        node.modelHolder.clear();
+        node.modelHolder.add(node.shipBowScene);
+        return;
+      }
+
+      const url = getNormalizedGlbUrl(node.item, useShipBow);
+      return new Promise((resolve) => {
+        gltfLoader.load(
+          url,
+          (gltf) => {
+            const normalized = normalizeAndCenterModel(gltf.scene, useShipBow ? 4.1 : 3.65);
+            if (useShipBow) {
+              node.shipBowScene = normalized;
+              node.loadedShipBow = true;
+            } else {
+              node.figureheadScene = normalized;
+              node.loadedFigurehead = true;
+            }
+            if (useShipBow === isShipBowMode) {
+              node.modelHolder.clear();
+              node.modelHolder.add(normalized);
+            }
+            resolve(true);
+          },
+          undefined,
+          (err) => {
+            console.warn('GLB load warning for', url, err);
+            resolve(false);
+          }
+        );
+      });
+    }
+
+    // Preload First 4 Hero Figureheads in Parallel for Instant 60fps Launch, then Stream Remaining 10
+    async function bootPreloadModels() {
+      const heroCount = Math.min(4, chapterNodes.length);
+      let completedHero = 0;
+      await Promise.all(
+        chapterNodes.slice(0, heroCount).map(async (node) => {
+          await loadChapterModel(node, false);
+          completedHero++;
+          preloaderStatus.textContent = `Loaded 3D Sculpture (${completedHero}/${heroCount}): ${node.item.ship}…`;
+          preloaderBar.style.width = `${Math.round((completedHero / heroCount) * 90)}%`;
+        })
+      );
+
+      preloaderBar.style.width = '100%';
+      preloaderStatus.textContent = 'Entering The Box Plymouth 3D Atrium Corridor…';
+      setTimeout(() => {
+        preloader.classList.add('loaded');
+      }, 200);
+
+      // Stream remaining 10 figureheads concurrently in background groups of 4
+      for (let i = heroCount; i < chapterNodes.length; i += 4) {
+        const batch = chapterNodes.slice(i, i + 4).map((n) => loadChapterModel(n, false));
+        await Promise.all(batch);
+      }
+    }
+
+    bootPreloadModels();
+
+    // Toggle between Figurehead 3D Sculpture Mode and Mounted on 3D Ship Bow Mode
+    shipBowModeBtn.addEventListener('click', async () => {
+      isShipBowMode = !isShipBowMode;
+      shipBowModeBtn.classList.toggle('active', isShipBowMode);
+      shipBowModeBtn.querySelector('span').textContent = isShipBowMode
+        ? '⛵ Showing 3D Ship Bows'
+        : '⛵ 3D Ship Bow Mode';
+
+      // Load active & nearby chapters first, then rest
+      for (const node of chapterNodes) {
+        await loadChapterModel(node, isShipBowMode);
+      }
+    });
+
+    // 360 Spin Button on each Chapter Card
+    Array.from(document.querySelectorAll('.btn-spin-model')).forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        const node = chapterNodes[idx];
+        if (!node) return;
+        gsap.to(node, {
+          extraSpin: node.extraSpin + Math.PI * 2,
+          duration: 2.4,
+          ease: 'power2.inOut'
+        });
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // 6. Curator Audio Narration & Auto-Voice on Scroll
+    // -------------------------------------------------------------------------
+    const curatorAudio = new Audio();
+    curatorAudio.preload = 'auto';
+    let currentPlayingIdx = -1;
+    let autoNarrateOnScroll = false;
+
+    function playChapterAudio(idx) {
+      const item = COLLECTION[idx];
+      if (!item) return;
+      const audioSrc = `audio/${item.id}.wav`;
+
+      const allAudioBtns = Array.from(document.querySelectorAll('.btn-play-audio'));
+      if (currentPlayingIdx === idx && !curatorAudio.paused) {
+        curatorAudio.pause();
+        currentPlayingIdx = -1;
+        allAudioBtns.forEach((b) => {
+          b.classList.remove('playing');
+          b.querySelector('span').textContent = '🎙️ Listen to Curator';
+        });
+        return;
+      }
+
+      currentPlayingIdx = idx;
+      curatorAudio.src = audioSrc;
+      curatorAudio.play().then(() => {
+        allAudioBtns.forEach((b, bIdx) => {
+          const playing = bIdx === idx;
+          b.classList.toggle('playing', playing);
+          b.querySelector('span').textContent = playing ? '🔊 Speaking… (Tap to Pause)' : '🎙️ Listen to Curator';
+        });
+      }).catch(() => {});
+    }
+
+    curatorAudio.addEventListener('ended', () => {
+      currentPlayingIdx = -1;
+      Array.from(document.querySelectorAll('.btn-play-audio')).forEach((b) => {
+        b.classList.remove('playing');
+        b.querySelector('span').textContent = '🎙️ Listen to Curator';
+      });
+    });
+
+    Array.from(document.querySelectorAll('.btn-play-audio')).forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        playChapterAudio(idx);
+      });
+    });
+
+    autoNarrateBtn.addEventListener('click', () => {
+      autoNarrateOnScroll = !autoNarrateOnScroll;
+      autoNarrateBtn.classList.toggle('active', autoNarrateOnScroll);
+      if (autoNarrateOnScroll && activeChapterIndex >= 0) {
+        playChapterAudio(activeChapterIndex);
+      } else if (!autoNarrateOnScroll) {
+        curatorAudio.pause();
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // 7. GSAP ScrollTrigger Choreography: Camera Z Path & Synchronized Text
+    // -------------------------------------------------------------------------
+    const scrollState = {
+      progress: 0,
+      targetCamZ: 9.0,
+      targetCamX: 0.0,
+      targetLookX: 0.0,
+      targetLookZ: 0.0
+    };
+
+    let activeChapterIndex = -1;
+    const railDots = Array.from(document.querySelectorAll('.rail-dot'));
+    const chapterCards = Array.from(document.querySelectorAll('.chapter-card'));
+
+    function setActiveChapter(idx) {
+      if (activeChapterIndex === idx) return;
+      activeChapterIndex = idx;
+
+      railDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      chapterCards.forEach((c, i) => c.classList.toggle('is-active', i === idx));
+
+      if (idx >= 0 && COLLECTION[idx]) {
+        const chapNum = String(idx + 1).padStart(2, '0');
+        hudActiveShip.textContent = `Chapter ${chapNum} · ${COLLECTION[idx].ship} (${COLLECTION[idx].launched})`;
+        if (autoNarrateOnScroll) {
+          playChapterAudio(idx);
+        }
+      } else {
+        hudActiveShip.textContent = 'Prologue · The Grand Atrium Flotilla';
+      }
+    }
+
+    // Master ScrollTrigger mapping 0% -> 100% document scroll to continuous 3D Z-axis path
+    const maxCorridorZ = -(COLLECTION.length - 1) * CHAPTER_SPACING_Z + 4.8; // Stop 4.8m in front of Chapter 14
+    const startCorridorZ = 9.0;
+
+    ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.6,
+      onUpdate: (self) => {
+        scrollState.progress = self.progress;
+        scrollProgressBar.style.width = `${(self.progress * 100).toFixed(1)}%`;
+
+        // Map scroll progress cleanly along the Z corridor
+        scrollState.targetCamZ = THREE.MathUtils.lerp(startCorridorZ, maxCorridorZ, self.progress);
+
+        // Determine closest chapter along Z corridor
+        // Camera inspects each figurehead from +5.0m in front of its zoneZ
+        const effectiveSubjectZ = scrollState.targetCamZ - 5.0;
+        const rawIdx = Math.round(-effectiveSubjectZ / CHAPTER_SPACING_Z);
+        const clampedIdx = Math.max(0, Math.min(COLLECTION.length - 1, rawIdx));
+
+        if (scrollState.targetCamZ > 5.5) {
+          setActiveChapter(-1);
+          scrollState.targetCamX = 0.0;
+          scrollState.targetLookX = 0.0;
+        } else {
+          setActiveChapter(clampedIdx);
+          const activeNode = chapterNodes[clampedIdx];
+          if (activeNode) {
+            // Gently shift camera horizontally to frame the active figurehead opposite its text card
+            scrollState.targetCamX = activeNode.zoneX * 0.42;
+            scrollState.targetLookX = activeNode.zoneX * 0.72;
+          }
+        }
+      }
+    });
+
+    // Individual GSAP ScrollTrigger Text Animations for Each Chapter Card
+    chapterCards.forEach((card, idx) => {
+      const section = card.parentElement;
+      gsap.fromTo(
+        card,
+        { opacity: 0, y: 65 },
+        {
+          opacity: 1,
+          y: 0,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 82%',
+            end: 'top 38%',
+            scrub: true
+          }
+        }
+      );
+
+      gsap.to(card, {
+        opacity: 0,
+        y: -55,
+        ease: 'power2.in',
+        scrollTrigger: {
+          trigger: section,
+          start: 'bottom 45%',
+          end: 'bottom 12%',
+          scrub: true
+        }
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // 8. Interactive Mouse Parallax & Main 60fps Render Loop
+    // -------------------------------------------------------------------------
+    const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+    window.addEventListener('pointermove', (e) => {
+      mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      composer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const clock = new THREE.Clock();
+    let smoothCamX = 0;
+    let smoothCamY = 1.65;
+    let smoothCamZ = 9.0;
+    let smoothLookX = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const elapsed = clock.getElapsedTime();
+
+      // Lerp mouse parallax smoothly
+      mouse.x += (mouse.targetX - mouse.x) * 0.06;
+      mouse.y += (mouse.targetY - mouse.y) * 0.06;
+
+      // Smoothly interpolate camera along the scroll-linked 3D corridor path
+      smoothCamZ += (scrollState.targetCamZ - smoothCamZ) * 0.09;
+      smoothCamX += (scrollState.targetCamX + mouse.x * 0.55 - smoothCamX) * 0.08;
+      smoothCamY += (1.62 + mouse.y * 0.32 - smoothCamY) * 0.08;
+      smoothLookX += (scrollState.targetLookX + mouse.x * 0.25 - smoothLookX) * 0.08;
+
+      camera.position.set(smoothCamX, smoothCamY, smoothCamZ);
+      camera.lookAt(smoothLookX, 1.52 + mouse.y * 0.18, smoothCamZ - 5.2);
+
+      hudCameraZ.textContent = `3D Corridor Z: ${smoothCamZ >= 0 ? '+' : ''}${smoothCamZ.toFixed(1)}m`;
+
+      // Move dynamic chapter spotlight & golden rim light along with camera
+      activeSpotLight.position.set(smoothCamX - 2.2, 5.8, smoothCamZ + 2.5);
+      activeSpotLight.target.position.set(smoothLookX, 1.5, smoothCamZ - 5.0);
+      activeSpotLight.target.updateMatrixWorld();
+
+      rimPointLight.position.set(smoothLookX + 2.5, 2.8, smoothCamZ - 6.8);
+
+      // Animate each figurehead in its 3D chapter zone (gentle heroic float & turntable sway)
+      for (let i = 0; i < chapterNodes.length; i++) {
+        const node = chapterNodes[i];
+        const distZ = Math.abs((smoothCamZ - 5.0) - node.zoneZ);
+
+        // Optimize GPU: hide chapters more than 55m away in dense fog
+        node.chapterGroup.visible = distZ < 58.0;
+        if (!node.chapterGroup.visible) continue;
+
+        // Subtle sculptural turntable sway + user mouse parallax + 360 spin
+        const sway = Math.sin(elapsed * 0.55 + i) * 0.22 + mouse.x * 0.28;
+        node.modelHolder.rotation.y = node.baseYaw + sway + node.extraSpin;
+        node.modelHolder.position.y = Math.sin(elapsed * 0.9 + i * 0.7) * 0.06;
+
+        // Pulse golden pedestal ring as camera approaches this chapter
+        const proximity = Math.max(0, 1.0 - distZ / 16.0);
+        node.pedestalRing.material.opacity = 0.22 + proximity * 0.58;
+        const ringScale = 1.0 + proximity * 0.12 + Math.sin(elapsed * 2.0 + i) * 0.02;
+        node.pedestalRing.scale.set(ringScale, ringScale, 1);
+      }
+
+      // Gently drift ambient sea mist & golden dust motes
+      ambientParticles.rotation.y = Math.sin(elapsed * 0.08) * 0.04;
+      ambientParticles.position.y = Math.sin(elapsed * 0.25) * 0.18;
+
+      composer.render();
+    }
+
+    animate();
+
+    // -------------------------------------------------------------------------
+    // 9. Live Gemini 3.8 AR Voice & Camera Integration (Connected to Port 8086)
+    // -------------------------------------------------------------------------
+    const geminiLiveBtn = document.getElementById('geminiLiveBtn');
+    const geminiBtnLabel = document.getElementById('geminiBtnLabel');
+    const viewfinder = document.getElementById('viewfinder');
+    const viewfinderCanvas = document.getElementById('viewfinder-canvas');
+
+    let isGeminiActive = false;
+    let userStoppedGemini = false;
+    let geminiWs = null;
+    let geminiAudioCtx = null;
+    let geminiMicStream = null;
+    let geminiCameraStream = null;
+    let geminiRecorderNode = null;
+    let geminiWorkletLoaded = false;
+    let geminiFrameTimer = null;
+    let geminiPlayTime = 0;
+    let geminiSources = [];
+
+    function initGeminiAudio() {
+      if (!geminiAudioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        try { geminiAudioCtx = new AudioCtx({ sampleRate: 24000 }); }
+        catch (_) { geminiAudioCtx = new AudioCtx(); }
+      }
+      if (geminiAudioCtx.state === 'suspended') geminiAudioCtx.resume();
+    }
+
+    function playGeminiAudioChunk(arrayBuffer) {
+      initGeminiAudio();
+      const i16 = new Int16Array(arrayBuffer);
+      const f32 = new Float32Array(i16.length);
+      for (let i = 0; i < i16.length; i++) f32[i] = i16[i] / 32768;
+
+      const buf = geminiAudioCtx.createBuffer(1, f32.length, 24000);
+      buf.getChannelData(0).set(f32);
+      const src = geminiAudioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(geminiAudioCtx.destination);
+      geminiPlayTime = Math.max(geminiPlayTime, geminiAudioCtx.currentTime + 0.04);
+      src.start(geminiPlayTime);
+      geminiPlayTime += buf.duration;
+      geminiSources.push(src);
+      src.onended = () => { geminiSources = geminiSources.filter((s) => s !== src); };
+    }
+
+    function flushGeminiAudio() {
+      geminiSources.forEach((s) => { try { s.stop(); s.disconnect(); } catch (_) {} });
+      geminiSources = [];
+      geminiPlayTime = 0;
+    }
+
+    function sendGeminiVisualFrame() {
+      if (!geminiWs || geminiWs.readyState !== WebSocket.OPEN) return;
+      const ctx = viewfinderCanvas.getContext('2d');
+      if (viewfinder && !viewfinder.hidden && viewfinder.videoWidth > 0) {
+        viewfinderCanvas.width = 480;
+        viewfinderCanvas.height = Math.round((viewfinder.videoHeight / viewfinder.videoWidth) * 480);
+        ctx.drawImage(viewfinder, 0, 0, viewfinderCanvas.width, viewfinderCanvas.height);
+        const b64 = viewfinderCanvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+        if (b64 && b64.length > 100) {
+          geminiWs.send(JSON.stringify({ type: 'image', image: b64, data: b64 }));
+        }
+      }
+    }
+
+    async function startGeminiLiveSession() {
+      userStoppedGemini = false;
+      isGeminiActive = true;
+      curatorAudio.pause();
+      initGeminiAudio();
+      geminiLiveBtn.classList.add('connected');
+      geminiBtnLabel.textContent = 'Connecting…';
+
+      if (!geminiMicStream) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
+            video: { facingMode: { ideal: 'environment' } }
+          });
+          geminiMicStream = new MediaStream(stream.getAudioTracks());
+          if (stream.getVideoTracks().length > 0) {
+            geminiCameraStream = new MediaStream(stream.getVideoTracks());
+            viewfinder.srcObject = geminiCameraStream;
+            viewfinder.hidden = false;
+            viewfinder.play().catch(() => {});
+            renderer.setClearColor(0x070f18, 0.72);
+          }
+        } catch (_) {
+          try {
+            geminiMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          } catch (err) {
+            alert('Please allow microphone and camera access to use Live Gemini AR.');
+            stopGeminiLiveSession();
+            return;
+          }
+        }
+      }
+
+      const wsProto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = (location.hostname === 'mo360immersivestudio.co.uk' || location.hostname.endsWith('.github.io'))
+        ? 'wss://suit-article-barrel-pat.trycloudflare.com/ws'
+        : `${wsProto}//${location.host}/ws`;
+
+      geminiWs = new WebSocket(wsUrl);
+      geminiWs.binaryType = 'arraybuffer';
+
+      geminiWs.onopen = async () => {
+        geminiBtnLabel.textContent = 'Listening… · AR';
+        if (!geminiFrameTimer) geminiFrameTimer = setInterval(sendGeminiVisualFrame, 2200);
+        try {
+          if (!geminiWorkletLoaded) {
+            await geminiAudioCtx.audioWorklet.addModule('recorder-worklet.js?v=150');
+            geminiWorkletLoaded = true;
+          }
+          const micSource = geminiAudioCtx.createMediaStreamSource(geminiMicStream);
+          geminiRecorderNode = new AudioWorkletNode(geminiAudioCtx, 'recorder');
+          micSource.connect(geminiRecorderNode);
+          geminiRecorderNode.port.onmessage = (e) => {
+            if (geminiWs && geminiWs.readyState === WebSocket.OPEN) {
+              geminiWs.send(e.data);
+            }
+          };
+        } catch (err) {
+          console.warn('Worklet error:', err);
+        }
+      };
+
+      geminiWs.onmessage = (ev) => {
+        if (ev.data instanceof ArrayBuffer) {
+          playGeminiAudioChunk(ev.data);
+          return;
+        }
+        try {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === 'ready') {
+            const activeItem = COLLECTION[Math.max(0, activeChapterIndex)] || COLLECTION[0];
+            geminiWs.send(JSON.stringify({
+              type: 'text',
+              text: `[System Context: Visitor is exploring the 3D Scroll Story of Plymouth Chronicles and currently viewing ${activeItem.ship} (${activeItem.launched}). Greet them warmly in 1 brief sentence.]`
+            }));
+          } else if (msg.type === 'interrupted') {
+            flushGeminiAudio();
+          }
+        } catch (_) {}
+      };
+
+      geminiWs.onclose = () => {
+        if (!userStoppedGemini && isGeminiActive) {
+          setTimeout(() => { if (!userStoppedGemini) startGeminiLiveSession(); }, 1500);
+        }
+      };
+    }
+
+    function stopGeminiLiveSession() {
+      userStoppedGemini = true;
+      isGeminiActive = false;
+      if (geminiWs) { try { geminiWs.onclose = null; geminiWs.close(); } catch (_) {} geminiWs = null; }
+      if (geminiFrameTimer) { clearInterval(geminiFrameTimer); geminiFrameTimer = null; }
+      if (geminiMicStream) { geminiMicStream.getTracks().forEach((t) => t.stop()); geminiMicStream = null; }
+      if (geminiCameraStream) { geminiCameraStream.getTracks().forEach((t) => t.stop()); geminiCameraStream = null; }
+      viewfinder.hidden = true;
+      flushGeminiAudio();
+      geminiLiveBtn.classList.remove('connected');
+      geminiBtnLabel.textContent = 'Live Gemini AR';
+    }
+
+    geminiLiveBtn.addEventListener('click', () => {
+      if (isGeminiActive) stopGeminiLiveSession();
+      else startGeminiLiveSession();
+    });
+  </script>
+</body>
+</html>
