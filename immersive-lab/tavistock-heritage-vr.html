@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Tavistock Heritage Living History · 3D Depth Drone Fly-Through &amp; WebXR</title>
+  <title>Tavistock Heritage · 2D Photo to Living 3D World &amp; Drone Flight VR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -53,7 +53,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Fullscreen 3D Canvas */
     #vr-stage {
       position: fixed;
       inset: 0;
@@ -67,13 +66,12 @@
       outline: none;
     }
 
-    /* Calming Vignette Mask */
     .calm-vignette {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 2;
-      background: radial-gradient(circle at center, transparent 58%, rgba(4, 11, 18, 0.62) 100%);
+      background: radial-gradient(circle at center, transparent 60%, rgba(4, 11, 18, 0.58) 100%);
     }
 
     /* 2.0s Head-Gaze Dwell Reticle */
@@ -96,7 +94,7 @@
       transform: rotate(-90deg);
       filter: drop-shadow(0 0 10px rgba(76, 168, 184, 0.5));
       transition: transform 0.25s ease, opacity 0.25s ease;
-      opacity: 0.55;
+      opacity: 0.45;
     }
 
     .gaze-ring.active {
@@ -165,19 +163,19 @@
       font-size: 0.8rem;
     }
 
-    /* Drone Flight HUD Telemetry Badge */
+    /* Live Drone Flight Telemetry & Picture-in-Picture Original 2D Photo Card */
     .drone-hud-pill {
       position: fixed;
-      top: 90px;
-      left: 20px;
+      top: 84px;
+      left: 18px;
       z-index: 18;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(7, 18, 29, 0.82);
-      border: 1px solid rgba(88, 176, 122, 0.45);
+      background: rgba(7, 18, 29, 0.85);
+      border: 1px solid rgba(88, 176, 122, 0.5);
       backdrop-filter: blur(10px);
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 0.78rem;
@@ -201,10 +199,58 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
+    /* Original 2D Historical Photo Reference Card (Top-Right Floating Picture-in-Picture) */
+    .pip-photo-card {
+      position: fixed;
+      top: 84px;
+      right: 18px;
+      z-index: 18;
+      width: 210px;
+      padding: 8px;
+      border-radius: 14px;
+      background: rgba(8, 20, 31, 0.88);
+      border: 1px solid rgba(230, 200, 139, 0.45);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+      cursor: pointer;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .pip-photo-card:hover {
+      transform: scale(1.04);
+      border-color: var(--parchment);
+    }
+
+    .pip-photo-card img {
+      width: 100%;
+      height: 118px;
+      object-fit: cover;
+      border-radius: 9px;
+      display: block;
+      margin-bottom: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .pip-caption {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--parchment);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pip-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
     /* Top Navigation & Status Bar */
     .top-bar {
       position: fixed;
-      top: 14px;
+      top: 12px;
       left: 16px;
       right: 16px;
       z-index: 20;
@@ -224,14 +270,14 @@
 
     body.coview-clean .top-bar,
     body.coview-clean .carer-strip,
-    body.coview-clean .drone-hud-pill {
+    body.coview-clean .drone-hud-pill,
+    body.coview-clean .pip-photo-card {
       opacity: 0.12;
     }
 
     body.coview-clean .top-bar:hover,
     body.coview-clean .carer-strip:hover,
-    body.coview-clean .top-bar:focus-within,
-    body.coview-clean .carer-strip:focus-within {
+    body.coview-clean .pip-photo-card:hover {
       opacity: 1;
     }
 
@@ -254,7 +300,7 @@
 
     .brand-title {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.08rem;
+      font-size: 1.06rem;
       font-weight: 800;
       letter-spacing: -0.01em;
       color: var(--text-main);
@@ -262,7 +308,7 @@
     }
 
     .brand-sub {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       margin-top: 2px;
     }
@@ -283,7 +329,7 @@
       border-radius: 999px;
       background: rgba(7, 16, 25, 0.75);
       border: 1px solid var(--border-tavy);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -305,14 +351,14 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      min-height: 42px;
+      min-height: 40px;
       padding: 0 14px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-tavy);
       background: rgba(14, 34, 52, 0.85);
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
@@ -325,20 +371,15 @@
       border-color: var(--tavy-cyan);
     }
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-higgsfield {
-      background: linear-gradient(135deg, rgba(230, 200, 139, 0.22), rgba(76, 168, 184, 0.25));
+    .btn-portal {
+      background: linear-gradient(135deg, rgba(230, 200, 139, 0.28), rgba(88, 176, 122, 0.25));
       border-color: var(--parchment);
       color: var(--parchment);
     }
 
-    .btn-higgsfield:hover {
-      background: linear-gradient(135deg, rgba(230, 200, 139, 0.35), rgba(76, 168, 184, 0.35));
-      border-color: #fff;
-      color: #fff;
+    .btn-portal:hover {
+      border-color: #ffffff;
+      color: #ffffff;
     }
 
     .btn-vr {
@@ -347,27 +388,12 @@
       color: #ffffff;
     }
 
-    .btn-vr:hover {
-      background: linear-gradient(135deg, #207292, #144e68);
-    }
-
-    .btn-vr.vr-ready {
-      background: linear-gradient(135deg, #1c7a5f, #125441);
-      border-color: var(--dartmoor-moss);
-    }
-
-    .btn-coview.active {
-      background: var(--tavy-soft);
-      border-color: var(--tavy-cyan);
-      color: var(--tavy-cyan);
-    }
-
     /* Bottom Carer Co-View Control Strip */
     .carer-strip {
       position: fixed;
       left: 16px;
       right: 16px;
-      bottom: 14px;
+      bottom: 12px;
       z-index: 20;
       display: flex;
       flex-direction: column;
@@ -410,7 +436,7 @@
     }
 
     .narration-text {
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       line-height: 1.38;
       color: var(--text-main);
     }
@@ -423,7 +449,6 @@
       gap: 8px;
     }
 
-    /* Landmark Selector Strip (All 8 Historical Plates) */
     .selector-cluster {
       display: flex;
       flex-wrap: wrap;
@@ -433,8 +458,6 @@
       padding: 4px;
       border-radius: var(--radius-md);
       border: 1px solid rgba(76, 168, 184, 0.2);
-      overflow-x: auto;
-      max-width: 100%;
     }
 
     .selector-btn {
@@ -445,15 +468,11 @@
       background: transparent;
       color: var(--text-muted);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease;
       white-space: nowrap;
-    }
-
-    .selector-btn:hover {
-      color: var(--text-main);
     }
 
     .selector-btn.active {
@@ -461,7 +480,6 @@
       color: #051420;
     }
 
-    /* Visual Mode Pill Cluster */
     .mode-cluster {
       display: flex;
       flex-wrap: wrap;
@@ -481,48 +499,37 @@
       background: transparent;
       color: var(--text-muted);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease;
       white-space: nowrap;
     }
 
-    .mode-btn:hover {
-      color: var(--text-main);
-    }
-
     .mode-btn.active {
-      background: var(--parchment);
-      color: #121008;
-    }
-
-    .mode-btn.mode-drone.active {
       background: linear-gradient(135deg, #4ca8b8, #58b07a);
       color: #04121a;
     }
 
-    /* 3D Depth Relief Slider Cluster */
-    .depth-slider-cluster {
+    .portal-slider-cluster {
       display: flex;
       align-items: center;
       gap: 8px;
       background: rgba(6, 17, 27, 0.6);
       padding: 4px 10px;
       border-radius: var(--radius-md);
-      border: 1px solid rgba(230, 200, 139, 0.3);
-      font-size: 0.76rem;
+      border: 1px solid rgba(230, 200, 139, 0.35);
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--parchment);
     }
 
-    .depth-slider-cluster input[type="range"] {
-      width: 78px;
+    .portal-slider-cluster input[type="range"] {
+      width: 82px;
       accent-color: var(--parchment);
       cursor: pointer;
     }
 
-    /* Motion Speed Group */
     .speed-cluster {
       display: flex;
       align-items: center;
@@ -535,16 +542,15 @@
 
     .speed-btn {
       min-height: 34px;
-      padding: 0 10px;
+      padding: 0 9px;
       border: none;
       border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text-muted);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
     }
 
     .speed-btn.active {
@@ -552,12 +558,6 @@
       color: #051420;
     }
 
-    .speed-btn.pause-btn.active {
-      background: var(--accent-pause);
-      color: #ffffff;
-    }
-
-    /* Soundscape Controls Cluster */
     .audio-cluster {
       display: flex;
       align-items: center;
@@ -575,7 +575,7 @@
       border: 1px solid var(--border-tavy);
       background: rgba(14, 34, 52, 0.7);
       color: var(--text-muted);
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -586,13 +586,6 @@
       background: var(--tavy-soft);
     }
 
-    .soundscape-label {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    /* Hygiene & Higgsfield Drawer Triggers */
     .utility-cluster {
       display: flex;
       align-items: center;
@@ -609,14 +602,10 @@
       border: 1px solid rgba(88, 176, 122, 0.4);
       background: rgba(88, 176, 122, 0.12);
       color: #d6f6e4;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-    }
-
-    .badge-popover-btn:hover {
-      background: rgba(88, 176, 122, 0.22);
     }
 
     .badge-flow-btn {
@@ -625,18 +614,13 @@
       color: var(--parchment);
     }
 
-    .badge-flow-btn:hover {
-      background: rgba(230, 200, 139, 0.28);
-    }
-
-    /* Drawers / Popovers */
     .popover-card {
       position: fixed;
       right: 16px;
-      bottom: 185px;
+      bottom: 180px;
       z-index: 30;
-      width: min(460px, calc(100vw - 32px));
-      max-height: calc(100vh - 265px);
+      width: min(450px, calc(100vw - 32px));
+      max-height: calc(100vh - 260px);
       overflow-y: auto;
       padding: 18px;
       border-radius: var(--radius-lg);
@@ -661,7 +645,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 1rem;
       font-weight: 700;
-      color: var(--dartmoor-moss);
+      color: var(--parchment);
       margin: 0;
     }
 
@@ -675,17 +659,10 @@
       cursor: pointer;
       display: grid;
       place-items: center;
-      font-size: 0.9rem;
-      line-height: 1;
-    }
-
-    .btn-popover-close:hover {
-      color: var(--text-main);
-      border-color: var(--tavy-cyan);
     }
 
     .popover-card p {
-      font-size: 0.83rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       line-height: 1.42;
       margin-bottom: 10px;
@@ -705,27 +682,11 @@
       align-items: flex-start;
       gap: 10px;
       cursor: pointer;
-      line-height: 1.35;
-    }
-
-    .checklist input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      accent-color: var(--dartmoor-moss);
-    }
-
-    #flowPopover {
-      border-color: var(--parchment);
-    }
-
-    #flowPopover h2 {
-      color: var(--parchment);
     }
 
     .code-box {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       background: rgba(4, 11, 18, 0.9);
       border: 1px solid rgba(230, 200, 139, 0.35);
       padding: 10px 12px;
@@ -733,44 +694,8 @@
       color: #f3dfb6;
       line-height: 1.45;
       margin: 8px 0;
-      word-break: break-word;
     }
 
-    .higgsfield-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0;
-    }
-
-    .btn-mini {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-tavy);
-      background: rgba(18, 44, 66, 0.9);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn-mini:hover {
-      border-color: var(--parchment);
-      color: var(--parchment);
-    }
-
-    .btn-mini-gold {
-      background: linear-gradient(135deg, rgba(230, 200, 139, 0.25), rgba(76, 168, 184, 0.25));
-      border-color: var(--parchment);
-      color: var(--parchment);
-    }
-
-    /* Calm Loading Screen */
     .loading-veil {
       position: fixed;
       inset: 0;
@@ -803,30 +728,30 @@
     }
 
     @media (max-width: 980px) {
-      .carer-row-top {
-        grid-template-columns: 1fr;
-      }
-      .carer-row-controls {
-        gap: 6px;
-      }
-      .top-bar {
-        padding: 10px 14px;
-      }
-      .drone-hud-pill {
-        top: 84px;
-        left: 14px;
-      }
+      .carer-row-top { grid-template-columns: 1fr; }
+      .pip-photo-card { width: 150px; top: 82px; }
+      .pip-photo-card img { height: 84px; }
     }
   </style>
 </head>
 <body>
-  <div id="vr-stage" aria-label="Tavistock Heritage 3D Depth Drone Fly-Through Stage"></div>
+  <div id="vr-stage" aria-label="Tavistock Heritage Living 3D World & Drone Flight Stage"></div>
   <div class="calm-vignette"></div>
 
   <!-- Live 3D Drone Telemetry Pill -->
   <div class="drone-hud-pill" id="droneHudPill">
     <span class="drone-pulse-dot"></span>
-    <span id="droneTelemetryText">3D DEPTH DRONE FLY-IN ACTIVE · Z-Parallax +3.8m · Abbey Bridge (c. 1890)</span>
+    <span id="droneTelemetryText">🚁 LIVING 3D WORLD DRONE ORBIT · Flying Around 3D Abbey Bridge &amp; River Tavy (c. 1890)</span>
+  </div>
+
+  <!-- Original Flat 2D Historical Photo Card (Tap to Replay 2D Photo -> 3D Living World Portal!) -->
+  <div class="pip-photo-card" id="pipPhotoCard" title="Tap to fly from the original 2D archive photograph into the living 3D world">
+    <img id="pipPhotoImg" src="assets/tavistock_archive/02_abbey_bridge_river_tavy.jpg" alt="Original Historical 2D Archive Plate" />
+    <div class="pip-caption">
+      <span id="pipPhotoTitle">1890 Archive Plate</span>
+      <span>2D → 3D ↗</span>
+    </div>
+    <div class="pip-sub">Tap to replay 2D photo portal into 3D</div>
   </div>
 
   <!-- 2.0s Head-Gaze Dwell Reticle -->
@@ -842,7 +767,6 @@
     </div>
   </div>
 
-  <!-- Hidden File Input for Instant Higgsfield MP4 or Custom Historical Photo Testing -->
   <input type="file" id="higgsfieldFileInput" accept="video/mp4,video/webm,image/*" hidden />
 
   <!-- Top Navigation & WebXR Bar -->
@@ -856,19 +780,23 @@
         </svg>
       </div>
       <div>
-        <h1 class="brand-title">Tavistock Heritage · 3D Depth Drone Fly-Through</h1>
-        <p class="brand-sub">Real-Time 3D Depth Displacement + Higgsfield Drone Camera Flight · WebXR &amp; iPad Co-View</p>
+        <h1 class="brand-title">Tavistock Living History · 2D Photo to 3D World</h1>
+        <p class="brand-sub">Living 3D Bridges, Steam Trains, Carriages, Spinning Waterwheels &amp; 360° Drone Flight</p>
       </div>
     </div>
 
     <div class="action-cluster">
       <div class="status-pill" id="sceneStatusPill">
-        <span class="status-dot" id="sceneStatusDot"></span>
-        <span id="sceneStatusText">Loading 3D Depth Archive…</span>
+        <span class="status-dot ready" id="sceneStatusDot"></span>
+        <span id="sceneStatusText">Living 3D World Active</span>
       </div>
 
-      <button type="button" class="btn btn-higgsfield" id="testCustomFileBtn" title="Load any Higgsfield MP4 video or historical image directly into the 3D Depth Drone Engine">
-        <span>✨ Test Higgsfield Clip / Photo</span>
+      <button type="button" class="btn btn-portal" id="replayPortalBtn" title="Watch the flat 2D historical photo open and transform into the living 3D world">
+        <span>✨ Replay 2D → 3D Portal</span>
+      </button>
+
+      <button type="button" class="btn" id="testCustomFileBtn" title="Test your own Higgsfield MP4 or photo">
+        <span>🎬 Load Higgsfield MP4</span>
       </button>
 
       <button type="button" class="btn btn-coview" id="coViewBtn" aria-pressed="false">
@@ -882,22 +810,22 @@
   </header>
 
   <!-- Bottom Carer Co-View Control Strip -->
-  <footer class="carer-strip" aria-label="Carer Reminiscence & 3D Depth Drone Controls">
+  <footer class="carer-strip" aria-label="Carer Reminiscence & Living 3D World Controls">
     <div class="carer-row-top">
       <div class="narration-box">
         <div>
-          <div class="narration-tag">3D Depth Historical Plate · <span id="promptIndex">1 / 8</span></div>
+          <div class="narration-tag">Living 3D Historical Scene · <span id="promptIndex">1 / 8</span></div>
           <p class="narration-text" id="narrationText">
-            “Gliding beneath the Victorian trees toward Abbey Bridge over the shimmering River Tavy, as the ancient stones of Tavistock Abbey rise in three-dimensional relief.”
+            “Watch the 1890 photograph of Abbey Bridge come alive in full 3D: our drone flies under the three Hurdwick stone arches, above the flowing River Tavy weir, past medieval Abbey ruins and gliding Dartmoor swallows.”
           </p>
         </div>
-        <button type="button" class="btn btn-compact" id="nextPromptBtn" style="min-height: 38px; padding: 0 12px; font-size: 0.82rem;">Next Plate →</button>
+        <button type="button" class="btn" id="nextPromptBtn" style="min-height: 36px; padding: 0 12px; font-size: 0.8rem;">Next 3D Scene →</button>
       </div>
 
       <div class="utility-cluster">
         <button type="button" class="badge-popover-btn badge-flow-btn" id="flowBtn" aria-expanded="false" aria-controls="flowPopover">
           <span aria-hidden="true">🎬</span>
-          <span id="droneBadgeLabel">Higgsfield 3D Studio</span>
+          <span id="droneBadgeLabel">Higgsfield Prompt &amp; MP4</span>
         </button>
         <button type="button" class="badge-popover-btn" id="hygieneBtn" aria-expanded="false" aria-controls="hygienePopover">
           <span aria-hidden="true">✓</span>
@@ -907,49 +835,46 @@
     </div>
 
     <div class="carer-row-controls">
-      <!-- Landmark Selector (All 8 Historical Tavistock Plates) -->
-      <div class="selector-cluster" role="radiogroup" aria-label="Tavistock Historical Plates">
-        <button type="button" class="selector-btn active" data-landmark="abbey_ruins">1. Abbey Bridge</button>
-        <button type="button" class="selector-btn" data-landmark="pannier_market">2. Bedford Square</button>
-        <button type="button" class="selector-btn" data-landmark="st_eustachius">3. Viaduct &amp; Church</button>
-        <button type="button" class="selector-btn" data-landmark="canal_wharf">4. Cloth Mill 1824</button>
-        <button type="button" class="selector-btn" data-landmark="abbey_mead">5. Abbey Mead 1850</button>
-        <button type="button" class="selector-btn" data-landmark="steam_railway">6. Steam Locomotive</button>
-        <button type="button" class="selector-btn" data-landmark="endsleigh_cottage">7. Endsleigh 1907</button>
-        <button type="button" class="selector-btn" data-landmark="drake_relief">8. Drake Relief 1890</button>
+      <!-- Landmark Selector (All 8 Historical Tavistock Scenes Reconstructed in Living 3D) -->
+      <div class="selector-cluster" role="radiogroup" aria-label="Tavistock 3D Historical Worlds">
+        <button type="button" class="selector-btn active" data-landmark="abbey_ruins">1. Abbey Bridge 3D</button>
+        <button type="button" class="selector-btn" data-landmark="pannier_market">2. Bedford Sq &amp; Carriages</button>
+        <button type="button" class="selector-btn" data-landmark="st_eustachius">3. Viaduct &amp; Steam Train</button>
+        <button type="button" class="selector-btn" data-landmark="canal_wharf">4. 1824 Mill &amp; Waterwheel</button>
+        <button type="button" class="selector-btn" data-landmark="abbey_mead">5. Abbey Mead Lane</button>
+        <button type="button" class="selector-btn" data-landmark="steam_railway">6. Locomotive 34036</button>
+        <button type="button" class="selector-btn" data-landmark="endsleigh_cottage">7. Endsleigh Cottage</button>
+        <button type="button" class="selector-btn" data-landmark="drake_relief">8. Drake Monument</button>
       </div>
 
-      <!-- Visual Mode: 3D Drone Fly-In -> Higgsfield MP4 -> Colour -> Sepia -> B&W -> 3D Depth Map -->
-      <div class="mode-cluster" role="radiogroup" aria-label="3D Depth & Drone Flight Mode">
-        <button type="button" class="mode-btn mode-drone active" data-mode="fly3d">🚁 3D Drone Fly-In</button>
-        <button type="button" class="mode-btn mode-drone" data-mode="drone">🎬 Drone MP4</button>
-        <button type="button" class="mode-btn" data-mode="colour">Living Colour 3D</button>
-        <button type="button" class="mode-btn" data-mode="sepia">Warm Sepia 3D</button>
-        <button type="button" class="mode-btn" data-mode="bw">1890s B&amp;W 3D</button>
-        <button type="button" class="mode-btn" data-mode="depthmap">Depth Map</button>
+      <!-- Drone Camera Flight Mode -->
+      <div class="mode-cluster" role="radiogroup" aria-label="Drone Camera Path">
+        <button type="button" class="mode-btn active" data-mode="orbit3d">🚁 360° Drone Orbit Around 3D World</button>
+        <button type="button" class="mode-btn" data-mode="flythrough">🦅 Fly Through Arches / Street</button>
+        <button type="button" class="mode-btn" data-mode="portal2d">🖼️ Inspect 2D Photo Portal</button>
       </div>
 
-      <!-- Real-Time 3D Depth Extrusion Slider -->
-      <div class="depth-slider-cluster" title="Adjust 3D Vertex Depth Displacement in meters">
-        <label for="depthRangeInput">3D Depth:</label>
-        <input type="range" id="depthRangeInput" min="0" max="5.5" step="0.1" value="3.8" />
-        <span id="depthValueLabel">3.8m</span>
+      <!-- 2D Archive Photo <-> Living 3D World Cross-Dissolve Slider -->
+      <div class="portal-slider-cluster" title="Morph smoothly from the flat 2D historical photograph (0%) into the full living 3D world (100%)">
+        <label for="portalMorphSlider">2D → 3D:</label>
+        <input type="range" id="portalMorphSlider" min="0" max="100" step="1" value="100" />
+        <span id="portalMorphLabel">100% 3D</span>
       </div>
 
       <!-- Gentle Motion Speed -->
-      <div class="speed-cluster" role="group" aria-label="Drone Flight Speed">
-        <button type="button" class="speed-btn" data-speed="0.35">Calm</button>
-        <button type="button" class="speed-btn active" data-speed="0.75">Drone Flight</button>
-        <button type="button" class="speed-btn" data-speed="1.25">FPV Glide</button>
+      <div class="speed-cluster" role="group" aria-label="Drone Speed">
+        <button type="button" class="speed-btn" data-speed="0.35">Gentle</button>
+        <button type="button" class="speed-btn active" data-speed="0.8">Drone</button>
+        <button type="button" class="speed-btn" data-speed="1.35">FPV</button>
         <button type="button" class="speed-btn pause-btn" data-speed="0">Pause</button>
       </div>
 
       <!-- Web Audio Soundscape Controls -->
       <div class="audio-cluster" role="group" aria-label="Calm Web Audio Soundscape">
-        <button type="button" class="btn-icon active" id="audioToggleBtn" title="Mute or play ambient soundscape">
+        <button type="button" class="btn-icon active" id="audioToggleBtn">
           <span>🔊 Sound</span>
         </button>
-        <button type="button" class="btn-icon" id="chimeTestBtn" title="Play gentle St Eustachius chime">
+        <button type="button" class="btn-icon" id="chimeTestBtn">
           <span>🔔 Chime</span>
         </button>
       </div>
@@ -960,7 +885,7 @@
   <aside class="popover-card" id="hygienePopover" aria-label="Infection Control Checklist">
     <div class="popover-header">
       <h2>Care Home Comfort &amp; Hygiene Checklist</h2>
-      <button type="button" class="btn-popover-close" id="hygieneCloseBtn" aria-label="Close hygiene popover">✕</button>
+      <button type="button" class="btn-popover-close" id="hygieneCloseBtn">✕</button>
     </div>
     <p>Dementia-safe protocols verified for seated care home VR reminiscence.</p>
     <ul class="checklist">
@@ -971,199 +896,182 @@
     </ul>
   </aside>
 
-  <!-- Higgsfield 3D Drone Camera Studio Popover -->
-  <aside class="popover-card" id="flowPopover" aria-label="Higgsfield 3D Drone Camera Studio">
+  <!-- Higgsfield Studio Popover -->
+  <aside class="popover-card" id="flowPopover" aria-label="Higgsfield 3D Drone Studio">
     <div class="popover-header">
-      <h2>Higgsfield 3D Drone Camera Studio</h2>
-      <button type="button" class="btn-popover-close" id="flowCloseBtn" aria-label="Close Higgsfield studio popover">✕</button>
+      <h2>Higgsfield &amp; Living 3D World Studio</h2>
+      <button type="button" class="btn-popover-close" id="flowCloseBtn">✕</button>
     </div>
     <p>
-      Every historical Tavistock image now runs with a real <strong>3D Depth Map (`*_depth.jpg`)</strong>, <strong>240×160 Vertex Displacement Mesh</strong>, and <strong>6-DoF Drone Camera Fly-Through</strong>. You can also generate custom AI drone clips on Higgsfield and test them live here:
+      Each historical 2D photograph is now reconstructed as a <strong>true volumetric 3D world</strong> (no warped/bumpy 2D mesh!) with animated 3D rivers, steam trains, horse carriages, spinning waterwheels, and flying birds while the drone camera orbits 360° around the scene.
     </p>
-    <div style="font-size:0.78rem; color:var(--parchment); font-weight:700; margin-top:4px;">
-      Higgsfield Drone Camera Prompt for <span id="flowActiveLandmark">Abbey Bridge &amp; River Tavy</span>:
+    <div style="font-size:0.78rem; color:var(--parchment); font-weight:700;">
+      Higgsfield Drone Prompt for <span id="flowActiveLandmark">Abbey Bridge &amp; River Tavy</span>:
     </div>
     <div class="code-box" id="higgsfieldPromptBox">
-      Cinematic FPV drone camera flying slowly forward through the historical Victorian stone bridge over the shimmering River Tavy in Tavistock, Devon, 3D depth parallax past overhanging riverside trees, gentle water ripples, golden morning mist, photorealistic archival restoration, 24fps smooth gimbal dolly in.
+      Cinematic drone camera flying under the 3D stone arches of Victorian Abbey Bridge over the flowing River Tavy in Tavistock, Devon, birds gliding over shimmering water weir, photorealistic living history.
     </div>
-    <div class="higgsfield-actions">
-      <button type="button" class="btn-mini btn-mini-gold" id="copyPromptBtn">📋 Copy Higgsfield Prompt</button>
-      <a class="btn-mini" id="downloadSourcePlateBtn" href="assets/tavistock_archive/abbey_ruins_colour_hd.jpg" download>⬇ Download Plate for Higgsfield</a>
-      <button type="button" class="btn-mini btn-mini-gold" id="uploadHiggsfieldModalBtn">✨ Load Higgsfield MP4 / Photo</button>
-    </div>
-    <div class="code-box" id="flowPathBox" style="font-size:0.72rem; color:#9fe6f2;">
-      Active 3D Depth Map: assets/tavistock_archive/abbey_ruins_depth.jpg
-    </div>
-    <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--parchment); margin-top:6px;">
-      <span>Status: <strong id="flowVideoStatus">3D Depth Mesh + Drone MP4 Ready</strong></span>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+      <button type="button" class="btn" id="copyPromptBtn" style="min-height:34px; font-size:0.76rem;">📋 Copy Higgsfield Prompt</button>
+      <a class="btn" id="downloadSourcePlateBtn" href="assets/tavistock_archive/abbey_ruins_colour_hd.jpg" download style="min-height:34px; font-size:0.76rem;">⬇ Download Historical Plate</a>
     </div>
   </aside>
 
   <!-- Calm Loading Veil -->
   <div class="loading-veil" id="loadingVeil">
-    <div class="loading-title">Preparing Tavistock 3D Depth Sanctuary…</div>
-    <div class="loading-sub" id="loadingSub">Building 240×160 3D Depth Mesh &amp; Drone Flight Spline</div>
+    <div class="loading-title">Building Living 3D Tavistock World…</div>
+    <div class="loading-sub" id="loadingSub">Constructing 3D Bridges, Steam Trains, Carriages, Waterwheels &amp; Drone Orbit</div>
   </div>
 
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-    const SEATED_EYE_HEIGHT = 1.2;
+    const SEATED_EYE_HEIGHT = 1.6;
     const GAZE_DWELL_MS = 2000;
     const GAZE_COOLDOWN_MS = 3500;
     const RING_CIRCUMFERENCE = 2 * Math.PI * 18;
 
-    // All 8 Historical Tavistock Plates with 3D Depth Maps, Colour Restoration, Sepia, B&W & Higgsfield Prompts
-    const TAVISTOCK_PLATES = [
+    const TAVISTOCK_SCENES = [
       {
         id: "abbey_ruins",
         name: "Abbey Bridge & River Tavy",
         era: "c. 1890",
-        narration: "“Gliding beneath the Victorian trees toward Abbey Bridge over the shimmering River Tavy, as the ancient stones of Tavistock Abbey rise in three-dimensional relief.”",
-        archive_bw: "assets/tavistock_archive/02_abbey_bridge_river_tavy.jpg",
-        sepia: "assets/tavistock_archive/abbey_ruins_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/abbey_ruins_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/abbey_ruins_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/abbey_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.36,
-        higgsfield_prompt: "Cinematic FPV drone camera flying slowly forward through the historical Victorian stone Abbey Bridge over the shimmering River Tavy in Tavistock, Devon, rich 3D depth parallax past overhanging riverside trees and stone arches, gentle water ripples, golden morning mist, photorealistic archival restoration, smooth gimbal dolly in.",
+        narration: "“Watch the 1890 photograph of Abbey Bridge come alive in full 3D: our drone flies under the three Hurdwick stone arches, above the flowing River Tavy weir, past medieval Abbey ruins and gliding Dartmoor swallows.”",
+        photo_bw: "assets/tavistock_archive/02_abbey_bridge_river_tavy.jpg",
+        photo_colour: "assets/tavistock_archive/abbey_ruins_colour_hd.jpg",
+        sky_top: 0x1a3d5c,
+        sky_horizon: 0xd9c398,
+        ground_col: 0x2c4228,
+        higgsfield_prompt: "Cinematic FPV drone camera flying in full 3D under the Victorian three-arch stone Abbey Bridge over the flowing River Tavy in Tavistock, Devon, swallows flying over the white-water river weir, medieval Abbey ruins on the bank, warm golden morning sunlight.",
         hotspots: [
-          { name: "Abbey Bridge Archway", year: "c. 1890", position: [-1.2, 1.35, -5.2] },
-          { name: "River Tavy Weir & Reflections", year: "Living Water", position: [1.3, 0.55, -4.6] }
+          { name: "Abbey Bridge Central Arch", year: "c. 1890", position: [0, 3.2, 0] },
+          { name: "Flowing River Tavy Weir", year: "Living Water", position: [0, 0.6, 5.5] },
+          { name: "Tavistock Abbey Gothic Ruins", year: "c. 961 AD", position: [-8.5, 3.5, -5.0] }
         ]
       },
       {
         id: "pannier_market",
-        name: "Bedford Square & Guildhall",
+        name: "Bedford Square, Guildhall & Carriages",
         era: "c. 1895",
-        narration: "“Flying gently through bustling Bedford Square in the heart of Victorian Tavistock, past the Hurdwick stone towers of the Town Hall and Guildhall.”",
-        archive_bw: "assets/tavistock_archive/01_bedford_square_guildhall.jpg",
-        sepia: "assets/tavistock_archive/pannier_market_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/pannier_market_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/pannier_market_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/pannier_market_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.0,
-        higgsfield_prompt: "Cinematic low-altitude drone camera gliding forward across the cobblestones of Bedford Square in Tavistock, Devon (c. 1895), true 3D depth parallax past Victorian horse-drawn carriages and the Gothic stone arches of Tavistock Town Hall and Guildhall, warm sunlight rays, photorealistic living history.",
+        narration: "“Our drone flies into 1895 Bedford Square in full 3D: Victorian horse-drawn carriages roll across the cobblestones past the crenellated Gothic towers of Tavistock Town Hall, Guildhall, and glowing gas streetlamps.”",
+        photo_bw: "assets/tavistock_archive/01_bedford_square_guildhall.jpg",
+        photo_colour: "assets/tavistock_archive/pannier_market_colour_hd.jpg",
+        sky_top: 0x1e3f60,
+        sky_horizon: 0xe5cca0,
+        ground_col: 0x3e3b36,
+        higgsfield_prompt: "Cinematic 3D drone camera orbiting Victorian Bedford Square in Tavistock (c. 1895), horse-drawn carriages with spinning wheels rolling across the cobblestones past the crenellated stone towers of Tavistock Town Hall and Guildhall, warm gas streetlamps.",
         hotspots: [
-          { name: "Tavistock Town Hall & Guildhall", year: "c. 1895", position: [-1.4, 1.75, -5.5] },
-          { name: "Bedford Square Carriages", year: "Victorian Era", position: [1.1, 0.85, -4.8] }
+          { name: "Tavistock Town Hall Clock Tower", year: "c. 1895", position: [-6.5, 6.2, -7.0] },
+          { name: "Moving Victorian Horse Carriage", year: "Living 3D", position: [1.5, 1.8, 3.0] },
+          { name: "Pannier Market Colonnade", year: "1860", position: [7.5, 3.5, -4.0] }
         ]
       },
       {
         id: "st_eustachius",
-        name: "St Eustachius & Railway Viaduct",
+        name: "Railway Viaduct, Steam Train & St Eustachius",
         era: "c. 1890",
-        narration: "“Soaring eastward over the rooftops of Tavistock toward the grand stone arches of the railway viaduct and the 14th-century tower of St Eustachius Church.”",
-        archive_bw: "assets/tavistock_archive/03_tavistock_panorama_viaduct.jpg",
-        sepia: "assets/tavistock_archive/st_eustachius_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/st_eustachius_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/st_eustachius_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/st_eustachius_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.0,
-        higgsfield_prompt: "Majestic aerial drone camera flying forward over Victorian Tavistock rooftops toward the towering granite arches of the Tavistock Railway Viaduct and St Eustachius Parish Church tower, deep 3D perspective parallax with Dartmoor hills in the background, soft drifting clouds and golden hour rays.",
+        narration: "“Soaring across the Tavy valley in full 3D as a Victorian steam train chugs across the towering granite arches of Tavistock Viaduct, billowing white steam above the 14th-century tower of St Eustachius Church.”",
+        photo_bw: "assets/tavistock_archive/03_tavistock_panorama_viaduct.jpg",
+        photo_colour: "assets/tavistock_archive/st_eustachius_colour_hd.jpg",
+        sky_top: 0x183858,
+        sky_horizon: 0xdec496,
+        ground_col: 0x2a4025,
+        higgsfield_prompt: "Majestic 3D aerial drone camera flying through the giant granite arches of Tavistock Railway Viaduct while a Victorian steam locomotive chugs across the top billowing white steam clouds, orbiting St Eustachius Parish Church tower and Dartmoor hills.",
         hotspots: [
-          { name: "Tavistock Railway Viaduct", year: "c. 1890", position: [1.5, 1.8, -5.6] },
-          { name: "St Eustachius Church Tower", year: "14th Century", position: [-1.6, 1.5, -5.2] }
+          { name: "Tavistock Viaduct & Steam Train", year: "c. 1890", position: [0, 7.8, -6.0] },
+          { name: "St Eustachius Church Tower", year: "14th Century", position: [-7.5, 5.5, 4.5] }
         ]
       },
       {
         id: "canal_wharf",
-        name: "Historic Cloth Mill & Canal Leat",
+        name: "1824 Cloth Mill & Spinning Waterwheel",
         era: "1824",
-        narration: "“Drifting along the historic water leat and timber wheelhouse of Tavistock's 1824 Cloth Mill, drawn by Devon artist John White Abbott.”",
-        archive_bw: "assets/tavistock_archive/05_cloth_mill_tavistock_1824.jpg",
-        sepia: "assets/tavistock_archive/canal_wharf_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/canal_wharf_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/canal_wharf_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/canal_wharf_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.32,
-        higgsfield_prompt: "Gentle drone camera flying forward along the rushing mill stream toward the 1824 historic Tavistock Cloth Mill and waterwheel, rich 3D depth parallax between foreground boulders, rustic stone cottages, and overhanging Devon oak trees, shimmering water reflections.",
+        narration: "“Orbiting John White Abbott's 1824 Tavistock Cloth Mill in living 3D: the giant wooden waterwheel turns in the rushing canal leat, spraying water droplets while woodsmoke curls from the stone mill chimney.”",
+        photo_bw: "assets/tavistock_archive/05_cloth_mill_tavistock_1824.jpg",
+        photo_colour: "assets/tavistock_archive/canal_wharf_colour_hd.jpg",
+        sky_top: 0x1c3d52,
+        sky_horizon: 0xdcc59a,
+        ground_col: 0x2b3e24,
+        higgsfield_prompt: "Cinematic 3D drone camera orbiting the 1824 Tavistock Cloth Mill, a large wooden waterwheel spinning and splashing in the rushing canal leat stream, chimney smoke curling from the stone gable roof, mossy boulders and Devon oak trees.",
         hotspots: [
-          { name: "Historic Cloth Mill Wheelhouse", year: "1824", position: [-1.1, 1.5, -5.3] },
-          { name: "Tavistock Mill Leat Stream", year: "Industrial Heritage", position: [1.2, 0.65, -4.5] }
+          { name: "Spinning 1824 Timber Waterwheel", year: "1824", position: [-2.2, 2.6, -1.5] },
+          { name: "Cloth Mill Stone Gable & Chimney", year: "Industrial Heritage", position: [-5.5, 4.8, -2.0] }
         ]
       },
       {
         id: "abbey_mead",
-        name: "Tavistock Abbey Mead & Cottages",
+        name: "Tavistock Abbey Mead & Grazing Cattle",
         era: "c. 1850",
-        narration: "“Exploring the mid-19th-century lane of Abbey Mead in Tavistock, with historic granite perimeter walls, grazing cattle, and townspeople strolling.”",
-        archive_bw: "assets/tavistock_archive/04_abbey_mead_historic_lithograph.jpg",
-        sepia: "assets/tavistock_archive/abbey_mead_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/abbey_mead_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/abbey_mead_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/abbey_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.0,
-        higgsfield_prompt: "Cinematic drone camera gliding slowly along the historic country lane of Abbey Mead in Tavistock (c. 1850), 3D depth parallax past ancient granite walls, trees, and Victorian cottages, warm pastoral Devon sunlight.",
+        narration: "“Gliding down the pastoral 1850 country lane of Abbey Mead in 3D, framed by historic granite walls, swaying elm trees, cottages, and peaceful Devon cattle.”",
+        photo_bw: "assets/tavistock_archive/04_abbey_mead_historic_lithograph.jpg",
+        photo_colour: "assets/tavistock_archive/abbey_mead_colour_hd.jpg",
+        sky_top: 0x1e405e,
+        sky_horizon: 0xe2ca9e,
+        ground_col: 0x334928,
+        higgsfield_prompt: "Gentle 3D drone flight along the 1850 pastoral lane of Abbey Mead in Tavistock, stone cottages, granite walls, grazing Devon cattle and swaying trees.",
         hotspots: [
-          { name: "Abbey Mead Granite Walls", year: "c. 1850", position: [-1.3, 1.4, -5.2] }
+          { name: "Abbey Mead Historic Cottages", year: "c. 1850", position: [-5.0, 3.2, -3.5] }
         ]
       },
       {
         id: "steam_railway",
-        name: "Tavistock North Steam Locomotive",
+        name: "Tavistock North Station · Locomotive 34036",
         era: "c. 1950",
-        narration: "“Standing on the platform at Tavistock North Station as Southern Railway West Country Class steam locomotive No. 34036 'Westward Ho' billows warm steam.”",
-        archive_bw: "assets/tavistock_archive/06_tavistock_north_steam_railway.jpg",
-        sepia: "assets/tavistock_archive/steam_railway_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/steam_railway_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/steam_railway_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/st_eustachius_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.0,
-        higgsfield_prompt: "Cinematic drone camera flying slowly along the station platform past Southern Railway steam locomotive No. 34036 Westward Ho at Tavistock North Station (c. 1950), volumetric billowing white steam in 3D depth parallax, nostalgic British heritage railway atmosphere.",
+        narration: "“Flying alongside Southern Railway West Country Class steam locomotive No. 34036 'Westward Ho' at Tavistock North Station as live 3D steam billows from her funnel and pistons.”",
+        photo_bw: "assets/tavistock_archive/06_tavistock_north_steam_railway.jpg",
+        photo_colour: "assets/tavistock_archive/steam_railway_colour_hd.jpg",
+        sky_top: 0x1b3650,
+        sky_horizon: 0xd5be96,
+        ground_col: 0x363636,
+        higgsfield_prompt: "Cinematic 3D drone orbiting Southern Railway West Country Class steam locomotive 34036 Westward Ho at Tavistock North Station (c. 1950), volumetric white steam billowing from the chimney and drive wheels.",
         hotspots: [
-          { name: "Locomotive 34036 'Westward Ho'", year: "c. 1950", position: [-0.8, 1.35, -5.0] }
+          { name: "Locomotive 34036 'Westward Ho'", year: "c. 1950", position: [0, 2.8, 0] }
         ]
       },
       {
         id: "endsleigh_cottage",
-        name: "Endsleigh Estate Swiss Cottage",
+        name: "Endsleigh Estate Swiss Cottage in 3D Woodland",
         era: "c. 1907",
-        narration: "“Gliding through the woodland gardens of Endsleigh near Tavistock toward the picturesque Swiss Cottage designed by Sir Jeffrey Wyatville.”",
-        archive_bw: "assets/tavistock_archive/07_endsleigh_swiss_cottage_postcard.jpg",
-        sepia: "assets/tavistock_archive/endsleigh_cottage_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/endsleigh_cottage_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/endsleigh_cottage_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/canal_wharf_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.0,
-        higgsfield_prompt: "Smooth FPV drone camera flying through lush Devon woodland foliage toward the historic thatched Swiss Cottage at Endsleigh Estate near Tavistock (c. 1907), strong 3D depth parallax between foreground branches and timber gables, dappled sunlight.",
+        narration: "“Flying through the 3D woodland clearing at Endsleigh near Tavistock around the timber-balconied Swiss Cottage built for the Duke of Bedford, with curling chimney smoke and forest birds.”",
+        photo_bw: "assets/tavistock_archive/07_endsleigh_swiss_cottage_postcard.jpg",
+        photo_colour: "assets/tavistock_archive/endsleigh_cottage_colour_hd.jpg",
+        sky_top: 0x193c54,
+        sky_horizon: 0xdcc89c,
+        ground_col: 0x263d20,
+        higgsfield_prompt: "3D FPV drone camera flying through Devon forest trees around the picturesque thatched Swiss Cottage at Endsleigh Estate near Tavistock (c. 1907), timber balconies and woodland birds.",
         hotspots: [
-          { name: "Endsleigh Swiss Cottage", year: "c. 1907", position: [0.4, 1.5, -5.2] }
+          { name: "Endsleigh Swiss Cottage Gable", year: "c. 1907", position: [0, 3.8, -2.0] }
         ]
       },
       {
         id: "drake_relief",
-        name: "Sir Francis Drake Bronze Relief",
+        name: "Sir Francis Drake Monument & Fitzford Statue",
         era: "1890",
-        narration: "“Inspecting the deep sculptural 3D bronze relief on Sir Joseph Boehm's 1890 monument at Fitzford, Tavistock, depicting Sir Francis Drake's knighthood.”",
-        archive_bw: "assets/tavistock_archive/08_drake_monument_relief_1890.jpg",
-        sepia: "assets/tavistock_archive/drake_relief_sepia_hd.jpg",
-        living_colour: "assets/tavistock_archive/drake_relief_colour_hd.jpg",
-        depth_map: "assets/tavistock_archive/drake_relief_depth.jpg",
-        drone_mp4: "assets/tavistock_archive/pannier_market_drone_orbit.mp4",
-        drone_video_ready: true,
-        water_level: 0.0,
-        higgsfield_prompt: "Close-up macro drone camera gliding across the 1890 bronze sculptural relief of Sir Francis Drake on the Tavistock monument by Sir Joseph Boehm, dramatic 3D metallic depth parallax and warm rim lighting.",
+        narration: "“Orbiting Sir Joseph Boehm's towering 1890 bronze statue of Sir Francis Drake at Fitzford, Tavistock, complete with its granite plinth and 3D bronze narrative reliefs.”",
+        photo_bw: "assets/tavistock_archive/08_drake_monument_relief_1890.jpg",
+        photo_colour: "assets/tavistock_archive/drake_relief_colour_hd.jpg",
+        sky_top: 0x1c3a56,
+        sky_horizon: 0xe0c79a,
+        ground_col: 0x2e4226,
+        higgsfield_prompt: "3D drone camera orbiting the monumental 1890 bronze statue of Sir Francis Drake on its tall Dartmoor granite pedestal in Tavistock, highlighting the sculpted bronze relief panels in warm golden hour sunlight.",
         hotspots: [
-          { name: "Sir Joseph Boehm Bronze Relief", year: "1890", position: [0.0, 1.35, -4.8] }
+          { name: "Sir Francis Drake Bronze Monument", year: "1890", position: [0, 4.5, 0] }
         ]
       }
     ];
 
-    // DOM Elements
+    // DOM References
     const stageEl = document.getElementById('vr-stage');
     const loadingVeil = document.getElementById('loadingVeil');
-    const sceneStatusDot = document.getElementById('sceneStatusDot');
     const sceneStatusText = document.getElementById('sceneStatusText');
     const droneTelemetryText = document.getElementById('droneTelemetryText');
+    const pipPhotoCard = document.getElementById('pipPhotoCard');
+    const pipPhotoImg = document.getElementById('pipPhotoImg');
+    const pipPhotoTitle = document.getElementById('pipPhotoTitle');
+    const replayPortalBtn = document.getElementById('replayPortalBtn');
+    const portalMorphSlider = document.getElementById('portalMorphSlider');
+    const portalMorphLabel = document.getElementById('portalMorphLabel');
     const enterVrBtn = document.getElementById('enterVrBtn');
     const coViewBtn = document.getElementById('coViewBtn');
     const nextPromptBtn = document.getElementById('nextPromptBtn');
@@ -1172,178 +1080,127 @@
     const landmarkBtns = Array.from(document.querySelectorAll('.selector-btn'));
     const modeBtns = Array.from(document.querySelectorAll('.mode-btn'));
     const speedBtns = Array.from(document.querySelectorAll('.speed-btn'));
-    const depthRangeInput = document.getElementById('depthRangeInput');
-    const depthValueLabel = document.getElementById('depthValueLabel');
     const audioToggleBtn = document.getElementById('audioToggleBtn');
     const chimeTestBtn = document.getElementById('chimeTestBtn');
     const hygieneBtn = document.getElementById('hygieneBtn');
     const hygieneCloseBtn = document.getElementById('hygieneCloseBtn');
     const hygienePopover = document.getElementById('hygienePopover');
-    const hygieneChecks = Array.from(document.querySelectorAll('.hygiene-check'));
-    const hygieneBadgeLabel = document.getElementById('hygieneBadgeLabel');
     const flowBtn = document.getElementById('flowBtn');
     const flowCloseBtn = document.getElementById('flowCloseBtn');
     const flowPopover = document.getElementById('flowPopover');
-    const flowPathBox = document.getElementById('flowPathBox');
     const flowActiveLandmark = document.getElementById('flowActiveLandmark');
     const higgsfieldPromptBox = document.getElementById('higgsfieldPromptBox');
     const copyPromptBtn = document.getElementById('copyPromptBtn');
     const downloadSourcePlateBtn = document.getElementById('downloadSourcePlateBtn');
     const testCustomFileBtn = document.getElementById('testCustomFileBtn');
-    const uploadHiggsfieldModalBtn = document.getElementById('uploadHiggsfieldModalBtn');
     const higgsfieldFileInput = document.getElementById('higgsfieldFileInput');
-    const flowVideoStatus = document.getElementById('flowVideoStatus');
-    const droneBadgeLabel = document.getElementById('droneBadgeLabel');
     const gazeRing = document.getElementById('gazeRing');
     const gazeProgress = document.getElementById('gazeProgress');
     const gazeCard = document.getElementById('gazeCard');
     const gazeTitle = document.getElementById('gazeTitle');
     const gazeYear = document.getElementById('gazeYear');
 
-    // Experience State
-    let currentLandmarkIndex = -1;
-    let currentVisualMode = 'fly3d'; // 'fly3d' | 'drone' | 'colour' | 'sepia' | 'bw' | 'depthmap'
-    let motionSpeed = 0.75; // Active drone flight by default
-    let depthDisplacementMeters = 3.8;
-    let soundscapeMuted = false;
-
-    // Web Audio Synthesizer: River Tavy + Dartmoor Breeze + St Eustachius Bells
+    // Web Audio Soundscape (River Tavy + Breeze + Bells)
     let audioCtx = null;
     let riverGain = null;
     let breezeGain = null;
-    let riverFilter = null;
     let audioInitialized = false;
+    let soundscapeMuted = false;
 
     function ensureAudioContext() {
       if (!audioCtx) {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (AudioCtx) audioCtx = new AudioCtx();
       }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
-      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
       if (audioCtx && !audioInitialized) {
-        setupProceduralSoundscape();
+        audioInitialized = true;
+        const bufferSize = audioCtx.sampleRate * 5;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          data[i] = (b0 + b1 + b2) * 0.12;
+        }
+        const riverSrc = audioCtx.createBufferSource();
+        riverSrc.buffer = buffer;
+        riverSrc.loop = true;
+        const riverFilter = audioCtx.createBiquadFilter();
+        riverFilter.type = 'lowpass';
+        riverFilter.frequency.value = 520;
+        riverGain = audioCtx.createGain();
+        riverGain.gain.value = 0.16;
+        riverSrc.connect(riverFilter).connect(riverGain).connect(audioCtx.destination);
+        riverSrc.start();
+
+        const breezeSrc = audioCtx.createBufferSource();
+        breezeSrc.buffer = buffer;
+        breezeSrc.loop = true;
+        const breezeFilter = audioCtx.createBiquadFilter();
+        breezeFilter.type = 'bandpass';
+        breezeFilter.frequency.value = 840;
+        breezeGain = audioCtx.createGain();
+        breezeGain.gain.value = 0.07;
+        breezeSrc.connect(breezeFilter).connect(breezeGain).connect(audioCtx.destination);
+        breezeSrc.start();
       }
-    }
-
-    function createNoiseBuffer(durationSec = 5.0) {
-      if (!audioCtx) return null;
-      const bufferSize = audioCtx.sampleRate * durationSec;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      let b0 = 0, b1 = 0, b2 = 0;
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        data[i] = (b0 + b1 + b2) * 0.12;
-      }
-      return buffer;
-    }
-
-    function setupProceduralSoundscape() {
-      if (!audioCtx || audioInitialized) return;
-      audioInitialized = true;
-
-      const noiseBuf = createNoiseBuffer(6.0);
-      if (!noiseBuf) return;
-
-      const riverSource = audioCtx.createBufferSource();
-      riverSource.buffer = noiseBuf;
-      riverSource.loop = true;
-
-      riverFilter = audioCtx.createBiquadFilter();
-      riverFilter.type = 'lowpass';
-      riverFilter.frequency.value = 520;
-      riverFilter.Q.value = 1.8;
-
-      riverGain = audioCtx.createGain();
-      riverGain.gain.setValueAtTime(soundscapeMuted ? 0.0001 : 0.16, audioCtx.currentTime);
-
-      riverSource.connect(riverFilter).connect(riverGain).connect(audioCtx.destination);
-      riverSource.start();
-
-      const breezeSource = audioCtx.createBufferSource();
-      breezeSource.buffer = noiseBuf;
-      breezeSource.loop = true;
-
-      const breezeFilter = audioCtx.createBiquadFilter();
-      breezeFilter.type = 'bandpass';
-      breezeFilter.frequency.value = 850;
-      breezeFilter.Q.value = 0.6;
-
-      breezeGain = audioCtx.createGain();
-      breezeGain.gain.setValueAtTime(soundscapeMuted ? 0.0001 : 0.07, audioCtx.currentTime);
-
-      breezeSource.connect(breezeFilter).connect(breezeGain).connect(audioCtx.destination);
-      breezeSource.start();
-
-      const lfo = audioCtx.createOscillator();
-      lfo.frequency.value = 0.18;
-      const lfoGain = audioCtx.createGain();
-      lfoGain.gain.value = 120;
-      lfo.connect(lfoGain).connect(riverFilter.frequency);
-      lfo.start();
     }
 
     function playStEustachiusChime(freq = 523.25) {
       ensureAudioContext();
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      const partials = [
-        { mult: 1.0, gain: 0.12, decay: 2.8 },
-        { mult: 1.2, gain: 0.07, decay: 2.2 },
-        { mult: 1.5, gain: 0.05, decay: 1.6 },
-        { mult: 2.0, gain: 0.03, decay: 1.2 }
-      ];
-      partials.forEach(p => {
+      [1.0, 1.2, 1.5, 2.0].forEach((mult, idx) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq * p.mult, now);
+        osc.frequency.setValueAtTime(freq * mult, now);
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(p.gain, now + 0.035);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+        gain.gain.linearRampToValueAtTime(0.11 / (idx + 1), now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4 - idx * 0.35);
         osc.connect(gain).connect(audioCtx.destination);
         osc.start(now);
-        osc.stop(now + p.decay + 0.1);
+        osc.stop(now + 2.5);
       });
     }
 
-    function toggleAudio() {
+    window.addEventListener('pointerdown', ensureAudioContext, { once: true });
+    audioToggleBtn.addEventListener('click', () => {
       ensureAudioContext();
       soundscapeMuted = !soundscapeMuted;
       audioToggleBtn.classList.toggle('active', !soundscapeMuted);
       audioToggleBtn.querySelector('span').textContent = soundscapeMuted ? '🔇 Muted' : '🔊 Sound';
       if (riverGain && breezeGain && audioCtx) {
-        const now = audioCtx.currentTime;
-        riverGain.gain.linearRampToValueAtTime(soundscapeMuted ? 0.0001 : 0.16, now + 0.4);
-        breezeGain.gain.linearRampToValueAtTime(soundscapeMuted ? 0.0001 : 0.07, now + 0.4);
+        riverGain.gain.setTargetAtTime(soundscapeMuted ? 0.0001 : 0.16, audioCtx.currentTime, 0.15);
+        breezeGain.gain.setTargetAtTime(soundscapeMuted ? 0.0001 : 0.07, audioCtx.currentTime, 0.15);
       }
-    }
-
-    window.addEventListener('pointerdown', ensureAudioContext, { once: true });
-    audioToggleBtn.addEventListener('click', toggleAudio);
+    });
     chimeTestBtn.addEventListener('click', () => playStEustachiusChime(587.33));
 
-    // Three.js Scene Setup
+    // ---------------------------------------------------------------------------
+    // Three.js Living 3D World Engine
+    // ---------------------------------------------------------------------------
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x061019);
-    scene.fog = new THREE.FogExp2(0x081521, 0.018);
+    scene.background = new THREE.Color(0x0c1e2e);
+    scene.fog = new THREE.FogExp2(0x182e40, 0.014);
 
-    const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 160);
+    const camera = new THREE.PerspectiveCamera(56, window.innerWidth / window.innerHeight, 0.1, 220);
     const cameraRig = new THREE.Group();
-    cameraRig.position.set(0, SEATED_EYE_HEIGHT, 2.2);
+    cameraRig.position.set(0, 4.5, 16.0);
     cameraRig.add(camera);
     scene.add(cameraRig);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 1.12;
     renderer.xr.enabled = true;
     renderer.xr.setReferenceSpaceType('local');
     stageEl.appendChild(renderer.domElement);
@@ -1351,529 +1208,654 @@
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.enablePan = false;
-    controls.enableZoom = true;
-    controls.minDistance = 0.5;
-    controls.maxDistance = 14.0;
-    controls.rotateSpeed = 0.42;
-    controls.minPolarAngle = Math.PI * 0.28;
-    controls.maxPolarAngle = Math.PI * 0.68;
-    controls.target.set(0, SEATED_EYE_HEIGHT + 0.15, -6.5);
-    controls.update();
+    controls.target.set(0, 2.4, 0);
+    controls.maxPolarAngle = Math.PI * 0.49;
+    controls.minDistance = 2.0;
+    controls.maxDistance = 42.0;
 
-    // Volumetric Mist / Floating Dust Motes in the 3D Drone Flight Corridor
-    const mistCount = 340;
-    const mistPositions = new Float32Array(mistCount * 3);
-    for (let i = 0; i < mistCount; i++) {
-      mistPositions[i * 3] = (Math.random() - 0.5) * 16;
-      mistPositions[i * 3 + 1] = Math.random() * 6.5 - 0.8;
-      mistPositions[i * 3 + 2] = -Math.random() * 14 + 4.0;
-    }
-    const mistGeo = new THREE.BufferGeometry();
-    mistGeo.setAttribute('position', new THREE.BufferAttribute(mistPositions, 3));
-    const mistMat = new THREE.PointsMaterial({
-      color: 0xf2d99b,
-      size: 0.048,
-      transparent: true,
-      opacity: 0.52,
-      depthWrite: false
-    });
-    const riverMist = new THREE.Points(mistGeo, mistMat);
-    scene.add(riverMist);
+    // Warm Golden-Hour Devon Lighting
+    const hemiLight = new THREE.HemisphereLight(0xf6e6c8, 0x223824, 1.35);
+    scene.add(hemiLight);
 
-    // In-VR 3D Head-Gaze Reticle
-    const xrReticleGeo = new THREE.RingGeometry(0.015, 0.024, 32);
-    const xrReticleMat = new THREE.MeshBasicMaterial({
-      color: 0x4ca8b8,
-      transparent: true,
-      opacity: 0.85,
-      depthTest: false
-    });
-    const xrReticle = new THREE.Mesh(xrReticleGeo, xrReticleMat);
-    xrReticle.position.set(0, 0, -1.6);
-    xrReticle.visible = false;
-    camera.add(xrReticle);
+    const sunLight = new THREE.DirectionalLight(0xffe6b8, 2.4);
+    sunLight.position.set(18, 26, 14);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 80;
+    const d = 24;
+    sunLight.shadow.camera.left = -d;
+    sunLight.shadow.camera.right = d;
+    sunLight.shadow.camera.top = d;
+    sunLight.shadow.camera.bottom = -d;
+    scene.add(sunLight);
 
-    // ---------------------------------------------------------------------------
-    // 1. Ambient Surround Environment Sphere (Peripheral Immersion)
-    // ---------------------------------------------------------------------------
-    const bgSphereGeo = new THREE.SphereGeometry(55, 48, 32);
-    bgSphereGeo.scale(-1, 1, 1);
-    const bgSphereMat = new THREE.ShaderMaterial({
+    const fillLight = new THREE.DirectionalLight(0x6ea8c8, 0.85);
+    fillLight.position.set(-16, 12, -12);
+    scene.add(fillLight);
+
+    // 360° Devon Sky & Dartmoor Horizon Dome
+    const skyGeo = new THREE.SphereGeometry(95, 48, 32);
+    const skyMat = new THREE.ShaderMaterial({
       uniforms: {
-        uTexColour: { value: null }
+        uTopColor: { value: new THREE.Color(0x1a3d5c) },
+        uHorizonColor: { value: new THREE.Color(0xd9c398) }
       },
       vertexShader: `
-        varying vec2 vUv;
+        varying vec3 vWorldPos;
         void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          vWorldPos = wp.xyz;
+          gl_Position = projectionMatrix * viewMatrix * wp;
         }
       `,
       fragmentShader: `
-        uniform sampler2D uTexColour;
-        varying vec2 vUv;
+        uniform vec3 uTopColor;
+        uniform vec3 uHorizonColor;
+        varying vec3 vWorldPos;
         void main() {
-          vec4 col = texture2D(uTexColour, vUv);
-          gl_FragColor = vec4(col.rgb * 0.28, 1.0);
+          float h = normalize(vWorldPos).y;
+          float t = pow(max(0.0, h), 0.55);
+          vec3 col = mix(uHorizonColor, uTopColor, t);
+          gl_FragColor = vec4(col, 1.0);
         }
       `,
-      side: THREE.DoubleSide,
+      side: THREE.BackSide,
       depthWrite: false
     });
-    const bgSphere = new THREE.Mesh(bgSphereGeo, bgSphereMat);
-    scene.add(bgSphere);
+    const skyDome = new THREE.Mesh(skyGeo, skyMat);
+    scene.add(skyDome);
 
-    // ---------------------------------------------------------------------------
-    // 2. TRUE 3D DEPTH-DISPLACED CURVED DIORAMA STAGE (240 x 160 High-Density Mesh)
-    //    Displaces every vertex in 3D space using the historical image's Depth Map
-    //    + 12-Step Raymarched Parallax Occlusion + Living River Water + God-Rays!
-    // ---------------------------------------------------------------------------
-    function createCurvedDepthStageGeometry(widthSegs = 240, heightSegs = 160) {
-      const geo = new THREE.PlaneGeometry(16.0, 10.8, widthSegs, heightSegs);
-      const pos = geo.attributes.position;
-      const radius = 12.5;
-      const arcAngle = Math.PI * 0.68; // 122-degree curved IMAX/Dome stage
-
-      for (let i = 0; i < pos.count; i++) {
-        const x = pos.getX(i);
-        const y = pos.getY(i);
-        const u = x / 16.0; // -0.5 to +0.5
-        const theta = u * arcAngle;
-        const curvedX = Math.sin(theta) * radius;
-        const curvedZ = -Math.cos(theta) * radius + (radius - 9.2);
-        pos.setXYZ(i, curvedX, y + SEATED_EYE_HEIGHT + 0.3, curvedZ);
-      }
-      geo.computeVertexNormals();
-      return geo;
+    // Distant Rolling 3D Dartmoor Hills Ring
+    const hillsGroup = new THREE.Group();
+    scene.add(hillsGroup);
+    const hillMat = new THREE.MeshStandardMaterial({ color: 0x263e2c, roughness: 0.92 });
+    for (let i = 0; i < 18; i++) {
+      const angle = (i / 18) * Math.PI * 2;
+      const dist = 52 + (i % 3) * 8;
+      const hillGeo = new THREE.ConeGeometry(18 + (i % 4) * 5, 14 + (i % 3) * 4, 7);
+      const hill = new THREE.Mesh(hillGeo, hillMat);
+      hill.position.set(Math.cos(angle) * dist, 4, Math.sin(angle) * dist);
+      hill.rotation.y = i * 0.7;
+      hillsGroup.add(hill);
     }
 
-    const depthStageGeo = createCurvedDepthStageGeometry(240, 160);
-
-    const depthStageShader = {
-      vertexShader: `
-        uniform sampler2D uTexDepth;
-        uniform float uDepthScale;
-        uniform float uTime;
-        varying vec2 vUv;
-        varying float vDepth;
-        varying vec3 vViewDir;
-
-        void main() {
-          vUv = uv;
-
-          // Sample 5-tap smoothed depth in vertex shader to displace 3D mesh smoothly
-          vec2 texel = vec2(1.0 / 512.0);
-          float dCenter = texture2D(uTexDepth, uv).r;
-          float dLeft   = texture2D(uTexDepth, uv - vec2(texel.x, 0.0)).r;
-          float dRight  = texture2D(uTexDepth, uv + vec2(texel.x, 0.0)).r;
-          float dUp     = texture2D(uTexDepth, uv + vec2(0.0, texel.y)).r;
-          float dDown   = texture2D(uTexDepth, uv - vec2(0.0, texel.y)).r;
-          float depthVal = (dCenter * 2.0 + dLeft + dRight + dUp + dDown) / 6.0;
-          vDepth = depthVal;
-
-          // Taper displacement gently at outer frame edges so the border stays anchored
-          vec2 edgeDist = smoothstep(0.0, 0.08, uv) * (1.0 - smoothstep(0.92, 1.0, uv));
-          float edgeMask = edgeDist.x * edgeDist.y;
-
-          // Displace foreground vertices forward toward the drone camera (up to +5.5 meters!)
-          float displacement = (depthVal - 0.18) * uDepthScale * edgeMask;
-          vec3 displacedPos = position + normal * displacement;
-
-          vec4 mvPosition = modelViewMatrix * vec4(displacedPos, 1.0);
-          vViewDir = normalize(-mvPosition.xyz);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-      fragmentShader: `
-        uniform sampler2D uTexArchive;
-        uniform sampler2D uTexSepia;
-        uniform sampler2D uTexColour;
-        uniform sampler2D uTexDepth;
-        uniform sampler2D uTexVideo;
-        uniform float uMode;        // 0: B&W, 1: Sepia, 2: Colour, 3: Drone MP4, 4: Fly3D, 5: Depth Heatmap
-        uniform float uTargetMode;
-        uniform float uBlend;
-        uniform float uHasVideo;
-        uniform float uDepthScale;
-        uniform float uWaterLevel;
-        uniform float uTime;
-        uniform vec2 uDroneParallax;
-        varying vec2 vUv;
-        varying float vDepth;
-        varying vec3 vViewDir;
-
-        // 10-step Raymarched 3D Parallax Occlusion shift for fine masonry, arches & branches
-        vec2 computeParallaxUv(vec2 baseUv, float depthVal) {
-          float parallaxStrength = 0.016 * (uDepthScale / 3.8);
-          vec2 shift = uDroneParallax * (depthVal - 0.35) * parallaxStrength;
-          vec2 uvP = baseUv - shift;
-
-          // Subtle animated River Tavy / Canal water reflection ripples in lower water zone
-          if (uWaterLevel > 0.01 && (1.0 - baseUv.y) > (1.0 - uWaterLevel)) {
-            float waterFactor = smoothstep(1.0 - uWaterLevel, 1.0, 1.0 - baseUv.y);
-            uvP.x += sin(baseUv.y * 85.0 + uTime * 3.2) * 0.0022 * waterFactor;
-            uvP.y += cos(baseUv.x * 55.0 + uTime * 2.4) * 0.0012 * waterFactor;
-          }
-          return clamp(uvP, 0.002, 0.998);
-        }
-
-        vec3 depthTurboColormap(float x) {
-          float r = clamp(1.5 - abs(4.0 * x - 3.0), 0.0, 1.0);
-          float g = clamp(1.5 - abs(4.0 * x - 2.0), 0.0, 1.0);
-          float b = clamp(1.5 - abs(4.0 * x - 1.0), 0.0, 1.0);
-          return vec3(r, g, b);
-        }
-
-        vec4 getSampleForMode(float mode, vec2 uvCoord, float dVal) {
-          if (mode < 0.5) {
-            return texture2D(uTexArchive, uvCoord);
-          } else if (mode < 1.5) {
-            return texture2D(uTexSepia, uvCoord);
-          } else if (mode < 2.5) {
-            return texture2D(uTexColour, uvCoord);
-          } else if (mode < 3.5) {
-            if (uHasVideo > 0.5) {
-              return texture2D(uTexVideo, uvCoord);
-            }
-            return texture2D(uTexColour, uvCoord);
-          } else if (mode < 4.5) {
-            // 3D Drone Fly-In Living Colour + Volumetric Depth Lighting
-            return texture2D(uTexColour, uvCoord);
-          } else {
-            // 3D Depth Heatmap Inspector
-            return vec4(depthTurboColormap(dVal), 1.0);
-          }
-        }
-
-        void main() {
-          float dFine = texture2D(uTexDepth, vUv).r;
-          vec2 pUv = computeParallaxUv(vUv, dFine);
-
-          vec4 colA = getSampleForMode(uMode, pUv, dFine);
-          vec4 colB = getSampleForMode(uTargetMode, pUv, dFine);
-          vec4 finalCol = mix(colA, colB, clamp(uBlend, 0.0, 1.0));
-
-          // Add subtle volumetric golden sunbeam god-ray & depth relief shading
-          if (uTargetMode < 4.8) {
-            float ray = exp(-pow((pUv.x - 0.35) * 1.6 - (pUv.y - 0.8) * 0.8 + sin(uTime * 0.4) * 0.15, 2.0) / 0.08);
-            vec3 sunTint = vec3(1.0, 0.90, 0.68) * ray * 0.09 * (0.35 + 0.65 * dFine);
-            finalCol.rgb += sunTint;
-
-            // Subtle atmospheric aerial perspective in far distance
-            float farMist = pow(clamp(1.0 - dFine, 0.0, 1.0), 2.4) * 0.10;
-            finalCol.rgb = mix(finalCol.rgb, vec3(0.62, 0.78, 0.88), farMist);
-          }
-
-          // Soft vignette at outer frame boundary
-          vec2 uvCentered = vUv * 2.0 - 1.0;
-          float vignette = 1.0 - smoothstep(0.78, 1.25, length(uvCentered));
-          finalCol.rgb *= mix(0.75, 1.0, vignette);
-
-          gl_FragColor = vec4(finalCol.rgb, 1.0);
-        }
-      `
-    };
-
+    // ---------------------------------------------------------------------------
+    // 2D HISTORICAL PHOTO PORTAL FRAME (Flat, Crisp, Undistorted — Zero Bumps!)
+    // Placed at the entrance of the 3D world so the user sees the original 2D
+    // historical photograph transform & dissolve into the living 3D world!
+    // ---------------------------------------------------------------------------
     const textureLoader = new THREE.TextureLoader();
-    const currentDomeMat = new THREE.ShaderMaterial({
-      uniforms: {
-        uTexArchive: { value: null },
-        uTexSepia: { value: null },
-        uTexColour: { value: null },
-        uTexDepth: { value: null },
-        uTexVideo: { value: null },
-        uMode: { value: 4.0 },
-        uTargetMode: { value: 4.0 },
-        uBlend: { value: 1.0 },
-        uHasVideo: { value: 0.0 },
-        uDepthScale: { value: depthDisplacementMeters },
-        uWaterLevel: { value: 0.36 },
-        uTime: { value: 0.0 },
-        uDroneParallax: { value: new THREE.Vector2(0, 0) }
-      },
-      vertexShader: depthStageShader.vertexShader,
-      fragmentShader: depthStageShader.fragmentShader,
+    const portalGroup = new THREE.Group();
+    portalGroup.position.set(0, 3.6, 8.2);
+    scene.add(portalGroup);
+
+    const portalFrameGeo = new THREE.BoxGeometry(8.6, 6.4, 0.18);
+    const portalFrameMat = new THREE.MeshStandardMaterial({
+      color: 0xc8a258,
+      metalness: 0.65,
+      roughness: 0.32,
+      transparent: true,
+      opacity: 1.0
+    });
+    const portalFrameMesh = new THREE.Mesh(portalFrameGeo, portalFrameMat);
+    portalGroup.add(portalFrameMesh);
+
+    const portalPhotoGeo = new THREE.PlaneGeometry(8.1, 5.95);
+    const portalPhotoMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 1.0,
       side: THREE.DoubleSide
     });
+    const portalPhotoMesh = new THREE.Mesh(portalPhotoGeo, portalPhotoMat);
+    portalPhotoMesh.position.z = 0.11;
+    portalGroup.add(portalPhotoMesh);
 
-    const depthStageMesh = new THREE.Mesh(depthStageGeo, currentDomeMat);
-    scene.add(depthStageMesh);
+    // Curved Panoramic Archival Backdrop Mural (Clean, Untwisted, 28m Behind the 3D Town!)
+    const backdropGeo = new THREE.CylinderGeometry(34, 34, 20, 64, 1, true, Math.PI * 0.68, Math.PI * 0.64);
+    backdropGeo.scale(-1, 1, 1);
+    const backdropMat = new THREE.MeshBasicMaterial({
+      color: 0xd8e2ea,
+      transparent: true,
+      opacity: 0.48,
+      side: THREE.DoubleSide
+    });
+    const backdropMesh = new THREE.Mesh(backdropGeo, backdropMat);
+    backdropMesh.position.set(0, 7.8, 0);
+    scene.add(backdropMesh);
 
-    // Video Texture Player (for Higgsfield / 3D Depth Drone MP4s)
-    const videoEl = document.createElement('video');
-    videoEl.crossOrigin = 'anonymous';
-    videoEl.loop = true;
-    videoEl.muted = true;
-    videoEl.playsInline = true;
-    videoEl.setAttribute('playsinline', '');
-    videoEl.setAttribute('webkit-playsinline', '');
+    // ---------------------------------------------------------------------------
+    // LIVING 3D WORLD BUILDERS (Real 3D Bridges, Steam Trains, Carriages,
+    // Spinning Waterwheels, Flowing Rivers, Birds & Trees!)
+    // ---------------------------------------------------------------------------
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
 
-    const videoTexture = new THREE.VideoTexture(videoEl);
-    videoTexture.colorSpace = THREE.SRGBColorSpace;
-    videoTexture.minFilter = THREE.LinearFilter;
-    currentDomeMat.uniforms.uTexVideo.value = videoTexture;
+    // Shared Materials
+    const stoneGraniteMat = new THREE.MeshStandardMaterial({ color: 0x8d867c, roughness: 0.85 });
+    const darkStoneMat = new THREE.MeshStandardMaterial({ color: 0x5c5750, roughness: 0.9 });
+    const slateRoofMat = new THREE.MeshStandardMaterial({ color: 0x38424c, roughness: 0.72 });
+    const timberMat = new THREE.MeshStandardMaterial({ color: 0x5c3e26, roughness: 0.82 });
+    const foliageMat = new THREE.MeshStandardMaterial({ color: 0x3b6234, roughness: 0.88 });
+    const warmWindowMat = new THREE.MeshBasicMaterial({ color: 0xffd27d });
+    const brassMat = new THREE.MeshStandardMaterial({ color: 0xd4a84f, metalness: 0.75, roughness: 0.25 });
+
+    // Animated 3D Actors Registry (updated at 60fps in render loop)
+    let activeWaterMesh = null;
+    let activeWaterWheel = null;
+    let activeSteamTrain = null;
+    let activeCarriages = [];
+    let activeBirds = [];
+    let activeSmokeParticles = [];
+    let activeTrees = [];
+
+    function createTree3D(x, z, scale = 1.0) {
+      const tree = new THREE.Group();
+      tree.position.set(x, 0, z);
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * scale, 0.28 * scale, 2.2 * scale, 8), timberMat);
+      trunk.position.y = 1.1 * scale;
+      trunk.castShadow = true;
+      tree.add(trunk);
+
+      const crown1 = new THREE.Mesh(new THREE.SphereGeometry(1.45 * scale, 10, 10), foliageMat);
+      crown1.position.y = 2.6 * scale;
+      crown1.castShadow = true;
+      tree.add(crown1);
+
+      const crown2 = new THREE.Mesh(new THREE.SphereGeometry(1.1 * scale, 10, 10), foliageMat);
+      crown2.position.set(0.6 * scale, 3.3 * scale, 0.3 * scale);
+      tree.add(crown2);
+
+      activeTrees.push(tree);
+      return tree;
+    }
+
+    function createFlockOfBirds(count = 14, radius = 12, baseHeight = 7.5) {
+      const flock = new THREE.Group();
+      const wingMat = new THREE.MeshBasicMaterial({ color: 0x1c2833, side: THREE.DoubleSide });
+
+      for (let i = 0; i < count; i++) {
+        const bird = new THREE.Group();
+        const leftWing = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.16), wingMat);
+        leftWing.position.x = -0.21;
+        const rightWing = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.16), wingMat);
+        rightWing.position.x = 0.21;
+        bird.add(leftWing, rightWing);
+
+        bird.userData = {
+          leftWing,
+          rightWing,
+          angle: (i / count) * Math.PI * 2,
+          radius: radius * (0.65 + (i % 5) * 0.14),
+          speed: 0.42 + (i % 4) * 0.08,
+          height: baseHeight + (i % 4) * 1.1,
+          phase: i * 1.3
+        };
+        activeBirds.push(bird);
+        flock.add(bird);
+      }
+      return flock;
+    }
+
+    function createAnimatedRiver(width = 26, length = 54, yPos = 0.18) {
+      const geo = new THREE.PlaneGeometry(width, length, 56, 56);
+      geo.rotateX(-Math.PI / 2);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x2b687c,
+        roughness: 0.22,
+        metalness: 0.35
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.y = yPos;
+      mesh.receiveShadow = true;
+      activeWaterMesh = mesh;
+      return mesh;
+    }
+
+    function createSmokeEmitter(originX, originY, originZ, count = 28) {
+      const group = new THREE.Group();
+      const puffMat = new THREE.MeshStandardMaterial({
+        color: 0xeef3f7,
+        transparent: true,
+        opacity: 0.62,
+        roughness: 1.0
+      });
+      for (let i = 0; i < count; i++) {
+        const puff = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), puffMat.clone());
+        puff.userData = {
+          origin: new THREE.Vector3(originX, originY, originZ),
+          life: i / count,
+          driftX: (Math.random() - 0.5) * 1.2,
+          driftZ: (Math.random() - 0.5) * 1.2
+        };
+        activeSmokeParticles.push(puff);
+        group.add(puff);
+      }
+      return group;
+    }
+
+    function createHorseCarriage3D(pathRadius = 8.5, startAngle = 0) {
+      const carriage = new THREE.Group();
+      // Cabin body
+      const body = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.25, 2.2), timberMat);
+      body.position.y = 1.1;
+      body.castShadow = true;
+      carriage.add(body);
+
+      // Lanterns
+      const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), warmWindowMat);
+      lamp.position.set(0.7, 1.35, 1.0);
+      carriage.add(lamp);
+
+      // 4 Wheels
+      const wheels = [];
+      const wheelGeo = new THREE.CylinderGeometry(0.45, 0.45, 0.12, 14);
+      wheelGeo.rotateZ(Math.PI / 2);
+      [[-0.72, 0.45, 0.75], [0.72, 0.45, 0.75], [-0.72, 0.45, -0.75], [0.72, 0.45, -0.75]].forEach((pos) => {
+        const w = new THREE.Mesh(wheelGeo, brassMat);
+        w.position.set(pos[0], pos[1], pos[2]);
+        carriage.add(w);
+        wheels.push(w);
+      });
+
+      // Horse silhouette ahead of carriage
+      const horse = new THREE.Mesh(new THREE.BoxGeometry(0.65, 1.05, 1.5), darkStoneMat);
+      horse.position.set(0, 0.95, 2.3);
+      horse.castShadow = true;
+      carriage.add(horse);
+
+      carriage.userData = { wheels, angle: startAngle, radius: pathRadius, speed: 0.24 };
+      activeCarriages.push(carriage);
+      return carriage;
+    }
+
+    function buildLiving3DSceneForLandmark(lm) {
+      // Clear previous world actors
+      while (worldGroup.children.length > 0) {
+        worldGroup.remove(worldGroup.children[0]);
+      }
+      activeWaterMesh = null;
+      activeWaterWheel = null;
+      activeSteamTrain = null;
+      activeCarriages = [];
+      activeBirds = [];
+      activeSmokeParticles = [];
+      activeTrees = [];
+
+      // Base Ground Plane
+      const ground = new THREE.Mesh(
+        new THREE.CircleGeometry(65, 48),
+        new THREE.MeshStandardMaterial({ color: lm.ground_col, roughness: 0.92 })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      worldGroup.add(ground);
+
+      // Add Living Flock of Dartmoor Birds to every outdoor scene
+      worldGroup.add(createFlockOfBirds(16, 13.5, 7.2));
+
+      if (lm.id === 'abbey_ruins') {
+        // 1. Flowing River Tavy
+        worldGroup.add(createAnimatedRiver(18, 60, 0.16));
+
+        // 2. 3D Triple-Arch Stone Abbey Bridge spanning the River Tavy
+        const bridgeGroup = new THREE.Group();
+        // Deck & Parapets
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(20, 0.9, 4.2), stoneGraniteMat);
+        deck.position.y = 3.8;
+        deck.castShadow = true;
+        bridgeGroup.add(deck);
+
+        const parapetN = new THREE.Mesh(new THREE.BoxGeometry(20, 0.85, 0.45), stoneGraniteMat);
+        parapetN.position.set(0, 4.5, 1.9);
+        const parapetS = parapetN.clone();
+        parapetS.position.z = -1.9;
+        bridgeGroup.add(parapetN, parapetS);
+
+        // 4 Stone Piers & Cutwaters in the river
+        [-7.5, -2.5, 2.5, 7.5].forEach((px) => {
+          const pier = new THREE.Mesh(new THREE.BoxGeometry(1.5, 3.8, 4.8), darkStoneMat);
+          pier.position.set(px, 1.9, 0);
+          pier.castShadow = true;
+          bridgeGroup.add(pier);
+
+          // Glowing Victorian Bridge Lanterns
+          const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 1.4, 8), darkStoneMat);
+          post.position.set(px, 5.2, 1.9);
+          const lantern = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 10), warmWindowMat);
+          lantern.position.set(px, 5.95, 1.9);
+          bridgeGroup.add(post, lantern);
+        });
+        worldGroup.add(bridgeGroup);
+
+        // 3. Medieval Tavistock Abbey Ruins & Betsy Grimbal's Tower on riverbank
+        const abbeyTower = new THREE.Mesh(new THREE.BoxGeometry(4.2, 8.5, 4.2), stoneGraniteMat);
+        abbeyTower.position.set(-11.5, 4.25, -6.0);
+        abbeyTower.castShadow = true;
+        worldGroup.add(abbeyTower);
+
+        // Riverbanks & Swaying Trees
+        [[-10, 5], [-11, -2], [-9.5, 11], [10, 4], [11.5, -4], [9.8, 10]].forEach(([tx, tz], i) => {
+          worldGroup.add(createTree3D(tx, tz, 1.15 + (i % 3) * 0.25));
+        });
+
+      } else if (lm.id === 'pannier_market') {
+        // 1. Bedford Square Cobblestone Plaza
+        const plaza = new THREE.Mesh(
+          new THREE.CircleGeometry(22, 36),
+          new THREE.MeshStandardMaterial({ color: 0x4b4741, roughness: 0.88 })
+        );
+        plaza.rotation.x = -Math.PI / 2;
+        plaza.position.y = 0.04;
+        plaza.receiveShadow = true;
+        worldGroup.add(plaza);
+
+        // 2. 3D Gothic-Revival Tavistock Town Hall & Clock Tower
+        const townHall = new THREE.Mesh(new THREE.BoxGeometry(11, 7.5, 6.5), stoneGraniteMat);
+        townHall.position.set(-7.5, 3.75, -8.5);
+        townHall.castShadow = true;
+        worldGroup.add(townHall);
+
+        const clockTower = new THREE.Mesh(new THREE.BoxGeometry(3.6, 13.5, 3.6), stoneGraniteMat);
+        clockTower.position.set(-1.5, 6.75, -8.0);
+        clockTower.castShadow = true;
+        worldGroup.add(clockTower);
+
+        // Glowing Clock Face & Windows
+        const clockFace = new THREE.Mesh(new THREE.CircleGeometry(0.95, 24), warmWindowMat);
+        clockFace.position.set(-1.5, 10.5, -6.18);
+        worldGroup.add(clockFace);
+
+        // 3. Covered Pannier Market Hall & Guildhall on opposite side
+        const marketHall = new THREE.Mesh(new THREE.BoxGeometry(12, 6.2, 7.5), stoneGraniteMat);
+        marketHall.position.set(8.5, 3.1, -5.0);
+        marketHall.castShadow = true;
+        worldGroup.add(marketHall);
+
+        const marketRoof = new THREE.Mesh(new THREE.ConeGeometry(8.2, 3.2, 4), slateRoofMat);
+        marketRoof.position.set(8.5, 7.8, -5.0);
+        marketRoof.rotation.y = Math.PI / 4;
+        worldGroup.add(marketRoof);
+
+        // 4. Moving 3D Victorian Horse-Drawn Carriages orbiting Bedford Square
+        worldGroup.add(createHorseCarriage3D(6.8, 0));
+        worldGroup.add(createHorseCarriage3D(6.8, Math.PI));
+
+        // Trees around perimeter
+        [[-13, 5], [13, 6], [-11, 10], [11, 10]].forEach(([tx, tz]) => {
+          worldGroup.add(createTree3D(tx, tz, 1.1));
+        });
+
+      } else if (lm.id === 'st_eustachius' || lm.id === 'steam_railway') {
+        // 1. Towering 3D Multi-Arch Granite Tavistock Railway Viaduct
+        const viaductGroup = new THREE.Group();
+        viaductGroup.position.z = -5.5;
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(36, 1.2, 3.2), stoneGraniteMat);
+        deck.position.y = 8.4;
+        deck.castShadow = true;
+        viaductGroup.add(deck);
+
+        for (let px = -15; px <= 15; px += 5) {
+          const pier = new THREE.Mesh(new THREE.BoxGeometry(1.4, 8.2, 3.4), darkStoneMat);
+          pier.position.set(px, 4.1, 0);
+          pier.castShadow = true;
+          viaductGroup.add(pier);
+        }
+        worldGroup.add(viaductGroup);
+
+        // 2. Living 3D Steam Locomotive & Carriages Chugging Across the Viaduct!
+        const trainGroup = new THREE.Group();
+        trainGroup.position.set(-12, 9.0, -5.5);
+
+        const boiler = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.65, 0.65, 3.4, 16),
+          new THREE.MeshStandardMaterial({ color: 0x1d4d2b, metalness: 0.4, roughness: 0.4 })
+        );
+        boiler.rotation.z = Math.PI / 2;
+        boiler.position.y = 0.85;
+        trainGroup.add(boiler);
+
+        const cab = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.6, 1.4), darkStoneMat);
+        cab.position.set(-1.9, 1.0, 0);
+        trainGroup.add(cab);
+
+        const funnel = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 0.8, 12), brassMat);
+        funnel.position.set(1.2, 1.6, 0);
+        trainGroup.add(funnel);
+
+        // 2 Passenger Coaches behind locomotive
+        for (let c = 1; c <= 2; c++) {
+          const coach = new THREE.Mesh(
+            new THREE.BoxGeometry(3.6, 1.45, 1.35),
+            new THREE.MeshStandardMaterial({ color: 0x6b2d26, roughness: 0.5 })
+          );
+          coach.position.set(-1.9 - c * 4.1, 0.95, 0);
+          trainGroup.add(coach);
+        }
+
+        // Volumetric Steam Puffs Trailing from Locomotive Funnel
+        trainGroup.add(createSmokeEmitter(1.2, 2.1, 0, 26));
+        activeSteamTrain = trainGroup;
+        worldGroup.add(trainGroup);
+
+        // 3. 3D St Eustachius Parish Church & 14th-Century Tower in Foreground Valley
+        const churchNave = new THREE.Mesh(new THREE.BoxGeometry(7.5, 4.8, 4.2), stoneGraniteMat);
+        churchNave.position.set(-6.0, 2.4, 4.8);
+        churchNave.castShadow = true;
+        worldGroup.add(churchNave);
+
+        const churchTower = new THREE.Mesh(new THREE.BoxGeometry(3.2, 10.5, 3.2), stoneGraniteMat);
+        churchTower.position.set(-10.2, 5.25, 4.8);
+        churchTower.castShadow = true;
+        worldGroup.add(churchTower);
+
+        [[-14, -1], [8, 4], [11, 2], [-3, 10], [6, 9]].forEach(([tx, tz]) => {
+          worldGroup.add(createTree3D(tx, tz, 1.2));
+        });
+
+      } else if (lm.id === 'canal_wharf' || lm.id === 'endsleigh_cottage') {
+        // 1. Flowing Mill Leat Stream
+        worldGroup.add(createAnimatedRiver(9.5, 50, 0.18));
+
+        // 2. 3D 1824 Stone & Timber Cloth Mill / Cottage
+        const millBuilding = new THREE.Mesh(new THREE.BoxGeometry(7.5, 5.4, 5.8), stoneGraniteMat);
+        millBuilding.position.set(-6.2, 2.7, -1.5);
+        millBuilding.castShadow = true;
+        worldGroup.add(millBuilding);
+
+        const millRoof = new THREE.Mesh(new THREE.ConeGeometry(6.2, 3.0, 4), slateRoofMat);
+        millRoof.position.set(-6.2, 6.9, -1.5);
+        millRoof.rotation.y = Math.PI / 4;
+        worldGroup.add(millRoof);
+
+        // Curling Chimney Smoke
+        worldGroup.add(createSmokeEmitter(-6.2, 8.4, -1.5, 24));
+
+        // 3. Giant Rotating 3D Wooden Waterwheel turning in the Mill Leat!
+        const wheelGroup = new THREE.Group();
+        wheelGroup.position.set(-2.25, 2.5, -1.5);
+
+        const rimOuter = new THREE.Mesh(new THREE.TorusGeometry(2.1, 0.16, 12, 32), timberMat);
+        rimOuter.rotation.y = Math.PI / 2;
+        wheelGroup.add(rimOuter);
+
+        // 12 Wooden Paddles / Spokes
+        for (let s = 0; s < 12; s++) {
+          const angle = (s / 12) * Math.PI * 2;
+          const paddle = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.14, 4.1), timberMat);
+          paddle.rotation.x = angle;
+          wheelGroup.add(paddle);
+        }
+        activeWaterWheel = wheelGroup;
+        worldGroup.add(wheelGroup);
+
+        [[-11, 5], [7, -4], [8, 5], [6, 10], [-10, -8]].forEach(([tx, tz]) => {
+          worldGroup.add(createTree3D(tx, tz, 1.3));
+        });
+
+      } else {
+        // Abbey Mead / Sir Francis Drake Monument 3D Scene
+        const plinth = new THREE.Mesh(new THREE.BoxGeometry(3.4, 4.8, 3.4), stoneGraniteMat);
+        plinth.position.set(0, 2.4, 0);
+        plinth.castShadow = true;
+        worldGroup.add(plinth);
+
+        const statue = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.65, 0.85, 3.6, 16),
+          new THREE.MeshStandardMaterial({ color: 0x8c683a, metalness: 0.78, roughness: 0.28 })
+        );
+        statue.position.set(0, 6.6, 0);
+        statue.castShadow = true;
+        worldGroup.add(statue);
+
+        worldGroup.add(createHorseCarriage3D(8.5, 0));
+        [[-9, -5], [9, -5], [-10, 6], [10, 6]].forEach(([tx, tz]) => {
+          worldGroup.add(createTree3D(tx, tz, 1.25));
+        });
+      }
+    }
 
     // Interactive 3D Hotspot Anchors
     const hotspotGroup = new THREE.Group();
     scene.add(hotspotGroup);
     const gazeTargets = [];
 
-    function buildHotspotBeacon(hotspot) {
-      const anchor = new THREE.Group();
-      const pos = Array.isArray(hotspot.position) ? hotspot.position : [0, 1.3, -5.0];
-      anchor.position.set(pos[0], pos[1], pos[2]);
-
-      const ringGeo = new THREE.RingGeometry(0.16, 0.22, 32);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: 0x4ca8b8,
-        transparent: true,
-        opacity: 0.78,
-        side: THREE.DoubleSide
-      });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      anchor.add(ring);
-
-      const coreGeo = new THREE.SphereGeometry(0.08, 16, 16);
-      const coreMat = new THREE.MeshBasicMaterial({ color: 0xe6c88b });
-      const core = new THREE.Mesh(coreGeo, coreMat);
-      anchor.add(core);
-
-      core.userData.hotspot = hotspot;
-      gazeTargets.push(core);
-      anchor.userData.ring = ring;
-      return anchor;
-    }
-
     function updateHotspotsForLandmark(landmark) {
-      while (hotspotGroup.children.length > 0) {
-        hotspotGroup.remove(hotspotGroup.children[0]);
-      }
+      while (hotspotGroup.children.length > 0) hotspotGroup.remove(hotspotGroup.children[0]);
       gazeTargets.length = 0;
       if (!landmark.hotspots) return;
-      landmark.hotspots.forEach(h => {
-        const beacon = buildHotspotBeacon(h);
-        hotspotGroup.add(beacon);
-      });
-    }
 
-    // Material & Landmark Loading Manager
-    const landmarkTextures = {};
+      landmark.hotspots.forEach((h) => {
+        const anchor = new THREE.Group();
+        anchor.position.set(h.position[0], h.position[1], h.position[2]);
 
-    function loadTextureSafe(url, isLinear = false) {
-      return new Promise((resolve) => {
-        textureLoader.load(
-          url,
-          (tex) => {
-            tex.colorSpace = isLinear ? THREE.NoColorSpace : THREE.SRGBColorSpace;
-            tex.minFilter = THREE.LinearFilter;
-            tex.magFilter = THREE.LinearFilter;
-            resolve(tex);
-          },
-          undefined,
-          () => {
-            console.warn('Fallback texture used for:', url);
-            resolve(null);
-          }
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(0.24, 0.34, 32),
+          new THREE.MeshBasicMaterial({ color: 0x4ca8b8, transparent: true, opacity: 0.82, side: THREE.DoubleSide })
         );
+        const core = new THREE.Mesh(
+          new THREE.SphereGeometry(0.14, 16, 16),
+          new THREE.MeshBasicMaterial({ color: 0xe6c88b })
+        );
+        core.userData.hotspot = h;
+        gazeTargets.push(core);
+        anchor.add(ring, core);
+        anchor.userData.ring = ring;
+        hotspotGroup.add(anchor);
       });
     }
 
-    // Real-time Browser Depth Estimator for User-Uploaded Custom Photos
-    function generateDepthTextureFromImage(imgEl) {
-      const c = document.createElement('canvas');
-      c.width = 512;
-      c.height = 384;
-      const ctx = c.getContext('2d');
-      ctx.drawImage(imgEl, 0, 0, c.width, c.height);
-      const imgData = ctx.getImageData(0, 0, c.width, c.height);
-      const d = imgData.data;
+    // ---------------------------------------------------------------------------
+    // 2D Photo -> 3D Living World Portal Transition Controller
+    // ---------------------------------------------------------------------------
+    let currentLandmarkIndex = -1;
+    let droneFlightMode = 'orbit3d'; // 'orbit3d' | 'flythrough' | 'portal2d'
+    let motionSpeed = 0.8;
+    let portalMorphProgress = 1.0; // 0.0 = Viewing flat 2D Photo Portal, 1.0 = Full Living 3D World Orbit
+    let isReplayingPortal = false;
+    let portalAnimStartMs = 0;
 
-      for (let y = 0; y < c.height; y++) {
-        const yn = y / c.height;
-        const groundRamp = Math.pow(Math.max(0, (yn - 0.1) / 0.9), 1.15);
-        for (let x = 0; x < c.width; x++) {
-          const xn = x / c.width;
-          const idx = (y * c.width + x) * 4;
-          const lum = (d[idx] * 0.299 + d[idx + 1] * 0.587 + d[idx + 2] * 0.114) / 255;
-          const radial = Math.sqrt(Math.pow(xn - 0.5, 2) + Math.pow(yn - 0.52, 2));
-          const skyMask = Math.max(0, 1 - yn * 1.9) * Math.max(0, (lum - 0.5) / 0.4);
-          let depth = (0.48 * groundRamp + 0.28 * radial + 0.24 * (1 - lum)) * (1 - 0.9 * skyMask);
-          const v = Math.max(0, Math.min(255, Math.round(depth * 255)));
-          d[idx] = d[idx + 1] = d[idx + 2] = v;
-          d[idx + 3] = 255;
-        }
-      }
-      ctx.putImageData(imgData, 0, 0);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      return tex;
+    function applyPortalMorphState(morphVal) {
+      portalMorphProgress = Math.max(0, Math.min(1, morphVal));
+      const pct = Math.round(portalMorphProgress * 100);
+      portalMorphSlider.value = String(pct);
+      portalMorphLabel.textContent = pct === 0 ? '2D Photo' : `${pct}% 3D`;
+
+      // As morph goes from 0 (2D photo) -> 1 (Living 3D World), the 2D photo frame dissolves open
+      const frameOpacity = Math.max(0.0, 1.0 - portalMorphProgress * 1.15);
+      portalPhotoMat.opacity = frameOpacity;
+      portalFrameMat.opacity = frameOpacity;
+      portalGroup.visible = frameOpacity > 0.02;
     }
 
-    async function switchLandmark(index, force = false) {
-      if (!TAVISTOCK_PLATES[index]) return;
-      if (currentLandmarkIndex === index && !force) return;
-      currentLandmarkIndex = index;
+    function trigger2Dto3DPortalTransition() {
+      isReplayingPortal = true;
+      portalAnimStartMs = performance.now();
+      applyPortalMorphState(0.0);
+    }
 
-      const lm = TAVISTOCK_PLATES[index];
+    replayPortalBtn.addEventListener('click', () => {
+      ensureAudioContext();
+      trigger2Dto3DPortalTransition();
+    });
+
+    pipPhotoCard.addEventListener('click', () => {
+      ensureAudioContext();
+      trigger2Dto3DPortalTransition();
+    });
+
+    portalMorphSlider.addEventListener('input', () => {
+      isReplayingPortal = false;
+      const val = parseFloat(portalMorphSlider.value) / 100.0;
+      applyPortalMorphState(val);
+    });
+
+    function switchLandmark(index, playPortal = true) {
+      if (!TAVISTOCK_SCENES[index]) return;
+      currentLandmarkIndex = index;
+      const lm = TAVISTOCK_SCENES[index];
+
       landmarkBtns.forEach((btn, i) => btn.classList.toggle('active', i === index));
       narrationTextEl.textContent = lm.narration;
-      promptIndexEl.textContent = `${index + 1} / ${TAVISTOCK_PLATES.length}`;
+      promptIndexEl.textContent = `${index + 1} / ${TAVISTOCK_SCENES.length}`;
       flowActiveLandmark.textContent = `${lm.name} (${lm.era})`;
       higgsfieldPromptBox.textContent = lm.higgsfield_prompt;
-      downloadSourcePlateBtn.href = lm.living_colour;
-      flowPathBox.textContent = `3D Depth Map: ${lm.depth_map} | Drone MP4: ${lm.drone_mp4}`;
+      downloadSourcePlateBtn.href = lm.photo_colour;
+      pipPhotoImg.src = lm.photo_bw;
+      pipPhotoTitle.textContent = `${lm.era} Archive Photo`;
+      sceneStatusText.textContent = `${lm.name} · Living 3D World`;
 
-      sceneStatusText.textContent = `Loading 3D Depth · ${lm.name}…`;
+      skyMat.uniforms.uTopColor.value.setHex(lm.sky_top);
+      skyMat.uniforms.uHorizonColor.value.setHex(lm.sky_horizon);
 
-      if (!landmarkTextures[lm.id]) {
-        const [archiveTex, sepiaTex, colourTex, depthTex] = await Promise.all([
-          loadTextureSafe(lm.archive_bw, false),
-          loadTextureSafe(lm.sepia, false),
-          loadTextureSafe(lm.living_colour, false),
-          loadTextureSafe(lm.depth_map, true)
-        ]);
-        landmarkTextures[lm.id] = {
-          archiveTex,
-          sepiaTex: sepiaTex || archiveTex,
-          colourTex: colourTex || archiveTex,
-          depthTex
-        };
-      }
+      // Load clean, undistorted 2D Historical Photo into the 2D Portal Frame & Archival Backdrop
+      textureLoader.load(lm.photo_colour, (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        portalPhotoMat.map = tex;
+        portalPhotoMat.needsUpdate = true;
+        backdropMat.map = tex;
+        backdropMat.needsUpdate = true;
+      });
 
-      const texSet = landmarkTextures[lm.id];
-      currentDomeMat.uniforms.uTexArchive.value = texSet.archiveTex;
-      currentDomeMat.uniforms.uTexSepia.value = texSet.sepiaTex;
-      currentDomeMat.uniforms.uTexColour.value = texSet.colourTex;
-      currentDomeMat.uniforms.uTexDepth.value = texSet.depthTex;
-      currentDomeMat.uniforms.uWaterLevel.value = lm.water_level || 0.0;
-      bgSphereMat.uniforms.uTexColour.value = texSet.colourTex;
-
-      checkAndAttachDroneVideo(lm);
+      buildLiving3DSceneForLandmark(lm);
       updateHotspotsForLandmark(lm);
-
-      sceneStatusDot.classList.add('ready');
-      sceneStatusText.textContent = `${lm.name} (${lm.era}) · 3D Depth Active`;
       loadingVeil.classList.add('hidden');
-    }
 
-    function checkAndAttachDroneVideo(lm) {
-      videoEl.pause();
-      currentDomeMat.uniforms.uHasVideo.value = 0.0;
-
-      if (!lm || !lm.drone_mp4 || lm.drone_video_ready !== true) {
-        flowVideoStatus.textContent = 'Real-Time 3D Depth Drone Flight Active';
-        return;
-      }
-
-      videoEl.src = lm.drone_mp4;
-      videoEl.load();
-      videoEl.play().then(() => {
-        currentDomeMat.uniforms.uHasVideo.value = 1.0;
-        flowVideoStatus.textContent = '3D Depth Mesh + Drone MP4 Active';
-      }).catch(() => {
-        currentDomeMat.uniforms.uHasVideo.value = 0.0;
-        flowVideoStatus.textContent = 'Real-Time 3D Depth Drone Flight Active';
-      });
-    }
-
-    // Visual Mode Switching with Smooth Shader Crossfade
-    let isTransitioningMode = false;
-    let transitionStartTime = 0;
-    const TRANSITION_DURATION = 0.9;
-    const modeMap = { bw: 0.0, sepia: 1.0, colour: 2.0, drone: 3.0, fly3d: 4.0, depthmap: 5.0 };
-
-    function setVisualMode(mode) {
-      if (currentVisualMode === mode && !isTransitioningMode) return;
-      const targetModeVal = modeMap[mode] !== undefined ? modeMap[mode] : 4.0;
-
-      modeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
-
-      currentDomeMat.uniforms.uMode.value = modeMap[currentVisualMode] !== undefined ? modeMap[currentVisualMode] : 4.0;
-      currentDomeMat.uniforms.uTargetMode.value = targetModeVal;
-      currentDomeMat.uniforms.uBlend.value = 0.0;
-      transitionStartTime = performance.now();
-      isTransitioningMode = true;
-      currentVisualMode = mode;
-
-      if (mode === 'drone' && currentDomeMat.uniforms.uHasVideo.value > 0.5) {
-        videoEl.play().catch(() => {});
+      if (playPortal) {
+        trigger2Dto3DPortalTransition();
+      } else {
+        applyPortalMorphState(1.0);
       }
     }
 
-    // Depth Relief Slider Handler
-    depthRangeInput.addEventListener('input', () => {
-      depthDisplacementMeters = parseFloat(depthRangeInput.value);
-      depthValueLabel.textContent = `${depthDisplacementMeters.toFixed(1)}m`;
-      currentDomeMat.uniforms.uDepthScale.value = depthDisplacementMeters;
-    });
-
-    // Copy Higgsfield Prompt Handler
-    copyPromptBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(higgsfieldPromptBox.textContent.trim()).then(() => {
-        copyPromptBtn.textContent = '✓ Copied Prompt!';
-        setTimeout(() => { copyPromptBtn.textContent = '📋 Copy Higgsfield Prompt'; }, 2000);
-      });
-    });
-
-    // Upload / Test Custom Higgsfield MP4 or Historical Photo Live in 3D
-    testCustomFileBtn.addEventListener('click', () => higgsfieldFileInput.click());
-    uploadHiggsfieldModalBtn.addEventListener('click', () => higgsfieldFileInput.click());
-
-    higgsfieldFileInput.addEventListener('change', (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      const objUrl = URL.createObjectURL(file);
-
-      if (file.type.startsWith('video/')) {
-        videoEl.src = objUrl;
-        videoEl.load();
-        videoEl.play().then(() => {
-          currentDomeMat.uniforms.uHasVideo.value = 1.0;
-          setVisualMode('drone');
-          sceneStatusText.textContent = `Custom Higgsfield Video: ${file.name}`;
-          flowVideoStatus.textContent = `Playing Custom Clip: ${file.name}`;
-        });
-      } else if (file.type.startsWith('image/')) {
-        const img = new Image();
-        img.onload = () => {
-          const customTex = new THREE.Texture(img);
-          customTex.colorSpace = THREE.SRGBColorSpace;
-          customTex.needsUpdate = true;
-          const customDepth = generateDepthTextureFromImage(img);
-
-          currentDomeMat.uniforms.uTexArchive.value = customTex;
-          currentDomeMat.uniforms.uTexSepia.value = customTex;
-          currentDomeMat.uniforms.uTexColour.value = customTex;
-          currentDomeMat.uniforms.uTexDepth.value = customDepth;
-          bgSphereMat.uniforms.uTexColour.value = customTex;
-          setVisualMode('fly3d');
-          sceneStatusText.textContent = `Custom 3D Depth Photo: ${file.name}`;
-        };
-        img.src = objUrl;
-      }
-    });
-
-    // Landmark Selection Event Listeners
     landmarkBtns.forEach((btn, idx) => {
       btn.addEventListener('click', () => {
         ensureAudioContext();
-        switchLandmark(idx);
+        switchLandmark(idx, true);
       });
     });
 
-    modeBtns.forEach(btn => {
+    modeBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         ensureAudioContext();
-        setVisualMode(btn.dataset.mode);
+        modeBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        droneFlightMode = btn.dataset.mode;
+        if (droneFlightMode === 'portal2d') {
+          isReplayingPortal = false;
+          applyPortalMorphState(0.0);
+        } else if (portalMorphProgress < 0.5) {
+          trigger2Dto3DPortalTransition();
+        }
       });
     });
 
-    speedBtns.forEach(btn => {
+    speedBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         ensureAudioContext();
-        speedBtns.forEach(b => b.classList.remove('active'));
+        speedBtns.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
         motionSpeed = parseFloat(btn.dataset.speed);
       });
@@ -1881,108 +1863,61 @@
 
     nextPromptBtn.addEventListener('click', () => {
       ensureAudioContext();
-      const nextIdx = (currentLandmarkIndex + 1) % TAVISTOCK_PLATES.length;
-      switchLandmark(nextIdx);
+      switchLandmark((currentLandmarkIndex + 1) % TAVISTOCK_SCENES.length, true);
     });
 
-    // Hygiene & Higgsfield Studio Popover Controls
-    function updateHygieneCount() {
-      const checked = hygieneChecks.filter(c => c.checked).length;
-      hygieneBadgeLabel.textContent = `Hygiene · ${checked}/${hygieneChecks.length}`;
-    }
-    hygieneChecks.forEach(c => c.addEventListener('change', updateHygieneCount));
+    copyPromptBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(higgsfieldPromptBox.textContent.trim()).then(() => {
+        copyPromptBtn.textContent = '✓ Copied!';
+        setTimeout(() => { copyPromptBtn.textContent = '📋 Copy Higgsfield Prompt'; }, 2000);
+      });
+    });
+
+    testCustomFileBtn.addEventListener('click', () => higgsfieldFileInput.click());
+    higgsfieldFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      if (file.type.startsWith('video/')) {
+        const v = document.createElement('video');
+        v.src = url;
+        v.loop = true;
+        v.muted = true;
+        v.playsInline = true;
+        v.play();
+        const vt = new THREE.VideoTexture(v);
+        vt.colorSpace = THREE.SRGBColorSpace;
+        portalPhotoMat.map = vt;
+        backdropMat.map = vt;
+        backdropMat.opacity = 0.92;
+        sceneStatusText.textContent = `Live Higgsfield Video: ${file.name}`;
+      } else if (file.type.startsWith('image/')) {
+        textureLoader.load(url, (tex) => {
+          tex.colorSpace = THREE.SRGBColorSpace;
+          portalPhotoMat.map = tex;
+          backdropMat.map = tex;
+          pipPhotoImg.src = url;
+          trigger2Dto3DPortalTransition();
+        });
+      }
+    });
 
     hygieneBtn.addEventListener('click', () => {
       flowPopover.classList.remove('open');
-      flowBtn.setAttribute('aria-expanded', 'false');
-      const open = hygienePopover.classList.toggle('open');
-      hygieneBtn.setAttribute('aria-expanded', String(open));
+      hygienePopover.classList.toggle('open');
     });
-
-    hygieneCloseBtn.addEventListener('click', () => {
-      hygienePopover.classList.remove('open');
-      hygieneBtn.setAttribute('aria-expanded', 'false');
-    });
-
+    hygieneCloseBtn.addEventListener('click', () => hygienePopover.classList.remove('open'));
     flowBtn.addEventListener('click', () => {
       hygienePopover.classList.remove('open');
-      hygieneBtn.setAttribute('aria-expanded', 'false');
-      const open = flowPopover.classList.toggle('open');
-      flowBtn.setAttribute('aria-expanded', String(open));
+      flowPopover.classList.toggle('open');
     });
+    flowCloseBtn.addEventListener('click', () => flowPopover.classList.remove('open'));
 
-    flowCloseBtn.addEventListener('click', () => {
-      flowPopover.classList.remove('open');
-      flowBtn.setAttribute('aria-expanded', 'false');
-    });
-
-    // iPad / Lounge TV Fullscreen Co-View Toggle
     coViewBtn.addEventListener('click', async () => {
-      ensureAudioContext();
       const entering = !document.body.classList.contains('coview-clean');
       document.body.classList.toggle('coview-clean', entering);
       coViewBtn.classList.toggle('active', entering);
-      coViewBtn.setAttribute('aria-pressed', String(entering));
       coViewBtn.querySelector('span').textContent = entering ? 'Exit Co-View' : 'iPad / TV Co-View';
-
-      try {
-        if (entering && !document.fullscreenElement && document.documentElement.requestFullscreen) {
-          await document.documentElement.requestFullscreen();
-        } else if (!entering && document.fullscreenElement && document.exitFullscreen) {
-          await document.exitFullscreen();
-        }
-      } catch (_) {}
-    });
-
-    // WebXR VR Launcher
-    let activeXrSession = null;
-    async function initWebXRButton() {
-      if (!('xr' in navigator)) {
-        enterVrBtn.title = 'WebXR not available — open on Meta Quest or Pico browser';
-        return;
-      }
-      try {
-        const supported = await navigator.xr.isSessionSupported('immersive-vr');
-        if (supported) {
-          enterVrBtn.classList.add('vr-ready');
-          enterVrBtn.querySelector('span').textContent = 'Enter VR (Quest / Pico)';
-        }
-      } catch (_) {}
-    }
-    initWebXRButton();
-
-    enterVrBtn.addEventListener('click', async () => {
-      ensureAudioContext();
-      if (activeXrSession) {
-        await activeXrSession.end();
-        return;
-      }
-      if (!('xr' in navigator)) {
-        sceneStatusText.textContent = 'Open in Quest / Pico Browser for VR';
-        return;
-      }
-      try {
-        const supported = await navigator.xr.isSessionSupported('immersive-vr');
-        if (!supported) {
-          sceneStatusText.textContent = 'No VR Headset · 3D Drone Co-View Active';
-          return;
-        }
-        const session = await navigator.xr.requestSession('immersive-vr', {
-          optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
-        });
-        activeXrSession = session;
-        xrReticle.visible = true;
-        enterVrBtn.querySelector('span').textContent = 'Exit VR';
-        session.addEventListener('end', () => {
-          activeXrSession = null;
-          xrReticle.visible = false;
-          enterVrBtn.querySelector('span').textContent = 'Enter VR (Quest / Pico)';
-        });
-        await renderer.xr.setSession(session);
-      } catch (err) {
-        console.error('WebXR session error:', err);
-        sceneStatusText.textContent = 'VR Session Unavailable';
-      }
     });
 
     // 2.0s Head-Gaze Dwell Raycaster
@@ -1995,9 +1930,7 @@
 
     function updateGazeDwell(nowMs) {
       if (gazeTargets.length === 0) return;
-
-      const activeCamera = renderer.xr.isPresenting ? renderer.xr.getCamera() : camera;
-      raycaster.setFromCamera(centerNDC, activeCamera);
+      raycaster.setFromCamera(centerNDC, camera);
       const hits = raycaster.intersectObjects(gazeTargets, false);
 
       if (hits.length > 0) {
@@ -2008,17 +1941,14 @@
             currentGazeObject = hitObj;
             dwellStartMs = nowMs;
             triggeredCurrentDwell = false;
-            gazeTitle.textContent = hotspot.name || hotspot.title || 'Tavistock Landmark';
-            gazeYear.textContent = hotspot.year || '';
+            gazeTitle.textContent = hotspot.name;
+            gazeYear.textContent = hotspot.year;
             gazeCard.classList.add('visible');
             gazeRing.classList.add('active');
             gazeRing.classList.remove('complete');
           }
-
-          const elapsed = nowMs - dwellStartMs;
-          const progress = Math.min(elapsed / GAZE_DWELL_MS, 1.0);
+          const progress = Math.min((nowMs - dwellStartMs) / GAZE_DWELL_MS, 1.0);
           gazeProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1.0 - progress));
-
           if (progress >= 1.0 && !triggeredCurrentDwell) {
             triggeredCurrentDwell = true;
             gazeRing.classList.add('complete');
@@ -2030,11 +1960,8 @@
           return;
         }
       }
-
       if (currentGazeObject !== null) {
         currentGazeObject = null;
-        dwellStartMs = 0;
-        triggeredCurrentDwell = false;
         gazeProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
         gazeCard.classList.remove('visible');
         gazeRing.classList.remove('active', 'complete');
@@ -2048,86 +1975,146 @@
     });
 
     // ---------------------------------------------------------------------------
-    // Main Render Loop: 6-DoF Autonomous Drone Camera Flying INTO the 3D Photo
+    // Main 60fps Loop: Animate All 3D Actors (Trains, Waterwheels, Carriages,
+    // Flowing River, Birds, Smoke) & Fly 3D Drone Camera Around the World!
     // ---------------------------------------------------------------------------
     const clock = new THREE.Clock();
-    let droneFlightPhase = 0;
+    let droneAngle = 0;
 
     renderer.setAnimationLoop(() => {
       const delta = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.getElapsedTime();
       const nowMs = performance.now();
 
-      // Shader Mode Transition
-      if (isTransitioningMode) {
-        const elapsedSec = (nowMs - transitionStartTime) / 1000;
-        const blend = Math.min(elapsedSec / TRANSITION_DURATION, 1.0);
-        const smoothBlend = blend * blend * (3.0 - 2.0 * blend);
-        currentDomeMat.uniforms.uBlend.value = smoothBlend;
-
-        if (blend >= 1.0) {
-          currentDomeMat.uniforms.uMode.value = currentDomeMat.uniforms.uTargetMode.value;
-          currentDomeMat.uniforms.uBlend.value = 1.0;
-          isTransitioningMode = false;
-        }
+      // 1. Update 2D Photo -> 3D Living World Portal Transition (3.2s smooth fly-through)
+      if (isReplayingPortal) {
+        const t = Math.min(1.0, (nowMs - portalAnimStartMs) / 3200.0);
+        const smooth = t * t * (3.0 - 2.0 * t);
+        applyPortalMorphState(smooth);
+        if (t >= 1.0) isReplayingPortal = false;
       }
 
-      currentDomeMat.uniforms.uTime.value += delta;
+      // 2. Animate 3D Flowing River Tavy Water Waves
+      if (activeWaterMesh) {
+        const pos = activeWaterMesh.geometry.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i);
+          const z = pos.getZ(i);
+          pos.setY(i, Math.sin(x * 0.9 + elapsed * 2.8) * 0.11 + Math.cos(z * 0.6 + elapsed * 2.2) * 0.09);
+        }
+        pos.needsUpdate = true;
+        activeWaterMesh.geometry.computeVertexNormals();
+      }
 
-      // Autonomous 3D Drone Camera Fly-Through Trajectory (flies into the 3D depth-displaced photo)
-      if (motionSpeed > 0 && !renderer.xr.isPresenting) {
-        droneFlightPhase += delta * 0.34 * motionSpeed;
+      // 3. Animate Spinning 3D 1824 Wooden Waterwheel
+      if (activeWaterWheel) {
+        activeWaterWheel.rotation.x -= delta * 1.15;
+      }
 
-        // Smooth forward-and-through dolly cycle: Z moves from +3.4m deep into -2.6m inside the 3D stage
-        const forwardWave = 0.5 - 0.5 * Math.cos(droneFlightPhase);
-        const droneZ = 3.2 - forwardWave * 5.6; // +3.2m -> -2.4m (5.6m of physical 3D forward travel!)
-        const droneX = Math.sin(droneFlightPhase * 0.85) * 1.45;
-        const droneY = SEATED_EYE_HEIGHT + 0.15 + Math.sin(droneFlightPhase * 1.35) * 0.42;
+      // 4. Animate Chugging 3D Steam Train Across Tavistock Viaduct
+      if (activeSteamTrain) {
+        activeSteamTrain.position.x += delta * 2.4;
+        if (activeSteamTrain.position.x > 16.0) activeSteamTrain.position.x = -16.0;
+      }
 
-        cameraRig.position.set(droneX, droneY, droneZ);
-        // Subtle FPV drone horizon banking
-        cameraRig.rotation.z = -Math.cos(droneFlightPhase * 0.85) * 0.022;
-        cameraRig.rotation.y = Math.sin(droneFlightPhase * 0.45) * 0.045;
+      // 5. Animate Moving 3D Victorian Horse-Drawn Carriages & Spinning Wheels
+      activeCarriages.forEach((c) => {
+        c.userData.angle += delta * c.userData.speed;
+        const a = c.userData.angle;
+        const r = c.userData.radius;
+        c.position.set(Math.cos(a) * r, 0, Math.sin(a) * r);
+        c.rotation.y = -a;
+        c.userData.wheels.forEach((w) => { w.rotation.x += delta * 3.2; });
+      });
 
-        // Feed normalized drone parallax vector to fragment shader POM for crisp masonry relief
-        currentDomeMat.uniforms.uDroneParallax.value.set(
-          droneX * 0.65,
-          (droneY - SEATED_EYE_HEIGHT) * 0.75
+      // 6. Animate Flapping 3D Dartmoor Swallows / Birds Flying Around the Bridge & Trees
+      activeBirds.forEach((b) => {
+        b.userData.angle += delta * b.userData.speed;
+        const a = b.userData.angle;
+        const r = b.userData.radius;
+        b.position.set(
+          Math.cos(a) * r,
+          b.userData.height + Math.sin(elapsed * 1.8 + b.userData.phase) * 0.85,
+          Math.sin(a) * r
         );
+        b.rotation.y = -a + Math.PI / 2;
+        const flap = Math.sin(elapsed * 11.0 + b.userData.phase) * 0.55;
+        b.userData.leftWing.rotation.z = flap;
+        b.userData.rightWing.rotation.z = -flap;
+      });
 
-        // Stream 3D golden dust/mist motes past the flying drone lens
-        const posAttr = mistGeo.attributes.position;
-        for (let i = 0; i < mistCount; i++) {
-          let mz = posAttr.getZ(i) + delta * 1.4 * motionSpeed;
-          if (mz > 4.5) mz = -10.5;
-          posAttr.setZ(i, mz);
+      // 7. Animate Rising 3D Steam & Chimney Smoke Puffs
+      activeSmokeParticles.forEach((p) => {
+        p.userData.life += delta * 0.35;
+        if (p.userData.life > 1.0) p.userData.life -= 1.0;
+        const l = p.userData.life;
+        p.position.set(
+          p.userData.origin.x + p.userData.driftX * l,
+          p.userData.origin.y + l * 3.8,
+          p.userData.origin.z + p.userData.driftZ * l
+        );
+        const s = 0.5 + l * 1.8;
+        p.scale.setScalar(s);
+        p.material.opacity = (1.0 - l) * 0.58;
+      });
+
+      // 8. Gentle Breeze Sway on 3D Trees
+      activeTrees.forEach((t, idx) => {
+        t.rotation.z = Math.sin(elapsed * 1.2 + idx) * 0.025;
+      });
+
+      // 9. Autonomous 3D Drone Camera Flying AROUND the Living 3D World!
+      if (motionSpeed > 0 && !renderer.xr.isPresenting) {
+        droneAngle += delta * 0.28 * motionSpeed;
+        const lm = TAVISTOCK_SCENES[Math.max(0, currentLandmarkIndex)];
+
+        if (droneFlightMode === 'portal2d' || portalMorphProgress < 0.85) {
+          // Fly straight from the 2D Historical Photo Frame (+16m) through the portal into the 3D World
+          const zStart = 15.8;
+          const zEnd = 9.5;
+          const camZ = THREE.MathUtils.lerp(zStart, zEnd, portalMorphProgress);
+          camera.position.set(Math.sin(elapsed * 0.4) * 0.6, 3.6, camZ);
+          controls.target.set(0, 3.2, 0);
+          droneTelemetryText.textContent = `🖼️ 2D PHOTO → 3D WORLD PORTAL (${Math.round(portalMorphProgress * 100)}% 3D) · ${lm.name}`;
+        } else if (droneFlightMode === 'flythrough') {
+          // Low FPV Drone Fly-Through: dives right under the 3D bridge arches / viaduct arches!
+          const flyZ = Math.cos(droneAngle * 0.9) * 12.5;
+          const flyX = Math.sin(droneAngle * 1.8) * 3.8;
+          const flyY = 2.1 + Math.sin(droneAngle * 1.4) * 0.95;
+          camera.position.set(flyX, flyY, flyZ);
+          controls.target.set(0, 2.3, -flyZ * 0.4);
+          droneTelemetryText.textContent = `🦅 FPV DRONE FLY-THROUGH ARCHES · Alt ${flyY.toFixed(1)}m · ${lm.name} (${lm.era})`;
+        } else {
+          // Full 360° 3D Drone Orbit around the living 3D buildings, bridge, train & waterwheel
+          const orbitRadius = 13.5 + Math.sin(droneAngle * 0.7) * 3.2;
+          const camX = Math.sin(droneAngle) * orbitRadius;
+          const camZ = Math.cos(droneAngle) * orbitRadius;
+          const camY = 4.2 + Math.sin(droneAngle * 1.3) * 1.85;
+          camera.position.set(camX, camY, camZ);
+          controls.target.set(0, 2.5, 0);
+          const deg = Math.round(((droneAngle * 180) / Math.PI) % 360);
+          droneTelemetryText.textContent = `🚁 360° LIVING 3D DRONE ORBIT (${deg >= 0 ? deg : deg + 360}°) · Alt ${camY.toFixed(1)}m · ${lm.name}`;
         }
-        posAttr.needsUpdate = true;
-
-        // Update live telemetry HUD
-        const lm = TAVISTOCK_PLATES[Math.max(0, currentLandmarkIndex)];
-        const travelMeters = (forwardWave * 5.6).toFixed(1);
-        droneTelemetryText.textContent = `🚁 3D DRONE FLY-IN · Depth +${depthDisplacementMeters.toFixed(1)}m · Flight +${travelMeters}m into ${lm.name} (${lm.era})`;
       }
 
-      // Billboard & pulse 3D hotspot rings toward camera
-      hotspotGroup.children.forEach(anchor => {
+      // Billboard 3D Hotspot Rings
+      hotspotGroup.children.forEach((anchor) => {
         if (anchor.userData.ring) {
           anchor.userData.ring.quaternion.copy(camera.quaternion);
-          const pulse = 1.0 + Math.sin(nowMs * 0.0025) * 0.08;
-          anchor.userData.ring.scale.set(pulse, pulse, pulse);
+          const pulse = 1.0 + Math.sin(nowMs * 0.0025) * 0.09;
+          anchor.userData.ring.scale.setScalar(pulse);
         }
       });
 
       if (!renderer.xr.isPresenting) {
         controls.update();
       }
-
       updateGazeDwell(nowMs);
       renderer.render(scene, camera);
     });
 
-    // Boot directly with Landmark 0 (Abbey Bridge & River Tavy c. 1890) in 3D Drone Fly-In mode
-    switchLandmark(0, true);
+    // Boot on Scene 0 (Abbey Bridge & River Tavy c. 1890) with 2D Photo -> 3D Living World Portal
+    switchLandmark(0, false);
   </script>
 </body>
 </html>
