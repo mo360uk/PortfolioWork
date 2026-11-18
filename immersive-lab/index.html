@@ -1,0 +1,3150 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mo360 Immersive Lab · Creative Coding &amp; Creative Technology Academy · Plymouth, UK</title>
+<meta name="description" content="Mo360 Immersive Lab inside Mo360 Immersive Studio in Plymouth, Devon, United Kingdom. Top 5 Beginner Courses in TouchDesigner, Unreal Engine 5.8, and vvvv gamma 4V with British Voice Narrator and Starter Project Kits.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ochre: #C87D28;
+    --ochre-bright: #D4882A;
+    --teal: #0E6BA8;
+    --teal-bright: #1589D6;
+    --emerald: #1B7F69;
+    --emerald-bright: #24A186;
+    --obsidian: #0B0F17;
+    --obsidian-card: #101725;
+    --obsidian-elevated: #151E30;
+    --offwhite: #FAF7F2;
+    --stone: #A8A29E;
+    --border-ochre: rgba(200, 125, 40, 0.35);
+    --border-teal: rgba(14, 107, 168, 0.38);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--obsidian);
+    color: var(--offwhite);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(250, 247, 242, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(250, 247, 242, 0.022) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Sticky Top Navigation */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    background: rgba(11, 15, 23, 0.94);
+    backdrop-filter: blur(16px);
+    border-bottom: 1.5px solid var(--border-ochre);
+    padding: 0.85rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--offwhite);
+  }
+  .brand-link img {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1.5px solid var(--ochre-bright);
+  }
+  .brand-text strong {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--offwhite);
+  }
+  .brand-text span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ochre-bright);
+    letter-spacing: 0.12em;
+  }
+  .nav-pills {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .nav-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.48rem 0.95rem;
+    border-radius: 20px;
+    border: 1px solid rgba(250, 247, 242, 0.18);
+    color: var(--offwhite);
+    transition: all 0.2s;
+  }
+  .nav-pill:hover {
+    border-color: var(--ochre-bright);
+    color: var(--ochre-bright);
+  }
+  .nav-pill.active {
+    background: var(--ochre);
+    color: var(--obsidian);
+    border-color: var(--ochre-bright);
+  }
+  .nav-pill.ccp {
+    background: rgba(14, 107, 168, 0.22);
+    border-color: var(--teal-bright);
+    color: #7CC8F8;
+  }
+  .nav-pill.emerald {
+    background: rgba(27, 127, 105, 0.22);
+    border-color: var(--emerald-bright);
+    color: #6EE7C8;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 4.5rem 0 3.5rem;
+    border-bottom: 1px solid var(--border-ochre);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .eyebrow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--ochre-bright);
+    background: rgba(200, 125, 40, 0.12);
+    border: 1px solid var(--border-ochre);
+    padding: 0.45rem 1rem;
+    border-radius: 30px;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.06;
+    margin-bottom: 1.2rem;
+    color: var(--offwhite);
+  }
+  .hero h1 span {
+    color: var(--ochre-bright);
+  }
+  .hero-lead {
+    font-size: 1.06rem;
+    color: rgba(250, 247, 242, 0.86);
+    margin-bottom: 1.6rem;
+    max-width: 680px;
+  }
+  .partner-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
+  }
+  .partner-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    background: var(--obsidian-card);
+    border: 1px solid var(--border-teal);
+    color: var(--offwhite);
+  }
+  .hero-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+  .btn-primary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.9rem 1.6rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--ochre-bright), var(--ochre));
+    color: var(--obsidian);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-secondary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.9rem 1.5rem;
+    border-radius: 10px;
+    background: rgba(14, 107, 168, 0.2);
+    border: 1.5px solid var(--teal-bright);
+    color: var(--offwhite);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    background: var(--teal);
+  }
+
+  /* Hero Interactive Dome & Welcome Narrator Card */
+  .hero-interactive-card {
+    background: var(--obsidian-card);
+    border: 2px solid var(--border-ochre);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+  }
+  .dome-sim-canvas {
+    width: 100%;
+    height: 270px;
+    border-radius: 12px;
+    background: #06090F;
+    border: 1px solid rgba(14, 107, 168, 0.4);
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .welcome-audio-card {
+    background: #0B0F17;
+    border: 1.5px solid var(--border-teal);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+  }
+  .welcome-audio-card h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    color: var(--ochre-bright);
+    margin-bottom: 0.4rem;
+  }
+  .welcome-audio-card p {
+    font-size: 0.82rem;
+    color: rgba(250, 247, 242, 0.82);
+    margin-bottom: 0.7rem;
+    line-height: 1.45;
+  }
+
+  /* Course Jump Bar */
+  .course-jump-bar {
+    margin: 2.2rem 0;
+    padding: 1.1rem 1.4rem;
+    background: var(--obsidian-card);
+    border: 1.5px solid var(--border-teal);
+    border-radius: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .course-jump-pill {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--offwhite);
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border-radius: 10px;
+    background: #0B0F17;
+    border: 1px solid rgba(250, 247, 242, 0.15);
+    transition: all 0.2s;
+  }
+  .course-jump-pill span {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ochre-bright);
+    margin-right: 0.4rem;
+  }
+  .course-jump-pill:hover {
+    border-color: var(--ochre-bright);
+    transform: translateY(-2px);
+  }
+
+  /* Section Headings */
+  .section-header {
+    margin: 3.5rem 0 2rem;
+  }
+  .section-header .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ochre-bright);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .section-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+    font-weight: 800;
+    color: var(--offwhite);
+  }
+  .section-header p {
+    font-size: 1rem;
+    color: rgba(250, 247, 242, 0.78);
+    max-width: 780px;
+    margin-top: 0.4rem;
+  }
+
+  /* Course Showcase Card */
+  .course-showcase-card {
+    background: var(--obsidian-card);
+    border: 2px solid rgba(250, 247, 242, 0.14);
+    border-top: 6px solid var(--course-accent, var(--ochre));
+    border-radius: 20px;
+    padding: 2.2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  }
+  .course-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+  .course-index-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    background: var(--ochre);
+    color: var(--obsidian);
+  }
+  .course-tailored-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    background: rgba(14, 107, 168, 0.24);
+    border: 1px solid var(--teal-bright);
+    color: var(--offwhite);
+  }
+  .course-level-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    background: rgba(27, 127, 105, 0.24);
+    border: 1px solid var(--emerald-bright);
+    color: var(--offwhite);
+  }
+  .course-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+  .course-title-row h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--offwhite);
+    margin-bottom: 0.35rem;
+  }
+  .course-subtitle {
+    font-size: 1rem;
+    color: rgba(250, 247, 242, 0.82);
+  }
+  .course-cta-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .btn-download-kit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    background: var(--emerald);
+    color: var(--offwhite);
+    text-decoration: none;
+    border: 1.5px solid var(--emerald-bright);
+    transition: all 0.2s;
+  }
+  .btn-download-kit:hover {
+    background: var(--emerald-bright);
+    color: var(--obsidian);
+  }
+  .btn-play-narrator {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    background: var(--ochre);
+    color: var(--obsidian);
+    border: none;
+    cursor: pointer;
+  }
+  .stack-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: 1.6rem;
+  }
+  .stack-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    background: #0B0F17;
+    border: 1px solid rgba(250, 247, 242, 0.16);
+    color: #D4882A;
+  }
+
+  /* Narrator Studio Box */
+  .narrator-studio-box {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    gap: 1.5rem;
+    background: #0B0F17;
+    border: 1.5px solid var(--border-teal);
+    border-radius: 14px;
+    padding: 1.4rem;
+    margin-bottom: 1.6rem;
+  }
+  .narrator-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+  .voice-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ochre-bright);
+  }
+  .audio-spec-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--emerald-bright);
+  }
+  .native-audio-player {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 0.65rem;
+  }
+  .waveform-canvas {
+    width: 100%;
+    height: 58px;
+    background: #101725;
+    border-radius: 8px;
+    border: 1px solid rgba(200, 125, 40, 0.3);
+    cursor: pointer;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  .audio-direct-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+  }
+  .audio-direct-links a {
+    color: #7CC8F8;
+    text-decoration: none;
+  }
+  .audio-direct-links a:hover { text-decoration: underline; }
+
+  .transcript-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ochre-bright);
+  }
+  .transcript-header span {
+    color: var(--stone);
+    font-size: 0.68rem;
+  }
+  .transcript-scroll {
+    max-height: 175px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 0.4rem;
+  }
+  .transcript-seg {
+    text-align: left;
+    background: #101725;
+    border: 1px solid rgba(250, 247, 242, 0.12);
+    border-left: 4px solid var(--teal);
+    color: rgba(250, 247, 242, 0.88);
+    padding: 0.6rem 0.85rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .transcript-seg:hover, .transcript-seg.active {
+    background: rgba(200, 125, 40, 0.18);
+    border-left-color: var(--ochre-bright);
+    color: #fff;
+  }
+  .t-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ochre-bright);
+    margin-right: 0.5rem;
+  }
+
+  /* Interactive Node Network Box */
+  .node-visualizer-box {
+    background: #080C14;
+    border: 1.5px solid rgba(200, 125, 40, 0.32);
+    border-radius: 14px;
+    padding: 1.3rem;
+    margin-bottom: 1.6rem;
+  }
+  .node-vis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .mono-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ochre-bright);
+    letter-spacing: 0.12em;
+    display: block;
+  }
+  .node-vis-header h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    color: var(--offwhite);
+  }
+  .node-legend {
+    display: flex;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+  }
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .leg-item i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .node-graph-svg {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    display: block;
+  }
+  .patch-node {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .patch-node:hover rect:first-child {
+    stroke: #FAF7F2;
+    stroke-width: 3px;
+  }
+  .node-inspector-bar {
+    margin-top: 0.75rem;
+    padding: 0.7rem 1rem;
+    background: #101725;
+    border-left: 4px solid var(--ochre-bright);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--offwhite);
+  }
+  .node-inspector-bar strong { color: var(--ochre-bright); }
+
+  /* Syllabus Accordion */
+  .syllabus-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .syllabus-header h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem;
+    color: var(--ochre-bright);
+  }
+  .syllabus-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .btn-sm-outline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid rgba(250, 247, 242, 0.25);
+    color: var(--offwhite);
+    cursor: pointer;
+  }
+  .btn-sm-outline:hover { border-color: var(--ochre-bright); color: var(--ochre-bright); }
+
+  .module-accordion {
+    background: #0B0F17;
+    border: 1px solid rgba(250, 247, 242, 0.14);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  .module-summary {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    background: #0E1420;
+    transition: background 0.2s;
+  }
+  .module-summary:hover { background: #141D2F; }
+  .mod-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .mod-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 5px;
+    background: rgba(200, 125, 40, 0.2);
+    color: var(--ochre-bright);
+  }
+  .mod-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--offwhite);
+  }
+  .mod-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--stone);
+  }
+  .module-body {
+    padding: 1.25rem;
+    border-top: 1px solid rgba(250, 247, 242, 0.1);
+  }
+  .mod-outcome {
+    font-size: 0.92rem;
+    color: rgba(250, 247, 242, 0.9);
+    margin-bottom: 1rem;
+  }
+  .mod-outcome strong { color: var(--ochre-bright); }
+  .mod-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .mod-ops-card, .mod-steps-card {
+    background: #101725;
+    border: 1px solid rgba(250, 247, 242, 0.12);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .mod-ops-card h5, .mod-steps-card h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ochre-bright);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.7rem;
+  }
+  .ops-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .ops-list code {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    background: #080C14;
+    padding: 0.4rem 0.65rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--teal-bright);
+    color: #FAF7F2;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .steps-list li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    color: rgba(250, 247, 242, 0.88);
+    min-width: 0;
+  }
+  .steps-list li span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .step-idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--emerald-bright);
+    white-space: nowrap;
+    margin-top: 0.15rem;
+  }
+  .mod-checkpoint {
+    background: rgba(27, 127, 105, 0.16);
+    border: 1px solid var(--emerald-bright);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.86rem;
+    color: var(--offwhite);
+  }
+  .mod-checkpoint strong { color: #6EE7C8; }
+
+  /* NODE Institute Benchmark Table */
+  .benchmark-card {
+    background: var(--obsidian-card);
+    border: 2px solid var(--border-teal);
+    border-radius: 18px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+  .bench-table-wrap {
+    overflow-x: auto;
+    margin-top: 1.2rem;
+  }
+  .bench-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .bench-table th, .bench-table td {
+    padding: 0.95rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(250, 247, 242, 0.12);
+  }
+  .bench-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ochre-bright);
+    background: #0B0F17;
+    text-transform: uppercase;
+  }
+  .bench-table tr:hover td {
+    background: rgba(14, 107, 168, 0.08);
+  }
+
+  /* Antigravity Live Bridge Panel */
+  .bridge-panel {
+    background: linear-gradient(145deg, #101725, #0B0F17);
+    border: 2px solid var(--ochre-bright);
+    border-radius: 18px;
+    padding: 2.2rem;
+    margin-bottom: 3.5rem;
+  }
+  .bridge-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.8rem;
+    margin-top: 1.4rem;
+  }
+  .preset-btn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+  .preset-cmd-btn {
+    text-align: left;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: #0B0F17;
+    border: 1.5px solid rgba(250, 247, 242, 0.16);
+    color: var(--offwhite);
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .preset-cmd-btn span {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ochre-bright);
+    margin-bottom: 0.2rem;
+  }
+  .preset-cmd-btn.active, .preset-cmd-btn:hover {
+    border-color: var(--ochre-bright);
+    background: rgba(200, 125, 40, 0.15);
+  }
+  .code-terminal {
+    background: #06090F;
+    border: 1.5px solid var(--border-teal);
+    border-radius: 12px;
+    padding: 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #A7F3D0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    min-height: 290px;
+  }
+
+  /* Visual Boards Showcase */
+  .boards-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.8rem;
+    margin-bottom: 3.5rem;
+  }
+  .board-card {
+    background: var(--obsidian-card);
+    border: 1.5px solid var(--border-ochre);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .board-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .board-card-cap {
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Footer */
+  .site-footer {
+    border-top: 1.5px solid var(--border-ochre);
+    padding: 2.5rem 0;
+    margin-top: 3rem;
+    font-size: 0.85rem;
+    color: rgba(250, 247, 242, 0.78);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-grid, .narrator-studio-box, .mod-grid, .bridge-grid, .boards-showcase {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .hero-grid > *, .narrator-studio-box > *, .mod-grid > *, .bridge-grid > *, .boards-showcase > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .code-terminal {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 768px) {
+    .site-nav { padding: 0.75rem 1rem; }
+    .container { padding: 0 1rem; }
+    .hero { padding: 2.2rem 0 2rem; }
+    .hero h1 { font-size: 1.75rem; overflow-wrap: anywhere; }
+    .section-header h2 { font-size: 1.32rem; overflow-wrap: anywhere; }
+    .hero-interactive-card, .course-showcase-card, .benchmark-card, .bridge-panel {
+      padding: 1.1rem;
+    }
+    .bench-table, .bench-table thead, .bench-table tbody, .bench-table tr, .bench-table th, .bench-table td {
+      display: block;
+      width: 100%;
+    }
+    .bench-table thead { display: none; }
+    .bench-table tr {
+      border: 1px solid rgba(250, 247, 242, 0.14);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      padding: 0.6rem;
+      background: #0B0F17;
+    }
+    .bench-table td {
+      padding: 0.4rem 0.5rem;
+      border-bottom: none;
+    }
+    .narrator-studio-box, .node-visualizer-box, .module-body, .mod-ops-card, .mod-steps-card {
+      padding: 0.85rem;
+    }
+    .module-summary {
+      padding: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .mod-left { flex-wrap: wrap; gap: 0.45rem; }
+    .course-title-row h3 { font-size: 1.35rem; overflow-wrap: anywhere; }
+    .board-card-cap { flex-wrap: wrap; gap: 0.6rem; }
+    .steps-list li { flex-direction: column; gap: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Primary Navigation">
+  <a href="../index.html" class="brand-link">
+    <img src="assets/creative_coding_plymouth_logo.png" alt="Mo360 Immersive Lab Logo">
+    <div class="brand-text">
+      <strong>MO360 IMMERSIVE LAB</strong>
+      <span>CREATIVE CODING &amp; CREATIVE TECH ACADEMY · PLYMOUTH UK</span>
+    </div>
+  </a>
+  <div class="nav-pills">
+    <a href="../index.html" class="nav-pill">✦ Mo360 Studio</a>
+    <a href="index.html" class="nav-pill active">⚗ Immersive Lab (5 Courses)</a>
+    <a href="tawaf-domemaster-live.html" class="nav-pill emerald">◎ TAWAF Domemaster Synth</a>
+    <a href="../creative-coding-plymouth/index.html" class="nav-pill ccp">⚡ Creative Coding Plymouth</a>
+    <a href="../figureheads/index.html" class="nav-pill">⚓ 3D Figureheads</a>
+    <a href="../studio/index.html" class="nav-pill">🏢 3D Commercial</a>
+  </div>
+</nav>
+
+<main class="container">
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow-badge">🇬🇧 PLYMOUTH, DEVON, UNITED KINGDOM · LIVE &amp; READY ONLINE</div>
+        <h1>MO360 IMMERSIVE LAB · <span>CREATIVE CODING &amp; CREATIVE TECHNOLOGY ACADEMY</span></h1>
+        <p class="hero-lead">
+          Purpose built inside <strong>Mo360 Immersive Studio</strong> by Visual Artist, Creative Technologist, Curator, and Creative Director <strong>Mohamed Hossam Elwakil</strong>. Master <strong>TouchDesigner</strong>, <strong>Unreal Engine 5.8</strong>, and <strong>vvvv gamma (4V)</strong> through five beginner friendly courses tailored for <strong>Market Hall 15m Fulldome Cinema</strong>, <strong>Real Ideas</strong>, and <strong>Pervasive Media Studio</strong> practitioners.
+        </p>
+        <div class="partner-strip">
+          <span class="partner-chip">◎ Market Hall 15m Fulldome · Devonport</span>
+          <span class="partner-chip">🏛️ Real Ideas · Plymouth</span>
+          <span class="partner-chip">🎨 KARST &amp; The Box Museum</span>
+          <span class="partner-chip">🌉 Pervasive Media Studio · Watershed Bristol</span>
+        </div>
+        <div class="hero-cta-row">
+          <a href="#course_01" class="btn-primary">▶ Explore All 5 Beginner Courses</a>
+          <a href="./tawaf-domemaster-live.html" class="btn-secondary" style="border-color:#24A186;background:rgba(27,127,105,0.25);">◎ Launch TAWAF Domemaster Live Synth</a>
+          <a href="#live-bridge" class="btn-secondary">⚡ Antigravity Live Bridge (TD · UE 5.8 · 4V)</a>
+          <a href="../creative-coding-plymouth/index.html" class="btn-secondary">🤝 Creative Coding Plymouth Meetup</a>
+        </div>
+      </div>
+
+      <div class="hero-interactive-card">
+        <canvas id="heroDomeCanvas" class="dome-sim-canvas" width="560" height="270"></canvas>
+        <div class="welcome-audio-card">
+          <h4>🎙️ Academy Welcome · British English Voice Narrator</h4>
+          <p id="welcomeTranscriptText">Welcome to Mo360 Immersive Lab, the Creative Coding and Creative Technology Academy at Mo360 Immersive Studio in Plymouth, Devon, United Kingdom. Whether you are opening TouchDesigner, Unreal Engine 5.8, or vvvv gamma for the very first time, our five structured courses guide you step by step from your first visual node to real exhibition work. Every programme is purpose built for the South West creative technology ecosystem, from the fifteen metre Market Hall Fulldome Cinema at Real Ideas in Devonport, to architectural projection mapping across Plymouth heritage landmarks, to interactive sensor performances inspired by Pervasive Media Studio in Bristol. Press play on any course walkthrough below, explore the interactive node network, and download the ready to run starter project kit to begin building today.</p>
+          <audio id="audio_welcome" class="native-audio-player" controls preload="metadata">
+            <source src="assets/audio/narrator_00_academy_welcome.wav" type="audio/wav">
+            <source src="assets/audio/narrator_00_academy_welcome.mp3" type="audio/mpeg">
+          </audio>
+          <div class="audio-direct-links">
+            <a href="assets/audio/narrator_00_academy_welcome.wav" download>⬇ Welcome WAV (48 kHz)</a>
+            <span>·</span>
+            <a href="assets/audio/narrator_00_academy_welcome.mp3" download>⬇ Welcome MP3</a>
+            <span>·</span>
+            <a href="assets/courses_curriculum.json" download>📄 Full Curriculum JSON</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="course-jump-bar">
+      <strong style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#D4882A;">JUMP TO COURSE:</strong>
+      <a href="#course_01" class="course-jump-pill"><span>COURSE 01</span> Fulldome 360° &amp; 180° Fisheye Cinema</a><a href="#course_02" class="course-jump-pill"><span>COURSE 02</span> Architectural Projection Mapping, 3D Scanning &amp; LiDAR Workflows</a><a href="#course_03" class="course-jump-pill"><span>COURSE 03</span> Generative 3D Sacred Geometry, Realtime Shaders &amp; vvvv gamma (4V) Patching</a><a href="#course_04" class="course-jump-pill"><span>COURSE 04</span> Interactive Sensors, Body Tracking &amp; Pervasive Media Performance</a><a href="#course_05" class="course-jump-pill"><span>COURSE 05</span> Sonic Arts, 3D Spatial Audio &amp; Neuro Sensory Audiovisual Performance</a>
+    </div>
+  </section>
+
+  <!-- VISUAL DESIGN BOARDS PREVIEW -->
+  <section class="section-header">
+    <div class="eyebrow">OFFICIAL VISUAL IDENTITY &amp; ACADEMY POSTERS</div>
+    <h2>HIGH RESOLUTION ARCHITECTURAL DESIGN BOARDS</h2>
+    <p>Strictly padded on all four sides with Studio Ochre (#C87D28), Market Hall Fulldome Teal (#0E6BA8), and Pervasive Emerald (#1B7F69).</p>
+  </section>
+  <div class="boards-showcase">
+    <div class="board-card">
+      <img src="assets/mo360_immersive_lab_courses_board.png" alt="Mo360 Immersive Lab 5 Course Visual Showcase Board">
+      <div class="board-card-cap">
+        <strong>Board 02 · Mo360 Immersive Lab 5 Course Showcase (2400x1350)</strong>
+        <a href="assets/mo360_immersive_lab_courses_board.png" download class="btn-sm-outline">⬇ Download PNG</a>
+      </div>
+    </div>
+    <div class="board-card">
+      <img src="assets/creative_coding_plymouth_brand_board.png" alt="Creative Coding Plymouth Brand Identity Board">
+      <div class="board-card-cap">
+        <strong>Board 01 · Creative Coding Plymouth Official Brand Sheet (2400x1350)</strong>
+        <a href="assets/creative_coding_plymouth_brand_board.png" download class="btn-sm-outline">⬇ Download PNG</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP 5 BEGINNER COURSES SHOWCASE -->
+  <section class="section-header" id="courses">
+    <div class="eyebrow">NO WAITING FOR APPROVAL · LIVE &amp; READY ONLINE</div>
+    <h2>TOP 5 FLAGSHIP BEGINNER TO PRO COURSES</h2>
+    <p>Every course includes a spoken British English narrator walkthrough, an interactive TouchDesigner + Unreal Engine 5.8 + vvvv gamma (4V) node graph, a 6 module beginner syllabus, and a 1 click downloadable starter kit (.zip).</p>
+  </section>
+
+  
+        <article class="course-showcase-card" id="course_01" style="--course-accent: #0E6BA8;">
+          <div class="course-top-banner">
+            <div class="course-meta-row">
+              <span class="course-index-badge">COURSE 01</span>
+              <span class="course-tailored-badge">🇬🇧 Market Hall 15m Fulldome Cinema (Real Ideas, Devonport, Plymouth)</span>
+              <span class="course-level-badge">Beginner to Pro · 6 Weeks · 6 Modules</span>
+            </div>
+            <div class="course-title-row">
+              <div>
+                <h3>Fulldome 360° &amp; 180° Fisheye Cinema in TouchDesigner &amp; Unreal Engine 5.8</h3>
+                <p class="course-subtitle">From zero node knowledge to 4096x4096 Equidistant Domemasters &amp; live Spout streaming</p>
+              </div>
+              <div class="course-cta-group">
+                <a href="assets/starter_kits/course_01_fulldome_180_rig.zip" download class="btn-download-kit">
+                  ⬇ Download Starter Kit (.ZIP)
+                </a>
+                <button type="button" class="btn-play-narrator" onclick="toggleCourseAudio('course_01')">
+                  🎙️ Play British Narrator
+                </button>
+              </div>
+            </div>
+            <div class="stack-chips-row"><span class="stack-chip">TouchDesigner (Render TOP CubeMap, Projection TOP 180° Fisheye)</span><span class="stack-chip">Unreal Engine 5.8 (BP_DomeMasterRig, RTC_DomeMaster_Cube, M_DomeMaster_Equidistant)</span><span class="stack-chip">Spout2 Zero Copy GPU Bridge</span><span class="stack-chip">OSC Control Protocol (Port 7000 / 9000)</span></div>
+          </div>
+
+          <!-- Embedded British Voice Narrator + Synchronized Transcript Player -->
+          <div class="narrator-studio-box">
+            <div class="narrator-controls-col">
+              <div class="narrator-header">
+                <span class="voice-pill">🇬🇧 BRITISH VOICE NARRATOR · MICROSOFT HAZEL DESKTOP</span>
+                <span class="audio-spec-pill">48 kHz STEREO WAV + CELLO PAD DRONE</span>
+              </div>
+              <audio id="audio_course_01" class="native-audio-player" controls preload="metadata"
+                     ontimeupdate="syncCourseTranscript('course_01', this)">
+                <source src="assets/audio/narrator_01_fulldome_cinema.wav" type="audio/wav">
+                <source src="assets/audio/narrator_01_fulldome_cinema.mp3" type="audio/mpeg">
+              </audio>
+              <canvas id="wave_course_01" class="waveform-canvas" width="520" height="58" onclick="scrubWaveform(event, 'course_01')"></canvas>
+              <div class="audio-direct-links">
+                <a href="assets/audio/narrator_01_fulldome_cinema.wav" download>⬇ Download Master WAV (48 kHz)</a>
+                <span>·</span>
+                <a href="assets/audio/narrator_01_fulldome_cinema.mp3" download>⬇ Download MP3 (192 kbps)</a>
+                <span>·</span>
+                <a href="assets/starter_kits/course_01_fulldome_180_rig.zip" download>📦 course_01_fulldome_180_rig.zip</a>
+              </div>
+            </div>
+            <div class="narrator-transcript-col">
+              <div class="transcript-header">
+                <strong>SYNCHRONIZED STEP BY STEP NARRATOR TRANSCRIPT</strong>
+                <span>Click any module segment to jump &amp; highlight</span>
+              </div>
+              <div class="transcript-scroll" id="transcript_course_01">
+                <button type="button" class="transcript-seg" data-course="course_01" data-mod="1" onclick="seekNarratorSegment('course_01', 0, 6)"><span class="t-badge">MODULE 01</span> In Module One, we start from a completely blank TouchDesigner canvas.</button><button type="button" class="transcript-seg" data-course="course_01" data-mod="2" onclick="seekNarratorSegment('course_01', 1, 6)"><span class="t-badge">MODULE 02</span> You will learn the core operator families, placing a seven point five metre Sphere SOP, a Geometry COMP, and a zenith Camera COMP pointing straight upward.</button><button type="button" class="transcript-seg" data-course="course_01" data-mod="3" onclick="seekNarratorSegment('course_01', 2, 6)"><span class="t-badge">MODULE 03</span> In Module Two, we place a Render TOP, set its resolution to 2048 by 2048, and switch Render Mode to Cube Map so TouchDesigner captures every direction around the dome simultaneously.</button><button type="button" class="transcript-seg" data-course="course_01" data-mod="4" onclick="seekNarratorSegment('course_01', 3, 6)"><span class="t-badge">MODULE 04</span> In Module Three, you wire that CubeMap into a Projection TOP configured for 180 degree Equidistant Fisheye output at 4096 by 4096 pixels, producing a razor sharp Domemaster circle framed cleanly with a black horizon mask.</button><button type="button" class="transcript-seg" data-course="course_01" data-mod="5" onclick="seekNarratorSegment('course_01', 4, 6)"><span class="t-badge">MODULE 05</span> In Module Four, we open Unreal Engine 5.8 and inspect BP_DomeMasterRig, tracing how RTC_DomeMaster_Cube feeds M_DomeMaster_Equidistant and RT_DomeMaster_4K in real time.</button><button type="button" class="transcript-seg" data-course="course_01" data-mod="6" onclick="seekNarratorSegment('course_01', 5, 6)"><span class="t-badge">MODULE 06</span> In Module Five, you connect both engines together using a Spout In TOP for zero copy GPU video streaming and an OSC Out CHOP on port 7000 to drive gentle counter clockwise rotation.</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Node Network Visualizer -->
+          
+        <div class="node-visualizer-box">
+          <div class="node-vis-header">
+            <div>
+              <span class="mono-tag">INTERACTIVE NODE GRAPH · CLICK ANY OPERATOR TO INSPECT SIGNAL FLOW</span>
+              <h4>Fulldome 360° &amp; 180° Fisheye Cinema in TouchDesigner &amp; Unreal Engine 5.8 · Patch Architecture</h4>
+            </div>
+            <div class="node-legend">
+              <span class="leg-item"><i style="background:#D4882A"></i>TouchDesigner</span>
+              <span class="leg-item"><i style="background:#0E6BA8"></i>Unreal 5.8</span>
+              <span class="leg-item"><i style="background:#1B7F69"></i>vvvv 4V / Bridge</span>
+            </div>
+          </div>
+          <svg viewBox="0 0 910 300" class="node-graph-svg" aria-label="Interactive Node Network for Fulldome 360° &amp; 180° Fisheye Cinema in TouchDesigner &amp; Unreal Engine 5.8">
+            <path d="M 175 97 C 315.0 97, 315.0 97, 455 97" class="patch-wire" data-from="n1" data-to="n2" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 97 C 595.0 97, 595.0 97, 735 97" class="patch-wire" data-from="n2" data-to="n3" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 175 227 C 315.0 227, 315.0 227, 455 227" class="patch-wire" data-from="n4" data-to="n5" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 227 C 595.0 227, 595.0 97, 735 97" class="patch-wire" data-from="n5" data-to="n3" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 735 97 C 735.0 97, 735.0 227, 735 227" class="patch-wire" data-from="n3" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/>
+            
+              <g class="patch-node" transform="translate(60,55)" tabindex="0"
+                 data-node-id="n1" data-course="course_01"
+                 data-label="geo1 + cam1" data-engine="TouchDesigner"
+                 data-family="COMP" data-role="3D Dome Geometry &amp; Zenith Camera"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · COMP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">geo1 + cam1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">3D Dome Geometry &amp; Zenith Camera</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,55)" tabindex="0"
+                 data-node-id="n2" data-course="course_01"
+                 data-label="render1 (CubeMap)" data-engine="TouchDesigner"
+                 data-family="TOP" data-role="6 Face Spherical Scene Render"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · TOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">render1 (CubeMap)</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">6 Face Spherical Scene Render</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,55)" tabindex="0"
+                 data-node-id="n3" data-course="course_01"
+                 data-label="projection1 (180°)" data-engine="TouchDesigner"
+                 data-family="TOP" data-role="CubeMap to Equidistant Fisheye 4096x4096"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · TOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">projection1 (180°)</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">CubeMap to Equidistant Fisheye 4</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(60,185)" tabindex="0"
+                 data-node-id="n4" data-course="course_01"
+                 data-label="BP_DomeMasterRig" data-engine="Unreal Engine 5.8"
+                 data-family="Blueprint" data-role="Real Time 3D World &amp; Niagara FX"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Unreal Engine 5.8 · Blueprint</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">BP_DomeMasterRig</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Real Time 3D World &amp; Niagara FX</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,185)" tabindex="0"
+                 data-node-id="n5" data-course="course_01"
+                 data-label="spoutin1 / oscout1" data-engine="Bridge"
+                 data-family="Spout2 / OSC" data-role="Live 4K GPU Frame &amp; Parameter Sync"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#24A186" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#24A186"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Bridge · Spout2 / OSC</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">spoutin1 / oscout1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Live 4K GPU Frame &amp; Parameter Sy</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#24A186" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,185)" tabindex="0"
+                 data-node-id="n6" data-course="course_01"
+                 data-label="moviefileout1" data-engine="Output"
+                 data-family="TOP" data-role="4096x4096 30 fps Market Hall Master"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1589D6" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1589D6"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Output · TOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">moviefileout1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">4096x4096 30 fps Market Hall Mas</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1589D6" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+          </svg>
+          <div class="node-inspector-bar" id="inspector_course_01">
+            <strong>Selected Operator:</strong> <span>Click any node above to inspect its exact TouchDesigner, Unreal Engine 5.8, or vvvv gamma 4V parameters and wiring role.</span>
+          </div>
+        </div>
+        
+
+          <!-- Complete 6-Module Step-by-Step Beginner Accordion -->
+          <div class="syllabus-section">
+            <div class="syllabus-header">
+              <h4>COMPLETE 6 MODULE STEP BY STEP BEGINNER SYLLABUS</h4>
+              <div class="syllabus-actions">
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_01', true)">Expand All 6 Modules</button>
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_01', false)">Collapse All</button>
+              </div>
+            </div>
+            <div class="modules-container" id="modules_course_01">
+              
+            <details class="module-accordion" open>
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 01</span>
+                  <span class="mod-title">Navigating TouchDesigner &amp; Your First 3D Scene</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 1 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Understand TOP, CHOP, SOP, MAT, and COMP operator families and build a rotating 3D geometric vault.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Sphere SOP (Radius 7.5, Rows 32, Columns 64)</code></li><li><code>Geometry COMP (geo1)</code></li><li><code>Camera COMP (cam1 at 0, 0, 0 looking +Y/+Z)</code></li><li><code>Light COMP (light1)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Open TouchDesigner, select all default nodes with Ctrl A, and press Delete for a clean canvas.</span></li><li><span class="step-idx">STEP 02</span><span>Press Tab, switch to the SOP tab, place a Sphere SOP, and set Radius to 7.5 to match the 15 metre Market Hall dome.</span></li><li><span class="step-idx">STEP 03</span><span>Right click the right output connector of the Sphere SOP and attach a Geometry COMP named geo1.</span></li><li><span class="step-idx">STEP 04</span><span>Press Tab, open COMP, and place a Camera COMP and Light COMP beside geo1.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> You see a cleanly lit 3D wireframe sphere geometry inside your Geometry COMP viewer.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 02</span>
+                  <span class="mod-title">CubeMap Rendering Inside the Render TOP</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 2 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Capture a complete 360 degree environment inside TouchDesigner using a six face CubeMap Render TOP.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Render TOP (Resolution 2048 x 2048)</code></li><li><code>Parameter: Render Mode ·&gt; Cube Map</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Press Tab, open the TOP family, and place a Render TOP.</span></li><li><span class="step-idx">STEP 02</span><span>In the Render TOP Common page, set Resolution to 2048 by 2048.</span></li><li><span class="step-idx">STEP 03</span><span>On the Render page, change Render Mode from Normal to Cube Map so TouchDesigner renders all six faces around your zenith camera.</span></li><li><span class="step-idx">STEP 04</span><span>Confirm Camera points to cam1 and Geometry points to geo1.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> The Render TOP viewer displays a six panel cross layout representing your full 360 degree dome interior.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 03</span>
+                  <span class="mod-title">Projection TOP: CubeMap to 180° Equidistant Fisheye</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 3 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Convert the six face CubeMap into a true 4096x4096 180 degree Equidistant Domemaster circle.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Projection TOP (Input: Cube Map, Output: Equidistant Fisheye)</code></li><li><code>Circle TOP (Soft circular horizon mask)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Wire the output of render1 into a new Projection TOP.</span></li><li><span class="step-idx">STEP 02</span><span>Set Input Projection to Cube Map and Output Projection to Fish Eye (Equidistant) with a 180 degree field of view.</span></li><li><span class="step-idx">STEP 03</span><span>In the Common tab of projection1, set Output Resolution to Custom 4096 by 4096 and Pixel Format to 16 bit float RGBA.</span></li><li><span class="step-idx">STEP 04</span><span>Multiply with a crisp Circle TOP set to radius 0.5 to guarantee pure black outside the active dome circle.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A sharp 4096x4096 circular 180 degree Domemaster image fills your viewer with zero seam artifacts.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 04</span>
+                  <span class="mod-title">Unreal Engine 5.8 BP_DomeMasterRig Integration</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 4 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Inspect and drive Unreal Engine 5.8&#x27;s BP_DomeMasterRig and M_DomeMaster_Equidistant inside a real time scene.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>UE 5.8: BP_DomeMasterRig Blueprint</code></li><li><code>UE 5.8: RTC_DomeMaster_Cube &amp; RT_DomeMaster_4K</code></li><li><code>UE 5.8: M_DomeMaster_Equidistant Material</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Open the starter Unreal Engine 5.8 level and locate BP_DomeMasterRig in the Content Browser.</span></li><li><span class="step-idx">STEP 02</span><span>Inspect how SceneCaptureCube writes into RTC_DomeMaster_Cube at 2048 resolution.</span></li><li><span class="step-idx">STEP 03</span><span>Open M_DomeMaster_Equidistant to trace how equirectangular and cubemap vectors map onto the 180 degree Domemaster render target RT_DomeMaster_4K.</span></li><li><span class="step-idx">STEP 04</span><span>Run the included ue58_course01_domemaster_link.py script from Unreal&#x27;s Python Console to verify live rig coordinates.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Unreal Engine 5.8 renders a live 4K Domemaster preview inside WBP_DomeMasterHUD.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 05</span>
+                  <span class="mod-title">Live Spout2 Video &amp; OSC Control Bridge</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 5 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Stream real time 4K frames from Unreal Engine 5.8 into TouchDesigner via Spout2 while controlling rotation over OSC.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Spout In TOP (Sender: UE5_DomeMaster)</code></li><li><code>LFO CHOP (0.5 to 1.2 RPM counter clockwise rotation)</code></li><li><code>OSC Out CHOP (Address 127.0.0.1, Port 7000)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>In TouchDesigner, place a Spout In TOP and select the live Unreal Engine 5.8 sender.</span></li><li><span class="step-idx">STEP 02</span><span>Create an LFO CHOP set to Ramp mode with slow 0.015 Hz frequency to drive gentle counter clockwise Tawaf dome rotation.</span></li><li><span class="step-idx">STEP 03</span><span>Wire the LFO CHOP through a Rename CHOP (/dome/yaw) into an OSC Out CHOP targeting port 7000.</span></li><li><span class="step-idx">STEP 04</span><span>Blend Unreal Engine volumetric Niagara layers with TouchDesigner sacred overlays using a Composite TOP.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Moving sliders in TouchDesigner smoothly rotates Unreal Engine 5.8 dome visuals with sub frame latency.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 06</span>
+                  <span class="mod-title">Market Hall 15m Dome Mastering &amp; 4096x4096 Export</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 6 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Package and export an exhibition ready 4096x4096 30 fps Domemaster video calibrated for Market Hall Devonport.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Movie File Out TOP (HAP Q / H.265 / PNG Sequence)</code></li><li><code>Audio File In CHOP (48 kHz Stereo Master)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Verify dome horizon tilt alignment (15 to 21 degree venue tilt compensation inside Transform TOP or Camera COMP).</span></li><li><span class="step-idx">STEP 02</span><span>Place a Movie File Out TOP, set Type to Movie, Codec to HAP Q or H.265, and connect your 48 kHz stereo audio CHOP.</span></li><li><span class="step-idx">STEP 03</span><span>Toggle Record On for a deterministic 30 second timeline export using non realtime frame lock.</span></li><li><span class="step-idx">STEP 04</span><span>Preview the final Domemaster circle inside the Market Hall dome simulator template.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A clean 4096x4096 30 fps Domemaster file ready for playback at Market Hall 15m Fulldome Cinema.
+                </div>
+              </div>
+            </details>
+            
+            </div>
+          </div>
+        </article>
+        
+        <article class="course-showcase-card" id="course_02" style="--course-accent: #C87D28;">
+          <div class="course-top-banner">
+            <div class="course-meta-row">
+              <span class="course-index-badge">COURSE 02</span>
+              <span class="course-tailored-badge">🇬🇧 Real Ideas Heritage Buildings (Devonport Guildhall / Market Hall) &amp; Live Site Specific Installations</span>
+              <span class="course-level-badge">Beginner to Pro · 6 Weeks · 6 Modules</span>
+            </div>
+            <div class="course-title-row">
+              <div>
+                <h3>Architectural Projection Mapping, 3D Scanning &amp; LiDAR Workflows</h3>
+                <p class="course-subtitle">From handheld LiDAR heritage scans to KantanMapper, CamSchnappr &amp; Unreal 5.8 nDisplay</p>
+              </div>
+              <div class="course-cta-group">
+                <a href="assets/starter_kits/course_02_projection_mapping_scanner.zip" download class="btn-download-kit">
+                  ⬇ Download Starter Kit (.ZIP)
+                </a>
+                <button type="button" class="btn-play-narrator" onclick="toggleCourseAudio('course_02')">
+                  🎙️ Play British Narrator
+                </button>
+              </div>
+            </div>
+            <div class="stack-chips-row"><span class="stack-chip">Polycam / iPhone LiDAR / RealityCapture (.ply &amp; .fbx meshes)</span><span class="stack-chip">TouchDesigner (Point File In TOP, KantanMapper, CamSchnappr)</span><span class="stack-chip">Unreal Engine 5.8 (nDisplay &amp; Mesh Projection)</span><span class="stack-chip">Multi Projector Edge Blending</span></div>
+          </div>
+
+          <!-- Embedded British Voice Narrator + Synchronized Transcript Player -->
+          <div class="narrator-studio-box">
+            <div class="narrator-controls-col">
+              <div class="narrator-header">
+                <span class="voice-pill">🇬🇧 BRITISH VOICE NARRATOR · MICROSOFT HAZEL DESKTOP</span>
+                <span class="audio-spec-pill">48 kHz STEREO WAV + CELLO PAD DRONE</span>
+              </div>
+              <audio id="audio_course_02" class="native-audio-player" controls preload="metadata"
+                     ontimeupdate="syncCourseTranscript('course_02', this)">
+                <source src="assets/audio/narrator_02_projection_mapping_scanning.wav" type="audio/wav">
+                <source src="assets/audio/narrator_02_projection_mapping_scanning.mp3" type="audio/mpeg">
+              </audio>
+              <canvas id="wave_course_02" class="waveform-canvas" width="520" height="58" onclick="scrubWaveform(event, 'course_02')"></canvas>
+              <div class="audio-direct-links">
+                <a href="assets/audio/narrator_02_projection_mapping_scanning.wav" download>⬇ Download Master WAV (48 kHz)</a>
+                <span>·</span>
+                <a href="assets/audio/narrator_02_projection_mapping_scanning.mp3" download>⬇ Download MP3 (192 kbps)</a>
+                <span>·</span>
+                <a href="assets/starter_kits/course_02_projection_mapping_scanner.zip" download>📦 course_02_projection_mapping_scanner.zip</a>
+              </div>
+            </div>
+            <div class="narrator-transcript-col">
+              <div class="transcript-header">
+                <strong>SYNCHRONIZED STEP BY STEP NARRATOR TRANSCRIPT</strong>
+                <span>Click any module segment to jump &amp; highlight</span>
+              </div>
+              <div class="transcript-scroll" id="transcript_course_02">
+                <button type="button" class="transcript-seg" data-course="course_02" data-mod="1" onclick="seekNarratorSegment('course_02', 0, 6)"><span class="t-badge">MODULE 01</span> In Module One, you learn how to capture accurate architectural geometry using mobile LiDAR, Polycam, and RealityCapture, producing both dense point clouds and clean decimated meshes.</button><button type="button" class="transcript-seg" data-course="course_02" data-mod="2" onclick="seekNarratorSegment('course_02', 1, 6)"><span class="t-badge">MODULE 02</span> In Module Two, we import that point cloud directly onto the GPU using TouchDesigner&#x27;s Point File In TOP, instancing millions of heritage points at sixty frames per second.</button><button type="button" class="transcript-seg" data-course="course_02" data-mod="3" onclick="seekNarratorSegment('course_02', 2, 6)"><span class="t-badge">MODULE 03</span> In Module Three, you master rapid 2D masking with KantanMapper, isolating columns, cornices, and arched windows with bezier precision.</button><button type="button" class="transcript-seg" data-course="course_02" data-mod="4" onclick="seekNarratorSegment('course_02', 3, 6)"><span class="t-badge">MODULE 04</span> In Module Four, we step into true 3D calibration with CamSchnappr, matching six virtual mesh corners to physical architectural landmarks so TouchDesigner solves your projector&#x27;s exact lens position in space.</button><button type="button" class="transcript-seg" data-course="course_02" data-mod="5" onclick="seekNarratorSegment('course_02', 4, 6)"><span class="t-badge">MODULE 05</span> In Module Five, you connect your scanned mesh to Unreal Engine 5.8 nDisplay for dynamic Lumen relighting.</button><button type="button" class="transcript-seg" data-course="course_02" data-mod="6" onclick="seekNarratorSegment('course_02', 5, 6)"><span class="t-badge">MODULE 06</span> And in Module Six, you build seamless multi projector edge blending and lock a borderless Perform Mode window for live exhibition reliability..</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Node Network Visualizer -->
+          
+        <div class="node-visualizer-box">
+          <div class="node-vis-header">
+            <div>
+              <span class="mono-tag">INTERACTIVE NODE GRAPH · CLICK ANY OPERATOR TO INSPECT SIGNAL FLOW</span>
+              <h4>Architectural Projection Mapping, 3D Scanning &amp; LiDAR Workflows · Patch Architecture</h4>
+            </div>
+            <div class="node-legend">
+              <span class="leg-item"><i style="background:#D4882A"></i>TouchDesigner</span>
+              <span class="leg-item"><i style="background:#0E6BA8"></i>Unreal 5.8</span>
+              <span class="leg-item"><i style="background:#1B7F69"></i>vvvv 4V / Bridge</span>
+            </div>
+          </div>
+          <svg viewBox="0 0 910 300" class="node-graph-svg" aria-label="Interactive Node Network for Architectural Projection Mapping, 3D Scanning &amp; LiDAR Workflows">
+            <path d="M 175 97 C 315.0 97, 315.0 97, 455 97" class="patch-wire" data-from="n1" data-to="n2" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 97 C 315.0 97, 315.0 227, 175 227" class="patch-wire" data-from="n2" data-to="n4" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 735 97 C 735.0 97, 735.0 227, 735 227" class="patch-wire" data-from="n3" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 175 227 C 455.0 227, 455.0 227, 735 227" class="patch-wire" data-from="n4" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 227 C 315.0 227, 315.0 227, 175 227" class="patch-wire" data-from="n5" data-to="n4" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/>
+            
+              <g class="patch-node" transform="translate(60,55)" tabindex="0"
+                 data-node-id="n1" data-course="course_02"
+                 data-label="Heritage Scan (.ply)" data-engine="Capture"
+                 data-family="LiDAR / Photo" data-role="Polycam &amp; RealityCapture Facade Capture"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Capture · LiDAR / Photo</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">Heritage Scan (.ply)</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Polycam &amp; RealityCapture Facade </text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,55)" tabindex="0"
+                 data-node-id="n2" data-course="course_02"
+                 data-label="pointfilein1" data-engine="TouchDesigner"
+                 data-family="TOP" data-role="GPU Point Cloud Decimation &amp; Normal Map"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · TOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">pointfilein1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">GPU Point Cloud Decimation &amp; Nor</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,55)" tabindex="0"
+                 data-node-id="n3" data-course="course_02"
+                 data-label="kantanMapper" data-engine="TouchDesigner"
+                 data-family="COMP" data-role="2D Planar &amp; Bezier Architectural Masks"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · COMP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">kantanMapper</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">2D Planar &amp; Bezier Architectural</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(60,185)" tabindex="0"
+                 data-node-id="n4" data-course="course_02"
+                 data-label="camSchnappr" data-engine="TouchDesigner"
+                 data-family="COMP" data-role="3D Virtual to Physical Projector Alignment"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · COMP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">camSchnappr</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">3D Virtual to Physical Projector</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,185)" tabindex="0"
+                 data-node-id="n5" data-course="course_02"
+                 data-label="nDisplay Cluster" data-engine="Unreal Engine 5.8"
+                 data-family="nDisplay" data-role="Multi Projector Mesh UV &amp; Warping"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Unreal Engine 5.8 · nDisplay</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">nDisplay Cluster</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Multi Projector Mesh UV &amp; Warpin</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,185)" tabindex="0"
+                 data-node-id="n6" data-course="course_02"
+                 data-label="window1 (Borderless)" data-engine="Output"
+                 data-family="COMP" data-role="Live 1920x1080 / 4K Projector Output"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1589D6" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1589D6"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Output · COMP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">window1 (Borderless)</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Live 1920x1080 / 4K Projector Ou</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1589D6" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+          </svg>
+          <div class="node-inspector-bar" id="inspector_course_02">
+            <strong>Selected Operator:</strong> <span>Click any node above to inspect its exact TouchDesigner, Unreal Engine 5.8, or vvvv gamma 4V parameters and wiring role.</span>
+          </div>
+        </div>
+        
+
+          <!-- Complete 6-Module Step-by-Step Beginner Accordion -->
+          <div class="syllabus-section">
+            <div class="syllabus-header">
+              <h4>COMPLETE 6 MODULE STEP BY STEP BEGINNER SYLLABUS</h4>
+              <div class="syllabus-actions">
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_02', true)">Expand All 6 Modules</button>
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_02', false)">Collapse All</button>
+              </div>
+            </div>
+            <div class="modules-container" id="modules_course_02">
+              
+            <details class="module-accordion" open>
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 01</span>
+                  <span class="mod-title">3D LiDAR &amp; Photogrammetry Capture for Heritage Spaces</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 1 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Capture clean architectural geometry and point clouds of historic rooms or stone facades using LiDAR and RealityCapture.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Polycam / Handheld LiDAR Exporter (.ply / .xyz)</code></li><li><code>RealityCapture Mesh Decimation (Under 150k tris)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Walk the target facade or interior archways in overlapping passes under even, diffused daylight or soft architectural wash lighting.</span></li><li><span class="step-idx">STEP 02</span><span>Export both a dense colour point cloud in PLY format and a clean low polygon OBJ or FBX collision mesh.</span></li><li><span class="step-idx">STEP 03</span><span>Align the model floor plane to Y=0 and orient the primary facade toward +Z so TouchDesigner and Unreal share identical coordinates.</span></li><li><span class="step-idx">STEP 04</span><span>Place the exported heritage scan inside your starter kit assets folder.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A watertight low poly facade FBX and aligned PLY point cloud ready for real time rendering.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 02</span>
+                  <span class="mod-title">Point Cloud Rendering with Point File In TOP</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 2 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Load millions of LiDAR points directly onto the GPU in TouchDesigner without slowing down the CPU.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Point File In TOP (Load .ply / .xyz)</code></li><li><code>Point Transform TOP &amp; Point File Select TOP</code></li><li><code>Geometry COMP (Instancing from Point TOP)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Press Tab, open TOP, and place a Point File In TOP pointing to your scanned PLY file.</span></li><li><span class="step-idx">STEP 02</span><span>Place a Point File Select TOP to extract separate XYZ positions and RGB colour textures.</span></li><li><span class="step-idx">STEP 03</span><span>Feed the XYZ texture into a Geometry COMP Instancing tab with a tiny Box SOP or Sprite.</span></li><li><span class="step-idx">STEP 04</span><span>Animate a Noise TOP displacement wave across the point positions so the stone building breathes.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Millions of scanned architectural LiDAR points shimmer and animate at 60 frames per second.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 03</span>
+                  <span class="mod-title">2D Architectural Masking with KantanMapper</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 3 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Quickly mask windows, cornices, columns, and doorways for live events using TouchDesigner&#x27;s KantanMapper.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Palette ·&gt; Mapping ·&gt; kantanMapper COMP</code></li><li><code>Quad &amp; Freeform Bezier Shapes</code></li><li><code>Ramp TOP / Edge TOP Content Inputs</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Open the TouchDesigner Palette, browse to Mapping, and drag kantanMapper onto your network.</span></li><li><span class="step-idx">STEP 02</span><span>Click Open Kantan Window and assign a secondary projector display output.</span></li><li><span class="step-idx">STEP 03</span><span>Draw Freeform Bezier shapes around archways and Quad layers across stone columns.</span></li><li><span class="step-idx">STEP 04</span><span>Bind generative TOP textures to each masked shape ID to illuminate architectural relief without spilling light into windows.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Crisp, razor aligned architectural masks isolate each column and window arch on site.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 04</span>
+                  <span class="mod-title">3D Calibration with CamSchnappr</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 4 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Solve exact physical projector lens position and perspective from six virtual to real reference points using CamSchnappr.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Palette ·&gt; Mapping ·&gt; camSchnappr COMP</code></li><li><code>File In SOP (Decimated Heritage FBX/OBJ)</code></li><li><code>Phong MAT / Wireframe MAT</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Load your clean 3D heritage mesh into a File In SOP and pass it into camSchnappr&#x27;s Geo input.</span></li><li><span class="step-idx">STEP 02</span><span>Open the CamSchnappr UI and click six non coplanar architectural corners on the virtual 3D model.</span></li><li><span class="step-idx">STEP 03</span><span>Use the projector cursor output to place those exact six crosshairs onto the matching physical stone corners.</span></li><li><span class="step-idx">STEP 04</span><span>Let CamSchnappr compute the intrinsic focal length and extrinsic projector matrix automatically.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Your virtual wireframe projection locks onto the physical 3D sculpture or building facade.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 05</span>
+                  <span class="mod-title">Unreal Engine 5.8 nDisplay &amp; Mesh Projection</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 5 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Configure Unreal Engine 5.8 nDisplay projection screens and dynamically relight scanned heritage geometry.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>UE 5.8: nDisplay Config Asset</code></li><li><code>UE 5.8: ICVFX / Projection Mesh Stage</code></li><li><code>TouchDesigner Spout / NDI Feed</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Import the decimated heritage FBX into Unreal Engine 5.8 and assign Lumen dynamic spotlighting.</span></li><li><span class="step-idx">STEP 02</span><span>Configure an nDisplay Projection Policy pointing at your calibrated physical projector frustum or TouchDesigner CamSchnappr camera.</span></li><li><span class="step-idx">STEP 03</span><span>Run ue58_course02_projection_mesh.py to spawn dynamic virtual sun sweep and architectural gold edge highlights.</span></li><li><span class="step-idx">STEP 04</span><span>Route the warped output to your physical projector or multi projector blend zone.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Photorealistic Unreal Engine 5.8 shadows sweep convincingly across real physical architecture.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 06</span>
+                  <span class="mod-title">Multi Projector Edge Blending &amp; Show Reliability</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 6 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Soft blend two overlapping projectors seamlessly and lock a resilient borderless Window COMP for live exhibitions.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Edge Blend TOP / KantanUV</code></li><li><code>Window COMP (Borderless Fullscreen, Perform Mode)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Measure the 15 percent overlap strip between Projector A and Projector B.</span></li><li><span class="step-idx">STEP 02</span><span>Apply gamma corrected cosine soft edge feathering across both projector feeds.</span></li><li><span class="step-idx">STEP 03</span><span>Set up a Perform Mode Window COMP spanning the combined extended desktop resolution.</span></li><li><span class="step-idx">STEP 04</span><span>Save a one click boot project file verified for unattended gallery or heritage festival operation.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Two projectors merge into one seamless canvas with invisible overlap seams.
+                </div>
+              </div>
+            </details>
+            
+            </div>
+          </div>
+        </article>
+        
+        <article class="course-showcase-card" id="course_03" style="--course-accent: #D4AF37;">
+          <div class="course-top-banner">
+            <div class="course-meta-row">
+              <span class="course-index-badge">COURSE 03</span>
+              <span class="course-tailored-badge">🇬🇧 Contemporary Digital Artists, Generative Visualists &amp; Live Coders</span>
+              <span class="course-level-badge">Beginner to Pro · 6 Weeks · 6 Modules</span>
+            </div>
+            <div class="course-title-row">
+              <div>
+                <h3>Generative 3D Sacred Geometry, Realtime Shaders &amp; vvvv gamma (4V) Patching</h3>
+                <p class="course-subtitle">8/10/12 fold GPU instancing &amp; RayTK in TouchDesigner plus VL.Stride, VL.Fuse &amp; .exe export in vvvv</p>
+              </div>
+              <div class="course-cta-group">
+                <a href="assets/starter_kits/course_03_generative_sacred_geometry_4v.zip" download class="btn-download-kit">
+                  ⬇ Download Starter Kit (.ZIP)
+                </a>
+                <button type="button" class="btn-play-narrator" onclick="toggleCourseAudio('course_03')">
+                  🎙️ Play British Narrator
+                </button>
+              </div>
+            </div>
+            <div class="stack-chips-row"><span class="stack-chip">TouchDesigner (SOP to CHOP GPU Instancing, RayTK SDFs)</span><span class="stack-chip">vvvv gamma 6.5 (4V / VL Visual Programming in .NET)</span><span class="stack-chip">VL.Stride PBR 3D Rendering &amp; VL.Fuse GPU Particles / SDFs</span><span class="stack-chip">Standalone Royalty Free .exe Application Export</span></div>
+          </div>
+
+          <!-- Embedded British Voice Narrator + Synchronized Transcript Player -->
+          <div class="narrator-studio-box">
+            <div class="narrator-controls-col">
+              <div class="narrator-header">
+                <span class="voice-pill">🇬🇧 BRITISH VOICE NARRATOR · MICROSOFT HAZEL DESKTOP</span>
+                <span class="audio-spec-pill">48 kHz STEREO WAV + CELLO PAD DRONE</span>
+              </div>
+              <audio id="audio_course_03" class="native-audio-player" controls preload="metadata"
+                     ontimeupdate="syncCourseTranscript('course_03', this)">
+                <source src="assets/audio/narrator_03_generative_3d_vvvv.wav" type="audio/wav">
+                <source src="assets/audio/narrator_03_generative_3d_vvvv.mp3" type="audio/mpeg">
+              </audio>
+              <canvas id="wave_course_03" class="waveform-canvas" width="520" height="58" onclick="scrubWaveform(event, 'course_03')"></canvas>
+              <div class="audio-direct-links">
+                <a href="assets/audio/narrator_03_generative_3d_vvvv.wav" download>⬇ Download Master WAV (48 kHz)</a>
+                <span>·</span>
+                <a href="assets/audio/narrator_03_generative_3d_vvvv.mp3" download>⬇ Download MP3 (192 kbps)</a>
+                <span>·</span>
+                <a href="assets/starter_kits/course_03_generative_sacred_geometry_4v.zip" download>📦 course_03_generative_sacred_geometry_4v.zip</a>
+              </div>
+            </div>
+            <div class="narrator-transcript-col">
+              <div class="transcript-header">
+                <strong>SYNCHRONIZED STEP BY STEP NARRATOR TRANSCRIPT</strong>
+                <span>Click any module segment to jump &amp; highlight</span>
+              </div>
+              <div class="transcript-scroll" id="transcript_course_03">
+                <button type="button" class="transcript-seg" data-course="course_03" data-mod="1" onclick="seekNarratorSegment('course_03', 0, 6)"><span class="t-badge">MODULE 01</span> In Module One, we begin in TouchDesigner by converting a twelve division Circle SOP into CHOP channels to drive GPU instancing for interlocking eight, ten, and twelve fold architectural rosettes.</button><button type="button" class="transcript-seg" data-course="course_03" data-mod="2" onclick="seekNarratorSegment('course_03', 1, 6)"><span class="t-badge">MODULE 02</span> In Module Two, you explore node based raymarching with RayTK, blending Signed Distance Fields and polar symmetry without boilerplate shader code.</button><button type="button" class="transcript-seg" data-course="course_03" data-mod="3" onclick="seekNarratorSegment('course_03', 2, 6)"><span class="t-badge">MODULE 03</span> In Module Three, we cross into vvvv gamma, known as 4V, where live hot reload patching on top of dot NET lets you manipulate strongly typed Spreads and ForEach regions instantaneously.</button><button type="button" class="transcript-seg" data-course="course_03" data-mod="4" onclick="seekNarratorSegment('course_03', 3, 6)"><span class="t-badge">MODULE 04</span> In Module Four, you build a physically based 3D scene in VL Stride with glazed turquoise ceramic and satin gold materials.</button><button type="button" class="transcript-seg" data-course="course_03" data-mod="5" onclick="seekNarratorSegment('course_03', 4, 6)"><span class="t-badge">MODULE 05</span> In Module Five, you unlock VL Fuse to drive two hundred and fifty thousand GPU particles along curl noise SDF fields.</button><button type="button" class="transcript-seg" data-course="course_03" data-mod="6" onclick="seekNarratorSegment('course_03', 5, 6)"><span class="t-badge">MODULE 06</span> Finally, in Module Six, you organise clean Records and Cache regions and press F9 to compile a royalty free standalone Windows executable ready for permanent museum and gallery installations..</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Node Network Visualizer -->
+          
+        <div class="node-visualizer-box">
+          <div class="node-vis-header">
+            <div>
+              <span class="mono-tag">INTERACTIVE NODE GRAPH · CLICK ANY OPERATOR TO INSPECT SIGNAL FLOW</span>
+              <h4>Generative 3D Sacred Geometry, Realtime Shaders &amp; vvvv gamma (4V) Patching · Patch Architecture</h4>
+            </div>
+            <div class="node-legend">
+              <span class="leg-item"><i style="background:#D4882A"></i>TouchDesigner</span>
+              <span class="leg-item"><i style="background:#0E6BA8"></i>Unreal 5.8</span>
+              <span class="leg-item"><i style="background:#1B7F69"></i>vvvv 4V / Bridge</span>
+            </div>
+          </div>
+          <svg viewBox="0 0 910 300" class="node-graph-svg" aria-label="Interactive Node Network for Generative 3D Sacred Geometry, Realtime Shaders &amp; vvvv gamma (4V) Patching">
+            <path d="M 175 97 C 315.0 97, 315.0 97, 455 97" class="patch-wire" data-from="n1" data-to="n2" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 735 97 C 455.0 97, 455.0 227, 175 227" class="patch-wire" data-from="n3" data-to="n4" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 175 227 C 315.0 227, 315.0 227, 455 227" class="patch-wire" data-from="n4" data-to="n5" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 227 C 595.0 227, 595.0 227, 735 227" class="patch-wire" data-from="n5" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/>
+            
+              <g class="patch-node" transform="translate(60,55)" tabindex="0"
+                 data-node-id="n1" data-course="course_03"
+                 data-label="circle1 ·&gt; sopto1" data-engine="TouchDesigner"
+                 data-family="SOP / CHOP" data-role="8/10/12 Fold Parametric Coordinate Arrays"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · SOP / CHOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">circle1 ·&gt; sopto1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">8/10/12 Fold Parametric Coordina</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,55)" tabindex="0"
+                 data-node-id="n2" data-course="course_03"
+                 data-label="geo1 (Instancing) + raytk" data-engine="TouchDesigner"
+                 data-family="COMP / RayTK" data-role="GPU Sacred Rosette &amp; SDF Raymarching"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · COMP / RayTK</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">geo1 (Instancing) + raytk</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">GPU Sacred Rosette &amp; SDF Raymarc</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,55)" tabindex="0"
+                 data-node-id="n3" data-course="course_03"
+                 data-label="LinearSpread + ForEach" data-engine="vvvv gamma (4V)"
+                 data-family="VL Spreads" data-role="Strongly Typed .NET Parametric Patching"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1B7F69" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1B7F69"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">vvvv gamma (4V) · VL Spreads</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">LinearSpread + ForEach</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Strongly Typed .NET Parametric P</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1B7F69" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(60,185)" tabindex="0"
+                 data-node-id="n4" data-course="course_03"
+                 data-label="SDF + Compute Particles" data-engine="vvvv gamma (4V)"
+                 data-family="VL.Fuse" data-role="Real Time GPU Signed Distance Fields"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1B7F69" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1B7F69"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">vvvv gamma (4V) · VL.Fuse</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">SDF + Compute Particles</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Real Time GPU Signed Distance Fi</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1B7F69" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,185)" tabindex="0"
+                 data-node-id="n5" data-course="course_03"
+                 data-label="PBRMaterial + SceneWindow" data-engine="vvvv gamma (4V)"
+                 data-family="VL.Stride" data-role="Gold &amp; Ceramic Metallic Shading"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1B7F69" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1B7F69"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">vvvv gamma (4V) · VL.Stride</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">PBRMaterial + SceneWindow</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Gold &amp; Ceramic Metallic Shading</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1B7F69" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,185)" tabindex="0"
+                 data-node-id="n6" data-course="course_03"
+                 data-label="Standalone .exe" data-engine="Output"
+                 data-family=".NET Build" data-role="Royalty Free Kiosk &amp; Gallery Executable"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1589D6" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1589D6"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Output · .NET Build</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">Standalone .exe</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Royalty Free Kiosk &amp; Gallery Exe</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1589D6" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+          </svg>
+          <div class="node-inspector-bar" id="inspector_course_03">
+            <strong>Selected Operator:</strong> <span>Click any node above to inspect its exact TouchDesigner, Unreal Engine 5.8, or vvvv gamma 4V parameters and wiring role.</span>
+          </div>
+        </div>
+        
+
+          <!-- Complete 6-Module Step-by-Step Beginner Accordion -->
+          <div class="syllabus-section">
+            <div class="syllabus-header">
+              <h4>COMPLETE 6 MODULE STEP BY STEP BEGINNER SYLLABUS</h4>
+              <div class="syllabus-actions">
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_03', true)">Expand All 6 Modules</button>
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_03', false)">Collapse All</button>
+              </div>
+            </div>
+            <div class="modules-container" id="modules_course_03">
+              
+            <details class="module-accordion" open>
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 01</span>
+                  <span class="mod-title">Parametric Sacred Geometry &amp; GPU Instancing in TouchDesigner</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 1 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Transform simple Circle and Polygon SOP coordinates into intricate 8, 10, and 12 fold instanced mandalas.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Circle SOP (Divisions 8 / 10 / 12)</code></li><li><code>SOP to CHOP (tx, ty, tz channels)</code></li><li><code>Geometry COMP (Instancing On)</code></li><li><code>PBR MAT (Gold Metallic 0.9, Roughness 0.2)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Place a Circle SOP and set Divisions to 12 to establish a twelve fold Girih rosette ring.</span></li><li><span class="step-idx">STEP 02</span><span>Convert point coordinates to numeric channels using a SOP to CHOP.</span></li><li><span class="step-idx">STEP 03</span><span>Enable Instancing on a Geometry COMP containing a bevelled Box or Torus SOP, mapping tx, ty, tz and rotation rz.</span></li><li><span class="step-idx">STEP 04</span><span>Apply a PBR MAT with satin gold albedo and an Environment Light COMP for realistic architectural sheen.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> An interlocking twelve fold 3D sacred rosette rotates smoothly at 60 frames per second.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 02</span>
+                  <span class="mod-title">Node Based Raymarching &amp; SDFs with RayTK</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 2 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Construct smooth organic sacred geometries using Signed Distance Fields in TouchDesigner&#x27;s RayTK without raw GLSL boilerplate.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>RayTK: raymarchRender3d</code></li><li><code>RayTK: torusSdf, boxFrameSdf, simpleUnion</code></li><li><code>RayTK: moduloPolar (8 / 12 Fold Symmetry)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Drop in the RayTK starter palette and place a raymarchRender3d COMP.</span></li><li><span class="step-idx">STEP 02</span><span>Create a boxFrameSdf and pass it through a moduloPolar operator set to 8 or 12 repetitions.</span></li><li><span class="step-idx">STEP 03</span><span>Blend a pulsing central sphereSdf using smoothUnion for liquid metallic transitions.</span></li><li><span class="step-idx">STEP 04</span><span>Animate the polar twist parameter with a slow LFO CHOP.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A raymarched infinite sacred lattice morphs seamlessly in real time.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 03</span>
+                  <span class="mod-title">Welcome to vvvv gamma (4V): Live .NET Patching &amp; Spreads</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 3 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Understand vvvv gamma&#x27;s live compiling VL canvas, Spreads, and ForEach regions.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>VL: CircleSpread / LinearSpread</code></li><li><code>VL: ForEach Region (Spread Processing)</code></li><li><code>VL.Skia: Renderer &amp; Fill</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Open vvvv gamma and inspect the pre generated vvvv_course03_fuse_sdf_geometry.vl patch.</span></li><li><span class="step-idx">STEP 02</span><span>Double click the canvas to place a CircleSpread node with Count set to 24.</span></li><li><span class="step-idx">STEP 03</span><span>Wrap a transformation node inside a ForEach region so every spread slice renders independently.</span></li><li><span class="step-idx">STEP 04</span><span>Notice how changes compile instantaneously with zero pause or restart.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Your first strongly typed VL Spread generates an animated 2D sacred lattice in VL.Skia.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 04</span>
+                  <span class="mod-title">VL.Stride: Physically Based 3D Rendering in vvvv</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 4 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Render metallic gold and glazed turquoise ceramic 3D geometries in vvvv&#x27;s Stride 3D engine.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>VL.Stride: SceneWindow &amp; RootScene</code></li><li><code>VL.Stride: PBRMaterial &amp; DirectionalLight</code></li><li><code>VL.Stride: PostFX Bloom &amp; Ambient Occlusion</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Reference the VL.Stride package via the Document Menu Dependencies.</span></li><li><span class="step-idx">STEP 02</span><span>Build a RootScene containing a SkyboxLight, DirectionalLight, and instanced MeshEntity.</span></li><li><span class="step-idx">STEP 03</span><span>Create two PBRMaterial nodes: Deep Glazed Turquoise (#0E6BA8) and Brushed 24k Gold (#D4AF37).</span></li><li><span class="step-idx">STEP 04</span><span>Connect a SceneWindow and tune PostFX subtle bloom for warm architectural depth.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Photorealistic PBR 3D geometry renders inside vvvv gamma&#x27;s Stride viewport.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 05</span>
+                  <span class="mod-title">VL.Fuse: GPU SDFs, Curl Noise &amp; Million Particle Flows</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 5 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Patch high speed GPU compute shaders visually using VL.Fuse SDFs and particle systems.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>VL.Fuse: FuseContext &amp; ComputeSystem</code></li><li><code>VL.Fuse: TorusSDF / OctahedronSDF + CurlNoise3D</code></li><li><code>VL.Fuse: EmitParticles &amp; SpriteRenderer</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Add the VL.Fuse NuGet dependency and place a Fuse ComputeSystem.</span></li><li><span class="step-idx">STEP 02</span><span>Construct a procedural 3D Signed Distance Field using Fuse domain repetition and rotational symmetry.</span></li><li><span class="step-idx">STEP 03</span><span>Emit 250,000 GPU particles attracted along the SDF surface using a CurlNoise3D force field.</span></li><li><span class="step-idx">STEP 04</span><span>Shade particles with a colour ramp transitioning from Studio Ochre to Fulldome Teal.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> 250,000 GPU particles swirl effortlessly along sacred geometric attractors.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 06</span>
+                  <span class="mod-title">Records, Classes &amp; Exporting a Standalone Windows .exe</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 6 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Structure clean state using VL Records vs Classes and compile a royalty free standalone .exe for museum kiosks.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>VL: Record / Class Patch Definition</code></li><li><code>VL: Cache Region &amp; State Machine</code></li><li><code>vvvv Exporter (F9 ·&gt; Build Executable)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Encapsulate your symmetry fold count and rotation speed inside a clean VL Record.</span></li><li><span class="step-idx">STEP 02</span><span>Wrap heavy geometry generation inside a Cache region so it updates only when inputs change.</span></li><li><span class="step-idx">STEP 03</span><span>Press F9 to open the vvvv Application Exporter and choose your target output directory.</span></li><li><span class="step-idx">STEP 04</span><span>Compile and launch your standalone Windows executable on a fresh machine with zero TouchDesigner runtime license required.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A self contained Windows .exe gallery application boots straight into fullscreen 60 fps generative geometry.
+                </div>
+              </div>
+            </details>
+            
+            </div>
+          </div>
+        </article>
+        
+        <article class="course-showcase-card" id="course_04" style="--course-accent: #1B7F69;">
+          <div class="course-top-banner">
+            <div class="course-meta-row">
+              <span class="course-index-badge">COURSE 04</span>
+              <span class="course-tailored-badge">🇬🇧 Pervasive Media Studio (Watershed, Bristol) &amp; Interactive Gallery Commissions</span>
+              <span class="course-level-badge">Beginner to Pro · 6 Weeks · 6 Modules</span>
+            </div>
+            <div class="course-title-row">
+              <div>
+                <h3>Interactive Sensors, Body Tracking &amp; Pervasive Media Performance</h3>
+                <p class="course-subtitle">MediaPipe AI pose tracking, LiDAR depth &amp; OSC driving Unreal Niagara &amp; vvvv state machines</p>
+              </div>
+              <div class="course-cta-group">
+                <a href="assets/starter_kits/course_04_interactive_sensors_pervasive.zip" download class="btn-download-kit">
+                  ⬇ Download Starter Kit (.ZIP)
+                </a>
+                <button type="button" class="btn-play-narrator" onclick="toggleCourseAudio('course_04')">
+                  🎙️ Play British Narrator
+                </button>
+              </div>
+            </div>
+            <div class="stack-chips-row"><span class="stack-chip">TouchDesigner (MediaPipe AI Hand/Pose Tracking, Video Device In TOP)</span><span class="stack-chip">LiDAR / Depth Cameras &amp; Arduino / ESP32 Serial CHOP</span><span class="stack-chip">OSC In / Out CHOP with Filter &amp; Lag Hysteresis Smoothing</span><span class="stack-chip">Unreal Engine 5.8 Niagara Particles &amp; vvvv VL.OpenCV State Machines</span></div>
+          </div>
+
+          <!-- Embedded British Voice Narrator + Synchronized Transcript Player -->
+          <div class="narrator-studio-box">
+            <div class="narrator-controls-col">
+              <div class="narrator-header">
+                <span class="voice-pill">🇬🇧 BRITISH VOICE NARRATOR · MICROSOFT HAZEL DESKTOP</span>
+                <span class="audio-spec-pill">48 kHz STEREO WAV + CELLO PAD DRONE</span>
+              </div>
+              <audio id="audio_course_04" class="native-audio-player" controls preload="metadata"
+                     ontimeupdate="syncCourseTranscript('course_04', this)">
+                <source src="assets/audio/narrator_04_interactive_pervasive_media.wav" type="audio/wav">
+                <source src="assets/audio/narrator_04_interactive_pervasive_media.mp3" type="audio/mpeg">
+              </audio>
+              <canvas id="wave_course_04" class="waveform-canvas" width="520" height="58" onclick="scrubWaveform(event, 'course_04')"></canvas>
+              <div class="audio-direct-links">
+                <a href="assets/audio/narrator_04_interactive_pervasive_media.wav" download>⬇ Download Master WAV (48 kHz)</a>
+                <span>·</span>
+                <a href="assets/audio/narrator_04_interactive_pervasive_media.mp3" download>⬇ Download MP3 (192 kbps)</a>
+                <span>·</span>
+                <a href="assets/starter_kits/course_04_interactive_sensors_pervasive.zip" download>📦 course_04_interactive_sensors_pervasive.zip</a>
+              </div>
+            </div>
+            <div class="narrator-transcript-col">
+              <div class="transcript-header">
+                <strong>SYNCHRONIZED STEP BY STEP NARRATOR TRANSCRIPT</strong>
+                <span>Click any module segment to jump &amp; highlight</span>
+              </div>
+              <div class="transcript-scroll" id="transcript_course_04">
+                <button type="button" class="transcript-seg" data-course="course_04" data-mod="1" onclick="seekNarratorSegment('course_04', 0, 6)"><span class="t-badge">MODULE 01</span> In Module One, you begin with zero specialist hardware, using a standard webcam and MediaPipe inside TouchDesigner to track twenty one hand landmarks and thirty three body joints in real time.</button><button type="button" class="transcript-seg" data-course="course_04" data-mod="2" onclick="seekNarratorSegment('course_04', 1, 6)"><span class="t-badge">MODULE 02</span> In Module Two, we tame raw sensor noise using the Filter CHOP, Lag CHOP, and hysteresis thresholds so visitor gestures feel organic and responsive rather than jittery.</button><button type="button" class="transcript-seg" data-course="course_04" data-mod="3" onclick="seekNarratorSegment('course_04', 2, 6)"><span class="t-badge">MODULE 03</span> In Module Three, you expand into room scale LiDAR floor tracking, Blob Track TOPs, and wireless ESP32 serial sensors.</button><button type="button" class="transcript-seg" data-course="course_04" data-mod="4" onclick="seekNarratorSegment('course_04', 3, 6)"><span class="t-badge">MODULE 04</span> In Module Four, you transmit normalized tracking coordinates over OSC port 7000 straight into Unreal Engine 5.8, steering Niagara particle systems with live hand movements.</button><button type="button" class="transcript-seg" data-course="course_04" data-mod="5" onclick="seekNarratorSegment('course_04', 4, 6)"><span class="t-badge">MODULE 05</span> In Module Five, we build a deterministic Idle, Active, and Cooldown exhibition state machine in vvvv gamma with VL OpenCV.</button><button type="button" class="transcript-seg" data-course="course_04" data-mod="6" onclick="seekNarratorSegment('course_04', 5, 6)"><span class="t-badge">MODULE 06</span> Finally, in Module Six, you assemble a technician calibration dashboard and accessibility checklist for public gallery playtesting..</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Node Network Visualizer -->
+          
+        <div class="node-visualizer-box">
+          <div class="node-vis-header">
+            <div>
+              <span class="mono-tag">INTERACTIVE NODE GRAPH · CLICK ANY OPERATOR TO INSPECT SIGNAL FLOW</span>
+              <h4>Interactive Sensors, Body Tracking &amp; Pervasive Media Performance · Patch Architecture</h4>
+            </div>
+            <div class="node-legend">
+              <span class="leg-item"><i style="background:#D4882A"></i>TouchDesigner</span>
+              <span class="leg-item"><i style="background:#0E6BA8"></i>Unreal 5.8</span>
+              <span class="leg-item"><i style="background:#1B7F69"></i>vvvv 4V / Bridge</span>
+            </div>
+          </div>
+          <svg viewBox="0 0 910 300" class="node-graph-svg" aria-label="Interactive Node Network for Interactive Sensors, Body Tracking &amp; Pervasive Media Performance">
+            <path d="M 175 97 C 315.0 97, 315.0 97, 455 97" class="patch-wire" data-from="n1" data-to="n2" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 97 C 595.0 97, 595.0 97, 735 97" class="patch-wire" data-from="n2" data-to="n3" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 735 97 C 455.0 97, 455.0 227, 175 227" class="patch-wire" data-from="n3" data-to="n4" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 175 227 C 315.0 227, 315.0 227, 455 227" class="patch-wire" data-from="n4" data-to="n5" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 735 97 C 735.0 97, 735.0 227, 735 227" class="patch-wire" data-from="n3" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/>
+            
+              <g class="patch-node" transform="translate(60,55)" tabindex="0"
+                 data-node-id="n1" data-course="course_04"
+                 data-label="Webcam + LiDAR + ESP32" data-engine="Sensors"
+                 data-family="Camera / LiDAR" data-role="Raw Human Presence &amp; Hand Pose Capture"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Sensors · Camera / LiDAR</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">Webcam + LiDAR + ESP32</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Raw Human Presence &amp; Hand Pose C</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,55)" tabindex="0"
+                 data-node-id="n2" data-course="course_04"
+                 data-label="MediaPipe + BlobTrack" data-engine="TouchDesigner"
+                 data-family="COMP / TOP" data-role="21 Hand Landmarks &amp; 33 Body Joints"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · COMP / TOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">MediaPipe + BlobTrack</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">21 Hand Landmarks &amp; 33 Body Join</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,55)" tabindex="0"
+                 data-node-id="n3" data-course="course_04"
+                 data-label="filter1 + lag1 + math1" data-engine="TouchDesigner"
+                 data-family="CHOP" data-role="Jitter Removal &amp; Range Remapping"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · CHOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">filter1 + lag1 + math1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Jitter Removal &amp; Range Remapping</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(60,185)" tabindex="0"
+                 data-node-id="n4" data-course="course_04"
+                 data-label="oscout1 (Port 7000)" data-engine="Bridge"
+                 data-family="OSC / Serial" data-role="Low Latency Normalized Control Stream"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#24A186" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#24A186"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Bridge · OSC / Serial</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">oscout1 (Port 7000)</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Low Latency Normalized Control S</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#24A186" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,185)" tabindex="0"
+                 data-node-id="n5" data-course="course_04"
+                 data-label="NS_DomeFlow" data-engine="Unreal Engine 5.8"
+                 data-family="Niagara" data-role="Attractors &amp; Ribbon Trails Driven by Hands"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Unreal Engine 5.8 · Niagara</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">NS_DomeFlow</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Attractors &amp; Ribbon Trails Drive</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,185)" tabindex="0"
+                 data-node-id="n6" data-course="course_04"
+                 data-label="PresenceStateMachine" data-engine="vvvv gamma (4V)"
+                 data-family="VL.OpenCV" data-role="Idle / Active / Cooldown Exhibition States"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1B7F69" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1B7F69"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">vvvv gamma (4V) · VL.OpenCV</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">PresenceStateMachine</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Idle / Active / Cooldown Exhibit</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1B7F69" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+          </svg>
+          <div class="node-inspector-bar" id="inspector_course_04">
+            <strong>Selected Operator:</strong> <span>Click any node above to inspect its exact TouchDesigner, Unreal Engine 5.8, or vvvv gamma 4V parameters and wiring role.</span>
+          </div>
+        </div>
+        
+
+          <!-- Complete 6-Module Step-by-Step Beginner Accordion -->
+          <div class="syllabus-section">
+            <div class="syllabus-header">
+              <h4>COMPLETE 6 MODULE STEP BY STEP BEGINNER SYLLABUS</h4>
+              <div class="syllabus-actions">
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_04', true)">Expand All 6 Modules</button>
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_04', false)">Collapse All</button>
+              </div>
+            </div>
+            <div class="modules-container" id="modules_course_04">
+              
+            <details class="module-accordion" open>
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 01</span>
+                  <span class="mod-title">Zero Hardware Setup: Webcam AI Hand &amp; Pose Tracking with MediaPipe</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 1 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Track 21 hand landmarks and 33 body joints in real time using only a standard laptop webcam inside TouchDesigner.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Video Device In TOP (Webcam)</code></li><li><code>MediaPipe TouchDesigner Plugin COMP</code></li><li><code>Select CHOP (wrist_x, wrist_y, pinch_dist)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Place a Video Device In TOP and verify your webcam feed at 30 or 60 frames per second.</span></li><li><span class="step-idx">STEP 02</span><span>Drop in the MediaPipe TouchDesigner component and enable Hand and Pose landmark detection.</span></li><li><span class="step-idx">STEP 03</span><span>Use a Select CHOP to isolate normalized wrist X, wrist Y, and thumb to index pinch distance.</span></li><li><span class="step-idx">STEP 04</span><span>Observe how coordinates cleanly stay between zero and one regardless of performer height.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Raising or pinching your hand smoothly moves numeric channels inside TouchDesigner.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 02</span>
+                  <span class="mod-title">Signal Conditioning: Filter CHOP, Lag CHOP &amp; Hysteresis</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 2 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Eliminate raw sensor jitter and flickering triggers so gallery visitors feel fluid, organic responsiveness.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Filter CHOP (One Euro / Gaussian Width 0.12s)</code></li><li><code>Lag CHOP (Lag 0.18, Overshoot 0)</code></li><li><code>Logic CHOP + Speed CHOP (Gesture Velocity)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Pass raw MediaPipe channels into a Filter CHOP set to Gaussian smoothing with a 0.12 second window.</span></li><li><span class="step-idx">STEP 02</span><span>Follow with a Lag CHOP to add graceful weight and physical momentum to rapid arm sweeps.</span></li><li><span class="step-idx">STEP 03</span><span>Derive hand velocity using a Slope CHOP or Speed CHOP so gentle stillness creates calm visuals while sweeping gestures burst into particles.</span></li><li><span class="step-idx">STEP 04</span><span>Add a Trigger CHOP with hysteresis thresholds so presence detection never chatters at zone edges.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Visual curves glide like water with zero nervous camera jitter.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 03</span>
+                  <span class="mod-title">LiDAR Depth Zones &amp; Arduino / ESP32 Serial Sensors</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 3 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Read real distance telemetry from floor LiDAR sweeps or wireless ESP32 capacitive touch sensors.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Serial DAT / Serial CHOP (115200 baud)</code></li><li><code>OSC In CHOP (WiFi ESP32 telemetry)</code></li><li><code>Blob Track TOP (Depth Threshold Mask)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Connect a microcontroller via USB Serial DAT or WiFi OSC In CHOP.</span></li><li><span class="step-idx">STEP 02</span><span>Parse comma separated sensor values cleanly into named CHOP channels using Convert DAT and DAT to CHOP.</span></li><li><span class="step-idx">STEP 03</span><span>For camera or LiDAR depth feeds, apply a Threshold TOP followed by a Blob Track TOP to detect up to eight simultaneous visitors on a gallery floor.</span></li><li><span class="step-idx">STEP 04</span><span>Map visitor XY coordinates onto normalized room space.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Multiple floor positions and physical touch sensors trigger isolated channels simultaneously.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 04</span>
+                  <span class="mod-title">Driving Unreal Engine 5.8 Niagara Particles via OSC</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 4 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Stream live body tracking vectors from TouchDesigner into Unreal Engine 5.8 Niagara systems.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>TouchDesigner: OSC Out CHOP (Port 7000)</code></li><li><code>UE 5.8: OSC Server &amp; NS_DomeFlow Niagara User Parameters</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Bundle smoothed hand X, Y, Z and velocity channels into an OSC Out CHOP targeting 127.0.0.1 port 7000.</span></li><li><span class="step-idx">STEP 02</span><span>Inside Unreal Engine 5.8, run ue58_course04_osc_interactive_avatar.py to bind incoming OSC addresses to Niagara User Parameters.</span></li><li><span class="step-idx">STEP 03</span><span>Link wrist position to a Niagara Point Attractor force and pinch distance to particle spawn rate.</span></li><li><span class="step-idx">STEP 04</span><span>Test full round trip latency in real time Play In Editor mode.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Moving your hands in front of the webcam visibly steers swirling Unreal Engine 5.8 Niagara ribbons.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 05</span>
+                  <span class="mod-title">Deterministic Exhibition State Machines in vvvv (VL.OpenCV)</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 5 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Build a rock solid Idle, Attract, Active, and Cooldown installation state machine in vvvv gamma.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>VL.OpenCV: VideoIn &amp; BackgroundSubtractor</code></li><li><code>VL: Enum State Machine (Idle / Active / Cooldown)</code></li><li><code>VL: Stopwatch &amp; Damper</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Open vvvv_course04_state_machine_tracker.vl and inspect the four state Enum architecture.</span></li><li><span class="step-idx">STEP 02</span><span>Configure VL.OpenCV motion energy thresholds to transition cleanly from Idle Attract Mode into Active Performance.</span></li><li><span class="step-idx">STEP 03</span><span>Add a 6 second Cooldown timer so the installation gently returns to sanctuary mode after a visitor departs.</span></li><li><span class="step-idx">STEP 04</span><span>Test edge cases such as sudden lighting shifts or empty room periods.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> The installation autonomously cycles between calm attract mode and active interaction without manual intervention.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 06</span>
+                  <span class="mod-title">Pervasive Media Showcase Prep &amp; Live Performance Cueing</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 6 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Package an accessible public installation ready for Pervasive Media Studio Lunchtime Talks or gallery playtesting.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>TouchDesigner: Widget COMP Calibration UI</code></li><li><code>Auto Recovery Watchdog &amp; Calibration Overlay</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Build a clean one page technician dashboard using Widget COMPs for room lighting sensitivity and floor bounds.</span></li><li><span class="step-idx">STEP 02</span><span>Add a visual debug toggle (keyboard key D) that overlays tracked skeleton points for quick venue calibration.</span></li><li><span class="step-idx">STEP 03</span><span>Document sensor mounting heights, cable runs, and accessibility clearances for wheelchair and seated visitors.</span></li><li><span class="step-idx">STEP 04</span><span>Rehearse a three minute live demonstration combining body movement, visuals, and responsive sound.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A complete, accessible, visitor tested interactive system ready for public exhibition.
+                </div>
+              </div>
+            </details>
+            
+            </div>
+          </div>
+        </article>
+        
+        <article class="course-showcase-card" id="course_05" style="--course-accent: #5A189A;">
+          <div class="course-top-banner">
+            <div class="course-meta-row">
+              <span class="course-index-badge">COURSE 05</span>
+              <span class="course-tailored-badge">🇬🇧 Market Hall Spatial Audio Dome, Sound Bath Practitioners &amp; Audiovisual Performers</span>
+              <span class="course-level-badge">Beginner to Pro · 6 Weeks · 6 Modules</span>
+            </div>
+            <div class="course-title-row">
+              <div>
+                <h3>Sonic Arts, 3D Spatial Audio &amp; Neuro Sensory Audiovisual Performance</h3>
+                <p class="course-subtitle">Audio Spectrum CHOP, 36.4 Ambisonic panning, 4·7·8 frequencies &amp; Unreal MetaSounds</p>
+              </div>
+              <div class="course-cta-group">
+                <a href="assets/starter_kits/course_05_spatial_audio_sonic_performance.zip" download class="btn-download-kit">
+                  ⬇ Download Starter Kit (.ZIP)
+                </a>
+                <button type="button" class="btn-play-narrator" onclick="toggleCourseAudio('course_05')">
+                  🎙️ Play British Narrator
+                </button>
+              </div>
+            </div>
+            <div class="stack-chips-row"><span class="stack-chip">TouchDesigner (Audio Device In CHOP, Audio Spectrum CHOP, Audio Binaural)</span><span class="stack-chip">36.4 Multichannel Spatial Audio &amp; Ambisonic Panning</span><span class="stack-chip">Ableton Link / TD·Ableton Live Synchronization</span><span class="stack-chip">Unreal Engine 5.8 (MetaSounds &amp; Audio_ReactiveScaffold) + 4·7·8 Safe Mapping</span></div>
+          </div>
+
+          <!-- Embedded British Voice Narrator + Synchronized Transcript Player -->
+          <div class="narrator-studio-box">
+            <div class="narrator-controls-col">
+              <div class="narrator-header">
+                <span class="voice-pill">🇬🇧 BRITISH VOICE NARRATOR · MICROSOFT HAZEL DESKTOP</span>
+                <span class="audio-spec-pill">48 kHz STEREO WAV + CELLO PAD DRONE</span>
+              </div>
+              <audio id="audio_course_05" class="native-audio-player" controls preload="metadata"
+                     ontimeupdate="syncCourseTranscript('course_05', this)">
+                <source src="assets/audio/narrator_05_spatial_audio_sonic_performance.wav" type="audio/wav">
+                <source src="assets/audio/narrator_05_spatial_audio_sonic_performance.mp3" type="audio/mpeg">
+              </audio>
+              <canvas id="wave_course_05" class="waveform-canvas" width="520" height="58" onclick="scrubWaveform(event, 'course_05')"></canvas>
+              <div class="audio-direct-links">
+                <a href="assets/audio/narrator_05_spatial_audio_sonic_performance.wav" download>⬇ Download Master WAV (48 kHz)</a>
+                <span>·</span>
+                <a href="assets/audio/narrator_05_spatial_audio_sonic_performance.mp3" download>⬇ Download MP3 (192 kbps)</a>
+                <span>·</span>
+                <a href="assets/starter_kits/course_05_spatial_audio_sonic_performance.zip" download>📦 course_05_spatial_audio_sonic_performance.zip</a>
+              </div>
+            </div>
+            <div class="narrator-transcript-col">
+              <div class="transcript-header">
+                <strong>SYNCHRONIZED STEP BY STEP NARRATOR TRANSCRIPT</strong>
+                <span>Click any module segment to jump &amp; highlight</span>
+              </div>
+              <div class="transcript-scroll" id="transcript_course_05">
+                <button type="button" class="transcript-seg" data-course="course_05" data-mod="1" onclick="seekNarratorSegment('course_05', 0, 6)"><span class="t-badge">MODULE 01</span> In Module One, you learn to analyse live music inside TouchDesigner using the Audio Device In CHOP and logarithmic Audio Spectrum CHOP, extracting warm sub bass, midrange, and delicate upper harmonic envelopes.</button><button type="button" class="transcript-seg" data-course="course_05" data-mod="2" onclick="seekNarratorSegment('course_05', 1, 6)"><span class="t-badge">MODULE 02</span> In Module Two, we explore neurodivergent safe acoustic design, replacing fatiguing naked sine tones with warm Western chamber stems between 136.10 Hertz and 432 Hertz modulated by a calming nineteen second 4 7 8 breathing curve.</button><button type="button" class="transcript-seg" data-course="course_05" data-mod="3" onclick="seekNarratorSegment('course_05', 2, 6)"><span class="t-badge">MODULE 03</span> In Module Three, you animate 3D sound objects using the Audio Binaural CHOP and 36 point 4 Ambisonic dome panning.</button><button type="button" class="transcript-seg" data-course="course_05" data-mod="4" onclick="seekNarratorSegment('course_05', 3, 6)"><span class="t-badge">MODULE 04</span> In Module Four, you lock visuals directly to your DAW using Ableton Link and TD Ableton.</button><button type="button" class="transcript-seg" data-course="course_05" data-mod="5" onclick="seekNarratorSegment('course_05', 4, 6)"><span class="t-badge">MODULE 05</span> In Module Five, you step inside Unreal Engine 5.8 MetaSounds and Audio ReactiveScaffold to drive responsive lighting from live envelope followers.</button><button type="button" class="transcript-seg" data-course="course_05" data-mod="6" onclick="seekNarratorSegment('course_05', 5, 6)"><span class="t-badge">MODULE 06</span> And in Module Six, you assemble all four acoustic zones into a touring live performance set calibrated to studio loudness standards..</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Node Network Visualizer -->
+          
+        <div class="node-visualizer-box">
+          <div class="node-vis-header">
+            <div>
+              <span class="mono-tag">INTERACTIVE NODE GRAPH · CLICK ANY OPERATOR TO INSPECT SIGNAL FLOW</span>
+              <h4>Sonic Arts, 3D Spatial Audio &amp; Neuro Sensory Audiovisual Performance · Patch Architecture</h4>
+            </div>
+            <div class="node-legend">
+              <span class="leg-item"><i style="background:#D4882A"></i>TouchDesigner</span>
+              <span class="leg-item"><i style="background:#0E6BA8"></i>Unreal 5.8</span>
+              <span class="leg-item"><i style="background:#1B7F69"></i>vvvv 4V / Bridge</span>
+            </div>
+          </div>
+          <svg viewBox="0 0 910 300" class="node-graph-svg" aria-label="Interactive Node Network for Sonic Arts, 3D Spatial Audio &amp; Neuro Sensory Audiovisual Performance">
+            <path d="M 175 97 C 315.0 97, 315.0 97, 455 97" class="patch-wire" data-from="n1" data-to="n2" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 735 97 C 595.0 97, 595.0 97, 455 97" class="patch-wire" data-from="n3" data-to="n2" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 97 C 315.0 97, 315.0 227, 175 227" class="patch-wire" data-from="n2" data-to="n4" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 97 C 455.0 97, 455.0 227, 455 227" class="patch-wire" data-from="n2" data-to="n5" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 175 227 C 455.0 227, 455.0 227, 735 227" class="patch-wire" data-from="n4" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/><path d="M 455 227 C 595.0 227, 595.0 227, 735 227" class="patch-wire" data-from="n5" data-to="n6" fill="none" stroke="#D4882A" stroke-width="2.8" stroke-dasharray="6 4"/>
+            
+              <g class="patch-node" transform="translate(60,55)" tabindex="0"
+                 data-node-id="n1" data-course="course_05"
+                 data-label="48 kHz Stems + Ableton Link" data-engine="Audio Input"
+                 data-family="Chamber / DAW" data-role="Cello, Felt Piano &amp; 136.10 to 432 Hz Bowls"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Audio Input · Chamber / DAW</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">48 kHz Stems + Ableton Lin</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Cello, Felt Piano &amp; 136.10 to 43</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,55)" tabindex="0"
+                 data-node-id="n2" data-course="course_05"
+                 data-label="audiospectrum1 + analyze1" data-engine="TouchDesigner"
+                 data-family="CHOP" data-role="Sub Bass, Warm Mid &amp; Air Band Extraction"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · CHOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">audiospectrum1 + analyze1</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Sub Bass, Warm Mid &amp; Air Band Ex</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,55)" tabindex="0"
+                 data-node-id="n3" data-course="course_05"
+                 data-label="4·7·8 Breath LFO (19.0 s)" data-engine="TouchDesigner"
+                 data-family="CHOP" data-role="4s Inhale / 7s Hold / 8s Exhale Envelope"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · CHOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">4·7·8 Breath LFO (19.0 s)</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">4s Inhale / 7s Hold / 8s Exhale </text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(60,185)" tabindex="0"
+                 data-node-id="n4" data-course="course_05"
+                 data-label="audiobinaural1 / Ambisonics" data-engine="TouchDesigner"
+                 data-family="CHOP" data-role="36.4 Dome &amp; Headphone Spatial Panning"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#D4882A" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#D4882A"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">TouchDesigner · CHOP</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">audiobinaural1 / Ambisonic</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">36.4 Dome &amp; Headphone Spatial Pa</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#D4882A" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(340,185)" tabindex="0"
+                 data-node-id="n5" data-course="course_05"
+                 data-label="Audio_ReactiveScaffold" data-engine="Unreal Engine 5.8"
+                 data-family="MetaSounds" data-role="Procedural Soundscapes &amp; Dome Glow Sync"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#0E6BA8" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#0E6BA8"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Unreal Engine 5.8 · MetaSounds</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">Audio_ReactiveScaffold</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Procedural Soundscapes &amp; Dome Gl</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#0E6BA8" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+              <g class="patch-node" transform="translate(620,185)" tabindex="0"
+                 data-node-id="n6" data-course="course_05"
+                 data-label="audiodeviceout1 + Visuals" data-engine="Output"
+                 data-family="Dome / Stereo" data-role="Neurodivergent Safe Spatial Performance"
+                 onclick="inspectPatchNode(this)">
+                <rect width="230" height="84" rx="10" fill="#0B0F17" stroke="#1589D6" stroke-width="2.2"/>
+                <rect width="230" height="24" rx="8" fill="#1589D6"/>
+                <text x="12" y="16" fill="#FAF7F2" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700">Output · Dome / Stereo</text>
+                <text x="12" y="46" fill="#FAF7F2" font-family="Space Grotesk, sans-serif" font-size="13.5" font-weight="700">audiodeviceout1 + Visuals</text>
+                <text x="12" y="68" fill="#D4882A" font-family="Inter, sans-serif" font-size="11">Neurodivergent Safe Spatial Perf</text>
+                <circle cx="0" cy="42" r="5" fill="#FAF7F2" stroke="#1589D6" stroke-width="2"/>
+                <circle cx="230" cy="42" r="5" fill="#D4882A" stroke="#FAF7F2" stroke-width="2"/>
+              </g>
+            
+          </svg>
+          <div class="node-inspector-bar" id="inspector_course_05">
+            <strong>Selected Operator:</strong> <span>Click any node above to inspect its exact TouchDesigner, Unreal Engine 5.8, or vvvv gamma 4V parameters and wiring role.</span>
+          </div>
+        </div>
+        
+
+          <!-- Complete 6-Module Step-by-Step Beginner Accordion -->
+          <div class="syllabus-section">
+            <div class="syllabus-header">
+              <h4>COMPLETE 6 MODULE STEP BY STEP BEGINNER SYLLABUS</h4>
+              <div class="syllabus-actions">
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_05', true)">Expand All 6 Modules</button>
+                <button type="button" class="btn-sm-outline" onclick="toggleAllModules('course_05', false)">Collapse All</button>
+              </div>
+            </div>
+            <div class="modules-container" id="modules_course_05">
+              
+            <details class="module-accordion" open>
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 01</span>
+                  <span class="mod-title">Acoustic Anatomy Inside TouchDesigner CHOPs</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 1 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Bring live microphone or studio audio into TouchDesigner and isolate sub bass, warm mid, and upper harmonic bands.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Audio Device In CHOP / Audio File In CHOP</code></li><li><code>Audio Spectrum CHOP (Logarithmic Frequency Scale)</code></li><li><code>Trim CHOP + Analyze CHOP (RMS Power)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Place an Audio File In CHOP loaded with the starter 48 kHz Western chamber and singing bowl stem.</span></li><li><span class="step-idx">STEP 02</span><span>Wire it into an Audio Spectrum CHOP and enable Logarithmic Scaling so musical octaves occupy equal visual width.</span></li><li><span class="step-idx">STEP 03</span><span>Use three Trim CHOPs followed by Analyze CHOPs set to RMS Average to extract Sub Bass (40 to 160 Hz), Warm Mid (160 to 1200 Hz), and Air (1.2 to 4 kHz).</span></li><li><span class="step-idx">STEP 04</span><span>Smooth each band with a Lag CHOP so visual geometry swells naturally with bowed cello phrasing.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Three clean, musical CHOP envelopes track cello resonance, piano chords, and bowl shimmer.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 02</span>
+                  <span class="mod-title">Neurodivergent Safe Acoustic Design &amp; 4·7·8 Vagal Coherence</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 2 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Understand why naked sine waves cause auditory fatigue and build a 19 second 4·7·8 breathing envelope modulating 136.10 Hz to 432 Hz voicings.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Audio Filter CHOP (Low Pass Softening &lt; 2.0 kHz)</code></li><li><code>Animation COMP / Pattern CHOP (4s Inhale, 7s Hold, 8s Exhale)</code></li><li><code>Math CHOP (Luminance Cap &lt;= 55 percent Matte)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Build a 19.0 second cyclic Pattern CHOP following the exact 4 second inhale rise, 7 second hold plateau, and 8 second exhale release.</span></li><li><span class="step-idx">STEP 02</span><span>Apply a gentle Audio Filter CHOP rolling off harsh partials above 2.0 kilohertz to protect listeners with hyperacusis.</span></li><li><span class="step-idx">STEP 03</span><span>Map the 4·7·8 curve simultaneously to audio swell (+3.5 dB) and dome horizon colour warmth.</span></li><li><span class="step-idx">STEP 04</span><span>Cap visual emissive brightness below 55 percent matte value with zero sudden flashes.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Audio and visuals breathe together in an unhurried, deeply calming 19 second vagal coherence cycle.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 03</span>
+                  <span class="mod-title">3D Spatial Audio: Binaural Headphones &amp; 36.4 Dome Panning</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 3 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Move sound objects smoothly in counter clockwise orbits around a 3D hemisphere for both binaural headphones and multi speaker domes.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Audio Binaural CHOP (Azimuth &amp; Elevation)</code></li><li><code>Audio Oscillator CHOP / Stem Routing</code></li><li><code>LFO CHOP (0.6 RPM Counter Clockwise Orbit)</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Feed a concert harp or flute stem into an Audio Binaural CHOP for instant 3D spatialisation over standard studio headphones.</span></li><li><span class="step-idx">STEP 02</span><span>Drive the Azimuth parameter with a slow counter clockwise ramp between 0.5 and 1.2 revolutions per minute.</span></li><li><span class="step-idx">STEP 03</span><span>Inspect how the 36.4 Ambisonic and speaker ring matrix scales the exact same azimuth and elevation coordinates to Market Hall&#x27;s spatial array.</span></li><li><span class="step-idx">STEP 04</span><span>Verify smooth crossfades across speaker quadrants with zero phase cancellation.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Closing your eyes with headphones reveals sounds gliding gently around and above your head.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 04</span>
+                  <span class="mod-title">Ableton Link &amp; TD·Ableton Bidirectional DAW Sync</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 4 · 105 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Lock TouchDesigner visuals to Ableton Live bars, beats, MIDI clips, and automation lanes in real time.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Ableton Link CHOP (Beat / Phase Sync)</code></li><li><code>Palette ·&gt; TD·Ableton Package</code></li><li><code>OSC / MIDI In CHOP</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Place an Ableton Link CHOP and toggle Link Active to share sample accurate tempo over local WiFi or localhost.</span></li><li><span class="step-idx">STEP 02</span><span>Connect Beat and Phase channels to trigger subtle geometric phase shifts on musical downbeats.</span></li><li><span class="step-idx">STEP 03</span><span>Use TD·Ableton or MIDI In CHOP to capture live MIDI note velocity from a felt piano controller.</span></li><li><span class="step-idx">STEP 04</span><span>Verify zero drift across a continuous five minute live performance loop.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Visual geometry and DAW tempo stay sample locked across live tempo changes.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 05</span>
+                  <span class="mod-title">Unreal Engine 5.8 MetaSounds &amp; Audio_ReactiveScaffold</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 5 · 120 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Author procedural audio graphs inside Unreal Engine 5.8 MetaSounds and connect Audio_ReactiveScaffold to dome materials.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>UE 5.8: MetaSound Source Asset</code></li><li><code>UE 5.8: Audio_ReactiveScaffold AmbientSound</code></li><li><code>UE 5.8: Envelope Follower ·&gt; Material Parameter Collection</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Open Unreal Engine 5.8 and create a MetaSound Source blending a 136.10 Hz fundamental with warm harmonic fifths.</span></li><li><span class="step-idx">STEP 02</span><span>Run ue58_course05_metasounds_478_breath.py to configure Audio_ReactiveScaffold parameters inside the dome scene.</span></li><li><span class="step-idx">STEP 03</span><span>Bind Unreal&#x27;s Audio Envelope Follower to a Material Parameter Collection driving subtle golden bevel luminosity.</span></li><li><span class="step-idx">STEP 04</span><span>Cross check level matching with TouchDesigner&#x27;s OSC frequency triggers.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> Unreal Engine 5.8 synthesizes and reacts to spatial sound directly inside the 3D dome environment.
+                </div>
+              </div>
+            </details>
+            
+            <details class="module-accordion" >
+              <summary class="module-summary">
+                <div class="mod-left">
+                  <span class="mod-num">MODULE 06</span>
+                  <span class="mod-title">Live Audiovisual Set Architecture &amp; Sound Bath Recording</span>
+                </div>
+                <div class="mod-right">
+                  <span class="mod-dur">Week 6 · 90 mins</span>
+                  <span class="mod-chevron">▾</span>
+                </div>
+              </summary>
+              <div class="module-body">
+                <p class="mod-outcome"><strong>Learning Outcome:</strong> Combine spatial stems, TouchDesigner spectrum visuals, and Unreal MetaSounds into a touring live audiovisual set.</p>
+                <div class="mod-grid">
+                  <div class="mod-ops-card">
+                    <h5>PRESS TAB &amp; PLACE OPERATORS</h5>
+                    <ul class="ops-list"><li><code>Switch COMP / Scene Crossfader (4 TAWAF Zones)</code></li><li><code>Audio Movie Out / 48 kHz Multitrack Master</code></li></ul>
+                  </div>
+                  <div class="mod-steps-card">
+                    <h5>BEGINNER STEP BY STEP WIRING &amp; PARAMETERS</h5>
+                    <ol class="steps-list"><li><span class="step-idx">STEP 01</span><span>Organise your four sonic movements (Grounding 136.10 Hz, Compassion 396 to 432 Hz, Clarity 528 Hz, Integration 480 Hz) behind a smooth crossfade Switch.</span></li><li><span class="step-idx">STEP 02</span><span>Map hardware MIDI faders or a clean touch UI to transition effortlessly during live sets.</span></li><li><span class="step-idx">STEP 03</span><span>Measure final stereo master loudness (target minus 16 LUFS, zero clipped samples, soft high frequency roll off).</span></li><li><span class="step-idx">STEP 04</span><span>Export a synchronised audiovisual demo reel ready for Market Hall or touring festivals.</span></li></ol>
+                  </div>
+                </div>
+                <div class="mod-checkpoint">
+                  <strong>✓ Verification Checkpoint:</strong> A complete, calming, studio calibrated audiovisual performance set ready for live dome audiences.
+                </div>
+              </div>
+            </details>
+            
+            </div>
+          </div>
+        </article>
+        
+
+  <!-- THE NODE INSTITUTE RESEARCH & BENCHMARK SECTION -->
+  <section class="section-header" id="node-benchmark">
+    <div class="eyebrow">COMPETITIVE CURRICULUM AUDIT · THENODEINSTITUTE.ORG</div>
+    <h2>THE NODE INSTITUTE BENCHMARK &amp; HOW MO360 IMMERSIVE LAB EXTENDS IT</h2>
+    <p>Our curriculum is benchmarked against The NODE Institute in Berlin (TouchDesigner &amp; vvvv gamma seasonal programme) and extended specifically for Plymouth, Devonport Market Hall 15m Fulldome Cinema, Real Ideas heritage spaces, and Pervasive Media Studio Bristol.</p>
+  </section>
+
+  <div class="benchmark-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <strong style="color:#D4882A;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">PUBLICATION GRADE RESEARCH DOSSIER</strong>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.45rem;">The NODE Institute vs Mo360 Immersive Lab · Technical Comparison Matrix</h3>
+      </div>
+      <a href="node_institute_touchdesigner_vvvv_study.md" download class="btn-download-kit">📄 Download Full NODE Institute Study (.MD)</a>
+    </div>
+
+    <div class="bench-table-wrap">
+      <table class="bench-table">
+        <thead>
+          <tr>
+            <th>Curriculum Dimension</th>
+            <th>The NODE Institute (Berlin · Global Standard)</th>
+            <th>Mo360 Immersive Lab (Plymouth &amp; South West Extension)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Delivery Format &amp; Pacing</strong></td>
+            <td>Seasonal Spring/Summer &amp; Autumn/Winter live Zoom cohorts + archived video recordings across 4 pricing tiers.</td>
+            <td>Always online, self paced modular workbench with embedded British Voice Narrator, synchronized transcripts, and instant .zip starter kits.</td>
+          </tr>
+          <tr>
+            <td><strong>Fulldome 180° Fisheye Pipeline</strong></td>
+            <td>Taught as specialized single workshops inside advanced TouchDesigner tracks.</td>
+            <td>Flagship Course 01 dedicated to the 15m Market Hall Dome in Devonport: CubeMap to 4096x4096 Equidistant Fisheye + Unreal 5.8 BP_DomeMasterRig.</td>
+          </tr>
+          <tr>
+            <td><strong>TouchDesigner + Unreal 5.8 + vvvv 4V Tri Bridge</strong></td>
+            <td>TouchDesigner and vvvv gamma (VL.Stride / VL.Fuse) taught in separate seasonal silos.</td>
+            <td>Unified tri engine workflow: every starter kit includes a TouchDesigner .py builder, an Unreal 5.8 .py script, and a valid vvvv gamma .vl XML patch.</td>
+          </tr>
+          <tr>
+            <td><strong>3D LiDAR &amp; Heritage Projection Mapping</strong></td>
+            <td>Covers KantanMapper and CamSchnappr fundamentals on generic 3D primitives.</td>
+            <td>Course 02 integrates real Polycam &amp; LiDAR point cloud scans of Plymouth heritage facades (Devonport Guildhall, Royal William Yard) with CamSchnappr.</td>
+          </tr>
+          <tr>
+            <td><strong>Spatial Audio &amp; Neuro Sensory Design</strong></td>
+            <td>Covers standard CHOP audio spectrum analysis and OSC triggers.</td>
+            <td>Course 05 integrates 36.4 Market Hall spatial audio, Unreal MetaSounds, Western chamber instruments, and 4·7·8 neurodivergent friendly breathing envelopes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ANTIGRAVITY <-> TOUCHDESIGNER + UNREAL 5.8 + VVVV LIVE BRIDGE PANEL -->
+  <section class="bridge-panel" id="live-bridge">
+    <div class="eyebrow" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#D4882A;letter-spacing:0.18em;">LIVE MCP &amp; PROCEDURAL AUTOMATION TOOLKIT</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:2rem;margin:0.4rem 0;">ANTIGRAVITY ⇄ TOUCHDESIGNER + UNREAL 5.8 + VVVV (4V) LIVE BRIDGE</h2>
+    <p style="color:rgba(250,247,242,0.84);max-width:880px;">
+      Antigravity controls TouchDesigner live over HTTP JSON·RPC (<code>WebServer DAT :9980</code>), raw TCP (<code>:9981</code>), and UDP OSC (<code>:9000</code>), executes headless and live scripts in Unreal Engine 5.8 (<code>Remote Control :30010</code> &amp; <code>OSC :7000</code>), and generates valid <code>vvvv gamma (4V)</code> <code>.vl</code> XML patches (<code>OSC :8000</code>). Click any preset below to inspect the live payload:
+    </p>
+
+    <div class="bridge-grid">
+      <div class="preset-btn-list">
+        <button type="button" class="preset-cmd-btn active" onclick="showBridgePreset(0, this)">
+          <span>PRESET 01 · TOUCHDESIGNER PORT 9980</span>
+          Build 4096x4096 180° Fisheye Domemaster Rig
+        </button>
+        <button type="button" class="preset-cmd-btn" onclick="showBridgePreset(1, this)">
+          <span>PRESET 02 · TOUCHDESIGNER + LIDAR</span>
+          Spawn Point File In TOP + KantanMapper + CamSchnappr
+        </button>
+        <button type="button" class="preset-cmd-btn" onclick="showBridgePreset(2, this)">
+          <span>PRESET 03 · VVVV GAMMA 4V (.VL XML)</span>
+          Generate VL.Stride + VL.Fuse Sacred Geometry Patch
+        </button>
+        <button type="button" class="preset-cmd-btn" onclick="showBridgePreset(3, this)">
+          <span>PRESET 04 · UNREAL ENGINE 5.8 + OSC :7000</span>
+          Sync MediaPipe Hand Tracking &amp; 4·7·8 Breath to Niagara
+        </button>
+      </div>
+      <div>
+        <pre class="code-terminal" id="bridgeTerminal"># Preset 01 · TouchDesigner WebServer DAT (:9980) JSON·RPC Payload
+POST http://127.0.0.1:9980/api/exec
+Content·Type: application/json
+
+{
+  "action": "build_domemaster_rig",
+  "project": "Mo360_Course01_Fulldome_180",
+  "resolution": [4096, 4096],
+  "fps": 30,
+  "operators": [
+    {"type": "renderTOP", "name": "render_cubemap", "mode": "CubeMap", "res": [2048, 2048]},
+    {"type": "projectionTOP", "name": "proj_fisheye180", "output": "Fisheye", "fov": 180, "res": [4096, 4096]},
+    {"type": "spoutOutTOP", "name": "spout_to_ue58", "sender": "Mo360_Domemaster_4K"},
+    {"type": "moviefileoutTOP", "name": "domemaster_rec", "codec": "H264"}
+  ]
+}</pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <strong>Mo360 Immersive Lab · Mo360 Immersive Studio</strong> · Plymouth, Devon, United Kingdom 🇬🇧<br>
+      Founded &amp; Curated by <strong>Mohamed Hossam Elwakil</strong> · Visual Artist, Creative Technologist, Curator, and Creative Director<br>
+      Experience across The Box Museum, KARST Gallery, MIRROR Gallery, Ars Electronica, and the Egyptian Museum in Cairo.
+    </div>
+    <div style="text-align:right;font-family:'JetBrains Mono',monospace;">
+      <div>SOLE UK PHONE: <a href="tel:+447568668918" style="color:#D4882A;text-decoration:none;font-weight:700;">+44 7568 668918</a></div>
+      <div style="margin-top:0.3rem;">
+        <a href="../index.html" style="color:#FAF7F2;">Mo360 Studio</a> ·
+        <a href="../creative-coding-plymouth/index.html" style="color:#7CC8F8;">Creative Coding Plymouth</a> ·
+        <a href="../figureheads/index.html" style="color:#FAF7F2;">3D Figureheads</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 1. Hero Interactive 180° Fulldome & Node Graph Canvas
+  (function initHeroCanvas() {
+    const canvas = document.getElementById('heroDomeCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let t = 0;
+    function draw() {
+      t += 0.018;
+      const w = canvas.width, h = canvas.height;
+      ctx.fillStyle = '#06090F';
+      ctx.fillRect(0, 0, w, h);
+
+      const cx = w * 0.5, cy = h * 0.5;
+      const rMax = Math.min(w, h) * 0.43;
+
+      // Geodesic rings
+      [1.0, 0.72, 0.44].forEach((scale, idx) => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, rMax * scale, 0, Math.PI * 2);
+        ctx.strokeStyle = idx === 0 ? '#D4882A' : (idx === 1 ? '#0E6BA8' : '#1B7F69');
+        ctx.lineWidth = idx === 0 ? 2.2 : 1.3;
+        ctx.stroke();
+      });
+
+      // Rotating 12-fold sacred star chords inside the dome
+      const nFold = 12;
+      for (let i = 0; i < nFold; i++) {
+        const a1 = (i / nFold) * Math.PI * 2 - t * 0.6;
+        const a2 = ((i + 5) / nFold) * Math.PI * 2 - t * 0.6;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a1) * rMax * 0.92, cy + Math.sin(a1) * rMax * 0.92);
+        ctx.lineTo(cx + Math.cos(a2) * rMax * 0.92, cy + Math.sin(a2) * rMax * 0.92);
+        ctx.strokeStyle = i % 2 === 0 ? 'rgba(212, 136, 42, 0.45)' : 'rgba(14, 107, 168, 0.45)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#FAF7F2';
+      ctx.font = '700 11px JetBrains Mono, monospace';
+      ctx.fillText('180° FULLDOME SIMULATOR · 4096x4096', 14, 22);
+      ctx.fillStyle = '#D4882A';
+      ctx.fillText('CCW TAWAF HARMONIC · 4·7·8 BREATH SYNC', 14, h - 12);
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // 2. Waveform Renderer & Audio Synchronizer
+  const courseIds = ['course_01', 'course_02', 'course_03', 'course_04', 'course_05'];
+  function drawWaveform(cid, progressRatio) {
+    const canvas = document.getElementById('wave_' + cid);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    ctx.fillStyle = '#0D131F';
+    ctx.fillRect(0, 0, w, h);
+
+    const bars = 64;
+    const seed = cid.charCodeAt(cid.length - 1);
+    for (let i = 0; i < bars; i++) {
+      const x = (i / bars) * w + 3;
+      const norm = Math.abs(Math.sin(i * 0.45 + seed) * Math.cos(i * 0.19));
+      const bh = Math.max(8, norm * (h - 14));
+      const y = (h - bh) / 2;
+      const played = (i / bars) <= progressRatio;
+      ctx.fillStyle = played ? '#D4882A' : '#0E6BA8';
+      ctx.fillRect(x, y, 5, bh);
+    }
+  }
+  courseIds.forEach(cid => drawWaveform(cid, 0));
+
+  function toggleCourseAudio(cid) {
+    const audio = document.getElementById('audio_' + cid);
+    if (!audio) return;
+    if (audio.paused) {
+      document.querySelectorAll('audio').forEach(a => { if (a !== audio) a.pause(); });
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }
+
+  function syncCourseTranscript(cid, audioEl) {
+    const dur = audioEl.duration || 110;
+    const cur = audioEl.currentTime || 0;
+    const ratio = Math.min(1, Math.max(0, cur / dur));
+    drawWaveform(cid, ratio);
+
+    const segs = document.querySelectorAll('#transcript_' + cid + ' .transcript-seg');
+    if (!segs.length) return;
+    const activeIdx = Math.min(segs.length - 1, Math.floor(ratio * segs.length));
+    segs.forEach((seg, idx) => {
+      seg.classList.toggle('active', idx === activeIdx);
+    });
+  }
+
+  function seekNarratorSegment(cid, segIdx, totalSegs) {
+    const audio = document.getElementById('audio_' + cid);
+    if (!audio) return;
+    const dur = audio.duration || 105;
+    audio.currentTime = (segIdx / totalSegs) * dur;
+    audio.play();
+  }
+
+  function scrubWaveform(ev, cid) {
+    const canvas = document.getElementById('wave_' + cid);
+    const audio = document.getElementById('audio_' + cid);
+    if (!canvas || !audio) return;
+    const rect = canvas.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
+    audio.currentTime = ratio * (audio.duration || 105);
+    drawWaveform(cid, ratio);
+  }
+
+  // 3. Interactive Node Inspector
+  function inspectPatchNode(el) {
+    const cid = el.getAttribute('data-course');
+    const lbl = el.getAttribute('data-label');
+    const eng = el.getAttribute('data-engine');
+    const fam = el.getAttribute('data-family');
+    const role = el.getAttribute('data-role');
+    const box = document.getElementById('inspector_' + cid);
+    if (box) {
+      box.innerHTML = '<strong>[' + eng + ' · ' + fam + '] ' + lbl + ':</strong> <span>' + role + ' (Included in downloadable .zip starter kit)</span>';
+    }
+  }
+
+  // 4. Expand / Collapse All Syllabus Modules
+  function toggleAllModules(cid, expand) {
+    const container = document.getElementById('modules_' + cid);
+    if (!container) return;
+    container.querySelectorAll('details.module-accordion').forEach(d => {
+      d.open = expand;
+    });
+  }
+
+  // 5. Antigravity Live Bridge Presets
+  const bridgePresets = [
+`# Preset 01 · TouchDesigner WebServer DAT (:9980) JSON·RPC Payload
+POST http://127.0.0.1:9980/api/exec
+Content·Type: application/json
+
+{
+  "action": "build_domemaster_rig",
+  "project": "Mo360_Course01_Fulldome_180",
+  "resolution": [4096, 4096],
+  "fps": 30,
+  "operators": [
+    {"type": "renderTOP", "name": "render_cubemap", "mode": "CubeMap", "res": [2048, 2048]},
+    {"type": "projectionTOP", "name": "proj_fisheye180", "output": "Fisheye", "fov": 180, "res": [4096, 4096]},
+    {"type": "spoutOutTOP", "name": "spout_to_ue58", "sender": "Mo360_Domemaster_4K"},
+    {"type": "moviefileoutTOP", "name": "domemaster_rec", "codec": "H264"}
+  ]
+}`,
+`# Preset 02 · Architectural Projection Mapping & 3D LiDAR Point Cloud Setup
+POST http://127.0.0.1:9980/api/create
+Content·Type: application/json
+
+{
+  "course": "Course_02_Projection_Mapping_Scanner",
+  "scan_asset": " Devonport_MarketHall_LiDAR.ply",
+  "pipeline": [
+    {"op": "pointfileinTOP", "name": "lidar_scan_in", "file": "Devonport_MarketHall_LiDAR.ply"},
+    {"op": "kantanMapperCOMP", "name": "kantan_facade_masks", "res": [1920, 1080]},
+    {"op": "camSchnapprCOMP", "name": "camschnappr_6point_calib", "fov_solve": true}
+  ]
+}`,
+`<!-- Preset 03 · vvvv gamma 4V (.vl XML) Generative Sacred Geometry Patch -->
+<Document xmlns="https://vvvv.org/vl" LanguageVersion="2024.6.7">
+  <NugetDependency Id="VL.Stride" Version="2024.6.7" />
+  <NugetDependency Id="VL.Fuse" Version="1.0.3" />
+  <Patch Id="Mo360_Course03_SacredGeometry_4V">
+    <Node Name="RubElHizb_8Fold_SDF" Category="Fuse.SDF.3D" />
+    <Node Name="PBR_GoldCeramic_Material" Category="Stride.Materials" />
+    <Node Name="SceneWindow_SpoutOut" Category="Stride.Rendering" />
+  </Patch>
+</Document>`,
+`# Preset 04 · Unreal Engine 5.8 Remote Control (:30010) & UDP OSC (:7000)
+PUT http://127.0.0.1:30010/remote/object/call
+Content·Type: application/json
+
+{
+  "objectPath": "/Game/TAWAF_DomeTest.TAWAF_DomeTest:PersistentLevel.BP_DomeMasterRig_C_1",
+  "functionName": "ApplyNeuroBreathAndMediaPipeOSC",
+  "parameters": {
+    "OscListenPort": 7000,
+    "BreathCycle_4_7_8_Phase": 0.618,
+    "FundamentalHz": 136.10,
+    "HarmonicHz": 432.0,
+    "NiagaraSystem": "NS_SacredCymaticWater"
+  }
+}`
+  ];
+
+  function showBridgePreset(idx, btn) {
+    document.querySelectorAll('.preset-cmd-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const term = document.getElementById('bridgeTerminal');
+    if (term) term.textContent = bridgePresets[idx];
+  }
+</script>
+</body>
+</html>

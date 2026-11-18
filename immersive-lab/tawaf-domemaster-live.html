@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TAWAF Master Dome Live Synthesizer · Mo360 Immersive Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #07090d;
+    --panel: #0d1119;
+    --panel-2: #121824;
+    --border: rgba(212, 147, 69, 0.22);
+    --ochre: #D49345;
+    --gold: #D4AF37;
+    --text: #F4EFE4;
+    --muted: #98A2B3;
+    --accent: #1E7E5A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: radial-gradient(circle at 20% 10%, #111826 0%, #07090d 62%);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 26px;
+    background: rgba(9, 12, 18, 0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    display: grid;
+    place-items: center;
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.22);
+  }
+  .brand h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.55rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .brand p {
+    font-size: 0.76rem;
+    color: var(--ochre);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .nav-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .pill-link, .btn-top {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 8px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .pill-link:hover, .btn-top:hover {
+    border-color: var(--ochre);
+    color: var(--gold);
+  }
+  .btn-audio {
+    border-color: rgba(82, 183, 136, 0.55);
+    background: rgba(30, 126, 90, 0.24);
+    color: #9ff3c9;
+  }
+  .btn-audio.active {
+    background: #1E7E5A;
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(82, 183, 136, 0.42);
+  }
+  .btn-export {
+    border-color: rgba(212, 175, 55, 0.55);
+    background: rgba(212, 147, 69, 0.16);
+    color: #ffe2a8;
+  }
+
+  main {
+    max-width: 1520px;
+    margin: 0 auto;
+    padding: 20px 24px 36px;
+    display: grid;
+    grid-template-columns: minmax(340px, 680px) minmax(340px, 1fr);
+    gap: 22px;
+    align-items: start;
+  }
+  @media (max-width: 1080px) {
+    main { grid-template-columns: 1fr; }
+  }
+
+  /* 1:1 Domemaster Stage */
+  .stage-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stage-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .stage-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--ochre);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .stage-metrics {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .dome-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #000000;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  canvas#domeCanvas, canvas#overlayCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  canvas#overlayCanvas {
+    pointer-events: none;
+  }
+  .stage-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .toggle-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text);
+  }
+
+  /* Controls Rack */
+  .rack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .module {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 15px 16px;
+  }
+  .module-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .module-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ochre);
+  }
+  .module-sub {
+    font-size: 0.74rem;
+    color: var(--muted);
+  }
+  .btn-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .btn-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .btn-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  @media (min-width: 1320px) {
+    .btn-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .ctrl-btn {
+    background: var(--panel-2);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 9px 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.16s ease;
+    font-family: inherit;
+  }
+  .ctrl-btn:hover {
+    border-color: var(--ochre);
+    transform: translateY(-1px);
+  }
+  .ctrl-btn.active {
+    border-color: var(--gold);
+    background: rgba(212, 147, 69, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.35);
+  }
+  .ctrl-btn strong {
+    display: block;
+    font-size: 0.80rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .ctrl-btn span {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.67rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .chakra-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  .chakra-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--panel-2);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.16s ease;
+    text-align: left;
+  }
+  .chakra-btn:hover { border-color: var(--ochre); }
+  .chakra-btn.active {
+    border-color: var(--gold);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+  .chakra-btn .c-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .chakra-btn .c-hz {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--muted);
+  }
+
+  .slider-row {
+    display: grid;
+    grid-template-columns: 155px 1fr 64px;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 0.78rem;
+  }
+  .slider-row label { color: var(--muted); }
+  .slider-row output {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--gold);
+    text-align: right;
+  }
+  input[type="range"] {
+    accent-color: var(--ochre);
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .stat-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+  .stat-box .k {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.64rem;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .stat-box .v {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.84rem;
+    color: var(--text);
+    margin-top: 2px;
+  }
+
+  canvas#scopeCanvas {
+    width: 100%;
+    height: 76px;
+    background: #06080c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    display: block;
+  }
+
+  .osc-box {
+    background: #06080c;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.69rem;
+    color: #9fe0f5;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .bridge-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 9px;
+    align-items: center;
+  }
+  .status-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  /* Residency Showcase & Rendered Dome Cinema */
+  .cinema-wrap {
+    max-width: 1520px;
+    margin: 0 auto;
+    padding: 8px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .cinema-hdr {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 26px;
+  }
+  .cinema-hdr h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .cinema-hdr p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 6px;
+    max-width: 780px;
+  }
+  .reel-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: minmax(320px, 1.45fr) minmax(260px, 1fr);
+    gap: 20px;
+    align-items: center;
+  }
+  @media (max-width: 980px) {
+    .reel-card { grid-template-columns: 1fr; }
+  }
+  .reel-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    display: block;
+  }
+  .reel-meta h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+  }
+  .reel-meta p {
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--text);
+    margin: 10px 0 14px;
+  }
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .spec-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(212, 147, 69, 0.14);
+    border: 1px solid var(--border);
+    color: #ffe2a8;
+  }
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 1120px) {
+    .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 700px) {
+    .video-grid { grid-template-columns: 1fr; }
+  }
+  .media-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .media-card video {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: #000;
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .media-card.wide video {
+    aspect-ratio: 16 / 9;
+  }
+  .media-card h4 {
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .media-card .sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.69rem;
+    color: var(--ochre);
+  }
+  .media-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: auto;
+  }
+  .audio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 820px) {
+    .audio-grid { grid-template-columns: 1fr; }
+  }
+  .audio-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .audio-card audio {
+    width: 100%;
+  }
+  .still-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  @media (max-width: 1120px) {
+    .still-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .still-grid { grid-template-columns: 1fr; }
+  }
+  .still-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .still-card a {
+    display: block;
+    background: #05070a;
+  }
+  .still-card img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+  }
+  .still-card .still-body {
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .still-card .still-title {
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="brand-mark">180°</div>
+    <div>
+      <h1>TAWAF MASTER DOME LIVE SYNTHESIZER</h1>
+      <p>1:1 Equidistant Fulldome · Moroccan Zellige · Azerbaijani Shabaka · Brain.fm Neural AM</p>
+    </div>
+  </div>
+  <nav class="nav-actions">
+    <a class="pill-link" href="./index.html">Immersive Lab</a>
+    <a class="pill-link" href="../creative-coding-plymouth/index.html">Creative Coding Plymouth</a>
+    <a class="pill-link" href="#residency-cinema">Residency Reel &amp; Renders</a>
+    <button id="audioToggleBtn" class="btn-top btn-audio">Start Chamber Audio</button>
+    <button id="bowlStrikeBtn" class="btn-top">Strike Bowl</button>
+    <button id="export2kBtn" class="btn-top btn-export">Export 2048px PNG</button>
+    <button id="export4kBtn" class="btn-top btn-export">Export 4096px PNG</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Left Column: Standalone 1:1 Square-with-Circle Master Dome Canvas -->
+  <section class="stage-card">
+    <div class="stage-top">
+      <span class="stage-label">DOMEMASTER 180° EQUIDISTANT · COUNTER-CLOCKWISE TAWAF</span>
+      <span id="stageMetrics" class="stage-metrics">WebGL2 · 60 fps · 0° Zenith Center</span>
+    </div>
+    <div class="dome-frame">
+      <canvas id="domeCanvas" width="1024" height="1024"></canvas>
+      <canvas id="overlayCanvas" width="1024" height="1024"></canvas>
+    </div>
+    <div class="stage-footer">
+      <label class="toggle-inline">
+        <input id="gridToggle" type="checkbox" />
+        Market Hall 15m Calibration Grid (excluded on PNG export)
+      </label>
+      <span id="breathReadout" class="stage-metrics">CCW Tawaf · Zero Strobe Clinical Safety</span>
+    </div>
+  </section>
+
+  <!-- Right Column: Real-Time Performance, Chakra, Brain.fm & Bridge Controls -->
+  <section class="rack">
+    <!-- 1. Sacred Geometry Architecture -->
+    <div class="module">
+      <div class="module-hdr">
+        <span class="module-title">01 · Sacred Geometry Engine</span>
+        <span class="module-sub">Procedural 3D Relief Shader + Water Cymatics</span>
+      </div>
+      <div class="btn-grid-3" id="geomButtons">
+        <button class="ctrl-btn active" data-geom="0">
+          <strong>Moroccan Zellige</strong>
+          <span>8/16-Fold Fez Starlace</span>
+        </button>
+        <button class="ctrl-btn" data-geom="1">
+          <strong>Azerbaijani Shabaka</strong>
+          <span>10/12-Fold Sheki Lattice</span>
+        </button>
+        <button class="ctrl-btn" data-geom="2">
+          <strong>Muqarnas + Cymatics</strong>
+          <span>Faraday Hybrid Dome</span>
+        </button>
+      </div>
+      <div class="slider-row">
+        <label for="rpmSlider">CCW Tawaf Rotation</label>
+        <input id="rpmSlider" type="range" min="0" max="1.8" step="0.05" value="0.65" />
+        <output id="rpmOut">0.65 RPM</output>
+      </div>
+      <div class="slider-row">
+        <label for="cymaticSlider">Water Cymatic Ripple</label>
+        <input id="cymaticSlider" type="range" min="0" max="1.0" step="0.02" value="0.48" />
+        <output id="cymaticOut">48%</output>
+      </div>
+    </div>
+
+    <!-- 2. Chakra & ND-Safe Alternative Colour + Frequency Matrix -->
+    <div class="module">
+      <div class="module-hdr">
+        <span class="module-title">02 · Chakra &amp; ND-Safe Alternative Matrix</span>
+        <button id="paletteModeBtn" class="btn-top">Mode: Primary Colour &amp; Hz</button>
+      </div>
+      <div class="chakra-list" id="chakraList"></div>
+    </div>
+
+    <!-- 3. Brain.fm Neural Phase-Locking & 4-7-8 Vagal Breath -->
+    <div class="module">
+      <div class="module-hdr">
+        <span class="module-title">03 · Brain.fm Neural Phase-Locking &amp; Breath</span>
+        <span class="module-sub">Raised-Cosine 22% AM · Zero Startle</span>
+      </div>
+      <div class="btn-grid-4" id="neuralButtons">
+        <button class="ctrl-btn active" data-neural="smr">
+          <strong>ADHD Focus</strong>
+          <span>14.0 Hz SMR Beta</span>
+        </button>
+        <button class="ctrl-btn" data-neural="alpha">
+          <strong>Present Moment</strong>
+          <span>8.5 Hz Alpha Calm</span>
+        </button>
+        <button class="ctrl-btn" data-neural="theta">
+          <strong>Deep Sanctuary</strong>
+          <span>6.0 Hz Theta Clearing</span>
+        </button>
+        <button class="ctrl-btn" data-neural="breath">
+          <strong>4-7-8 Vagal Breath</strong>
+          <span>19.0 s Cycle Swell</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. Western Chamber WebAudio Telemetry & FFT Scope -->
+    <div class="module">
+      <div class="module-hdr">
+        <span class="module-title">04 · Western Chamber + Bowl Telemetry</span>
+        <span id="voicingLabel" class="module-sub">Cello + Felt Piano + Harp + Suede Bowl</span>
+      </div>
+      <div class="telemetry-grid">
+        <div class="stat-box">
+          <div class="k">Active Pitch</div>
+          <div class="v" id="statHz">136.10 Hz</div>
+        </div>
+        <div class="stat-box">
+          <div class="k">Phase-Lock</div>
+          <div class="v" id="statNeural">8.5 Hz AM</div>
+        </div>
+        <div class="stat-box">
+          <div class="k">AM Depth</div>
+          <div class="v" id="statDepth">22% Smooth</div>
+        </div>
+      </div>
+      <canvas id="scopeCanvas" width="720" height="76"></canvas>
+    </div>
+
+    <!-- 5. TouchDesigner / Unreal Engine 5.8 Live Bridge -->
+    <div class="module">
+      <div class="module-hdr">
+        <span class="module-title">05 · TouchDesigner &amp; Unreal 5.8 Bridge</span>
+        <span class="module-sub">TD :9980 HTTP / :9000 OSC · UE5.8 :30010</span>
+      </div>
+      <div id="oscPayload" class="osc-box"></div>
+      <div class="bridge-actions">
+        <button id="copyOscBtn" class="btn-top">Copy Bridge JSON</button>
+        <button id="pushTdBtn" class="btn-top">Push to TD (:9980)</button>
+        <button id="pushUeBtn" class="btn-top">Push to UE5.8 (:30010)</button>
+        <span id="bridgeStatus" class="status-pill">Bridge ready (local endpoints optional)</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="residency-cinema" class="cinema-wrap">
+  <div class="cinema-hdr">
+    <div>
+      <h2>Residency Showcase Reel &amp; Rendered Fulldome Cinema</h2>
+      <p>Pre-rendered 2K/4K 180° equidistant domemasters, Blender architectural walkthroughs, and 48 kHz spatial audio stems ready for the Real Ideas Market Hall 15m Dome residency presentation and website embed.</p>
+    </div>
+    <a class="pill-link" href="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" download>Download Full Residency Reel (MP4)</a>
+  </div>
+
+  <!-- Featured 16:9 Residency Showcase Reel -->
+  <div class="reel-card">
+    <video class="reel-video" controls playsinline preload="metadata" poster="assets/tawaf/01_sanctuary_hero_wide.png">
+      <source src="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" type="video/mp4" />
+    </video>
+    <div class="reel-meta">
+      <h3>TAWAF Residency Showcase Reel (1080p · 48 kHz Stereo)</h3>
+      <p>Complete presentation cut combining the 15m Market Hall Sanctuary architectural walkthrough, Moroccan Zellige 180° domemaster, Azerbaijani Shabaka Girih domemaster, Cymatic Chakra journey, and orbital cutaway.</p>
+      <div class="badge-row">
+        <span class="spec-badge">1920×1080 · 30 fps</span>
+        <span class="spec-badge">H.264 + AAC 48 kHz</span>
+        <span class="spec-badge">FastStart Web Stream</span>
+      </div>
+      <div class="media-actions">
+        <a class="btn-top btn-export" href="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" download>Download 1080p MP4</a>
+        <button id="copyReelEmbedBtn" class="btn-top" type="button">Copy &lt;video&gt; Embed</button>
+        <span id="reelCopyStatus" class="status-pill"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 Individual Rendered MP4 Animations -->
+  <div class="video-grid">
+    <article class="media-card">
+      <video controls playsinline loop preload="metadata" poster="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_KeyFrame.png">
+        <source src="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_TealGold.mp4" type="video/mp4" />
+      </video>
+      <h4>01 · Moroccan Zellige Teal &amp; Gold Domemaster</h4>
+      <div class="sub">2048×2048 · 30 fps · 10.0s · 48 kHz AAC</div>
+      <div class="media-actions">
+        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_TealGold.mp4" download>Download 2K MP4</a>
+      </div>
+    </article>
+
+    <article class="media-card">
+      <video controls playsinline loop preload="metadata" poster="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_KeyFrame.png">
+        <source src="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_Girih.mp4" type="video/mp4" />
+      </video>
+      <h4>02 · Azerbaijani Shabaka Girih Domemaster</h4>
+      <div class="sub">2048×2048 · 30 fps · 10.0s · 48 kHz AAC</div>
+      <div class="media-actions">
+        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_Girih.mp4" download>Download 2K MP4</a>
+      </div>
+    </article>
+
+    <article class="media-card">
+      <video controls playsinline loop preload="metadata" poster="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_KeyFrame.png">
+        <source src="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_Journey_Full.mp4" type="video/mp4" />
+      </video>
+      <h4>03 · Cymatic Chakra Journey Domemaster</h4>
+      <div class="sub">2048×2048 · 30 fps · 15.0s · 48 kHz AAC</div>
+      <div class="media-actions">
+        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_Journey_Full.mp4" download>Download 2K MP4</a>
+      </div>
+    </article>
+
+    <article class="media-card">
+      <video controls playsinline loop preload="metadata" poster="assets/tawaf/05_domemaster_180_fisheye.png">
+        <source src="assets/tawaf/07_tawaf_478_breathing_domemaster.mp4" type="video/mp4" />
+      </video>
+      <h4>04 · 4-7-8 Vagal Breathing Domemaster</h4>
+      <div class="sub">768×768 · 24 fps · 19.0s · 48 kHz AAC</div>
+      <div class="media-actions">
+        <a class="pill-link" href="assets/tawaf/07_tawaf_478_breathing_domemaster.mp4" download>Download MP4</a>
+      </div>
+    </article>
+
+    <article class="media-card wide">
+      <video controls playsinline loop preload="metadata" poster="assets/tawaf/01_sanctuary_hero_wide.png">
+        <source src="assets/tawaf/09_tawaf_immersive_walkthrough_with_audio.mp4" type="video/mp4" />
+      </video>
+      <h4>05 · Market Hall Sanctuary Walkthrough</h4>
+      <div class="sub">1920×1080 · 24 fps · 24.0s · 48 kHz AAC</div>
+      <div class="media-actions">
+        <a class="pill-link" href="assets/tawaf/09_tawaf_immersive_walkthrough_with_audio.mp4" download>Download 1080p MP4</a>
+      </div>
+    </article>
+
+    <article class="media-card wide">
+      <video controls playsinline loop preload="metadata" poster="assets/tawaf/03_architectural_cutaway_isometric.png">
+        <source src="assets/tawaf/06_tawaf_architectural_orbit.mp4" type="video/mp4" />
+      </video>
+      <h4>06 · Architectural Orbit Cutaway</h4>
+      <div class="sub">1280×720 · 24 fps · 6.0s · 48 kHz AAC</div>
+      <div class="media-actions">
+        <a class="pill-link" href="assets/tawaf/06_tawaf_architectural_orbit.mp4" download>Download 720p MP4</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- 48 kHz Spatial Audio Stems -->
+  <div class="audio-grid">
+    <div class="audio-card">
+      <h4>Neuro-Chamber Sound Bath (Brain.fm Phase-Locked · 48 kHz)</h4>
+      <audio controls preload="metadata" src="assets/tawaf/TAWAF_BrainFM_Neuro_Chamber_SoundBath_48kHz.wav"></audio>
+    </div>
+    <div class="audio-card">
+      <h4>TAWAF Therapeutic Soundscape Master (48 kHz)</h4>
+      <audio controls preload="metadata" src="assets/tawaf/tawaf_therapeutic_soundscape.wav"></audio>
+    </div>
+  </div>
+
+  <!-- 4K Keyframes, Architectural Blueprints & Sensory Boards -->
+  <div class="still-grid">
+    <div class="still-card">
+      <a href="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" alt="4K Teal Gold Domemaster" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">4K Teal &amp; Gold Domemaster (4096²)</span>
+        <a class="pill-link" href="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" download>4K PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" alt="Domemaster Suite Overview Board" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">Domemaster Suite Overview Board</span>
+        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" download>PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/02_four_zones_dome_view.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/02_four_zones_dome_view.png" alt="Four Therapeutic Zones Dome View" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">Four Therapeutic Zones (15m Dome)</span>
+        <a class="pill-link" href="assets/tawaf/02_four_zones_dome_view.png" download>PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/08_tawaf_sensory_system_board.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/08_tawaf_sensory_system_board.png" alt="TAWAF Sensory System Board" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">Sensory &amp; Haptic System Board</span>
+        <a class="pill-link" href="assets/tawaf/08_tawaf_sensory_system_board.png" download>PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/04_floorplan_orthographic_blueprint.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/04_floorplan_orthographic_blueprint.png" alt="Market Hall Floorplan Blueprint" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">Orthographic Floorplan Blueprint</span>
+        <a class="pill-link" href="assets/tawaf/04_floorplan_orthographic_blueprint.png" download>PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/05_domemaster_180_fisheye.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/05_domemaster_180_fisheye.png" alt="180 Fisheye Domemaster Render" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">180° Fisheye Sanctuary Render</span>
+        <a class="pill-link" href="assets/tawaf/05_domemaster_180_fisheye.png" download>PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/10_walkthrough_storyboard_sheet.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/10_walkthrough_storyboard_sheet.png" alt="Walkthrough Storyboard Sheet" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">Walkthrough Storyboard Sheet</span>
+        <a class="pill-link" href="assets/tawaf/10_walkthrough_storyboard_sheet.png" download>PNG</a>
+      </div>
+    </div>
+    <div class="still-card">
+      <a href="assets/tawaf/TAWAF_Domemaster_00_MarketHall_Template_4K.png" target="_blank" rel="noopener">
+        <img src="assets/tawaf/TAWAF_Domemaster_00_MarketHall_Template_4K.png" alt="Market Hall 4K Calibration Template" loading="lazy" />
+      </a>
+      <div class="still-body">
+        <span class="still-title">Market Hall 4K Calibration Grid</span>
+        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_00_MarketHall_Template_4K.png" download>4K PNG</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  // -------------------------------------------------------------------------
+  // Clinical Chakra + ND-Safe Alternative Colour & Frequency Presets (#84)
+  // -------------------------------------------------------------------------
+  const CHAKRAS = [
+    {
+      id: "root",
+      name: "Root",
+      sanskrit: "Muladhara",
+      primaryHex: "#9E2A2B",
+      primaryHz: 194.18,
+      altHex: "#C86D51",
+      altHz: 128.00,
+      voicing: "Solo Cello C3 + Felt Piano Fifth + Suede Root Bowl"
+    },
+    {
+      id: "sacral",
+      name: "Sacral",
+      sanskrit: "Svadhisthana",
+      primaryHex: "#E07A2E",
+      primaryHz: 210.42,
+      altHex: "#D49A6A",
+      altHz: 256.00,
+      voicing: "Cello Drone + Concert Harp Arpeggio + Sacral Bowl"
+    },
+    {
+      id: "solar",
+      name: "Solar",
+      sanskrit: "Manipura",
+      primaryHex: "#E8B84B",
+      primaryHz: 126.22,
+      altHex: "#C9A66B",
+      altHz: 384.00,
+      voicing: "Una Corda Warm Gold Chord + Alto Flute + Solar Bowl"
+    },
+    {
+      id: "heart",
+      name: "Heart",
+      sanskrit: "Anahata",
+      primaryHex: "#1E7E5A",
+      primaryHz: 136.10,
+      altHex: "#52B788",
+      altHz: 341.30,
+      voicing: "Con Sordino Violas + Cello Om + Heart Emerald Bowl"
+    },
+    {
+      id: "throat",
+      name: "Throat",
+      sanskrit: "Vishuddha",
+      primaryHex: "#117A8B",
+      primaryHz: 141.27,
+      altHex: "#4895EF",
+      altHz: 288.00,
+      voicing: "Alto Flute + Harp Harmonics + Turquoise Throat Bowl"
+    },
+    {
+      id: "thirdeye",
+      name: "Third Eye",
+      sanskrit: "Ajna",
+      primaryHex: "#1D3557",
+      primaryHz: 221.23,
+      altHex: "#5E60CE",
+      altHz: 448.00,
+      voicing: "Muted Chamber Strings + Felt Piano + Ajna Bowl"
+    },
+    {
+      id: "crown",
+      name: "Crown",
+      sanskrit: "Sahasrara",
+      primaryHex: "#5A189A",
+      primaryHz: 172.06,
+      altHex: "#EAE0C8",
+      altHz: 432.00,
+      voicing: "Full Chamber Sanctuary + 432 Hz Verdi Harmonic Crown"
+    }
+  ];
+
+  const NEURAL_MODES = {
+    smr:    { label: "14.0 Hz SMR", hz: 14.0, depth: 0.22 },
+    alpha:  { label: "8.5 Hz Alpha", hz: 8.5, depth: 0.22 },
+    theta:  { label: "6.0 Hz Theta", hz: 6.0, depth: 0.22 },
+    breath: { label: "4-7-8 (19s)", hz: 1.0 / 19.0, depth: 0.34 }
+  };
+
+  const state = {
+    geomMode: 0,       // 0: Moroccan Zellige, 1: Azerbaijani Shabaka, 2: Muqarnas + Cymatic
+    chakraIdx: 3,      // Default Heart (136.10 Hz Emerald)
+    useAlt: false,     // Primary vs ND-Safe Alternative
+    neuralMode: "smr", // Brain.fm phase-locking mode
+    ccwRpm: 0.65,
+    cymatic: 0.48,
+    showGrid: false,
+    audioOn: false,
+    bowlPulse: 0.0,
+    angleRad: 0.0,
+    lastTs: performance.now(),
+    audioLevel: 0.0
+  };
+
+  function hexToRgbNorm(hex) {
+    const clean = hex.replace("#", "");
+    return [
+      parseInt(clean.slice(0, 2), 16) / 255.0,
+      parseInt(clean.slice(2, 4), 16) / 255.0,
+      parseInt(clean.slice(4, 6), 16) / 255.0
+    ];
+  }
+
+  function activeChakraHex() {
+    const c = CHAKRAS[state.chakraIdx];
+    return state.useAlt ? c.altHex : c.primaryHex;
+  }
+
+  function activeChakraHz() {
+    const c = CHAKRAS[state.chakraIdx];
+    return state.useAlt ? c.altHz : c.primaryHz;
+  }
+
+  // -------------------------------------------------------------------------
+  // WebGL2 1:1 Equidistant 180-deg Domemaster Shader Renderer
+  // -------------------------------------------------------------------------
+  const domeCanvas = document.getElementById("domeCanvas");
+  const overlayCanvas = document.getElementById("overlayCanvas");
+  const gl = domeCanvas.getContext("webgl2", { preserveDrawingBuffer: true, antialias: true });
+
+  const VS_SRC = `#version 300 es
+  in vec2 a_pos;
+  out vec2 v_uv;
+  void main() {
+    v_uv = a_pos * 0.5 + 0.5;
+    gl_Position = vec4(a_pos, 0.0, 1.0);
+  }`;
+
+  const FS_SRC = `#version 300 es
+  precision highp float;
+  in vec2 v_uv;
+  out vec4 fragColor;
+
+  uniform float u_time;
+  uniform float u_angle;
+  uniform int u_geom;
+  uniform vec3 u_accent;
+  uniform float u_cymatic;
+  uniform float u_audio;
+  uniform float u_bowl;
+  uniform float u_breath;
+
+  const float PI = 3.14159265359;
+  const float TAU = 6.28318530718;
+
+  float starPolygon(vec2 p, float r, float n, float inset) {
+    float an = PI / n;
+    float en = PI / inset;
+    vec2 acs = vec2(cos(an), sin(an));
+    vec2 ecs = vec2(cos(en), sin(en));
+    float bn = mod(atan(p.x, p.y), 2.0 * an) - an;
+    p = length(p) * vec2(cos(bn), abs(sin(bn)));
+    p -= r * acs;
+    p += ecs * clamp(-dot(p, ecs), 0.0, r * acs.y / ecs.y);
+    return length(p) * sign(p.x);
+  }
+
+  // Height-field evaluation across Moroccan Zellige, Azerbaijani Shabaka, and Muqarnas/Cymatic Hybrid
+  vec2 evalPattern(float rho, float theta) {
+    float rot = theta + u_angle;
+    float cymWave = 0.0;
+    float cymFreq = 14.0 + 18.0 * u_audio;
+    cymWave = sin(rho * cymFreq - u_time * 2.2) * cos(8.0 * rot + u_time * 0.4);
+    float cymRipple = 0.5 + 0.5 * cymWave;
+
+    float rib = 0.0;
+    float tileId = 0.0;
+
+    if (u_geom == 0) {
+      // Moroccan Zellige 8-fold & 16-fold Fez/Marrakech tessellation
+      vec2 p = vec2(cos(rot), sin(rot)) * rho;
+      float s8a = abs(sin(4.0 * rot + 9.0 * rho));
+      float s8b = abs(sin(4.0 * rot - 9.0 * rho));
+      float s16 = abs(cos(8.0 * rot + 16.0 * rho)) * abs(cos(8.0 * rot - 16.0 * rho));
+      float ring = abs(sin(rho * PI * 8.0));
+      float dStar = abs(starPolygon(p, 0.42 + 0.03 * u_breath, 8.0, 2.6));
+      float dCrown = abs(starPolygon(p, 0.19 + 0.015 * u_breath, 8.0, 2.35));
+
+      float ribA = smoothstep(0.11, 0.02, min(s8a, s8b));
+      float ribB = smoothstep(0.08, 0.015, s16);
+      float ribC = smoothstep(0.045, 0.008, min(dStar, dCrown));
+      float ribR = smoothstep(0.12, 0.02, ring) * 0.65;
+
+      rib = max(max(ribA, ribB * 0.82), max(ribC, ribR));
+      tileId = fract(floor(rho * 8.0) * 0.37 + floor(mod(rot + PI, TAU) / (PI / 8.0)) * 0.23);
+    } else if (u_geom == 1) {
+      // Azerbaijani Sheki Shabaka & Nakhchivan Ajami 10-fold / 12-fold stained-glass lattice
+      vec2 p = vec2(cos(rot), sin(rot)) * rho;
+      float s10a = abs(sin(5.0 * rot + 10.5 * rho));
+      float s10b = abs(sin(5.0 * rot - 10.5 * rho));
+      float s12 = abs(cos(6.0 * rot + 14.0 * rho));
+      float d10 = abs(starPolygon(p, 0.56 + 0.025 * u_breath, 10.0, 2.9));
+      float d12 = abs(starPolygon(p, 0.28 + 0.02 * u_breath, 12.0, 3.1));
+
+      float k1 = smoothstep(0.11, 0.018, min(s10a, s10b));
+      float k2 = smoothstep(0.10, 0.018, s12);
+      float k3 = smoothstep(0.038, 0.007, min(d10, d12));
+      rib = max(max(k1, k2 * 0.85), k3);
+      tileId = fract(floor(rho * 10.0) * 0.41 + floor(mod(rot + PI, TAU) / (PI / 5.0)) * 0.19);
+    } else {
+      // Muqarnas Pointed Vault & Water Cymatics Hybrid
+      float cells = abs(sin(6.0 * rot + 3.0 * sin(rho * 10.0))) * abs(sin(6.0 * rot - 3.0 * sin(rho * 10.0)));
+      float tiers = abs(cos(rho * PI * 7.0 + 0.25 * sin(12.0 * rot)));
+      float cymRing = abs(sin(rho * (12.0 + 8.0 * u_cymatic) * PI - u_time * 1.4));
+      float r1 = smoothstep(0.09, 0.015, cells);
+      float r2 = smoothstep(0.11, 0.018, tiers);
+      float r3 = smoothstep(0.18, 0.03, cymRing) * (0.45 + 0.55 * u_cymatic);
+      rib = max(max(r1, r2), r3 * 0.78);
+      tileId = fract(floor(rho * 7.0) * 0.31 + floor(mod(rot + PI, TAU) / (PI / 6.0)) * 0.29);
+    }
+
+    float height = rib * 0.85 + (1.0 - rib) * (0.18 + 0.16 * u_cymatic * cymRipple);
+    return vec2(clamp(height, 0.0, 1.0), tileId * 0.9 + 0.1 * cymRipple);
+  }
+
+  void main() {
+    vec2 p = (v_uv - 0.5) * 2.0;
+    float rho = length(p);
+    if (rho > 1.0) {
+      fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+      return;
+    }
+
+    float theta = atan(p.y, p.x);
+    vec2 val = evalPattern(rho, theta);
+    float eps = 0.0028;
+    float hx = evalPattern(length(p + vec2(eps, 0.0)), atan(p.y, p.x + eps)).x - val.x;
+    float hy = evalPattern(length(p + vec2(0.0, eps)), atan(p.y + eps, p.x)).x - val.x;
+    vec3 N = normalize(vec3(-hx * 11.0, -hy * 11.0, 1.0));
+    vec3 L = normalize(vec3(0.42, 0.35, 0.84));
+    vec3 V = vec3(0.0, 0.0, 1.0);
+    vec3 H = normalize(L + V);
+
+    float diff = max(dot(N, L), 0.18);
+    float spec = pow(max(dot(N, H), 0.0), 36.0);
+
+    // Architectural palette mixing satin 24k gold ribs + glazed ceramic / stained glass facets
+    vec3 gold = vec3(0.86, 0.69, 0.24);
+    vec3 turquoise = vec3(0.055, 0.42, 0.66);
+    vec3 lapis = vec3(0.04, 0.14, 0.39);
+    vec3 emerald = vec3(0.105, 0.50, 0.41);
+    vec3 ruby = vec3(0.62, 0.165, 0.17);
+    vec3 amber = vec3(0.85, 0.51, 0.17);
+
+    vec3 tileCol;
+    float tid = val.y;
+    if (u_geom == 0) {
+      tileCol = mix(lapis, turquoise, smoothstep(0.15, 0.55, tid));
+      tileCol = mix(tileCol, emerald, smoothstep(0.62, 0.88, tid) * 0.72);
+    } else if (u_geom == 1) {
+      tileCol = mix(lapis, ruby, smoothstep(0.15, 0.48, tid));
+      tileCol = mix(tileCol, amber, smoothstep(0.55, 0.78, tid));
+      tileCol = mix(tileCol, turquoise, smoothstep(0.82, 0.98, tid));
+    } else {
+      tileCol = mix(lapis, u_accent, 0.55 + 0.35 * sin(tid * TAU));
+    }
+
+    // Blend user-selected Chakra / ND-Safe colour cleanly without harsh neon glare
+    tileCol = mix(tileCol, u_accent, 0.46 + 0.18 * u_audio);
+
+    float isRib = smoothstep(0.45, 0.72, val.x);
+    vec3 baseCol = mix(tileCol * (0.72 + 0.35 * diff), gold * (0.78 + 0.42 * diff), isRib);
+    baseCol += gold * spec * mix(0.28, 0.62, isRib);
+
+    // Water Cymatic radial harmonic shimmer & subtle bowl strike glow
+    float cymRingGlow = 0.5 + 0.5 * cos(rho * (18.0 + 14.0 * u_audio) - u_time * 2.4);
+    baseCol += u_accent * (0.08 * u_cymatic * cymRingGlow + 0.18 * u_bowl * exp(-rho * 2.2));
+
+    // Gentle vignette & zenith oculus halo
+    float zenithHalo = exp(-rho * rho * 18.0) * (0.16 + 0.14 * u_breath);
+    baseCol += gold * zenithHalo;
+
+    // Clean springline edge anti-alias onto pure #000000 black
+    float edgeMask = 1.0 - smoothstep(0.992, 1.0, rho);
+    baseCol *= edgeMask;
+
+    // Filmic soft tone curve to preserve neurodivergent visual comfort
+    baseCol = baseCol / (1.0 + 0.35 * baseCol);
+    fragColor = vec4(pow(clamp(baseCol, 0.0, 1.0), vec3(0.92)), 1.0);
+  }`;
+
+  function compileShader(type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      throw new Error(gl.getShaderInfoLog(sh));
+    }
+    return sh;
+  }
+
+  let prog = null;
+  let uni = {};
+  if (gl) {
+    const vs = compileShader(gl.VERTEX_SHADER, VS_SRC);
+    const fs = compileShader(gl.FRAGMENT_SHADER, FS_SRC);
+    prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "a_pos");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    for (const k of ["u_time","u_angle","u_geom","u_accent","u_cymatic","u_audio","u_bowl","u_breath"]) {
+      uni[k] = gl.getUniformLocation(prog, k);
+    }
+  }
+
+  // Calibration Overlay (15-deg altitude rings + N/E/S/W azimuth, never baked into PNG export)
+  function drawCalibrationOverlay() {
+    const ctx = overlayCanvas.getContext("2d");
+    const W = overlayCanvas.width;
+    const H = overlayCanvas.height;
+    ctx.clearRect(0, 0, W, H);
+    if (!state.showGrid) return;
+
+    const cx = W / 2, cy = H / 2, R = W / 2 - 2;
+    ctx.save();
+    ctx.strokeStyle = "rgba(212, 175, 55, 0.45)";
+    ctx.fillStyle = "rgba(244, 239, 228, 0.85)";
+    ctx.font = "600 18px 'Space Mono', monospace";
+    ctx.textAlign = "center";
+
+    for (let deg = 15; deg <= 90; deg += 15) {
+      const r = (deg / 90) * R;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.lineWidth = deg === 90 ? 2.5 : 1.1;
+      ctx.stroke();
+      if (deg < 90) ctx.fillText(`${deg}°`, cx + 22, cy - r + 18);
+    }
+    ctx.beginPath();
+    ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy);
+    ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R);
+    ctx.stroke();
+
+    ctx.fillText("N · 0° VESTIBULE", cx, 28);
+    ctx.fillText("S · 180° SWEET SPOT", cx, H - 14);
+    ctx.fillText("W", 22, cy - 8);
+    ctx.fillText("E", W - 22, cy - 8);
+    ctx.restore();
+  }
+
+  // -------------------------------------------------------------------------
+  // Brain.fm Neural Phase-Locking + Western Chamber WebAudio Synthesizer
+  // -------------------------------------------------------------------------
+  let audioCtx = null;
+  let masterGain = null;
+  let amGain = null;
+  let analyser = null;
+  let celloOsc1 = null;
+  let celloOsc2 = null;
+  let fluteOsc = null;
+  let lfoOsc = null;
+  let lfoDepth = null;
+
+  function initAudio() {
+    if (audioCtx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.0;
+
+    amGain = audioCtx.createGain();
+    amGain.gain.value = 0.78;
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 920;
+    filter.Q.value = 0.8;
+
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+
+    const hz = activeChakraHz();
+    celloOsc1 = audioCtx.createOscillator();
+    celloOsc1.type = "triangle";
+    celloOsc1.frequency.value = hz * 0.5;
+
+    celloOsc2 = audioCtx.createOscillator();
+    celloOsc2.type = "sine";
+    celloOsc2.frequency.value = hz;
+
+    fluteOsc = audioCtx.createOscillator();
+    fluteOsc.type = "sine";
+    fluteOsc.frequency.value = hz * 1.5;
+
+    const g1 = audioCtx.createGain(); g1.gain.value = 0.42;
+    const g2 = audioCtx.createGain(); g2.gain.value = 0.34;
+    const g3 = audioCtx.createGain(); g3.gain.value = 0.14;
+
+    celloOsc1.connect(g1); g1.connect(filter);
+    celloOsc2.connect(g2); g2.connect(filter);
+    fluteOsc.connect(g3);  g3.connect(filter);
+
+    // Brain.fm raised-cosine phase-locking LFO (22% modulation depth)
+    lfoOsc = audioCtx.createOscillator();
+    lfoOsc.type = "sine";
+    lfoOsc.frequency.value = NEURAL_MODES[state.neuralMode].hz;
+
+    lfoDepth = audioCtx.createGain();
+    lfoDepth.gain.value = NEURAL_MODES[state.neuralMode].depth;
+    lfoOsc.connect(lfoDepth);
+    lfoDepth.connect(amGain.gain);
+
+    filter.connect(amGain);
+    amGain.connect(masterGain);
+    masterGain.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    celloOsc1.start();
+    celloOsc2.start();
+    fluteOsc.start();
+    lfoOsc.start();
+  }
+
+  function syncAudioParams() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const hz = activeChakraHz();
+    celloOsc1.frequency.setTargetAtTime(hz * 0.5, now, 0.18);
+    celloOsc2.frequency.setTargetAtTime(hz, now, 0.18);
+    fluteOsc.frequency.setTargetAtTime(hz * 1.5, now, 0.22);
+
+    const nm = NEURAL_MODES[state.neuralMode];
+    lfoOsc.frequency.setTargetAtTime(nm.hz, now, 0.12);
+    lfoDepth.gain.setTargetAtTime(nm.depth, now, 0.12);
+  }
+
+  function strikeBowl() {
+    state.bowlPulse = 1.0;
+    if (!audioCtx || !state.audioOn) return;
+    const now = audioCtx.currentTime;
+    const hz = activeChakraHz();
+    const partials = [1.0, 2.756];
+    const gains = [0.22, 0.05];
+    partials.forEach((ratio, i) => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = hz * ratio;
+      g.gain.setValueAtTime(0.0001, now);
+      // 45ms soft suede-mallet onset (zero startle transient)
+      g.gain.linearRampToValueAtTime(gains[i], now + 0.045);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+      osc.connect(g);
+      g.connect(masterGain);
+      osc.start(now);
+      osc.stop(now + 4.0);
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // UI Construction & Event Bindings
+  // -------------------------------------------------------------------------
+  const chakraList = document.getElementById("chakraList");
+  function renderChakraButtons() {
+    chakraList.innerHTML = "";
+    CHAKRAS.forEach((c, idx) => {
+      const hex = state.useAlt ? c.altHex : c.primaryHex;
+      const hz = state.useAlt ? c.altHz : c.primaryHz;
+      const btn = document.createElement("button");
+      btn.className = "chakra-btn" + (idx === state.chakraIdx ? " active" : "");
+      btn.innerHTML = `
+        <span class="swatch" style="background:${hex}; box-shadow:0 0 12px ${hex}88;"></span>
+        <span>
+          <div class="c-name">${c.name}</div>
+          <div class="c-hz">${hz.toFixed(2)} Hz</div>
+        </span>`;
+      btn.onclick = () => {
+        state.chakraIdx = idx;
+        renderChakraButtons();
+        syncAudioParams();
+        updateTelemetryAndBridge();
+        if (state.audioOn) strikeBowl();
+      };
+      chakraList.appendChild(btn);
+    });
+  }
+
+  function updateTelemetryAndBridge() {
+    const c = CHAKRAS[state.chakraIdx];
+    const hz = activeChakraHz();
+    const hex = activeChakraHex();
+    const nm = NEURAL_MODES[state.neuralMode];
+    const geomNames = ["Moroccan_Zellige_8_16", "Azerbaijani_Shabaka_10_12", "Muqarnas_Cymatic_Hybrid"];
+
+    document.getElementById("statHz").textContent = `${hz.toFixed(2)} Hz`;
+    document.getElementById("statNeural").textContent = nm.label;
+    document.getElementById("statDepth").textContent = `${Math.round(nm.depth * 100)}% Smooth`;
+    document.getElementById("voicingLabel").textContent = c.voicing;
+
+    const bridgeJson = {
+      source: "TAWAF_Domemaster_Live",
+      osc: {
+        "/tawaf/geometry_mode": geomNames[state.geomMode],
+        "/tawaf/chakra": c.name,
+        "/tawaf/palette_mode": state.useAlt ? "ND_SAFE_ALT" : "PRIMARY",
+        "/tawaf/color_hex": hex,
+        "/tawaf/freq_hz": Number(hz.toFixed(2)),
+        "/tawaf/neural_mode": state.neuralMode.toUpperCase(),
+        "/tawaf/neural_hz": Number(nm.hz.toFixed(3)),
+        "/tawaf/ccw_rpm": Number(state.ccwRpm.toFixed(2)),
+        "/tawaf/cymatic_depth": Number(state.cymatic.toFixed(2))
+      }
+    };
+    document.getElementById("oscPayload").textContent = JSON.stringify(bridgeJson, null, 2);
+  }
+
+  document.querySelectorAll("#geomButtons .ctrl-btn").forEach((btn) => {
+    btn.onclick = () => {
+      document.querySelectorAll("#geomButtons .ctrl-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.geomMode = Number(btn.dataset.geom);
+      updateTelemetryAndBridge();
+    };
+  });
+
+  document.querySelectorAll("#neuralButtons .ctrl-btn").forEach((btn) => {
+    btn.onclick = () => {
+      document.querySelectorAll("#neuralButtons .ctrl-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.neuralMode = btn.dataset.neural;
+      syncAudioParams();
+      updateTelemetryAndBridge();
+    };
+  });
+
+  const paletteModeBtn = document.getElementById("paletteModeBtn");
+  paletteModeBtn.onclick = () => {
+    state.useAlt = !state.useAlt;
+    paletteModeBtn.textContent = state.useAlt ? "Mode: ND-Safe Alternative Colour & Hz" : "Mode: Primary Colour & Hz";
+    renderChakraButtons();
+    syncAudioParams();
+    updateTelemetryAndBridge();
+  };
+
+  document.getElementById("rpmSlider").oninput = (e) => {
+    state.ccwRpm = Number(e.target.value);
+    document.getElementById("rpmOut").textContent = `${state.ccwRpm.toFixed(2)} RPM`;
+    updateTelemetryAndBridge();
+  };
+  document.getElementById("cymaticSlider").oninput = (e) => {
+    state.cymatic = Number(e.target.value);
+    document.getElementById("cymaticOut").textContent = `${Math.round(state.cymatic * 100)}%`;
+    updateTelemetryAndBridge();
+  };
+  document.getElementById("gridToggle").onchange = (e) => {
+    state.showGrid = e.target.checked;
+    drawCalibrationOverlay();
+  };
+
+  const audioBtn = document.getElementById("audioToggleBtn");
+  audioBtn.onclick = async () => {
+    initAudio();
+    if (audioCtx.state === "suspended") await audioCtx.resume();
+    state.audioOn = !state.audioOn;
+    const now = audioCtx.currentTime;
+    masterGain.gain.setTargetAtTime(state.audioOn ? 0.24 : 0.0, now, 0.25);
+    audioBtn.classList.toggle("active", state.audioOn);
+    audioBtn.textContent = state.audioOn ? "Chamber Audio: ON" : "Start Chamber Audio";
+    if (state.audioOn) syncAudioParams();
+  };
+
+  document.getElementById("bowlStrikeBtn").onclick = () => strikeBowl();
+
+  // 1:1 Domemaster Export (pure 180-deg circle on #000000 black, zero calibration overlay)
+  function exportDomemasterPng(sizePx) {
+    if (!gl) return;
+    const prevW = domeCanvas.width, prevH = domeCanvas.height;
+    domeCanvas.width = sizePx;
+    domeCanvas.height = sizePx;
+    renderDomeFrame(performance.now());
+    const url = domeCanvas.toDataURL("image/png");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `TAWAF_Domemaster_Live_${sizePx}x${sizePx}.png`;
+    a.click();
+    domeCanvas.width = prevW;
+    domeCanvas.height = prevH;
+  }
+  document.getElementById("export2kBtn").onclick = () => exportDomemasterPng(2048);
+  document.getElementById("export4kBtn").onclick = () => exportDomemasterPng(4096);
+
+  // TouchDesigner / Unreal Bridge Buttons
+  const bridgeStatus = document.getElementById("bridgeStatus");
+  document.getElementById("copyOscBtn").onclick = async () => {
+    await navigator.clipboard.writeText(document.getElementById("oscPayload").textContent);
+    bridgeStatus.textContent = "Copied OSC/Bridge JSON to clipboard";
+  };
+  document.getElementById("pushTdBtn").onclick = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:9980/api/params", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: document.getElementById("oscPayload").textContent
+      });
+      bridgeStatus.textContent = res.ok ? "Pushed live params to TouchDesigner :9980" : `TD HTTP ${res.status}`;
+    } catch {
+      bridgeStatus.textContent = "TD :9980 offline (start td_webserver_bootstrap.py in TD)";
+    }
+  };
+  document.getElementById("pushUeBtn").onclick = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:30010/remote/info", { method: "GET" });
+      bridgeStatus.textContent = res.ok ? "Unreal Remote Control :30010 reachable" : `UE HTTP ${res.status}`;
+    } catch {
+      bridgeStatus.textContent = "UE5.8 :30010 offline (launch TAWAF with RemoteControl)";
+    }
+  };
+
+  // -------------------------------------------------------------------------
+  // Render & Scope Animation Loop
+  // -------------------------------------------------------------------------
+  const scopeCanvas = document.getElementById("scopeCanvas");
+  const scopeCtx = scopeCanvas.getContext("2d");
+  const fftBins = new Uint8Array(128);
+
+  function drawScope(tSec, breathVal) {
+    const W = scopeCanvas.width, H = scopeCanvas.height;
+    scopeCtx.fillStyle = "#06080c";
+    scopeCtx.fillRect(0, 0, W, H);
+
+    const nm = NEURAL_MODES[state.neuralMode];
+    const hex = activeChakraHex();
+
+    if (analyser && state.audioOn) {
+      analyser.getByteFrequencyData(fftBins);
+      let sum = 0;
+      const bars = 48;
+      const bw = W / bars;
+      for (let i = 0; i < bars; i++) {
+        const v = fftBins[i] / 255.0;
+        sum += v;
+        const bh = Math.max(2, v * (H - 14));
+        scopeCtx.fillStyle = hex;
+        scopeCtx.globalAlpha = 0.72;
+        scopeCtx.fillRect(i * bw + 2, H - bh - 4, bw - 4, bh);
+      }
+      scopeCtx.globalAlpha = 1.0;
+      state.audioLevel = sum / bars;
+    } else {
+      // Smooth idle phase-lock envelope visualization
+      scopeCtx.strokeStyle = hex;
+      scopeCtx.lineWidth = 2;
+      scopeCtx.beginPath();
+      for (let x = 0; x < W; x += 4) {
+        const u = x / W;
+        const env = 0.5 - 0.5 * Math.cos(u * Math.PI * 2.0 * Math.min(8, Math.max(1, nm.hz)) + tSec * 3.0);
+        const y = H * 0.68 - env * (H * 0.36) - breathVal * 10.0;
+        if (x === 0) scopeCtx.moveTo(x, y); else scopeCtx.lineTo(x, y);
+      }
+      scopeCtx.stroke();
+      state.audioLevel = 0.12 + 0.14 * breathVal;
+    }
+  }
+
+  function renderDomeFrame(now) {
+    const dt = Math.min(0.05, (now - state.lastTs) / 1000.0);
+    state.lastTs = now;
+    const tSec = now / 1000.0;
+
+    // Counter-clockwise Tawaf rotation (+angle in equidistant +Z projection)
+    state.angleRad += (state.ccwRpm * Math.PI * 2.0 / 60.0) * dt;
+    state.bowlPulse = Math.max(0.0, state.bowlPulse - dt * 0.35);
+
+    // 4-7-8 breath curve (19.0s)
+    const cyc = tSec % 19.0;
+    let breath = 0.0;
+    if (cyc < 4.0) breath = 0.5 - 0.5 * Math.cos(Math.PI * (cyc / 4.0));
+    else if (cyc < 11.0) breath = 1.0;
+    else breath = 0.5 + 0.5 * Math.cos(Math.PI * ((cyc - 11.0) / 8.0));
+
+    if (gl && prog) {
+      gl.viewport(0, 0, domeCanvas.width, domeCanvas.height);
+      const rgb = hexToRgbNorm(activeChakraHex());
+      gl.uniform1f(uni.u_time, tSec);
+      gl.uniform1f(uni.u_angle, state.angleRad);
+      gl.uniform1i(uni.u_geom, state.geomMode);
+      gl.uniform3f(uni.u_accent, rgb[0], rgb[1], rgb[2]);
+      gl.uniform1f(uni.u_cymatic, state.cymatic);
+      gl.uniform1f(uni.u_audio, state.audioLevel);
+      gl.uniform1f(uni.u_bowl, state.bowlPulse);
+      gl.uniform1f(uni.u_breath, breath);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    drawScope(tSec, breath);
+  }
+
+  function tick(now) {
+    renderDomeFrame(now);
+    requestAnimationFrame(tick);
+  }
+
+  renderChakraButtons();
+  updateTelemetryAndBridge();
+  drawCalibrationOverlay();
+  requestAnimationFrame(tick);
+
+  const copyReelEmbedBtn = document.getElementById('copyReelEmbedBtn');
+  const reelCopyStatus = document.getElementById('reelCopyStatus');
+  if (copyReelEmbedBtn) {
+    copyReelEmbedBtn.addEventListener('click', async () => {
+      const snippet = '<video controls playsinline preload="metadata" poster="assets/tawaf/01_sanctuary_hero_wide.png" style="width:100%;border-radius:12px;"><source src="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" type="video/mp4" /></video>';
+      try {
+        await navigator.clipboard.writeText(snippet);
+        if (reelCopyStatus) reelCopyStatus.textContent = 'Copied <video> embed';
+      } catch {
+        if (reelCopyStatus) reelCopyStatus.textContent = 'Clipboard unavailable';
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

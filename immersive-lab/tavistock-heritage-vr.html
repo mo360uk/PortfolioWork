@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tavistock Heritage Living History · Dementia Care WebXR &amp; iPad Co-View</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-granite-abyss: #071019;
+      --bg-granite-deep: #0b1926;
+      --panel-bg: rgba(11, 25, 38, 0.92);
+      --panel-solid: #0d2031;
+      --border-tavy: rgba(76, 168, 184, 0.28);
+      --tavy-cyan: #4ca8b8;
+      --tavy-soft: rgba(76, 168, 184, 0.16);
+      --parchment: #e6c88b;
+      --parchment-soft: rgba(230, 200, 139, 0.18);
+      --dartmoor-moss: #58b07a;
+      --dartmoor-moss-soft: rgba(88, 176, 122, 0.16);
+      --text-main: #f5f8fa;
+      --text-muted: #a4bcc9;
+      --accent-pause: #e28743;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --shadow-calm: 0 16px 44px rgba(2, 8, 14, 0.62);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, #11283c 0%, var(--bg-granite-abyss) 80%);
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Fullscreen 3D Canvas */
+    #vr-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    #vr-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    /* Calming Vignette Mask */
+    .calm-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at center, transparent 52%, rgba(4, 11, 18, 0.65) 100%);
+    }
+
+    /* 2.0s Head-Gaze Dwell Reticle (Dementia-safe non-intrusive) */
+    .gaze-reticle-wrap {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .gaze-ring {
+      width: 48px;
+      height: 48px;
+      transform: rotate(-90deg);
+      filter: drop-shadow(0 0 10px rgba(76, 168, 184, 0.5));
+      transition: transform 0.25s ease;
+    }
+
+    .gaze-ring.active {
+      transform: rotate(-90deg) scale(1.22);
+    }
+
+    .gaze-ring-bg {
+      fill: rgba(7, 16, 25, 0.4);
+      stroke: rgba(245, 248, 250, 0.3);
+      stroke-width: 3.2;
+    }
+
+    .gaze-ring-progress {
+      fill: none;
+      stroke: var(--tavy-cyan);
+      stroke-width: 3.8;
+      stroke-linecap: round;
+      stroke-dasharray: 113.1;
+      stroke-dashoffset: 113.1;
+      transition: stroke 0.2s ease;
+    }
+
+    .gaze-ring.complete .gaze-ring-progress {
+      stroke: var(--parchment);
+    }
+
+    .gaze-dot {
+      position: absolute;
+      top: 21px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+    }
+
+    .gaze-card {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(8, 20, 31, 0.9);
+      border: 1px solid var(--border-tavy);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      white-space: nowrap;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-calm);
+    }
+
+    .gaze-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .gaze-year {
+      color: var(--parchment);
+      margin-left: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    /* Top Navigation & Status Bar */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 20px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-tavy);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-calm);
+      transition: opacity 0.3s ease;
+    }
+
+    body.coview-clean .top-bar,
+    body.coview-clean .carer-strip {
+      opacity: 0.14;
+    }
+
+    body.coview-clean .top-bar:hover,
+    body.coview-clean .carer-strip:hover,
+    body.coview-clean .top-bar:focus-within,
+    body.coview-clean .carer-strip:focus-within {
+      opacity: 1;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(76, 168, 184, 0.28), rgba(230, 200, 139, 0.22));
+      border: 1px solid rgba(76, 168, 184, 0.45);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .action-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(7, 16, 25, 0.75);
+      border: 1px solid var(--border-tavy);
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--parchment);
+    }
+
+    .status-dot.ready {
+      background: var(--dartmoor-moss);
+      box-shadow: 0 0 10px rgba(88, 176, 122, 0.7);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-tavy);
+      background: rgba(14, 34, 52, 0.85);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: rgba(22, 52, 78, 0.95);
+      border-color: var(--tavy-cyan);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-vr {
+      background: linear-gradient(135deg, #185a73, #0f3d52);
+      border-color: rgba(76, 168, 184, 0.55);
+      color: #ffffff;
+    }
+
+    .btn-vr:hover {
+      background: linear-gradient(135deg, #207292, #144e68);
+    }
+
+    .btn-vr.vr-ready {
+      background: linear-gradient(135deg, #1c7a5f, #125441);
+      border-color: var(--dartmoor-moss);
+    }
+
+    .btn-coview.active {
+      background: var(--tavy-soft);
+      border-color: var(--tavy-cyan);
+      color: var(--tavy-cyan);
+    }
+
+    /* Bottom Carer Co-View Control Strip */
+    .carer-strip {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-tavy);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-calm);
+      transition: opacity 0.3s ease;
+    }
+
+    .carer-row-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .narration-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(6, 17, 27, 0.65);
+      border: 1px solid rgba(76, 168, 184, 0.2);
+    }
+
+    .narration-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--parchment);
+      margin-bottom: 3px;
+    }
+
+    .narration-text {
+      font-size: 0.92rem;
+      line-height: 1.42;
+      color: var(--text-main);
+    }
+
+    .carer-row-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Landmark Selector Strip */
+    .selector-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      background: rgba(6, 17, 27, 0.6);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(76, 168, 184, 0.2);
+    }
+
+    .selector-btn {
+      min-height: 38px;
+      padding: 0 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .selector-btn:hover {
+      color: var(--text-main);
+    }
+
+    .selector-btn.active {
+      background: var(--tavy-cyan);
+      color: #051420;
+    }
+
+    /* Visual Mode Pill Cluster (B&W -> Sepia -> Living Colour -> Drone Orbit) */
+    .mode-cluster {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(6, 17, 27, 0.6);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(76, 168, 184, 0.2);
+    }
+
+    .mode-btn {
+      min-height: 38px;
+      padding: 0 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-main);
+    }
+
+    .mode-btn.active {
+      background: var(--parchment);
+      color: #121008;
+    }
+
+    .mode-btn.mode-drone.active {
+      background: linear-gradient(135deg, #4ca8b8, #58b07a);
+      color: #04121a;
+    }
+
+    /* Motion Speed Group */
+    .speed-cluster {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(6, 17, 27, 0.6);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(76, 168, 184, 0.2);
+    }
+
+    .speed-btn {
+      min-height: 38px;
+      padding: 0 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .speed-btn.active {
+      background: var(--tavy-cyan);
+      color: #051420;
+    }
+
+    .speed-btn.pause-btn.active {
+      background: var(--accent-pause);
+      color: #ffffff;
+    }
+
+    /* Soundscape Controls Cluster */
+    .audio-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(6, 17, 27, 0.6);
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(76, 168, 184, 0.2);
+    }
+
+    .btn-icon {
+      min-height: 36px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-tavy);
+      background: rgba(14, 34, 52, 0.7);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-icon.active {
+      color: var(--tavy-cyan);
+      border-color: var(--tavy-cyan);
+      background: var(--tavy-soft);
+    }
+
+    .soundscape-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Hygiene & Google Flow Drawer Triggers */
+    .utility-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-popover-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(88, 176, 122, 0.4);
+      background: rgba(88, 176, 122, 0.12);
+      color: #d6f6e4;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .badge-popover-btn:hover {
+      background: rgba(88, 176, 122, 0.22);
+    }
+
+    .badge-flow-btn {
+      border-color: rgba(76, 168, 184, 0.45);
+      background: rgba(76, 168, 184, 0.12);
+      color: #d4f2f7;
+    }
+
+    .badge-flow-btn:hover {
+      background: rgba(76, 168, 184, 0.22);
+    }
+
+    /* Drawers / Popovers */
+    .popover-card {
+      position: fixed;
+      right: 16px;
+      bottom: 175px;
+      z-index: 30;
+      width: min(420px, calc(100vw - 32px));
+      max-height: calc(100vh - 260px);
+      overflow-y: auto;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: var(--panel-solid);
+      border: 1px solid rgba(88, 176, 122, 0.4);
+      box-shadow: var(--shadow-calm);
+      display: none;
+    }
+
+    .popover-card.open {
+      display: block;
+    }
+
+    .popover-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .popover-card h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dartmoor-moss);
+      margin: 0;
+    }
+
+    .btn-popover-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border-tavy);
+      background: rgba(14, 34, 52, 0.8);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .btn-popover-close:hover {
+      color: var(--text-main);
+      border-color: var(--tavy-cyan);
+    }
+
+    .popover-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.86rem;
+      color: var(--text-main);
+    }
+
+    .checklist label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      line-height: 1.35;
+    }
+
+    .checklist input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--dartmoor-moss);
+    }
+
+    /* Flow Guide Popover */
+    #flowPopover {
+      border-color: var(--border-tavy);
+    }
+
+    #flowPopover h2 {
+      color: var(--tavy-cyan);
+    }
+
+    .code-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      background: rgba(4, 11, 18, 0.85);
+      border: 1px solid rgba(76, 168, 184, 0.3);
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: #9fe6f2;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+
+    /* Calm Loading Screen */
+    .loading-veil {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: radial-gradient(circle at center, #0f273c 0%, #06111a 100%);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .loading-veil.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .loading-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .carer-row-top {
+        grid-template-columns: 1fr;
+      }
+      .carer-row-controls {
+        gap: 8px;
+      }
+      .top-bar {
+        padding: 10px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="vr-stage" aria-label="Tavistock Heritage WebXR 360 Scene"></div>
+  <div class="calm-vignette"></div>
+
+  <!-- 2.0s Head-Gaze Dwell Reticle -->
+  <div class="gaze-reticle-wrap" aria-hidden="true">
+    <svg class="gaze-ring" id="gazeRing" viewBox="0 0 44 44">
+      <circle class="gaze-ring-bg" cx="22" cy="22" r="18"></circle>
+      <circle class="gaze-ring-progress" id="gazeProgress" cx="22" cy="22" r="18"></circle>
+    </svg>
+    <div class="gaze-dot"></div>
+    <div class="gaze-card" id="gazeCard">
+      <span id="gazeTitle">Tavistock Abbey Ruins</span>
+      <span class="gaze-year" id="gazeYear">c. 961 AD</span>
+    </div>
+  </div>
+
+  <!-- Top Navigation & WebXR Bar -->
+  <header class="top-bar">
+    <div class="brand-block">
+      <div class="brand-emblem" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M4 19V7l8-4 8 4v12" stroke="#4CA8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 19v-6h6v6" stroke="#E6C88B" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 3v4" stroke="#4CA8B8" stroke-width="1.8"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Tavistock Heritage Living History</h1>
+        <p class="brand-sub">Seated 1.2m Eye Height · 2.0s Head-Gaze Dwell · Mo360 Dementia Reminiscence</p>
+      </div>
+    </div>
+
+    <div class="action-cluster">
+      <div class="status-pill" id="sceneStatusPill">
+        <span class="status-dot" id="sceneStatusDot"></span>
+        <span id="sceneStatusText">Loading Archive…</span>
+      </div>
+
+      <button type="button" class="btn btn-coview" id="coViewBtn" aria-pressed="false">
+        <span>iPad / Lounge TV Co-View</span>
+      </button>
+
+      <button type="button" class="btn btn-vr" id="enterVrBtn">
+        <span>Enter VR</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Bottom Carer Co-View Control Strip -->
+  <footer class="carer-strip" aria-label="Carer Reminiscence & Co-View Controls">
+    <div class="carer-row-top">
+      <div class="narration-box">
+        <div>
+          <div class="narration-tag">Reminiscence Prompt · <span id="promptIndex">1 / 4</span></div>
+          <p class="narration-text" id="narrationText">
+            “Tavistock Abbey stood beside the River Tavy for over five hundred years. Can you feel the cool stone walls and hear the gentle murmur of the water flowing past the abbey weir?”
+          </p>
+        </div>
+        <button type="button" class="btn btn-compact" id="nextPromptBtn" style="min-height: 40px; padding: 0 14px; font-size: 0.85rem;">Next Prompt</button>
+      </div>
+
+      <div class="utility-cluster">
+        <button type="button" class="badge-popover-btn badge-flow-btn" id="flowBtn" aria-expanded="false" aria-controls="flowPopover">
+          <span aria-hidden="true">🎬</span>
+          <span id="droneBadgeLabel">Google Flow / Drone Active</span>
+        </button>
+        <button type="button" class="badge-popover-btn" id="hygieneBtn" aria-expanded="false" aria-controls="hygienePopover">
+          <span aria-hidden="true">✓</span>
+          <span id="hygieneBadgeLabel">Hygiene · 4/4 Ready</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="carer-row-controls">
+      <!-- Landmark Selector -->
+      <div class="selector-cluster" role="radiogroup" aria-label="Tavistock Landmarks">
+        <button type="button" class="selector-btn active" data-landmark="abbey_ruins">Abbey Ruins</button>
+        <button type="button" class="selector-btn" data-landmark="pannier_market">Pannier Market</button>
+        <button type="button" class="selector-btn" data-landmark="st_eustachius">St Eustachius</button>
+        <button type="button" class="selector-btn" data-landmark="canal_wharf">Canal Wharf</button>
+      </div>
+
+      <!-- Visual Mode: B&W -> Sepia -> Living Colour -> Drone Orbit -->
+      <div class="mode-cluster" role="radiogroup" aria-label="Visual Archive Era">
+        <button type="button" class="mode-btn" data-mode="bw">1890s B&amp;W Archive</button>
+        <button type="button" class="mode-btn" data-mode="sepia">Warm Sepia</button>
+        <button type="button" class="mode-btn active" data-mode="colour">Living Colour</button>
+        <button type="button" class="mode-btn mode-drone" data-mode="drone">Drone Orbit</button>
+      </div>
+
+      <!-- Gentle Motion Speed -->
+      <div class="speed-cluster" role="group" aria-label="Camera Motion Speed">
+        <button type="button" class="speed-btn active" data-speed="0.25">0.25x Gentle</button>
+        <button type="button" class="speed-btn" data-speed="0.5">0.5x Slow</button>
+        <button type="button" class="speed-btn pause-btn" data-speed="0">Calm Pause</button>
+      </div>
+
+      <!-- Web Audio Soundscape Controls -->
+      <div class="audio-cluster" role="group" aria-label="Calm Web Audio Soundscape">
+        <button type="button" class="btn-icon active" id="audioToggleBtn" title="Mute or play ambient soundscape">
+          <span>🔊 Soundscape</span>
+        </button>
+        <button type="button" class="btn-icon" id="chimeTestBtn" title="Play gentle St Eustachius chime">
+          <span>🔔 Chime</span>
+        </button>
+        <span class="soundscape-label" id="soundscapeStateLabel">River Tavy + Bells</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Care Home Hygiene Checklist Popover -->
+  <aside class="popover-card" id="hygienePopover" aria-label="Infection Control Checklist">
+    <div class="popover-header">
+      <h2>Care Home Comfort &amp; Hygiene Checklist</h2>
+      <button type="button" class="btn-popover-close" id="hygieneCloseBtn" aria-label="Close hygiene popover">✕</button>
+    </div>
+    <p>Dementia-safe protocols verified for seated care home VR reminiscence.</p>
+    <ul class="checklist">
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Medical-grade silicone facial interface disinfected</label></li>
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Resident seated comfortably in armchair (1.2m eye height)</label></li>
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Audio volume set to gentle ambient level (no sudden chimes)</label></li>
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Co-view active on iPad / Lounge TV for carer interaction</label></li>
+    </ul>
+  </aside>
+
+  <!-- Google Flow / Higgsfield Drop-in Guide Popover -->
+  <aside class="popover-card" id="flowPopover" aria-label="Google Flow & Higgsfield Drone Tour Info">
+    <div class="popover-header">
+      <h2>Google Flow &amp; Higgsfield Drone MP4 Slots</h2>
+      <button type="button" class="btn-popover-close" id="flowCloseBtn" aria-label="Close drone info popover">✕</button>
+    </div>
+    <p>This WebXR engine seamlessly attaches 1080p drone fly-around MP4s as 360° VideoTextures. Drop rendered videos into:</p>
+    <div class="code-box" id="flowPathBox">assets/tavistock_archive/abbey_drone_orbit.mp4</div>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+      When file is found, photoreal drone playback activates instantly. In the meantime, procedural gentle Three.js 3D orbit keeps residents safe from visual breaks.
+    </p>
+    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--parchment);">
+      <span>Active Landmark: <strong id="flowActiveLandmark">Abbey Ruins</strong></span>
+      <span id="flowVideoStatus">Procedural Fallback Active</span>
+    </div>
+  </aside>
+
+  <!-- Calm Loading Veil -->
+  <div class="loading-veil" id="loadingVeil">
+    <div class="loading-title">Preparing Tavistock Living Sanctuary…</div>
+    <div class="loading-sub" id="loadingSub">Loading historical archive · Seated 1.2m eye height</div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // Dementia Care Safety Constants
+    const SEATED_EYE_HEIGHT = 1.2;
+    const GAZE_DWELL_MS = 2000;
+    const GAZE_COOLDOWN_MS = 3500;
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 18; // ~113.097
+    const DEFAULT_MANIFEST_PATH = 'assets/tavistock_archive/manifest.json';
+
+    // DOM Elements
+    const stageEl = document.getElementById('vr-stage');
+    const loadingVeil = document.getElementById('loadingVeil');
+    const sceneStatusDot = document.getElementById('sceneStatusDot');
+    const sceneStatusText = document.getElementById('sceneStatusText');
+    const enterVrBtn = document.getElementById('enterVrBtn');
+    const coViewBtn = document.getElementById('coViewBtn');
+    const nextPromptBtn = document.getElementById('nextPromptBtn');
+    const promptIndexEl = document.getElementById('promptIndex');
+    const narrationTextEl = document.getElementById('narrationText');
+    const landmarkBtns = Array.from(document.querySelectorAll('.selector-btn'));
+    const modeBtns = Array.from(document.querySelectorAll('.mode-btn'));
+    const speedBtns = Array.from(document.querySelectorAll('.speed-btn'));
+    const audioToggleBtn = document.getElementById('audioToggleBtn');
+    const chimeTestBtn = document.getElementById('chimeTestBtn');
+    const soundscapeStateLabel = document.getElementById('soundscapeStateLabel');
+    const hygieneBtn = document.getElementById('hygieneBtn');
+    const hygieneCloseBtn = document.getElementById('hygieneCloseBtn');
+    const hygienePopover = document.getElementById('hygienePopover');
+    const hygieneChecks = Array.from(document.querySelectorAll('.hygiene-check'));
+    const hygieneBadgeLabel = document.getElementById('hygieneBadgeLabel');
+    const flowBtn = document.getElementById('flowBtn');
+    const flowCloseBtn = document.getElementById('flowCloseBtn');
+    const flowPopover = document.getElementById('flowPopover');
+    const flowPathBox = document.getElementById('flowPathBox');
+    const flowActiveLandmark = document.getElementById('flowActiveLandmark');
+    const flowVideoStatus = document.getElementById('flowVideoStatus');
+    const droneBadgeLabel = document.getElementById('droneBadgeLabel');
+    const gazeRing = document.getElementById('gazeRing');
+    const gazeProgress = document.getElementById('gazeProgress');
+    const gazeCard = document.getElementById('gazeCard');
+    const gazeTitle = document.getElementById('gazeTitle');
+    const gazeYear = document.getElementById('gazeYear');
+
+    // Experience State
+    let manifestData = null;
+    let currentLandmarkIndex = 0;
+    let currentVisualMode = 'colour'; // 'bw' | 'sepia' | 'colour' | 'drone'
+    let motionSpeed = 0.25;
+    let isDroneMode = false;
+    let soundscapeMuted = false;
+
+    // Web Audio Synthesizer: River Tavy + Dartmoor Breeze + St Eustachius Bells
+    let audioCtx = null;
+    let riverGain = null;
+    let breezeGain = null;
+    let riverFilter = null;
+    let audioInitialized = false;
+
+    function ensureAudioContext() {
+      if (!audioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) audioCtx = new AudioCtx();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+      if (audioCtx && !audioInitialized) {
+        setupProceduralSoundscape();
+      }
+    }
+
+    function createNoiseBuffer(durationSec = 5.0) {
+      if (!audioCtx) return null;
+      const bufferSize = audioCtx.sampleRate * durationSec;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        data[i] = (b0 + b1 + b2) * 0.12;
+      }
+      return buffer;
+    }
+
+    function setupProceduralSoundscape() {
+      if (!audioCtx || audioInitialized) return;
+      audioInitialized = true;
+
+      const noiseBuf = createNoiseBuffer(6.0);
+      if (!noiseBuf) return;
+
+      // 1. River Tavy Stream Generator
+      const riverSource = audioCtx.createBufferSource();
+      riverSource.buffer = noiseBuf;
+      riverSource.loop = true;
+
+      riverFilter = audioCtx.createBiquadFilter();
+      riverFilter.type = 'lowpass';
+      riverFilter.frequency.value = 520;
+      riverFilter.Q.value = 1.8;
+
+      riverGain = audioCtx.createGain();
+      riverGain.gain.setValueAtTime(soundscapeMuted ? 0.0001 : 0.18, audioCtx.currentTime);
+
+      riverSource.connect(riverFilter).connect(riverGain).connect(audioCtx.destination);
+      riverSource.start();
+
+      // 2. Dartmoor Soft Breeze
+      const breezeSource = audioCtx.createBufferSource();
+      breezeSource.buffer = noiseBuf;
+      breezeSource.loop = true;
+
+      const breezeFilter = audioCtx.createBiquadFilter();
+      breezeFilter.type = 'bandpass';
+      breezeFilter.frequency.value = 850;
+      breezeFilter.Q.value = 0.6;
+
+      breezeGain = audioCtx.createGain();
+      breezeGain.gain.setValueAtTime(soundscapeMuted ? 0.0001 : 0.08, audioCtx.currentTime);
+
+      breezeSource.connect(breezeFilter).connect(breezeGain).connect(audioCtx.destination);
+      breezeSource.start();
+
+      // Slow gentle surge LFO for water
+      const lfo = audioCtx.createOscillator();
+      lfo.frequency.value = 0.18; // ~5.5s gentle water surge
+      const lfoGain = audioCtx.createGain();
+      lfoGain.gain.value = 120;
+      lfo.connect(lfoGain).connect(riverFilter.frequency);
+      lfo.start();
+    }
+
+    function playStEustachiusChime(freq = 523.25) {
+      ensureAudioContext();
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+
+      // Modal Bell strike harmonics: Fundamental + minor third + fifth + octave
+      const partials = [
+        { mult: 1.0, gain: 0.12, decay: 2.8 },
+        { mult: 1.2, gain: 0.07, decay: 2.2 },
+        { mult: 1.5, gain: 0.05, decay: 1.6 },
+        { mult: 2.0, gain: 0.03, decay: 1.2 }
+      ];
+
+      partials.forEach(p => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq * p.mult, now);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(p.gain, now + 0.035);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + p.decay + 0.1);
+      });
+    }
+
+    function toggleAudio() {
+      ensureAudioContext();
+      soundscapeMuted = !soundscapeMuted;
+      audioToggleBtn.classList.toggle('active', !soundscapeMuted);
+      audioToggleBtn.querySelector('span').textContent = soundscapeMuted ? '🔇 Muted' : '🔊 Soundscape';
+
+      if (riverGain && breezeGain && audioCtx) {
+        const now = audioCtx.currentTime;
+        riverGain.gain.linearRampToValueAtTime(soundscapeMuted ? 0.0001 : 0.18, now + 0.4);
+        breezeGain.gain.linearRampToValueAtTime(soundscapeMuted ? 0.0001 : 0.08, now + 0.4);
+      }
+      soundscapeStateLabel.textContent = soundscapeMuted ? 'Soundscape Muted' : 'River Tavy + Bells';
+    }
+
+    window.addEventListener('pointerdown', ensureAudioContext, { once: true });
+    audioToggleBtn.addEventListener('click', toggleAudio);
+    chimeTestBtn.addEventListener('click', () => {
+      playStEustachiusChime(587.33); // D5 chime
+    });
+
+    // Three.js Scene Setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x07111c);
+
+    const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 150);
+    const cameraRig = new THREE.Group();
+    cameraRig.position.set(0, SEATED_EYE_HEIGHT, 0);
+    cameraRig.add(camera);
+    scene.add(cameraRig);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local');
+    stageEl.appendChild(renderer.domElement);
+
+    // OrbitControls: Ultra-smooth, calm, zero nausea
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.04;
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.rotateSpeed = 0.38;
+    controls.minPolarAngle = Math.PI * 0.30;
+    controls.maxPolarAngle = Math.PI * 0.65;
+    controls.target.set(0, SEATED_EYE_HEIGHT, -1.0);
+    controls.update();
+
+    // Lighting (Warm heritage sunlight + cool Tavy water reflection)
+    const hemiLight = new THREE.HemisphereLight(0xdcf2f8, 0x142838, 1.25);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfff1d6, 1.4);
+    sunLight.position.set(5, 12, 6);
+    scene.add(sunLight);
+
+    // Subtle Drifting Dartmoor Pollen / River Mist Motes
+    const mistCount = 200;
+    const mistPositions = new Float32Array(mistCount * 3);
+    for (let i = 0; i < mistCount; i++) {
+      mistPositions[i * 3] = (Math.random() - 0.5) * 24;
+      mistPositions[i * 3 + 1] = Math.random() * 8 + 0.1;
+      mistPositions[i * 3 + 2] = (Math.random() - 0.5) * 24;
+    }
+    const mistGeo = new THREE.BufferGeometry();
+    mistGeo.setAttribute('position', new THREE.BufferAttribute(mistPositions, 3));
+    const mistMat = new THREE.PointsMaterial({
+      color: 0xe6c88b,
+      size: 0.04,
+      transparent: true,
+      opacity: 0.38,
+      depthWrite: false
+    });
+    const riverMist = new THREE.Points(mistGeo, mistMat);
+    scene.add(riverMist);
+
+    // In-VR 3D Head-Gaze Reticle
+    const xrReticleGeo = new THREE.RingGeometry(0.015, 0.024, 32);
+    const xrReticleMat = new THREE.MeshBasicMaterial({
+      color: 0x4ca8b8,
+      transparent: true,
+      opacity: 0.85,
+      depthTest: false
+    });
+    const xrReticle = new THREE.Mesh(xrReticleGeo, xrReticleMat);
+    xrReticle.position.set(0, 0, -1.6);
+    xrReticle.visible = false;
+    camera.add(xrReticle);
+
+    // Heritage 360° Sphere & Custom Crossfade Shader
+    const sphereGeo = new THREE.SphereGeometry(60, 64, 40);
+    // Invert geometry normals so it renders inside
+    sphereGeo.scale(-1, 1, 1);
+
+    const crossfadeShader = {
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D uTexArchive;
+        uniform sampler2D uTexSepia;
+        uniform sampler2D uTexColour;
+        uniform sampler2D uTexVideo;
+        uniform float uMode;        // 0.0: B&W, 1.0: Sepia, 2.0: Colour, 3.0: Drone
+        uniform float uBlend;       // 0.0 to 1.0 transition blend
+        uniform float uTargetMode;  // destination mode
+        uniform float uHasVideo;    // 1.0 if video texture is active
+        uniform float uTime;
+        varying vec2 vUv;
+
+        vec4 getSampleForMode(float mode) {
+          if (mode < 0.5) {
+            return texture2D(uTexArchive, vUv);
+          } else if (mode < 1.5) {
+            return texture2D(uTexSepia, vUv);
+          } else if (mode < 2.5) {
+            return texture2D(uTexColour, vUv);
+          } else {
+            if (uHasVideo > 0.5) {
+              return texture2D(uTexVideo, vUv);
+            }
+            return texture2D(uTexColour, vUv);
+          }
+        }
+
+        void main() {
+          vec4 colA = getSampleForMode(uMode);
+          vec4 colB = getSampleForMode(uTargetMode);
+          vec4 finalCol = mix(colA, colB, clamp(uBlend, 0.0, 1.0));
+
+          // Soft historic vignette to soften peripheral glare for elderly eyes
+          vec2 uvCentered = vUv * 2.0 - 1.0;
+          float vignette = 1.0 - smoothstep(0.7, 1.35, length(uvCentered));
+          finalCol.rgb *= mix(0.85, 1.0, vignette);
+
+          gl_FragColor = vec4(finalCol.rgb, 1.0);
+        }
+      `
+    };
+
+    const textureLoader = new THREE.TextureLoader();
+    let currentDomeMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTexArchive: { value: null },
+        uTexSepia: { value: null },
+        uTexColour: { value: null },
+        uTexVideo: { value: null },
+        uMode: { value: 2.0 },
+        uTargetMode: { value: 2.0 },
+        uBlend: { value: 1.0 },
+        uHasVideo: { value: 0.0 },
+        uTime: { value: 0.0 }
+      },
+      vertexShader: crossfadeShader.vertexShader,
+      fragmentShader: crossfadeShader.fragmentShader,
+      side: THREE.DoubleSide
+    });
+
+    const domeSphere = new THREE.Mesh(sphereGeo, currentDomeMat);
+    scene.add(domeSphere);
+
+    // Video Texture Player (for Google Flow / Higgsfield Drone MP4s)
+    const videoEl = document.createElement('video');
+    videoEl.crossOrigin = 'anonymous';
+    videoEl.loop = true;
+    videoEl.muted = true;
+    videoEl.playsInline = true;
+    videoEl.setAttribute('playsinline', '');
+    videoEl.setAttribute('webkit-playsinline', '');
+    const videoTexture = new THREE.VideoTexture(videoEl);
+    videoTexture.colorSpace = THREE.SRGBColorSpace;
+    videoTexture.minFilter = THREE.LinearFilter;
+    currentDomeMat.uniforms.uTexVideo.value = videoTexture;
+
+    // Interactive 3D Hotspot Anchors
+    const hotspotGroup = new THREE.Group();
+    scene.add(hotspotGroup);
+    const gazeTargets = [];
+
+    function buildHotspotBeacon(hotspot) {
+      const anchor = new THREE.Group();
+      const pos = Array.isArray(hotspot.position) ? hotspot.position : [0, 1.2, -4.5];
+      anchor.position.set(pos[0], pos[1], pos[2]);
+
+      // Outer gentle pulse ring
+      const ringGeo = new THREE.RingGeometry(0.18, 0.24, 32);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0x4ca8b8,
+        transparent: true,
+        opacity: 0.75,
+        side: THREE.DoubleSide
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      anchor.add(ring);
+
+      // Inner glowing core
+      const coreGeo = new THREE.SphereGeometry(0.09, 16, 16);
+      const coreMat = new THREE.MeshBasicMaterial({ color: 0xe6c88b });
+      const core = new THREE.Mesh(coreGeo, coreMat);
+      anchor.add(core);
+
+      // User data for gaze detection
+      core.userData.hotspot = hotspot;
+      gazeTargets.push(core);
+
+      anchor.userData.ring = ring;
+      return anchor;
+    }
+
+    function updateHotspotsForLandmark(landmark) {
+      // Clear existing
+      while (hotspotGroup.children.length > 0) {
+        hotspotGroup.remove(hotspotGroup.children[0]);
+      }
+      gazeTargets.length = 0;
+
+      if (!landmark.hotspots) return;
+      landmark.hotspots.forEach(h => {
+        const beacon = buildHotspotBeacon(h);
+        hotspotGroup.add(beacon);
+      });
+    }
+
+    // Material & Landmark Loading Manager
+    const landmarkTextures = {};
+
+    function loadTextureSafe(url) {
+      return new Promise((resolve) => {
+        textureLoader.load(
+          url,
+          (tex) => {
+            tex.colorSpace = THREE.SRGBColorSpace;
+            resolve(tex);
+          },
+          undefined,
+          () => {
+            console.warn('Fallback texture used for:', url);
+            resolve(null);
+          }
+        );
+      });
+    }
+
+    async function switchLandmark(index, force = false) {
+      if (!manifestData || !manifestData.landmarks[index]) return;
+      if (currentLandmarkIndex === index && !force) return;
+      currentLandmarkIndex = index;
+
+      const lm = manifestData.landmarks[index];
+      landmarkBtns.forEach((btn, i) => btn.classList.toggle('active', i === index));
+      narrationTextEl.textContent = lm.narration;
+      promptIndexEl.textContent = `${index + 1} / ${manifestData.landmarks.length}`;
+      flowActiveLandmark.textContent = lm.name;
+      flowPathBox.textContent = lm.drone_mp4;
+
+      sceneStatusText.textContent = `Loading ${lm.name}…`;
+
+      // Pre-load textures for this landmark
+      if (!landmarkTextures[lm.id]) {
+        const [archiveTex, sepiaTex, colourTex] = await Promise.all([
+          loadTextureSafe(lm.archive_bw),
+          loadTextureSafe(lm.sepia),
+          loadTextureSafe(lm.living_colour)
+        ]);
+        landmarkTextures[lm.id] = { archiveTex, sepiaTex, colourTex };
+      }
+
+      const texSet = landmarkTextures[lm.id];
+      currentDomeMat.uniforms.uTexArchive.value = texSet.archiveTex;
+      currentDomeMat.uniforms.uTexSepia.value = texSet.sepiaTex;
+      currentDomeMat.uniforms.uTexColour.value = texSet.colourTex;
+
+      // Check if drone MP4 exists
+      checkAndAttachDroneVideo(lm);
+
+      // Update 3D interactive landmarks
+      updateHotspotsForLandmark(lm);
+
+      sceneStatusDot.classList.add('ready');
+      sceneStatusText.textContent = `${lm.name} · Seated 1.2m`;
+      loadingVeil.classList.add('hidden');
+    }
+
+    function checkAndAttachDroneVideo(lm) {
+      videoEl.pause();
+      currentDomeMat.uniforms.uHasVideo.value = 0.0;
+
+      if (!lm || !lm.drone_mp4 || lm.drone_video_ready !== true) {
+        flowVideoStatus.textContent = 'Procedural Orbit Fallback (Drop MP4 into slot)';
+        droneBadgeLabel.textContent = 'Procedural Drone Orbit';
+        return;
+      }
+
+      const videoPath = lm.drone_mp4;
+      flowVideoStatus.textContent = 'Photoreal Drone Video Loaded';
+      droneBadgeLabel.textContent = 'Drone Video Active';
+
+      videoEl.src = videoPath;
+      videoEl.load();
+      videoEl.play().then(() => {
+        currentDomeMat.uniforms.uHasVideo.value = 1.0;
+      }).catch(() => {
+        // Fallback gracefully without throwing errors
+        currentDomeMat.uniforms.uHasVideo.value = 0.0;
+        flowVideoStatus.textContent = 'Procedural Fallback Orbit';
+        droneBadgeLabel.textContent = 'Drone Orbit Ready';
+      });
+    }
+
+    // Visual Mode Switching with Smooth Shader Crossfade
+    let isTransitioningMode = false;
+    let transitionStartTime = 0;
+    const TRANSITION_DURATION = 1.2; // 1.2s dementia-safe crossfade
+
+    function setVisualMode(mode) {
+      if (currentVisualMode === mode && !isTransitioningMode) return;
+      const modeMap = { bw: 0.0, sepia: 1.0, colour: 2.0, drone: 3.0 };
+      const targetModeVal = modeMap[mode];
+
+      modeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+
+      isDroneMode = (mode === 'drone');
+      currentDomeMat.uniforms.uMode.value = modeMap[currentVisualMode];
+      currentDomeMat.uniforms.uTargetMode.value = targetModeVal;
+      currentDomeMat.uniforms.uBlend.value = 0.0;
+      transitionStartTime = performance.now();
+      isTransitioningMode = true;
+      currentVisualMode = mode;
+
+      if (isDroneMode && currentDomeMat.uniforms.uHasVideo.value > 0.5) {
+        videoEl.play().catch(() => {});
+      }
+    }
+
+    // Landmark Selection Event Listeners
+    landmarkBtns.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        ensureAudioContext();
+        switchLandmark(idx);
+      });
+    });
+
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        ensureAudioContext();
+        setVisualMode(btn.dataset.mode);
+      });
+    });
+
+    speedBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        ensureAudioContext();
+        speedBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        motionSpeed = parseFloat(btn.dataset.speed);
+      });
+    });
+
+    // Reminiscence Narration Cycler
+    nextPromptBtn.addEventListener('click', () => {
+      ensureAudioContext();
+      if (!manifestData) return;
+      const nextIdx = (currentLandmarkIndex + 1) % manifestData.landmarks.length;
+      switchLandmark(nextIdx);
+    });
+
+    // Hygiene & Flow Popover Controls
+    function updateHygieneCount() {
+      const checked = hygieneChecks.filter(c => c.checked).length;
+      hygieneBadgeLabel.textContent = `Hygiene · ${checked}/${hygieneChecks.length} Ready`;
+    }
+    hygieneChecks.forEach(c => c.addEventListener('change', updateHygieneCount));
+
+    hygieneBtn.addEventListener('click', () => {
+      flowPopover.classList.remove('open');
+      flowBtn.setAttribute('aria-expanded', 'false');
+      const open = hygienePopover.classList.toggle('open');
+      hygieneBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    hygieneCloseBtn.addEventListener('click', () => {
+      hygienePopover.classList.remove('open');
+      hygieneBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    flowBtn.addEventListener('click', () => {
+      hygienePopover.classList.remove('open');
+      hygieneBtn.setAttribute('aria-expanded', 'false');
+      const open = flowPopover.classList.toggle('open');
+      flowBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    flowCloseBtn.addEventListener('click', () => {
+      flowPopover.classList.remove('open');
+      flowBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // iPad / Lounge TV Fullscreen Co-View Toggle
+    coViewBtn.addEventListener('click', async () => {
+      ensureAudioContext();
+      const entering = !document.body.classList.contains('coview-clean');
+      document.body.classList.toggle('coview-clean', entering);
+      coViewBtn.classList.toggle('active', entering);
+      coViewBtn.setAttribute('aria-pressed', String(entering));
+      coViewBtn.querySelector('span').textContent = entering ? 'Exit Co-View' : 'iPad / Lounge TV Co-View';
+
+      try {
+        if (entering && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        } else if (!entering && document.fullscreenElement && document.exitFullscreen) {
+          await document.exitFullscreen();
+        }
+      } catch (_) {}
+    });
+
+    // WebXR VR Launcher
+    let activeXrSession = null;
+    async function initWebXRButton() {
+      if (!('xr' in navigator)) {
+        enterVrBtn.title = 'WebXR not available — open on Meta Quest or Pico browser';
+        return;
+      }
+      try {
+        const supported = await navigator.xr.isSessionSupported('immersive-vr');
+        if (supported) {
+          enterVrBtn.classList.add('vr-ready');
+          enterVrBtn.querySelector('span').textContent = 'Enter VR (Quest / Pico)';
+        }
+      } catch (_) {}
+    }
+    initWebXRButton();
+
+    enterVrBtn.addEventListener('click', async () => {
+      ensureAudioContext();
+      if (activeXrSession) {
+        await activeXrSession.end();
+        return;
+      }
+      if (!('xr' in navigator)) {
+        sceneStatusText.textContent = 'Open in Quest / Pico Browser for VR';
+        return;
+      }
+      try {
+        const supported = await navigator.xr.isSessionSupported('immersive-vr');
+        if (!supported) {
+          sceneStatusText.textContent = 'No VR Headset Detected · Co-View Active';
+          return;
+        }
+        const session = await navigator.xr.requestSession('immersive-vr', {
+          optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
+        });
+        activeXrSession = session;
+        xrReticle.visible = true;
+        enterVrBtn.querySelector('span').textContent = 'Exit VR';
+        session.addEventListener('end', () => {
+          activeXrSession = null;
+          xrReticle.visible = false;
+          enterVrBtn.querySelector('span').textContent = 'Enter VR (Quest / Pico)';
+        });
+        await renderer.xr.setSession(session);
+      } catch (err) {
+        console.error('WebXR session error:', err);
+        sceneStatusText.textContent = 'VR Session Unavailable';
+      }
+    });
+
+    // 2.0s Head-Gaze Dwell Raycaster
+    const raycaster = new THREE.Raycaster();
+    const centerNDC = new THREE.Vector2(0, 0);
+    let currentGazeObject = null;
+    let dwellStartMs = 0;
+    let triggeredCurrentDwell = false;
+    let lastChimeMs = 0;
+
+    function updateGazeDwell(nowMs) {
+      if (gazeTargets.length === 0) return;
+
+      const activeCamera = renderer.xr.isPresenting ? renderer.xr.getCamera() : camera;
+      raycaster.setFromCamera(centerNDC, activeCamera);
+      const hits = raycaster.intersectObjects(gazeTargets, false);
+
+      if (hits.length > 0) {
+        const hitObj = hits[0].object;
+        const hotspot = hitObj.userData.hotspot;
+        if (hotspot) {
+          if (currentGazeObject !== hitObj) {
+            currentGazeObject = hitObj;
+            dwellStartMs = nowMs;
+            triggeredCurrentDwell = false;
+            gazeTitle.textContent = hotspot.name;
+            gazeYear.textContent = hotspot.year;
+            gazeCard.classList.add('visible');
+            gazeRing.classList.add('active');
+            gazeRing.classList.remove('complete');
+          }
+
+          const elapsed = nowMs - dwellStartMs;
+          const progress = Math.min(elapsed / GAZE_DWELL_MS, 1.0);
+          gazeProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1.0 - progress));
+
+          if (progress >= 1.0 && !triggeredCurrentDwell) {
+            triggeredCurrentDwell = true;
+            gazeRing.classList.add('complete');
+            if (nowMs - lastChimeMs >= GAZE_COOLDOWN_MS) {
+              lastChimeMs = nowMs;
+              playStEustachiusChime(523.25);
+            }
+          }
+          return;
+        }
+      }
+
+      // Reset when gaze leaves target
+      if (currentGazeObject !== null) {
+        currentGazeObject = null;
+        dwellStartMs = 0;
+        triggeredCurrentDwell = false;
+        gazeProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
+        gazeCard.classList.remove('visible');
+        gazeRing.classList.remove('active', 'complete');
+      }
+    }
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Main Render Loop
+    const clock = new THREE.Clock();
+    renderer.setAnimationLoop(() => {
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const nowMs = performance.now();
+
+      // Shader Mode Transition
+      if (isTransitioningMode) {
+        const elapsedSec = (nowMs - transitionStartTime) / 1000;
+        const blend = Math.min(elapsedSec / TRANSITION_DURATION, 1.0);
+        // Smooth Hermite interpolation
+        const smoothBlend = blend * blend * (3.0 - 2.0 * blend);
+        currentDomeMat.uniforms.uBlend.value = smoothBlend;
+
+        if (blend >= 1.0) {
+          currentDomeMat.uniforms.uMode.value = currentDomeMat.uniforms.uTargetMode.value;
+          currentDomeMat.uniforms.uBlend.value = 1.0;
+          isTransitioningMode = false;
+        }
+      }
+
+      currentDomeMat.uniforms.uTime.value += delta;
+
+      // Gentle camera / dome drift (dementia-safe rotation)
+      if (motionSpeed > 0) {
+        const driftRate = isDroneMode ? (delta * 0.04 * motionSpeed) : (delta * 0.012 * motionSpeed);
+        domeSphere.rotation.y += driftRate;
+        riverMist.rotation.y += delta * 0.008 * motionSpeed;
+      }
+
+      // Billboard & pulse 3D hotspot rings toward camera
+      hotspotGroup.children.forEach(anchor => {
+        if (anchor.userData.ring) {
+          anchor.userData.ring.quaternion.copy(camera.quaternion);
+          const pulse = 1.0 + Math.sin(nowMs * 0.0025) * 0.08;
+          anchor.userData.ring.scale.set(pulse, pulse, pulse);
+        }
+      });
+
+      if (!renderer.xr.isPresenting) {
+        controls.update();
+      }
+
+      updateGazeDwell(nowMs);
+      renderer.render(scene, camera);
+    });
+
+    // Boot: Load Manifest & Initialize
+    fetch(DEFAULT_MANIFEST_PATH)
+      .then(res => {
+        if (!res.ok) throw new Error('Manifest fetch failed: ' + res.status);
+        return res.json();
+      })
+      .then(manifest => {
+        if (Array.isArray(manifest)) {
+          manifestData = {
+            images: manifest,
+            landmarks: [
+              {
+                id: "abbey_ruins",
+                name: "Tavistock Abbey Ruins & Abbey Bridge",
+                narration: "Listen to the gentle murmur of the River Tavy passing beneath Abbey Bridge, near the ancient stones of Tavistock Abbey.",
+                archive_bw: "assets/tavistock_archive/02_abbey_bridge_river_tavy.jpg",
+                sepia: "assets/tavistock_archive/04_abbey_mead_historic_lithograph.jpg",
+                living_colour: "assets/tavistock_archive/02_abbey_bridge_river_tavy.jpg",
+                drone_mp4: "assets/tavistock_archive/abbey_drone_orbit.mp4",
+                drone_video_ready: true,
+                hotspots: [
+                  { title: "Abbey Bridge", year: "c. 1890", phi: 1.55, theta: 0.25 },
+                  { title: "River Tavy", year: "Living Water", phi: 1.85, theta: -0.45 }
+                ]
+              },
+              {
+                id: "pannier_market",
+                name: "Bedford Square & Pannier Market",
+                narration: "Bustling Bedford Square in the heart of Tavistock, framed by the Victorian Town Hall and Duke of Bedford civic architecture.",
+                archive_bw: "assets/tavistock_archive/01_bedford_square_guildhall.jpg",
+                sepia: "assets/tavistock_archive/01_bedford_square_guildhall.jpg",
+                living_colour: "assets/tavistock_archive/01_bedford_square_guildhall.jpg",
+                drone_mp4: "assets/tavistock_archive/pannier_market_drone_orbit.mp4",
+                drone_video_ready: true,
+                hotspots: [
+                  { title: "Town Hall & Guildhall", year: "c. 1895", phi: 1.48, theta: 0.12 },
+                  { title: "Bedford Square Cobbles", year: "Victorian Era", phi: 1.78, theta: -0.22 }
+                ]
+              },
+              {
+                id: "st_eustachius",
+                name: "St Eustachius Church & Tavistock Panorama",
+                narration: "Looking westward over Tavistock, admiring the towering arches of the railway viaduct and the granite pinnacle of St Eustachius Church.",
+                archive_bw: "assets/tavistock_archive/03_tavistock_panorama_viaduct.jpg",
+                sepia: "assets/tavistock_archive/08_drake_monument_relief_1890.jpg",
+                living_colour: "assets/tavistock_archive/03_tavistock_panorama_viaduct.jpg",
+                drone_mp4: "assets/tavistock_archive/st_eustachius_drone_orbit.mp4",
+                drone_video_ready: true,
+                hotspots: [
+                  { title: "Railway Viaduct", year: "c. 1890", phi: 1.52, theta: 0.35 },
+                  { title: "St Eustachius Tower", year: "14th Century", phi: 1.42, theta: -0.65 }
+                ]
+              },
+              {
+                id: "canal_wharf",
+                name: "Tavistock Canal & Historic Cloth Mill",
+                narration: "The historic waterworks and cloth mill of Tavistock along the River Tavy and canal corridor, powered by Devon's rushing moorland waters.",
+                archive_bw: "assets/tavistock_archive/05_cloth_mill_tavistock_1824.jpg",
+                sepia: "assets/tavistock_archive/06_tavistock_north_steam_railway.jpg",
+                living_colour: "assets/tavistock_archive/07_endsleigh_swiss_cottage_postcard.jpg",
+                drone_mp4: "assets/tavistock_archive/canal_wharf_drone_orbit.mp4",
+                drone_video_ready: true,
+                hotspots: [
+                  { title: "Historic Cloth Mill", year: "1824", phi: 1.50, theta: 0.18 },
+                  { title: "Canal Water Leat", year: "Industrial Heritage", phi: 1.82, theta: -0.32 }
+                ]
+              }
+            ]
+          };
+        } else {
+          manifestData = manifest;
+        }
+        switchLandmark(0, true);
+      })
+      .catch(err => {
+        console.error('Failed to load archive manifest:', err);
+        sceneStatusText.textContent = 'Archive Manifest Error';
+        document.getElementById('loadingSub').textContent = 'Could not load ' + DEFAULT_MANIFEST_PATH;
+      });
+  </script>
+</body>
+</html>

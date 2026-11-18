@@ -1,0 +1,90 @@
+[
+  {
+    "id": "tavistock_guildhall_bedford_sq",
+    "filename": "01_bedford_square_guildhall.jpg",
+    "landmark": "Guildhall & Bedford Square, Tavistock",
+    "era_year": "c. 1890-1900",
+    "description": "Detroit Publishing Company view of Guildhall Square (Bedford Square) and the Tavistock Town Hall complex, showing Victorian townscape, Duke of Bedford architecture, and horse-drawn carriages.",
+    "license": "Public Domain (Library of Congress / Detroit Publishing Co.)",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Guildhall_Square%2C_Tavistock%2C_England-LCCN2002708152.jpg",
+    "width": 3639,
+    "height": 2780
+  },
+  {
+    "id": "tavistock_abbey_bridge",
+    "filename": "02_abbey_bridge_river_tavy.jpg",
+    "landmark": "Abbey Bridge & River Tavy",
+    "era_year": "c. 1890-1900",
+    "description": "Historical view of Abbey Bridge crossing the River Tavy with Victorian riverside masonry, Tavistock Abbey precinct trees, and surrounding Devon hills.",
+    "license": "Public Domain (Library of Congress / Detroit Publishing Co.)",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Abbey_bridge%2C_Tavistock%2C_England-LCCN2002708153.jpg",
+    "width": 3648,
+    "height": 2770
+  },
+  {
+    "id": "tavistock_panorama_viaduct",
+    "filename": "03_tavistock_panorama_viaduct.jpg",
+    "landmark": "Tavistock West Panorama & Viaduct",
+    "era_year": "c. 1890-1900",
+    "description": "Panoramic view across Tavistock from the west, capturing the grand stone railway viaduct arching over the town, St Eustachius church tower, and Dartmoor foothills.",
+    "license": "Public Domain (Library of Congress / Detroit Publishing Co.)",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/From_the_west%2C_Tavistock%2C_England-LCCN2002708151.jpg",
+    "width": 3670,
+    "height": 2759
+  },
+  {
+    "id": "tavistock_abbey_mead",
+    "filename": "04_abbey_mead_historic_lithograph.jpg",
+    "landmark": "Tavistock Abbey Mead & Historic Cottages",
+    "era_year": "c. 1850",
+    "description": "Mid-19th-century British Museum topographical monochrome lithograph depicting Abbey Mead in Tavistock, historic granite perimeter walls, grazing cattle, and townspeople along the old road.",
+    "license": "Public Domain (British Museum Collection)",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Abbey_mead%2C_Tavistock_%28BM_1981%2CU.857%29.jpg",
+    "width": 2320,
+    "height": 1573
+  },
+  {
+    "id": "tavistock_cloth_mill_1824",
+    "filename": "05_cloth_mill_tavistock_1824.jpg",
+    "landmark": "Historic Cloth Mill & Leat near Tavistock",
+    "era_year": "1824",
+    "description": "Historic fine monochrome wash and graphite architectural drawing of the ancient cloth mill and industrial waterworks near Tavistock by Devon artist John White Abbott.",
+    "license": "Public Domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Cloth_Mill_near_Tavistock_-_John_White_Abbott_-_7_1951.png",
+    "width": 2480,
+    "height": 1733
+  },
+  {
+    "id": "tavistock_north_steam_railway",
+    "filename": "06_tavistock_north_steam_railway.jpg",
+    "landmark": "Tavistock North Railway Station & Steam Locomotive",
+    "era_year": "c. 1950",
+    "description": "Historical black-and-white railway photograph of Southern Railway West Country Class steam locomotive No. 34036 'Westward Ho' pausing at Tavistock North Station along the former LSWR mainline.",
+    "license": "CC0 / Public Domain dedication",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Southern_Railway_West_Country_Class_No._34036_%E2%80%9CWestward_Ho%E2%80%9D_at_Tavistock_North_Station.jpg",
+    "width": 956,
+    "height": 593
+  },
+  {
+    "id": "tavistock_endsleigh_postcard_1907",
+    "filename": "07_endsleigh_swiss_cottage_postcard.jpg",
+    "landmark": "Endsleigh Estate Swiss Cottage, Tavistock",
+    "era_year": "c. 1907",
+    "description": "Authentic vintage monochrome Edwardian postcard depicting the Swiss Cottage at Endsleigh near Tavistock, designed by Sir Jeffrey Wyatville for John Russell, 6th Duke of Bedford.",
+    "license": "Public Domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Postcard_of_the_Swiss_cottage_in_Endsleigh%2C_Tavistock%2C_Devon.jpg",
+    "width": 3185,
+    "height": 2018
+  },
+  {
+    "id": "tavistock_drake_statue_relief",
+    "filename": "08_drake_monument_relief_1890.jpg",
+    "landmark": "Sir Francis Drake Monument Historical Bronze Relief",
+    "era_year": "1890",
+    "description": "Original 1890 bronze narrative relief panel by Sir Joseph Boehm on the pedestal of Sir Francis Drake's statue in Tavistock, commemorating Drake's knighting by Queen Elizabeth I.",
+    "license": "CC0 / Public Domain",
+    "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/DrakeKnightedTavistockMonument.jpg",
+    "width": 3648,
+    "height": 2736
+  }
+]

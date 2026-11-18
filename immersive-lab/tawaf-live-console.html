@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAWAF · Market Hall Live</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --canvas: #090D16;
+      --surface-1: #121826;
+      --surface-2: #182032;
+      --surface-3: #1F2940;
+      --ochre: #C87D28;
+      --emerald: #10B981;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --active-chakra: #10B981;
+      --active-chakra-rgb: 16, 185, 129;
+      --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.45);
+      --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.32);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(var(--active-chakra-rgb), 0.16) 0%, transparent 45%),
+        radial-gradient(circle at 82% 88%, rgba(200, 125, 40, 0.11) 0%, transparent 45%),
+        var(--canvas);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background 0.55s ease;
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    .app-shell {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 28px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .app-shell { padding: 16px; gap: 18px; }
+    }
+
+    /* HERO STAGE HEADER */
+    .hero-stage {
+      background: var(--surface-1);
+      border-radius: 24px;
+      padding: 22px 28px;
+      box-shadow: var(--shadow-card), 0 0 60px rgba(var(--active-chakra-rgb), 0.10);
+      display: grid;
+      grid-template-columns: 1.2fr auto auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    @media (max-width: 1120px) {
+      .hero-stage { grid-template-columns: 1fr; gap: 20px; }
+    }
+
+    .hero-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+    }
+
+    .live-orb {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--active-chakra);
+      box-shadow: 0 0 14px var(--active-chakra);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.75rem, 2.8vw, 2.45rem);
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+      color: var(--text-primary);
+    }
+
+    .hero-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill-play {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      background: var(--active-chakra);
+      color: #06100C;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 28px rgba(var(--active-chakra-rgb), 0.38);
+      transition: transform 0.16s ease, filter 0.16s ease, background 0.3s ease;
+    }
+
+    .pill-play:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .pill-play.is-playing { background: var(--ochre); color: #090D16; box-shadow: 0 10px 28px rgba(200, 125, 40, 0.38); }
+
+    .seg-toggle {
+      display: inline-flex;
+      background: var(--surface-2);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .seg-btn {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .seg-btn.active {
+      background: var(--surface-3);
+      color: var(--text-primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .master-vol-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-2);
+      padding: 10px 16px;
+      border-radius: 999px;
+    }
+
+    .master-vol-pill span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .btn-mute-pill {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: rgba(239, 68, 68, 0.16);
+      color: #FCA5A5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s ease;
+    }
+    .btn-mute-pill:hover { background: rgba(239, 68, 68, 0.28); }
+
+    /* 4-7-8 BREATHING RING IN HERO */
+    .hero-breath {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface-2);
+      padding: 12px 18px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .breath-ring-wrap {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+    }
+
+    .breath-svg {
+      width: 78px;
+      height: 78px;
+      transform: rotate(-90deg);
+    }
+
+    .breath-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .breath-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 96px;
+    }
+
+    .breath-phase-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      color: var(--active-chakra);
+      transition: color 0.3s ease;
+    }
+
+    .breath-sub {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    /* 2-DECK MAIN STAGE */
+    .stage-decks {
+      display: grid;
+      grid-template-columns: 1.02fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1080px) {
+      .stage-decks { grid-template-columns: 1fr; }
+    }
+
+    .deck-card {
+      background: var(--surface-1);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .deck-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .deck-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+    }
+
+    .deck-sub {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* LEFT DECK: SPECTRUM + 4 SOLID INSTRUMENT CARDS */
+    .spectrum-wrap {
+      background: var(--surface-2);
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    #spectrumCanvas {
+      width: 100%;
+      height: 82px;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .stem-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .stem-card {
+      background: var(--surface-2);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: transform 0.16s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    .stem-card.muted { opacity: 0.45; }
+    .stem-card.soloed {
+      background: linear-gradient(135deg, rgba(var(--active-chakra-rgb), 0.18), var(--surface-2));
+      box-shadow: 0 12px 30px rgba(var(--active-chakra-rgb), 0.18);
+    }
+
+    .stem-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .stem-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .stem-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.08rem;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .stem-role {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .stem-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-mini {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      background: var(--surface-3);
+      color: var(--text-secondary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-mini:hover { color: var(--text-primary); }
+    .pill-mini.mute-on { background: #EF4444; color: #FFFFFF; }
+    .pill-mini.solo-on { background: var(--emerald); color: #051610; }
+
+    .stem-fader-row {
+      display: grid;
+      grid-template-columns: 1fr 48px;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .stem-pct {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .level-bar-bg {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(9, 13, 22, 0.75);
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--active-chakra), var(--ochre));
+      transition: width 0.06s linear;
+    }
+
+    /* Custom Solid Range Sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--surface-1);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
+
+    /* RIGHT DECK: SOLID CHAKRA PADS + GLOWING 19.1 DOME ORB */
+    .chakra-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 540px) {
+      .chakra-grid { grid-template-columns: 1fr; }
+    }
+
+    .chakra-pad {
+      appearance: none;
+      border: none;
+      border-radius: 16px;
+      padding: 15px 18px;
+      background: var(--pad-color);
+      color: #FFFFFF;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      opacity: 0.84;
+      transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.2s ease;
+    }
+
+    .chakra-pad.light-text-dark { color: #090D16; }
+    .chakra-pad:hover { opacity: 1; transform: translateY(-2px); }
+    .chakra-pad.active {
+      opacity: 1;
+      transform: scale(1.02);
+      box-shadow: 0 0 0 3px #FFFFFF, 0 16px 36px rgba(var(--pad-rgb), 0.55);
+    }
+
+    .chakra-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.98rem;
+      letter-spacing: -0.02em;
+      display: block;
+    }
+
+    .chakra-sub {
+      font-size: 0.75rem;
+      opacity: 0.88;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .chakra-hz {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(9, 13, 22, 0.24);
+    }
+
+    /* SOLID GLOWING 19.1 DOME STAGE */
+    .dome-stage-box {
+      background: var(--surface-2);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .dome-orb-wrap {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(var(--active-chakra-rgb), 0.28) 0%, #0D1322 65%, #090D16 100%);
+      box-shadow:
+        inset 0 0 50px rgba(0, 0, 0, 0.65),
+        0 0 55px rgba(var(--active-chakra-rgb), 0.22);
+      padding: 10px;
+      transition: box-shadow 0.45s ease, background 0.45s ease;
+    }
+
+    #domeRadarSvg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .panner-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .panner-control {
+      background: var(--surface-1);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panner-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .panner-label strong { color: var(--text-primary); }
+
+    /* COLLAPSIBLE FOOTER DRAWER: SCREENBERRY & UE 5.8 SYNC */
+    .sync-drawer {
+      background: var(--surface-1);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .sync-summary {
+      list-style: none;
+      padding: 16px 24px;
+      cursor: pointer;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      user-select: none;
+    }
+
+    .sync-summary::-webkit-details-marker { display: none; }
+
+    .sync-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .soft-pill {
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .soft-pill.ok { color: var(--emerald); background: rgba(16, 185, 129, 0.14); }
+
+    .sync-drawer-body {
+      padding: 4px 24px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 1020px) {
+      .sync-drawer-body { grid-template-columns: 1fr; }
+    }
+
+    .sync-subcard {
+      background: var(--surface-2);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sync-subcard h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.94rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .solid-input {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: var(--surface-1);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .btn-soft {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: var(--surface-3);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: filter 0.15s ease;
+    }
+
+    .btn-soft:hover { filter: brightness(1.16); }
+
+    .osc-log {
+      background: #0A0F1B;
+      border-radius: 14px;
+      padding: 12px 14px;
+      height: 148px;
+      overflow-y: auto;
+      font-size: 0.76rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .osc-entry { padding: 2px 0; }
+    .osc-addr { color: var(--ochre); font-weight: 600; }
+    .osc-val { color: var(--emerald); margin-left: 6px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- HERO STAGE HEADER -->
+    <header class="hero-stage">
+      <div class="hero-brand">
+        <div class="hero-kicker">
+          <span class="live-orb"></span>
+          <span id="topChakraLabel">Heart · #10B981</span>
+          <span>·</span>
+          <span id="audioStatusLabel">Ready</span>
+        </div>
+        <h1 class="hero-title">TAWAF · Market Hall Live</h1>
+      </div>
+
+      <div class="hero-controls">
+        <button class="pill-play" id="btnMasterPlay">&#9654; Play Stems</button>
+        <div class="seg-toggle" role="group" aria-label="Mix Crossfade Mode">
+          <button class="seg-btn active" id="modeStemsBtn">4-Stem Live</button>
+          <button class="seg-btn" id="modeBrainFmBtn">Brain.fm Master</button>
+        </div>
+        <div class="master-vol-pill">
+          <span>Master</span>
+          <input type="range" id="masterVolumeSlider" min="0" max="100" value="85" style="width:92px;" />
+          <span class="tabular" id="masterVolPct" style="color:var(--text-primary);min-width:34px;text-align:right;">85%</span>
+        </div>
+        <button class="btn-mute-pill" id="btnPanicMute">Mute All</button>
+      </div>
+
+      <div class="hero-breath" aria-label="4-7-8 Breathing Phase">
+        <div class="breath-ring-wrap">
+          <svg class="breath-svg" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="33" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="7" />
+            <circle id="breathProgressRing" cx="40" cy="40" r="33" fill="none" stroke="#10B981" stroke-width="7"
+              stroke-linecap="round" stroke-dasharray="207.35" stroke-dashoffset="0" />
+          </svg>
+          <div class="breath-center tabular" id="breathTimerLabel">4.0s</div>
+        </div>
+        <div class="breath-meta">
+          <span class="breath-phase-title" id="breathPhaseLabel">Inhale</span>
+          <span class="breath-sub tabular">4-7-8 · 60 BPM</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2-DECK LIVE PERFORMANCE STAGE -->
+    <main class="stage-decks">
+      <!-- LEFT DECK: AUTHENTIC INSTRUMENTS -->
+      <section class="deck-card">
+        <div class="deck-header">
+          <h2 class="deck-title">Authentic Instruments</h2>
+          <span class="deck-sub tabular" id="masterDbLabel">48 kHz · -1.4 dB</span>
+        </div>
+
+        <div class="spectrum-wrap">
+          <canvas id="spectrumCanvas" width="560" height="82"></canvas>
+        </div>
+
+        <div class="stem-list" id="stemListContainer"></div>
+      </section>
+
+      <!-- RIGHT DECK: CHAKRA & 19.1 DOME -->
+      <section class="deck-card">
+        <div class="deck-header">
+          <h2 class="deck-title">Chakra &amp; 19.1 Dome</h2>
+          <span class="deck-sub tabular" id="topAzimuthLabel">000° Azimuth</span>
+        </div>
+
+        <div class="chakra-grid" id="chakraGrid"></div>
+
+        <div class="dome-stage-box">
+          <div class="dome-orb-wrap">
+            <svg id="domeRadarSvg" viewBox="-150 -150 300 300" aria-label="Market Hall 19.1 Speaker Array"></svg>
+          </div>
+
+          <div class="panner-row">
+            <div class="panner-control">
+              <div class="panner-label">
+                <span>Orbit Speed</span>
+                <strong class="tabular" id="orbitSpeedVal">-1.0x CCW</strong>
+              </div>
+              <input type="range" id="orbitSpeedSlider" min="-20" max="20" value="-10" />
+            </div>
+            <div class="panner-control">
+              <div class="panner-label">
+                <span>Azimuth</span>
+                <strong class="tabular" id="manualAzimuthVal">000°</strong>
+              </div>
+              <input type="range" id="manualAzimuthSlider" min="0" max="359" value="0" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- COLLAPSIBLE FOOTER DRAWER: SCREENBERRY & UE 5.8 SYNC -->
+    <details class="sync-drawer" id="syncDrawer">
+      <summary class="sync-summary">
+        <span>Screenberry &amp; UE 5.8 Sync</span>
+        <div class="sync-badges">
+          <span class="soft-pill ok" id="sbStatusChip">Screenberry Ready</span>
+          <span class="soft-pill" id="ueStatusChip">UE 5.8 · 30010</span>
+          <span class="soft-pill">Expand Controls</span>
+        </div>
+      </summary>
+
+      <div class="sync-drawer-body">
+        <div class="sync-subcard">
+          <h3>Front Pictures Screenberry</h3>
+          <div class="field-row">
+            <input class="solid-input tabular" id="screenberryHost" type="text" value="127.0.0.1:9000" aria-label="Screenberry Host" />
+            <select class="solid-input" id="screenberryProto" aria-label="Protocol">
+              <option value="http">HTTP OSC Bridge</option>
+              <option value="ws">WebSocket OSC</option>
+              <option value="sim">Local Dry-Run</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button class="btn-soft" id="btnSbPing">Ping</button>
+            <button class="btn-soft" id="btnSbDomemaster">210° Domemaster</button>
+            <button class="btn-soft" id="btnSbAmbiX">4ch AmbiX</button>
+          </div>
+        </div>
+
+        <div class="sync-subcard">
+          <h3>Unreal Engine 5.8 · TAWAF_DomeTest</h3>
+          <p style="font-size:0.78rem;color:var(--text-secondary);line-height:1.45;">
+            Syncs active Chakra colour, 4-7-8 breath phase, and 19.1 azimuth to <span class="tabular">127.0.0.1:30010</span>.
+          </p>
+          <div class="btn-row">
+            <button class="btn-soft" id="btnUeSync">Sync UE 5.8 State</button>
+            <button class="btn-soft" id="btnCopyOsc">Copy JSON Cue</button>
+          </div>
+        </div>
+
+        <div class="sync-subcard">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Live OSC Cue Log</h3>
+            <button class="btn-soft" id="btnClearLog" style="padding:4px 10px;font-size:0.72rem;">Clear</button>
+          </div>
+          <div class="osc-log tabular" id="oscLog"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const STEMS = [
+        {
+          id: 'frame_drum',
+          name: 'Frame Drum Pulse',
+          role: 'Grounding 60 BPM · 4-7-8 Pulse',
+          src: './audio_v2/stem_frame_drum_pulse.wav',
+          defaultGain: 0.85,
+          baseAzimuth: 0
+        },
+        {
+          id: 'oud_harp',
+          name: 'Oud & Harp',
+          role: 'CCW 30s Orbit · Warm Pluck',
+          src: './audio_v2/stem_oud_harp_arpeggio.wav',
+          defaultGain: 0.80,
+          baseAzimuth: 45
+        },
+        {
+          id: 'felt_cello',
+          name: 'Felt Piano & Cello',
+          role: 'Wide Harmonic Sanctuary Pad',
+          src: './audio_v2/stem_felt_cello_pad.wav',
+          defaultGain: 0.82,
+          baseAzimuth: 180
+        },
+        {
+          id: 'ney_breath',
+          name: 'Ney & Dome Air',
+          role: 'Zenith Drift · Spatial Breath',
+          src: './audio_v2/stem_ney_breath_wind.wav',
+          defaultGain: 0.76,
+          baseAzimuth: 270
+        }
+      ];
+
+      const CHAKRAS = [
+        { id: 'root', name: 'Root', sanskrit: 'Muladhara', hz: '396 Hz', hex: '#B91C1C', rgb: '185, 28, 28', darkText: false, mix: { frame_drum: 1.0, oud_harp: 0.45, felt_cello: 0.72, ney_breath: 0.30 } },
+        { id: 'sacral', name: 'Sacral', sanskrit: 'Svadhisthana', hz: '417 Hz', hex: '#EA580C', rgb: '234, 88, 12', darkText: false, mix: { frame_drum: 0.88, oud_harp: 0.85, felt_cello: 0.65, ney_breath: 0.45 } },
+        { id: 'solar', name: 'Solar Plexus', sanskrit: 'Manipura', hz: '528 Hz', hex: '#EAB308', rgb: '234, 179, 8', darkText: true, mix: { frame_drum: 0.75, oud_harp: 1.0, felt_cello: 0.70, ney_breath: 0.58 } },
+        { id: 'heart', name: 'Heart', sanskrit: 'Anahata', hz: '639 Hz', hex: '#10B981', rgb: '16, 185, 129', darkText: true, mix: { frame_drum: 0.68, oud_harp: 0.78, felt_cello: 1.0, ney_breath: 0.74 } },
+        { id: 'throat', name: 'Throat', sanskrit: 'Vishuddha', hz: '741 Hz', hex: '#0EA5E9', rgb: '14, 165, 233', darkText: true, mix: { frame_drum: 0.52, oud_harp: 0.74, felt_cello: 0.78, ney_breath: 1.0 } },
+        { id: 'third_eye', name: 'Third Eye', sanskrit: 'Ajna', hz: '852 Hz', hex: '#3730A3', rgb: '55, 48, 163', darkText: false, mix: { frame_drum: 0.45, oud_harp: 0.62, felt_cello: 0.94, ney_breath: 0.92 } },
+        { id: 'crown', name: 'Crown', sanskrit: 'Sahasrara', hz: '963 Hz', hex: '#7E22CE', rgb: '126, 34, 206', darkText: false, mix: { frame_drum: 0.32, oud_harp: 0.68, felt_cello: 0.84, ney_breath: 1.0 } },
+        { id: 'unified', name: 'Unified', sanskrit: 'Sanctuary 19.1', hz: 'All', hex: '#C87D28', rgb: '200, 125, 40', darkText: true, mix: { frame_drum: 0.85, oud_harp: 0.82, felt_cello: 0.85, ney_breath: 0.80 } }
+      ];
+
+      const DOME_CHANNELS = [
+        { ch: 1, ring: 'lower', az: 0.0 },
+        { ch: 2, ring: 'lower', az: 25.714 },
+        { ch: 3, ring: 'lower', az: 51.429 },
+        { ch: 4, ring: 'lower', az: 77.143 },
+        { ch: 5, ring: 'lower', az: 102.857 },
+        { ch: 6, ring: 'lower', az: 128.571 },
+        { ch: 7, ring: 'lower', az: 154.286 },
+        { ch: 8, ring: 'lower', az: 180.0 },
+        { ch: 9, ring: 'lower', az: 205.714 },
+        { ch: 10, ring: 'lower', az: 231.429 },
+        { ch: 11, ring: 'lower', az: 257.143 },
+        { ch: 12, ring: 'lower', az: 282.857 },
+        { ch: 13, ring: 'lower', az: 308.571 },
+        { ch: 14, ring: 'lower', az: 334.286 },
+        { ch: 15, ring: 'upper', az: 45.0 },
+        { ch: 16, ring: 'upper', az: 135.0 },
+        { ch: 17, ring: 'upper', az: 225.0 },
+        { ch: 18, ring: 'upper', az: 315.0 },
+        { ch: 19, ring: 'zenith', az: 0.0 },
+        { ch: 20, ring: 'lfe', az: 0.0 }
+      ];
+
+      const state = {
+        isPlaying: false,
+        mixMode: 'stems',
+        masterVolume: 0.85,
+        activeChakra: CHAKRAS[3],
+        azimuthDeg: 0,
+        orbitSpeed: -1.0,
+        stems: {},
+        audioCtx: null,
+        masterGain: null,
+        stemsBusGain: null,
+        brainFmGain: null,
+        masterAnalyser: null,
+        brainFmAudio: null,
+        lastFrameTime: performance.now(),
+        breathStartTime: performance.now()
+      };
+
+      const els = {
+        stemList: document.getElementById('stemListContainer'),
+        chakraGrid: document.getElementById('chakraGrid'),
+        domeSvg: document.getElementById('domeRadarSvg'),
+        oscLog: document.getElementById('oscLog'),
+        topChakraLabel: document.getElementById('topChakraLabel'),
+        topAzimuthLabel: document.getElementById('topAzimuthLabel'),
+        audioStatusLabel: document.getElementById('audioStatusLabel'),
+        btnMasterPlay: document.getElementById('btnMasterPlay'),
+        masterVolumeSlider: document.getElementById('masterVolumeSlider'),
+        masterVolPct: document.getElementById('masterVolPct'),
+        masterDbLabel: document.getElementById('masterDbLabel'),
+        orbitSpeedSlider: document.getElementById('orbitSpeedSlider'),
+        orbitSpeedVal: document.getElementById('orbitSpeedVal'),
+        manualAzimuthSlider: document.getElementById('manualAzimuthSlider'),
+        manualAzimuthVal: document.getElementById('manualAzimuthVal'),
+        breathRing: document.getElementById('breathProgressRing'),
+        breathPhase: document.getElementById('breathPhaseLabel'),
+        breathTimer: document.getElementById('breathTimerLabel'),
+        spectrumCanvas: document.getElementById('spectrumCanvas'),
+        modeStemsBtn: document.getElementById('modeStemsBtn'),
+        modeBrainFmBtn: document.getElementById('modeBrainFmBtn'),
+        screenberryHost: document.getElementById('screenberryHost'),
+        screenberryProto: document.getElementById('screenberryProto'),
+        sbStatusChip: document.getElementById('sbStatusChip'),
+        ueStatusChip: document.getElementById('ueStatusChip')
+      };
+
+      function logCue(address, payload, statusText = 'Sent') {
+        const ts = new Date().toTimeString().slice(0, 8);
+        const div = document.createElement('div');
+        div.className = 'osc-entry';
+        div.innerHTML = `<span style="color:#64748B;">[${ts}]</span> <span class="osc-addr">${address}</span><span class="osc-val">${payload}</span> <span style="color:#64748B;">(${statusText})</span>`;
+        els.oscLog.prepend(div);
+        while (els.oscLog.children.length > 36) els.oscLog.removeChild(els.oscLog.lastChild);
+      }
+
+      async function dispatchScreenberryCue(address, argsObj) {
+        const host = els.screenberryHost.value.trim() || '127.0.0.1:9000';
+        const proto = els.screenberryProto.value;
+        const compact = JSON.stringify(argsObj);
+
+        if (proto === 'sim') {
+          logCue(address, compact, 'Dry-Run');
+          return;
+        }
+        if (proto === 'http') {
+          try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 650);
+            const res = await fetch(`http://${host}/osc`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ address, args: argsObj }),
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+            els.sbStatusChip.textContent = res.ok ? 'Screenberry Live' : 'Screenberry Standby';
+            logCue(address, compact, res.ok ? 'HTTP 200' : `HTTP ${res.status}`);
+          } catch (_err) {
+            els.sbStatusChip.textContent = 'Screenberry Standby';
+            logCue(address, compact, 'Standby');
+          }
+          return;
+        }
+        if (proto === 'ws') {
+          try {
+            const ws = new WebSocket(`ws://${host}/ws`);
+            const timeout = setTimeout(() => { if (ws.readyState !== WebSocket.OPEN) ws.close(); }, 650);
+            ws.onopen = () => {
+              clearTimeout(timeout);
+              ws.send(JSON.stringify({ address, args: argsObj }));
+              els.sbStatusChip.textContent = 'WS Live';
+              logCue(address, compact, 'WS Sent');
+              ws.close();
+            };
+            ws.onerror = () => {
+              clearTimeout(timeout);
+              els.sbStatusChip.textContent = 'WS Standby';
+              logCue(address, compact, 'Standby');
+            };
+          } catch (_err) {
+            logCue(address, compact, 'Standby');
+          }
+        }
+      }
+
+      function ensureAudioGraph() {
+        if (state.audioCtx) return state.audioCtx;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        state.audioCtx = ctx;
+
+        state.masterGain = ctx.createGain();
+        state.masterGain.gain.value = state.masterVolume;
+
+        state.masterAnalyser = ctx.createAnalyser();
+        state.masterAnalyser.fftSize = 256;
+        state.masterAnalyser.smoothingTimeConstant = 0.82;
+
+        state.stemsBusGain = ctx.createGain();
+        state.stemsBusGain.gain.value = state.mixMode === 'stems' ? 1.0 : 0.0;
+
+        state.brainFmGain = ctx.createGain();
+        state.brainFmGain.gain.value = state.mixMode === 'brainfm' ? 1.0 : 0.0;
+
+        state.stemsBusGain.connect(state.masterAnalyser);
+        state.brainFmGain.connect(state.masterAnalyser);
+        state.masterAnalyser.connect(state.masterGain);
+        state.masterGain.connect(ctx.destination);
+
+        STEMS.forEach((stem) => {
+          const st = state.stems[stem.id];
+          const source = ctx.createMediaElementSource(st.audio);
+          const gainNode = ctx.createGain();
+          const analyser = ctx.createAnalyser();
+          analyser.fftSize = 128;
+
+          source.connect(gainNode);
+          gainNode.connect(analyser);
+          analyser.connect(state.stemsBusGain);
+
+          st.gainNode = gainNode;
+          st.analyser = analyser;
+          st.freqData = new Uint8Array(analyser.frequencyBinCount);
+        });
+
+        const bfSource = ctx.createMediaElementSource(state.brainFmAudio);
+        bfSource.connect(state.brainFmGain);
+
+        applyStemGains();
+        return ctx;
+      }
+
+      function applyStemGains() {
+        const anySolo = STEMS.some((s) => state.stems[s.id].solo);
+        const now = state.audioCtx ? state.audioCtx.currentTime : 0;
+
+        STEMS.forEach((s) => {
+          const st = state.stems[s.id];
+          let target = st.fader;
+          if (st.muted || (anySolo && !st.solo)) target = 0;
+
+          if (st.gainNode && state.audioCtx) {
+            st.gainNode.gain.setTargetAtTime(target, now, 0.04);
+          }
+
+          if (st.cardEl) {
+            st.cardEl.classList.toggle('muted', st.muted || (anySolo && !st.solo));
+            st.cardEl.classList.toggle('soloed', st.solo);
+            st.muteBtn.classList.toggle('mute-on', st.muted);
+            st.soloBtn.classList.toggle('solo-on', st.solo);
+            st.sliderEl.value = Math.round(st.fader * 100);
+            st.pctEl.textContent = `${Math.round(st.fader * 100)}%`;
+          }
+        });
+      }
+
+      async function togglePlayback() {
+        if (state.isPlaying) {
+          STEMS.forEach((s) => state.stems[s.id].audio.pause());
+          if (state.brainFmAudio) state.brainFmAudio.pause();
+          state.isPlaying = false;
+          els.btnMasterPlay.innerHTML = '&#9654; Play Stems';
+          els.btnMasterPlay.classList.remove('is-playing');
+          els.audioStatusLabel.textContent = 'Paused';
+          logCue('/tawaf/transport/pause', '{}', 'Paused');
+          return;
+        }
+
+        const ctx = ensureAudioGraph();
+        if (ctx.state === 'suspended') await ctx.resume();
+        const plays = STEMS.map((s) => state.stems[s.id].audio.play().catch(() => {}));
+        plays.push(state.brainFmAudio.play().catch(() => {}));
+        await Promise.all(plays);
+
+        state.isPlaying = true;
+        els.btnMasterPlay.innerHTML = '&#10074;&#10074; Pause Live';
+        els.btnMasterPlay.classList.add('is-playing');
+        els.audioStatusLabel.textContent = state.mixMode === 'stems' ? 'Playing · 4 Stems' : 'Playing · Brain.fm';
+        logCue('/tawaf/transport/play', `{mode:"${state.mixMode}"}`, 'Active');
+      }
+
+      function setMixMode(mode) {
+        state.mixMode = mode;
+        els.modeStemsBtn.classList.toggle('active', mode === 'stems');
+        els.modeBrainFmBtn.classList.toggle('active', mode === 'brainfm');
+
+        if (state.audioCtx) {
+          const now = state.audioCtx.currentTime;
+          state.stemsBusGain.gain.cancelScheduledValues(now);
+          state.brainFmGain.gain.cancelScheduledValues(now);
+          state.stemsBusGain.gain.linearRampToValueAtTime(mode === 'stems' ? 1.0 : 0.0, now + 1.2);
+          state.brainFmGain.gain.linearRampToValueAtTime(mode === 'brainfm' ? 1.0 : 0.0, now + 1.2);
+        }
+        if (state.isPlaying) {
+          els.audioStatusLabel.textContent = mode === 'stems' ? 'Playing · 4 Stems' : 'Playing · Brain.fm';
+        }
+        dispatchScreenberryCue('/screenberry/audio/bus', { bus: mode });
+      }
+
+      function initStems() {
+        state.brainFmAudio = new Audio('./audio_v2/TAWAF_BrainFM_Organic_Sanctuary_48kHz.m4a');
+        state.brainFmAudio.loop = true;
+        state.brainFmAudio.preload = 'auto';
+
+        STEMS.forEach((stem) => {
+          const audio = new Audio(stem.src);
+          audio.loop = true;
+          audio.preload = 'auto';
+
+          const card = document.createElement('div');
+          card.className = 'stem-card';
+          card.innerHTML = `
+            <div class="stem-top">
+              <div class="stem-title-group">
+                <span class="stem-name">${stem.name}</span>
+                <span class="stem-role">${stem.role}</span>
+              </div>
+              <div class="stem-actions">
+                <button class="pill-mini" data-action="mute">Mute</button>
+                <button class="pill-mini" data-action="solo">Solo</button>
+              </div>
+            </div>
+            <div class="stem-fader-row">
+              <input type="range" min="0" max="100" value="${Math.round(stem.defaultGain * 100)}" />
+              <span class="stem-pct tabular">${Math.round(stem.defaultGain * 100)}%</span>
+            </div>
+            <div class="level-bar-bg"><div class="meter-fill"></div></div>
+          `;
+
+          const muteBtn = card.querySelector('[data-action="mute"]');
+          const soloBtn = card.querySelector('[data-action="solo"]');
+          const sliderEl = card.querySelector('input[type="range"]');
+          const pctEl = card.querySelector('.stem-pct');
+          const meterEl = card.querySelector('.meter-fill');
+
+          state.stems[stem.id] = {
+            ...stem,
+            audio,
+            fader: stem.defaultGain,
+            muted: false,
+            solo: false,
+            cardEl: card,
+            muteBtn,
+            soloBtn,
+            sliderEl,
+            pctEl,
+            meterEl,
+            gainNode: null,
+            analyser: null,
+            freqData: null
+          };
+
+          muteBtn.addEventListener('click', () => {
+            state.stems[stem.id].muted = !state.stems[stem.id].muted;
+            applyStemGains();
+          });
+          soloBtn.addEventListener('click', () => {
+            state.stems[stem.id].solo = !state.stems[stem.id].solo;
+            applyStemGains();
+          });
+          sliderEl.addEventListener('input', (e) => {
+            state.stems[stem.id].fader = Number(e.target.value) / 100;
+            applyStemGains();
+          });
+
+          els.stemList.appendChild(card);
+        });
+      }
+
+      function selectChakra(chakra) {
+        state.activeChakra = chakra;
+        document.documentElement.style.setProperty('--active-chakra', chakra.hex);
+        document.documentElement.style.setProperty('--active-chakra-rgb', chakra.rgb);
+        els.topChakraLabel.textContent = `${chakra.name} · ${chakra.hex}`;
+        els.breathRing.setAttribute('stroke', chakra.hex);
+
+        document.querySelectorAll('.chakra-pad').forEach((pad) => {
+          pad.classList.toggle('active', pad.dataset.chakraId === chakra.id);
+        });
+
+        STEMS.forEach((s) => {
+          if (chakra.mix[s.id] !== undefined) state.stems[s.id].fader = chakra.mix[s.id];
+        });
+        applyStemGains();
+
+        dispatchScreenberryCue(`/screenberry/layer/1/chakra/${chakra.id}`, {
+          color: chakra.hex,
+          hz: chakra.hz,
+          stems: chakra.mix
+        });
+      }
+
+      function initChakras() {
+        CHAKRAS.forEach((chakra) => {
+          const btn = document.createElement('button');
+          btn.className = 'chakra-pad' + (chakra.darkText ? ' light-text-dark' : '') + (chakra.id === state.activeChakra.id ? ' active' : '');
+          btn.dataset.chakraId = chakra.id;
+          btn.style.setProperty('--pad-color', chakra.hex);
+          btn.style.setProperty('--pad-rgb', chakra.rgb);
+          btn.innerHTML = `
+            <div>
+              <span class="chakra-name">${chakra.name}</span>
+              <span class="chakra-sub">${chakra.sanskrit}</span>
+            </div>
+            <span class="chakra-hz tabular">${chakra.hz}</span>
+          `;
+          btn.addEventListener('click', () => selectChakra(chakra));
+          els.chakraGrid.appendChild(btn);
+        });
+      }
+
+      // SOLID GLOWING 19.1 DOME STAGE (Zero Wireframe Rings)
+      const speakerEls = {};
+      let azimuthBeamEl = null;
+      let azimuthOrbEl = null;
+
+      function initDomeRadar() {
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const mk = (tag, attrs) => {
+          const el = document.createElementNS(svgNS, tag);
+          Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+          return el;
+        };
+
+        // Layered solid sculptural discs (no wireframe strokes)
+        els.domeSvg.appendChild(mk('circle', { cx: 0, cy: 0, r: 128, fill: '#121826', 'fill-opacity': 0.72 }));
+        els.domeSvg.appendChild(mk('circle', { cx: 0, cy: 0, r: 80, fill: '#182032', 'fill-opacity': 0.78 }));
+        els.domeSvg.appendChild(mk('circle', { cx: 0, cy: 0, r: 30, fill: '#1F2940', 'fill-opacity': 0.85 }));
+
+        // Soft glowing azimuth beam
+        azimuthBeamEl = mk('line', {
+          x1: 0, y1: 0, x2: 0, y2: -118,
+          stroke: 'var(--active-chakra)', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-opacity': 0.35
+        });
+        azimuthOrbEl = mk('circle', { cx: 0, cy: -118, r: 7, fill: 'var(--active-chakra)' });
+        els.domeSvg.appendChild(azimuthBeamEl);
+        els.domeSvg.appendChild(azimuthOrbEl);
+
+        DOME_CHANNELS.forEach((sp) => {
+          let r = 118;
+          let color = '#38BDF8';
+          if (sp.ring === 'upper') { r = 68; color = '#C87D28'; }
+          else if (sp.ring === 'zenith') { r = 0; color = '#10B981'; }
+          else if (sp.ring === 'lfe') { r = 34; color = '#F43F5E'; }
+
+          const rad = ((sp.az - 90) * Math.PI) / 180;
+          const x = sp.ring === 'lfe' ? 0 : Math.cos(rad) * r;
+          const y = sp.ring === 'lfe' ? 32 : Math.sin(rad) * r;
+
+          const halo = mk('circle', { cx: x, cy: y, r: 11, fill: color, 'fill-opacity': 0.22 });
+          const node = mk('circle', { cx: x, cy: y, r: sp.ring === 'lfe' ? 6.5 : 5, fill: color });
+
+          els.domeSvg.appendChild(halo);
+          els.domeSvg.appendChild(node);
+          speakerEls[sp.ch] = { ...sp, x, y, halo, node };
+        });
+      }
+
+      const specCtx = els.spectrumCanvas.getContext('2d');
+      let masterFreqBuf = null;
+
+      function animate(now) {
+        const dt = Math.min(0.1, (now - state.lastFrameTime) / 1000);
+        state.lastFrameTime = now;
+
+        // 4-7-8 Breathing Ring (207.35 circumference for r=33)
+        const elapsed = ((now - state.breathStartTime) / 1000) % 19;
+        let phase = 'Inhale';
+        let rem = 4 - elapsed;
+        let frac = elapsed / 4;
+        if (elapsed >= 4 && elapsed < 11) {
+          phase = 'Hold';
+          rem = 11 - elapsed;
+          frac = 1 - (elapsed - 4) / 7;
+        } else if (elapsed >= 11) {
+          phase = 'Exhale';
+          rem = 19 - elapsed;
+          frac = 1 - (elapsed - 11) / 8;
+        }
+        els.breathPhase.textContent = phase;
+        els.breathTimer.textContent = `${Math.max(0, rem).toFixed(1)}s`;
+        els.breathRing.setAttribute('stroke-dashoffset', (207.35 * (1 - Math.max(0, Math.min(1, frac)))).toFixed(2));
+
+        // Azimuth Orbit
+        if (Math.abs(state.orbitSpeed) > 0.01) {
+          state.azimuthDeg = (state.azimuthDeg + state.orbitSpeed * 12 * dt + 360) % 360;
+          els.manualAzimuthSlider.value = Math.round(state.azimuthDeg);
+        }
+        const azDisp = String(Math.round(state.azimuthDeg)).padStart(3, '0') + '°';
+        els.topAzimuthLabel.textContent = `${azDisp} Azimuth`;
+        els.manualAzimuthVal.textContent = azDisp;
+
+        const beamRad = ((state.azimuthDeg - 90) * Math.PI) / 180;
+        const bx = Math.cos(beamRad) * 118;
+        const by = Math.sin(beamRad) * 118;
+        azimuthBeamEl.setAttribute('x2', bx.toFixed(1));
+        azimuthBeamEl.setAttribute('y2', by.toFixed(1));
+        azimuthOrbEl.setAttribute('cx', bx.toFixed(1));
+        azimuthOrbEl.setAttribute('cy', by.toFixed(1));
+
+        // Per-stem level meters
+        let totalEnergy = 0;
+        STEMS.forEach((s) => {
+          const st = state.stems[s.id];
+          let lvl = 0;
+          if (state.isPlaying && st.analyser && st.freqData) {
+            st.analyser.getByteFrequencyData(st.freqData);
+            let sum = 0;
+            for (let i = 0; i < st.freqData.length; i++) sum += st.freqData[i];
+            lvl = sum / (st.freqData.length * 255);
+          } else if (state.isPlaying) {
+            lvl = st.fader * 0.45;
+          }
+          totalEnergy += lvl;
+          st.meterEl.style.width = `${Math.min(100, Math.round(lvl * 150))}%`;
+        });
+
+        // 20 Dome Speaker Glows
+        const avgEnergy = totalEnergy / STEMS.length;
+        DOME_CHANNELS.forEach((sp) => {
+          const el = speakerEls[sp.ch];
+          const diff = Math.abs(((sp.az - state.azimuthDeg + 540) % 360) - 180);
+          const prox = sp.ring === 'zenith' ? 0.65 : Math.max(0.15, 1 - diff / 110);
+          const reactive = state.isPlaying ? Math.max(0.18, avgEnergy * 1.9 * prox) : 0.14 + prox * 0.25;
+          el.halo.setAttribute('r', (8 + reactive * 12).toFixed(1));
+          el.halo.setAttribute('fill-opacity', Math.min(0.7, 0.15 + reactive * 0.48).toFixed(2));
+        });
+
+        // Solid Spectrum Visualizer
+        const w = els.spectrumCanvas.width;
+        const h = els.spectrumCanvas.height;
+        specCtx.clearRect(0, 0, w, h);
+
+        if (state.masterAnalyser && state.isPlaying) {
+          if (!masterFreqBuf) masterFreqBuf = new Uint8Array(state.masterAnalyser.frequencyBinCount);
+          state.masterAnalyser.getByteFrequencyData(masterFreqBuf);
+          const bars = 40;
+          const gap = 4;
+          const barW = (w - gap * (bars - 1)) / bars;
+          for (let i = 0; i < bars; i++) {
+            const val = masterFreqBuf[i] / 255;
+            const barH = Math.max(6, val * (h - 8));
+            specCtx.fillStyle = state.activeChakra.hex;
+            specCtx.globalAlpha = 0.4 + val * 0.6;
+            specCtx.beginPath();
+            specCtx.roundRect(i * (barW + gap), h - barH, barW, barH, 4);
+            specCtx.fill();
+          }
+          specCtx.globalAlpha = 1;
+        } else {
+          const bars = 40;
+          const gap = 4;
+          const barW = (w - gap * (bars - 1)) / bars;
+          for (let i = 0; i < bars; i++) {
+            const wave = 0.25 + 0.2 * Math.sin(i * 0.35 + now * 0.0025);
+            const barH = wave * (h * 0.55);
+            specCtx.fillStyle = state.activeChakra.hex;
+            specCtx.globalAlpha = 0.32;
+            specCtx.beginPath();
+            specCtx.roundRect(i * (barW + gap), h - barH, barW, barH, 4);
+            specCtx.fill();
+          }
+          specCtx.globalAlpha = 1;
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      function bindEvents() {
+        els.btnMasterPlay.addEventListener('click', togglePlayback);
+
+        document.getElementById('btnPanicMute').addEventListener('click', () => {
+          state.masterVolume = 0;
+          els.masterVolumeSlider.value = 0;
+          els.masterVolPct.textContent = '0%';
+          els.masterDbLabel.textContent = '48 kHz · Muted';
+          if (state.masterGain && state.audioCtx) {
+            state.masterGain.gain.setTargetAtTime(0, state.audioCtx.currentTime, 0.02);
+          }
+          logCue('/tawaf/panic/mute', '{master:0}', 'Muted');
+        });
+
+        els.masterVolumeSlider.addEventListener('input', (e) => {
+          const pct = Number(e.target.value);
+          state.masterVolume = pct / 100;
+          els.masterVolPct.textContent = `${pct}%`;
+          const db = pct === 0 ? '-∞' : (20 * Math.log10(pct / 100)).toFixed(1);
+          els.masterDbLabel.textContent = `48 kHz · ${db} dB`;
+          if (state.masterGain && state.audioCtx) {
+            state.masterGain.gain.setTargetAtTime(state.masterVolume, state.audioCtx.currentTime, 0.03);
+          }
+        });
+
+        els.modeStemsBtn.addEventListener('click', () => setMixMode('stems'));
+        els.modeBrainFmBtn.addEventListener('click', () => setMixMode('brainfm'));
+
+        els.orbitSpeedSlider.addEventListener('input', (e) => {
+          state.orbitSpeed = Number(e.target.value) / 10;
+          const dir = state.orbitSpeed < 0 ? 'CCW' : state.orbitSpeed > 0 ? 'CW' : 'Hold';
+          els.orbitSpeedVal.textContent = `${state.orbitSpeed.toFixed(1)}x ${dir}`;
+        });
+
+        els.manualAzimuthSlider.addEventListener('input', (e) => {
+          state.orbitSpeed = 0;
+          els.orbitSpeedSlider.value = 0;
+          els.orbitSpeedVal.textContent = '0.0x Manual';
+          state.azimuthDeg = Number(e.target.value);
+        });
+
+        document.getElementById('btnSbPing').addEventListener('click', () => {
+          dispatchScreenberryCue('/screenberry/system/ping', { dome: 'MarketHall_15m_210', array: '19.1_LAcoustics' });
+        });
+        document.getElementById('btnSbDomemaster').addEventListener('click', () => {
+          dispatchScreenberryCue('/screenberry/layer/1/projection', { mode: 'domemaster_1_1', fov: 210, res: '4096x4096' });
+        });
+        document.getElementById('btnSbAmbiX').addEventListener('click', () => {
+          dispatchScreenberryCue('/screenberry/audio/ambix', { file: 'TAWAF_Screenberry_Ambisonic_4ch_48kHz.wav', channels: 4 });
+        });
+        document.getElementById('btnUeSync').addEventListener('click', () => {
+          els.ueStatusChip.textContent = 'UE 5.8 · Synced';
+          dispatchScreenberryCue('/ue58/TAWAF_DomeTest/sync', {
+            chakra: state.activeChakra.id,
+            hex: state.activeChakra.hex,
+            azimuthDeg: Math.round(state.azimuthDeg),
+            breathPhase: els.breathPhase.textContent
+          });
+        });
+        document.getElementById('btnCopyOsc').addEventListener('click', async () => {
+          const payload = JSON.stringify({
+            venue: 'Market Hall 15m 210deg Dome',
+            chakra: state.activeChakra.id,
+            color: state.activeChakra.hex,
+            azimuthDeg: Math.round(state.azimuthDeg),
+            mixMode: state.mixMode
+          }, null, 2);
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(payload).catch(() => {});
+          }
+          logCue('/tawaf/clipboard/copy', `{chakra:"${state.activeChakra.id}"}`, 'Copied');
+        });
+        document.getElementById('btnClearLog').addEventListener('click', () => {
+          els.oscLog.innerHTML = '';
+        });
+      }
+
+      initStems();
+      initChakras();
+      initDomeRadar();
+      bindEvents();
+      logCue('/tawaf/console/boot', '{venue:"MarketHall_19.1",stems:4}', 'Ready');
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Plymouth Sound Calm Aquarium · Dementia Care WebXR &amp; iPad Co-View</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --ocean-abyss: #05131f;
+      --ocean-deep: #092032;
+      --ocean-card: rgba(10, 34, 54, 0.88);
+      --ocean-card-solid: #0c273e;
+      --ocean-border: rgba(94, 200, 216, 0.24);
+      --aqua: #5ec8d8;
+      --aqua-soft: rgba(94, 200, 216, 0.14);
+      --sand: #f0c987;
+      --sand-soft: rgba(240, 201, 135, 0.16);
+      --sage: #6fd3a7;
+      --text-primary: #f2f7fa;
+      --text-muted: #a6c0d1;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow-calm: 0 18px 48px rgba(2, 10, 18, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 25% 15%, #0e314d 0%, var(--ocean-abyss) 70%);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Fullscreen 3D Canvas */
+    #vr-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    #vr-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    /* Subtle Vignette for Calm Focus */
+    .ocean-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at center, transparent 58%, rgba(4, 15, 25, 0.58) 100%);
+    }
+
+    /* 2.0s Head-Gaze Dwell Reticle */
+    .gaze-reticle-wrap {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gaze-ring {
+      width: 44px;
+      height: 44px;
+      transform: rotate(-90deg);
+      filter: drop-shadow(0 0 8px rgba(94, 200, 216, 0.45));
+      transition: transform 0.25s ease;
+    }
+
+    .gaze-ring.active {
+      transform: rotate(-90deg) scale(1.18);
+    }
+
+    .gaze-ring-bg {
+      fill: rgba(5, 19, 31, 0.35);
+      stroke: rgba(242, 247, 250, 0.35);
+      stroke-width: 3;
+    }
+
+    .gaze-ring-progress {
+      fill: none;
+      stroke: var(--aqua);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-dasharray: 113.1;
+      stroke-dashoffset: 113.1;
+      transition: stroke 0.2s ease;
+    }
+
+    .gaze-dot {
+      position: absolute;
+      top: 19px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    .gaze-label {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(6, 22, 36, 0.86);
+      border: 1px solid var(--ocean-border);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+    }
+
+    .gaze-label.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Top Launcher Bar */
+    .top-bar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--ocean-card);
+      border: 1px solid var(--ocean-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-calm);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    body.coview-clean .top-bar,
+    body.coview-clean .carer-strip {
+      opacity: 0.14;
+    }
+
+    body.coview-clean .top-bar:hover,
+    body.coview-clean .carer-strip:hover,
+    body.coview-clean .top-bar:focus-within,
+    body.coview-clean .carer-strip:focus-within {
+      opacity: 1;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 240px;
+    }
+
+    .brand-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(94, 200, 216, 0.25), rgba(240, 201, 135, 0.18));
+      border: 1px solid rgba(94, 200, 216, 0.45);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .action-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--ocean-border);
+      background: rgba(14, 46, 72, 0.85);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(24, 68, 102, 0.95);
+      border-color: var(--aqua);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-vr {
+      background: linear-gradient(135deg, #1b6b88, #124b69);
+      border-color: rgba(94, 200, 216, 0.55);
+      color: #ffffff;
+    }
+
+    .btn-vr:hover {
+      background: linear-gradient(135deg, #2282a4, #175d80);
+    }
+
+    .btn-vr.vr-ready {
+      background: linear-gradient(135deg, #1e8a75, #136154);
+      border-color: var(--sage);
+    }
+
+    .btn-coview.active {
+      background: var(--aqua-soft);
+      border-color: var(--aqua);
+      color: var(--aqua);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(5, 19, 31, 0.72);
+      border: 1px solid var(--ocean-border);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sand);
+    }
+
+    .status-dot.ready {
+      background: var(--sage);
+      box-shadow: 0 0 10px rgba(111, 211, 167, 0.7);
+    }
+
+    /* Bottom Carer Control Strip */
+    .carer-strip {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1.5fr auto auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--ocean-card);
+      border: 1px solid var(--ocean-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-calm);
+      transition: opacity 0.3s ease;
+    }
+
+    .narration-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(5, 19, 31, 0.55);
+      border: 1px solid rgba(94, 200, 216, 0.16);
+    }
+
+    .narration-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--sand);
+      margin-bottom: 3px;
+    }
+
+    .narration-text {
+      font-size: 0.94rem;
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+
+    .btn-compact {
+      min-height: 44px;
+      padding: 0 14px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .speed-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(5, 19, 31, 0.55);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(94, 200, 216, 0.16);
+    }
+
+    .speed-btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .speed-btn.active {
+      background: var(--aqua);
+      color: #041522;
+    }
+
+    .hygiene-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: var(--radius-md);
+      background: rgba(111, 211, 167, 0.12);
+      border: 1px solid rgba(111, 211, 167, 0.36);
+      color: #d6f7e8;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .hygiene-badge:hover {
+      background: rgba(111, 211, 167, 0.2);
+    }
+
+    /* Hygiene Checklist Drawer */
+    .hygiene-popover {
+      position: fixed;
+      right: 16px;
+      bottom: 102px;
+      z-index: 30;
+      width: min(380px, calc(100vw - 32px));
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: var(--ocean-card-solid);
+      border: 1px solid rgba(111, 211, 167, 0.4);
+      box-shadow: var(--shadow-calm);
+      display: none;
+    }
+
+    .hygiene-popover.open {
+      display: block;
+    }
+
+    .hygiene-popover h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--sage);
+      margin-bottom: 10px;
+    }
+
+    .hygiene-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+    }
+
+    .hygiene-list label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      line-height: 1.35;
+    }
+
+    .hygiene-list input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--sage);
+    }
+
+    /* Calm Loading Veil */
+    .loading-veil {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: radial-gradient(circle at center, #0d2c46 0%, #05131f 100%);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .loading-veil.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .loading-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .carer-strip {
+        grid-template-columns: 1fr;
+      }
+      .top-bar {
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="vr-stage" aria-label="Calm Underwater Aquarium 3D Scene"></div>
+  <div class="ocean-vignette"></div>
+
+  <!-- 2.0s Head-Gaze Dwell Reticle -->
+  <div class="gaze-reticle-wrap" aria-hidden="true">
+    <svg class="gaze-ring" id="gazeRing" viewBox="0 0 44 44">
+      <circle class="gaze-ring-bg" cx="22" cy="22" r="18"></circle>
+      <circle class="gaze-ring-progress" id="gazeProgress" cx="22" cy="22" r="18"></circle>
+    </svg>
+    <div class="gaze-dot"></div>
+    <div class="gaze-label" id="gazeLabel">Sea Turtle · Gentle Glide</div>
+  </div>
+
+  <!-- Top Care Home & WebXR Launcher Bar -->
+  <header class="top-bar">
+    <div class="brand-block">
+      <div class="brand-emblem" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M3 13c2.5-3 5.5-4.5 9-4.5s6.5 1.5 9 4.5c-2.5 3-5.5 4.5-9 4.5S5.5 16 3 13Z" stroke="#5EC8D8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="13" r="2.2" fill="#F0C987"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Plymouth Sound Calm Aquarium</h1>
+        <p class="brand-sub">Seated 1.2m Eye Height · Zero Sudden Motion · Mo360 Dementia Care</p>
+      </div>
+    </div>
+
+    <div class="action-cluster">
+      <div class="status-pill" id="sceneStatusPill">
+        <span class="status-dot" id="sceneStatusDot"></span>
+        <span id="sceneStatusText">Loading Reef…</span>
+      </div>
+
+      <button type="button" class="btn btn-coview" id="coViewBtn" aria-pressed="false">
+        <span>iPad / Lounge TV Co-View</span>
+      </button>
+
+      <button type="button" class="btn btn-vr" id="enterVrBtn">
+        <span>Enter VR</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Bottom Carer Control Strip -->
+  <section class="carer-strip" aria-label="Carer Controls">
+    <div class="narration-box">
+      <div>
+        <div class="narration-tag">Calm Narration Prompt · <span id="promptIndex">1 / 4</span></div>
+        <p class="narration-text" id="narrationText">
+          “Look at the sea turtle gliding slowly past the reef. Have you ever watched the tide come in at Plymouth Hoe?”
+        </p>
+      </div>
+      <button type="button" class="btn btn-compact" id="nextPromptBtn">Next Prompt</button>
+    </div>
+
+    <div class="speed-group" role="group" aria-label="Motion Speed">
+      <button type="button" class="speed-btn active" data-speed="1">1.0x Calm</button>
+      <button type="button" class="speed-btn" data-speed="0.5">0.5x Slow</button>
+      <button type="button" class="speed-btn" data-speed="0">Pause</button>
+    </div>
+
+    <button type="button" class="hygiene-badge" id="hygieneBtn" aria-expanded="false" aria-controls="hygienePopover">
+      <span aria-hidden="true">✓</span>
+      <span id="hygieneBadgeLabel">Hygiene Protocol · 4/4 Ready</span>
+    </button>
+  </section>
+
+  <!-- Carer Hygiene Checklist Popover -->
+  <aside class="hygiene-popover" id="hygienePopover" aria-label="Infection Control Hygiene Checklist">
+    <h2>Care Home Hygiene &amp; Comfort Checklist</h2>
+    <ul class="hygiene-list">
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Medical-grade silicone facial interface wiped (70% alcohol)</label></li>
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Resident seated comfortably (1.2m eye height, armrests clear)</label></li>
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Audio volume set to gentle ambient level (marimba chime test)</label></li>
+      <li><label><input type="checkbox" class="hygiene-check" checked /> Session timer planned for 10–15 minutes with carer co-view</label></li>
+    </ul>
+  </aside>
+
+  <!-- Loading Veil -->
+  <div class="loading-veil" id="loadingVeil">
+    <div class="loading-title">Preparing Calm Ocean Sanctuary…</div>
+    <div class="loading-sub" id="loadingSub">Seated at 1.2m eye height · Gentle 120-frame reef loop</div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const SEATED_EYE_HEIGHT = 1.2;
+    const GAZE_DWELL_MS = 2000;
+    const GAZE_COOLDOWN_MS = 3500;
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 18; // ~113.097
+
+    const NARRATION_PROMPTS = [
+      '“Look at the sea turtle gliding slowly past the reef. Have you ever watched the tide come in at Plymouth Hoe?”',
+      '“Notice the soft glow of the moon jellyfish drifting in the deep water. Let’s take one slow, easy breath together.”',
+      '“Can you spot the bright clownfish and blue tangs weaving through the coral garden?”',
+      '“Listen for the gentle marimba chime whenever your gaze rests on the turtle, coral, or jellyfish for two seconds.”'
+    ];
+
+    const stageEl = document.getElementById('vr-stage');
+    const loadingVeil = document.getElementById('loadingVeil');
+    const sceneStatusDot = document.getElementById('sceneStatusDot');
+    const sceneStatusText = document.getElementById('sceneStatusText');
+    const enterVrBtn = document.getElementById('enterVrBtn');
+    const coViewBtn = document.getElementById('coViewBtn');
+    const nextPromptBtn = document.getElementById('nextPromptBtn');
+    const promptIndexEl = document.getElementById('promptIndex');
+    const narrationTextEl = document.getElementById('narrationText');
+    const speedBtns = Array.from(document.querySelectorAll('.speed-btn'));
+    const hygieneBtn = document.getElementById('hygieneBtn');
+    const hygienePopover = document.getElementById('hygienePopover');
+    const hygieneChecks = Array.from(document.querySelectorAll('.hygiene-check'));
+    const hygieneBadgeLabel = document.getElementById('hygieneBadgeLabel');
+    const gazeRing = document.getElementById('gazeRing');
+    const gazeProgress = document.getElementById('gazeProgress');
+    const gazeLabel = document.getElementById('gazeLabel');
+
+    // Web Audio API: Gentle Marimba Chime
+    let audioCtx = null;
+    function ensureAudioContext() {
+      if (!audioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) audioCtx = new AudioCtx();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+
+    function playMarimbaChime(category) {
+      ensureAudioContext();
+      if (!audioCtx) return;
+
+      const freqMap = {
+        turtle: 392.0,    // G4 warm mellow
+        jellyfish: 523.25,// C5 gentle bell
+        coral: 440.0      // A4 soft wood
+      };
+      const baseFreq = freqMap[category] || 440.0;
+      const now = audioCtx.currentTime;
+
+      // Fundamental warm marimba tone
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(baseFreq, now);
+
+      gain1.gain.setValueAtTime(0.0001, now);
+      gain1.gain.linearRampToValueAtTime(0.14, now + 0.025);
+      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 1.45);
+
+      // Soft 4th harmonic wood-bar overtone
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(baseFreq * 2.0, now);
+
+      gain2.gain.setValueAtTime(0.0001, now);
+      gain2.gain.linearRampToValueAtTime(0.04, now + 0.015);
+      gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+
+      osc1.connect(gain1).connect(audioCtx.destination);
+      osc2.connect(gain2).connect(audioCtx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 1.5);
+      osc2.stop(now + 0.5);
+    }
+
+    window.addEventListener('pointerdown', ensureAudioContext, { once: true });
+
+    // Three.js Scene Setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x051828);
+    scene.fog = new THREE.FogExp2(0x051828, 0.045);
+
+    const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 120);
+    const cameraRig = new THREE.Group();
+    cameraRig.position.set(0, SEATED_EYE_HEIGHT, 6.2);
+    cameraRig.add(camera);
+    scene.add(cameraRig);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    renderer.xr.enabled = true;
+    renderer.xr.setReferenceSpaceType('local');
+    stageEl.appendChild(renderer.domElement);
+
+    // Calm OrbitControls (no sudden zoom or jarring movement)
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.045;
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.rotateSpeed = 0.45;
+    controls.minPolarAngle = Math.PI * 0.28;
+    controls.maxPolarAngle = Math.PI * 0.68;
+    controls.target.set(0, SEATED_EYE_HEIGHT - 0.1, 0);
+    controls.update();
+
+    // Underwater Lighting
+    const hemiLight = new THREE.HemisphereLight(0x7ad7f0, 0x0b2538, 1.35);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight(0xd9f4ff, 1.65);
+    sunLight.position.set(4, 12, 5);
+    scene.add(sunLight);
+
+    const fillLight = new THREE.DirectionalLight(0x46b5d1, 0.6);
+    fillLight.position.set(-6, 3, -4);
+    scene.add(fillLight);
+
+    // Subtle Drifting Marine Snow / Plankton
+    const particleCount = 220;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 22;
+      particlePositions[i * 3 + 1] = Math.random() * 8 + 0.2;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 22;
+    }
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x9be8f5,
+      size: 0.045,
+      transparent: true,
+      opacity: 0.52,
+      depthWrite: false
+    });
+    const marineSnow = new THREE.Points(particleGeo, particleMat);
+    scene.add(marineSnow);
+
+    // 3D WebXR Gaze Reticle (visible inside VR headset)
+    const xrReticleGeo = new THREE.RingGeometry(0.014, 0.022, 32);
+    const xrReticleMat = new THREE.MeshBasicMaterial({
+      color: 0x5ec8d8,
+      transparent: true,
+      opacity: 0.8,
+      depthTest: false
+    });
+    const xrReticle = new THREE.Mesh(xrReticleGeo, xrReticleMat);
+    xrReticle.position.set(0, 0, -1.6);
+    xrReticle.visible = false;
+    camera.add(xrReticle);
+
+    // Interactive Gaze Targets
+    const gazeTargets = [];
+    function classifyNodeName(name) {
+      if (!name) return null;
+      if (name.includes('Turtle') || name.includes('Flipper')) {
+        return { category: 'turtle', label: 'Sea Turtle · Gentle Glide' };
+      }
+      if (name.includes('Jelly')) {
+        return { category: 'jellyfish', label: 'Moon Jellyfish · Soft Drift' };
+      }
+      if (name.includes('Brain_Coral') || name.includes('Reef_Base')) {
+        return { category: 'coral', label: 'Brain Coral Reef · Living Sanctuary' };
+      }
+      return null;
+    }
+
+    // GLB Loading + AnimationMixer (120-frame seamless loop)
+    let mixer = null;
+    let timeScale = 1.0;
+    const loader = new GLTFLoader();
+
+    loader.load(
+      'assets/aquarium_experience.glb',
+      (gltf) => {
+        const model = gltf.scene;
+        model.traverse((obj) => {
+          if (obj.isMesh) {
+            const info = classifyNodeName(obj.name) || classifyNodeName(obj.parent?.name);
+            if (info) {
+              obj.userData.gazeInfo = info;
+              gazeTargets.push(obj);
+            }
+          }
+        });
+        scene.add(model);
+
+        if (gltf.animations && gltf.animations.length > 0) {
+          mixer = new THREE.AnimationMixer(model);
+          gltf.animations.forEach((clip) => {
+            const action = mixer.clipAction(clip);
+            action.setLoop(THREE.LoopRepeat, Infinity);
+            action.play();
+          });
+        }
+
+        sceneStatusDot.classList.add('ready');
+        sceneStatusText.textContent = '120-Frame Reef Live · Seated 1.2m';
+        loadingVeil.classList.add('hidden');
+      },
+      undefined,
+      (err) => {
+        console.error('Failed to load aquarium_experience.glb:', err);
+        sceneStatusText.textContent = 'Scene Load Error';
+        document.getElementById('loadingSub').textContent = 'Could not load assets/aquarium_experience.glb';
+      }
+    );
+
+    // WebXR Support Check & Session Launcher
+    let activeXrSession = null;
+    async function initWebXRButton() {
+      if (!('xr' in navigator)) {
+        enterVrBtn.title = 'WebXR not available on this browser — use Meta Quest or Pico browser';
+        return;
+      }
+      try {
+        const supported = await navigator.xr.isSessionSupported('immersive-vr');
+        if (supported) {
+          enterVrBtn.classList.add('vr-ready');
+          enterVrBtn.querySelector('span').textContent = 'Enter VR (Quest / Pico)';
+        }
+      } catch (_) {
+        // Keep graceful fallback label
+      }
+    }
+    initWebXRButton();
+
+    enterVrBtn.addEventListener('click', async () => {
+      ensureAudioContext();
+      if (activeXrSession) {
+        await activeXrSession.end();
+        return;
+      }
+      if (!('xr' in navigator)) {
+        sceneStatusText.textContent = 'Open in Quest / Pico Browser for VR';
+        return;
+      }
+      try {
+        const supported = await navigator.xr.isSessionSupported('immersive-vr');
+        if (!supported) {
+          sceneStatusText.textContent = 'No VR Headset Detected · Co-View Active';
+          return;
+        }
+        const session = await navigator.xr.requestSession('immersive-vr', {
+          optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
+        });
+        activeXrSession = session;
+        xrReticle.visible = true;
+        enterVrBtn.querySelector('span').textContent = 'Exit VR';
+        session.addEventListener('end', () => {
+          activeXrSession = null;
+          xrReticle.visible = false;
+          enterVrBtn.querySelector('span').textContent = 'Enter VR (Quest / Pico)';
+        });
+        await renderer.xr.setSession(session);
+      } catch (err) {
+        console.error('WebXR session start error:', err);
+        sceneStatusText.textContent = 'VR Session Unavailable';
+      }
+    });
+
+    // iPad / Lounge TV Fullscreen Co-View Toggle
+    coViewBtn.addEventListener('click', async () => {
+      ensureAudioContext();
+      const entering = !document.body.classList.contains('coview-clean');
+      document.body.classList.toggle('coview-clean', entering);
+      coViewBtn.classList.toggle('active', entering);
+      coViewBtn.setAttribute('aria-pressed', String(entering));
+      coViewBtn.querySelector('span').textContent = entering ? 'Exit Co-View' : 'iPad / Lounge TV Co-View';
+
+      try {
+        if (entering && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        } else if (!entering && document.fullscreenElement && document.exitFullscreen) {
+          await document.exitFullscreen();
+        }
+      } catch (_) {
+        // Fullscreen may be blocked in automated/iPad Safari contexts; clean mode still applies
+      }
+    });
+
+    // Calm Narration Prompts
+    let promptIdx = 0;
+    nextPromptBtn.addEventListener('click', () => {
+      ensureAudioContext();
+      promptIdx = (promptIdx + 1) % NARRATION_PROMPTS.length;
+      promptIndexEl.textContent = `${promptIdx + 1} / ${NARRATION_PROMPTS.length}`;
+      narrationTextEl.textContent = NARRATION_PROMPTS[promptIdx];
+    });
+
+    // Pause / Slow Motion 0.5x Toggle
+    speedBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        ensureAudioContext();
+        speedBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        timeScale = parseFloat(btn.dataset.speed);
+        if (mixer) {
+          mixer.timeScale = timeScale;
+        }
+      });
+    });
+
+    // Hygiene Checklist Toggle
+    function updateHygieneCount() {
+      const checked = hygieneChecks.filter((c) => c.checked).length;
+      hygieneBadgeLabel.textContent = `Hygiene Protocol · ${checked}/${hygieneChecks.length} Ready`;
+    }
+    hygieneChecks.forEach((c) => c.addEventListener('change', updateHygieneCount));
+
+    hygieneBtn.addEventListener('click', () => {
+      const open = hygienePopover.classList.toggle('open');
+      hygieneBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    // 2.0s Head-Gaze Dwell Raycaster
+    const raycaster = new THREE.Raycaster();
+    const centerNDC = new THREE.Vector2(0, 0);
+    let currentTargetCategory = null;
+    let dwellStartMs = 0;
+    let triggeredInCurrentDwell = false;
+    const lastChimeByCategory = {};
+
+    function updateGazeDwell(nowMs) {
+      if (gazeTargets.length === 0) return;
+
+      const activeCamera = renderer.xr.isPresenting ? renderer.xr.getCamera() : camera;
+      raycaster.setFromCamera(centerNDC, activeCamera);
+      const hits = raycaster.intersectObjects(gazeTargets, false);
+
+      if (hits.length > 0) {
+        const info = hits[0].object.userData.gazeInfo;
+        if (info) {
+          if (currentTargetCategory !== info.category) {
+            currentTargetCategory = info.category;
+            dwellStartMs = nowMs;
+            triggeredInCurrentDwell = false;
+            gazeLabel.textContent = info.label;
+            gazeLabel.classList.add('visible');
+            gazeRing.classList.add('active');
+          }
+
+          const elapsed = nowMs - dwellStartMs;
+          const progress = Math.min(elapsed / GAZE_DWELL_MS, 1);
+          gazeProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - progress));
+
+          if (progress >= 1 && !triggeredInCurrentDwell) {
+            triggeredInCurrentDwell = true;
+            const lastTime = lastChimeByCategory[info.category] || 0;
+            if (nowMs - lastTime >= GAZE_COOLDOWN_MS) {
+              lastChimeByCategory[info.category] = nowMs;
+              playMarimbaChime(info.category);
+            }
+          }
+          return;
+        }
+      }
+
+      // Reset dwell when gaze leaves target
+      if (currentTargetCategory !== null) {
+        currentTargetCategory = null;
+        dwellStartMs = 0;
+        triggeredInCurrentDwell = false;
+        gazeProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
+        gazeLabel.classList.remove('visible');
+        gazeRing.classList.remove('active');
+      }
+    }
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Main Render Loop
+    const clock = new THREE.Clock();
+    renderer.setAnimationLoop(() => {
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const nowMs = performance.now();
+
+      if (mixer) {
+        mixer.update(delta * timeScale);
+      }
+
+      // Gentle marine snow drift
+      if (timeScale > 0) {
+        marineSnow.rotation.y += delta * 0.015 * timeScale;
+      }
+
+      if (!renderer.xr.isPresenting) {
+        controls.update();
+      }
+
+      updateGazeDwell(nowMs);
+      renderer.render(scene, camera);
+    });
+  </script>
+</body>
+</html>

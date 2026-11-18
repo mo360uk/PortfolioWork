@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAWAF · Visual Report &amp; Spatial Infographics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --canvas: #090D16;
+      --surface-1: #121826;
+      --surface-2: #182032;
+      --surface-3: #1F2940;
+      --ochre: #C87D28;
+      --emerald: #10B981;
+      --sky: #0EA5E9;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.45);
+      --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.34);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 14% 6%, rgba(16, 185, 129, 0.14) 0%, transparent 42%),
+        radial-gradient(circle at 86% 24%, rgba(200, 125, 40, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 88%, rgba(14, 165, 233, 0.10) 0%, transparent 45%),
+        var(--canvas);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    .report-shell {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 28px 28px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    @media (max-width: 768px) {
+      .report-shell { padding: 16px 16px 40px; gap: 20px; }
+    }
+
+    /* HERO HEADER */
+    .hero-header {
+      background: var(--surface-1);
+      border-radius: 26px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--emerald);
+      margin-bottom: 6px;
+    }
+
+    .kicker-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 14px var(--emerald);
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.9rem, 3vw, 2.75rem);
+      letter-spacing: -0.025em;
+      line-height: 1.06;
+    }
+
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 0.94rem;
+      color: var(--text-secondary);
+    }
+
+    .launch-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: -0.01em;
+      transition: transform 0.16s ease, filter 0.16s ease;
+    }
+
+    .btn-pill:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .btn-primary { background: var(--emerald); color: #051610; box-shadow: 0 10px 26px rgba(16, 185, 129, 0.32); }
+    .btn-secondary { background: var(--ochre); color: #090D16; box-shadow: 0 10px 26px rgba(200, 125, 40, 0.30); }
+
+    /* SECTION SHELL */
+    .section-card {
+      background: var(--surface-1);
+      border-radius: 26px;
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.55rem;
+      letter-spacing: -0.025em;
+    }
+
+    .section-sub {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* HERO SHOWCASE GALLERY */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .media-card {
+      background: var(--surface-2);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease;
+    }
+
+    .media-card:hover { transform: translateY(-3px); }
+
+    .span-7 { grid-column: span 7; }
+    .span-5 { grid-column: span 5; }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+
+    @media (max-width: 1020px) {
+      .span-7, .span-5, .span-4, .span-6 { grid-column: span 12; }
+    }
+
+    .media-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #070A12;
+      overflow: hidden;
+    }
+
+    .media-frame.square {
+      aspect-ratio: 1 / 1;
+      max-height: 440px;
+    }
+
+    .media-frame img, .media-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .media-frame.square img {
+      object-fit: contain;
+      background: #060911;
+    }
+
+    .media-meta {
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .media-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+    }
+
+    .media-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .badge-solid {
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: var(--surface-3);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    /* INFOGRAPHIC 1: 19.1 DOME & SIGNAL FLOW */
+    .dome-layout {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    @media (max-width: 980px) {
+      .dome-layout { grid-template-columns: 1fr; }
+    }
+
+    .dome-orb {
+      width: 100%;
+      max-width: 390px;
+      margin: 0 auto;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(14, 165, 233, 0.22) 0%, #0D1322 65%, #090D16 100%);
+      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7), 0 0 50px rgba(14, 165, 233, 0.14);
+      padding: 12px;
+    }
+
+    .dome-orb svg { width: 100%; height: 100%; display: block; }
+
+    .array-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .array-stats { grid-template-columns: 1fr; }
+    }
+
+    .stat-tile {
+      background: var(--surface-2);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.7rem;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .stat-detail {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .signal-flow {
+      grid-column: 1 / -1;
+      background: var(--surface-2);
+      border-radius: 18px;
+      padding: 20px 22px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .flow-node {
+      background: var(--surface-3);
+      border-radius: 14px;
+      padding: 12px 16px;
+      flex: 1 1 170px;
+    }
+
+    .flow-node strong {
+      display: block;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+    }
+
+    .flow-node span {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .flow-arrow {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      color: var(--ochre);
+      font-size: 1.2rem;
+    }
+
+    /* INFOGRAPHIC 2: 7-CHAKRA ACEScg MATRIX */
+    .chakra-matrix {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 1180px) {
+      .chakra-matrix { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 540px) {
+      .chakra-matrix { grid-template-columns: 1fr; }
+    }
+
+    .chakra-col {
+      background: var(--surface-2);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chakra-swatch-bar {
+      height: 86px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .chakra-swatch-bar strong {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .chakra-swatch-bar span {
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    .chakra-data {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.76rem;
+    }
+
+    .rgb-row {
+      display: grid;
+      grid-template-columns: 16px 1fr 44px;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rgb-track {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--surface-1);
+      overflow: hidden;
+    }
+
+    .rgb-fill { height: 100%; border-radius: 999px; }
+
+    /* INFOGRAPHIC 3: AUDIO COMFORT & SPECTRUM */
+    .audio-compare-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 980px) {
+      .audio-compare-grid { grid-template-columns: 1fr; }
+    }
+
+    .compare-box {
+      background: var(--surface-2);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .bar-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .bar-bg {
+      height: 14px;
+      border-radius: 999px;
+      background: var(--surface-1);
+      overflow: hidden;
+    }
+
+    .bar-val { height: 100%; border-radius: 999px; }
+
+    .metrics-quad {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .metric-pill-card {
+      background: var(--surface-2);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .metric-big {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.85rem;
+      letter-spacing: -0.025em;
+    }
+
+    .metric-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .metric-note {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="report-shell">
+    <!-- HERO HEADER -->
+    <header class="hero-header">
+      <div>
+        <div class="hero-kicker"><span class="kicker-dot"></span> Market Hall Devonport · 15m 210° Immersive Dome</div>
+        <h1 class="hero-title">TAWAF · Visual Report &amp; Spatial Infographics</h1>
+        <p class="hero-sub">Cycles CUDA V2 Cinema · 4K Screenberry Domemaster · 19.1 L'Acoustics · Organic Sanctuary 48 kHz</p>
+      </div>
+      <div class="launch-links">
+        <a class="btn-pill btn-primary" href="./tawaf-live-console.html">&#9654; Open Live Console</a>
+        <a class="btn-pill btn-secondary" href="./tawaf-domemaster-live.html">Open Domemaster Lab</a>
+      </div>
+    </header>
+
+    <!-- HERO SHOWCASE GALLERY -->
+    <section class="section-card">
+      <div class="section-head">
+        <h2 class="section-title">Cycles CUDA V2 &amp; Domemaster Gallery</h2>
+        <span class="section-sub">Rendered for 15m Dome &amp; Screenberry 4K Playback</span>
+      </div>
+
+      <div class="gallery-grid">
+        <article class="media-card span-7">
+          <div class="media-frame">
+            <img src="./renders_v2/01_sanctuary_hero_cinematic.png" alt="Sanctuary Hero Cinematic Render" />
+          </div>
+          <div class="media-meta">
+            <div>
+              <div class="media-title">01 · Sanctuary Hero Cinematic</div>
+              <div class="media-desc">Cycles CUDA V2 architectural sanctuary perspective with warm ochre &amp; emerald lighting</div>
+            </div>
+            <span class="badge-solid">Cycles V2</span>
+          </div>
+        </article>
+
+        <article class="media-card span-5">
+          <div class="media-frame">
+            <video src="./renders_v2/04_tawaf_dynamic_fluid_orbit.mp4" autoplay loop muted playsinline></video>
+          </div>
+          <div class="media-meta">
+            <div>
+              <div class="media-title">04 · Dynamic Fluid Orbit</div>
+              <div class="media-desc">Continuous CCW orbital motion study synced to 60 BPM</div>
+            </div>
+            <span class="badge-solid">MP4 Loop</span>
+          </div>
+        </article>
+
+        <article class="media-card span-4">
+          <div class="media-frame">
+            <img src="./renders_v2/02_shabaka_vault_cinematic.png" alt="Shabaka Vault Cinematic Render" />
+          </div>
+          <div class="media-meta">
+            <div>
+              <div class="media-title">02 · Shabaka Vault Cinematic</div>
+              <div class="media-desc">Geometric lattice dome vault &amp; spectral light dispersion</div>
+            </div>
+            <span class="badge-solid">Cycles V2</span>
+          </div>
+        </article>
+
+        <article class="media-card span-4">
+          <div class="media-frame">
+            <img src="./renders_v2/03_four_zones_cinematic.png" alt="Four Zones Cinematic Render" />
+          </div>
+          <div class="media-meta">
+            <div>
+              <div class="media-title">03 · Four Zones Cinematic</div>
+              <div class="media-desc">Spatial quadrant choreography across the 15m dome floor</div>
+            </div>
+            <span class="badge-solid">Cycles V2</span>
+          </div>
+        </article>
+
+        <article class="media-card span-4">
+          <div class="media-frame square">
+            <img src="./renders_v2/TAWAF_Step1_TealGold_Domemaster_4K.png" alt="4K Screenberry Domemaster" />
+          </div>
+          <div class="media-meta">
+            <div>
+              <div class="media-title">4K Screenberry Domemaster</div>
+              <div class="media-desc">1:1 180°/210° Teal &amp; Gold master projection frame</div>
+            </div>
+            <span class="badge-solid">4K 1:1</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- INFOGRAPHIC 1: MARKET HALL 15M DOME & 19.1 L'ACOUSTICS -->
+    <section class="section-card">
+      <div class="section-head">
+        <h2 class="section-title">Infographic 1 · Market Hall 15m Dome &amp; 19.1 L'Acoustics</h2>
+        <span class="section-sub tabular">20 Discrete Channels · 48 kHz · 210° Projection</span>
+      </div>
+
+      <div class="dome-layout">
+        <div class="dome-orb">
+          <svg id="domeDiagramSvg" viewBox="-150 -150 300 300" aria-label="19.1 L'Acoustics Speaker Topology"></svg>
+        </div>
+
+        <div class="array-stats">
+          <div class="stat-tile">
+            <span class="stat-num tabular" style="color:#38BDF8;">14 × X12</span>
+            <span class="stat-label">Lower Perimeter Ring</span>
+            <span class="stat-detail tabular">25.714° azimuth spacing · 0° elevation · 360° horizon anchor</span>
+          </div>
+
+          <div class="stat-tile">
+            <span class="stat-num tabular" style="color:#C87D28;">4 × X12</span>
+            <span class="stat-label">Upper Elevation Ring</span>
+            <span class="stat-detail tabular">45°, 135°, 225°, 315° azimuth · +45° elevation · Oud &amp; Harp orbit</span>
+          </div>
+
+          <div class="stat-tile">
+            <span class="stat-num tabular" style="color:#10B981;">1 × X12</span>
+            <span class="stat-label">Zenith Overhead</span>
+            <span class="stat-detail tabular">+90° elevation apex · Ney Flute &amp; Dome Air breath canopy</span>
+          </div>
+
+          <div class="stat-tile">
+            <span class="stat-num tabular" style="color:#F43F5E;">1 × SB18</span>
+            <span class="stat-label">Subwoofer LFE</span>
+            <span class="stat-detail tabular">35–95 Hz band · Frame Drum 60 BPM &amp; Cello warm foundation</span>
+          </div>
+
+          <div class="signal-flow">
+            <div class="flow-node">
+              <strong>4-Stem Organic Engine</strong>
+              <span>48 kHz WAV · 60 BPM / 4-7-8</span>
+            </div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-node">
+              <strong>4-ch AmbiX Bus</strong>
+              <span>TAWAF_Screenberry_Ambisonic_4ch</span>
+            </div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-node">
+              <strong>Screenberry 19.1</strong>
+              <span>1:1 210° Domemaster + L'Acoustics</span>
+            </div>
+            <span class="flow-arrow">&#8594;</span>
+            <div class="flow-node">
+              <strong>UE 5.8 HRTF</strong>
+              <span>TAWAF_DomeTest Binaural Preview</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INFOGRAPHIC 2: 7-CHAKRA SPECTRAL & ACEScg CALIBRATION -->
+    <section class="section-card">
+      <div class="section-head">
+        <h2 class="section-title">Infographic 2 · 7-Chakra Spectral &amp; ACEScg Linear RGB</h2>
+        <span class="section-sub">AP1 Linear Working Space Calibration</span>
+      </div>
+
+      <div class="chakra-matrix" id="chakraMatrix"></div>
+    </section>
+
+    <!-- INFOGRAPHIC 3: BRAIN.FM-GRADE AUDIO COMFORT & SPECTRUM -->
+    <section class="section-card">
+      <div class="section-head">
+        <h2 class="section-title">Infographic 3 · Brain.fm-Grade Audio Comfort &amp; Spectrum</h2>
+        <span class="section-sub">Old Raw Oscillators vs. New 4-Stem Organic Sanctuary</span>
+      </div>
+
+      <div class="audio-compare-grid">
+        <div class="compare-box">
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;">High-Frequency Harshness (&gt;4 kHz Energy)</h3>
+
+          <div class="bar-group">
+            <div class="bar-label">
+              <span>Old Raw Oscillators</span>
+              <span class="tabular" style="color:#F87171;">0.0 dB Reference (Fatiguing)</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-val" style="width:94%;background:linear-gradient(90deg,#EF4444,#F97316);"></div>
+            </div>
+          </div>
+
+          <div class="bar-group">
+            <div class="bar-label">
+              <span>New 4-Stem Organic Sanctuary</span>
+              <span class="tabular" style="color:#10B981;">-133.22 dB Attenuation</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-val" style="width:8%;background:linear-gradient(90deg,#10B981,#0EA5E9);"></div>
+            </div>
+          </div>
+
+          <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.55;">
+            Replaced raw digital oscillators with acoustic-inspired Frame Drum, Oud/Harp, Felt Piano/Cello, and Ney Breath stems, achieving <strong style="color:var(--text-primary);">-133.22 dB</strong> suppression above 4 kHz for effortless 60-minute dome immersion.
+          </p>
+        </div>
+
+        <div class="metrics-quad">
+          <div class="metric-pill-card">
+            <span class="metric-big tabular" style="color:var(--emerald);">-133.22 dB</span>
+            <span class="metric-name">&gt;4 kHz Attenuation</span>
+            <span class="metric-note">Zero harsh metallic sibilance</span>
+          </div>
+
+          <div class="metric-pill-card">
+            <span class="metric-big tabular" style="color:var(--sky);">0</span>
+            <span class="metric-name">Clipped Samples</span>
+            <span class="metric-note">Clean headroom across 48 kHz WAVs</span>
+          </div>
+
+          <div class="metric-pill-card">
+            <span class="metric-big tabular" style="color:var(--ochre);">-1.5 dBFS</span>
+            <span class="metric-name">True Peak Ceiling</span>
+            <span class="metric-note">Broadcast &amp; PA-safe dynamic margin</span>
+          </div>
+
+          <div class="metric-pill-card">
+            <span class="metric-big tabular" style="color:#A855F7;">60 BPM</span>
+            <span class="metric-name">4-7-8 Breath Cadence</span>
+            <span class="metric-note">19s autonomic nervous system loop</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      // Render 19.1 L'Acoustics Dome Diagram (Zero Wireframe)
+      const svg = document.getElementById('domeDiagramSvg');
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag, attrs) => {
+        const el = document.createElementNS(ns, tag);
+        Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+        return el;
+      };
+
+      svg.appendChild(mk('circle', { cx: 0, cy: 0, r: 128, fill: '#121826', 'fill-opacity': 0.78 }));
+      svg.appendChild(mk('circle', { cx: 0, cy: 0, r: 80, fill: '#182032', 'fill-opacity': 0.85 }));
+      svg.appendChild(mk('circle', { cx: 0, cy: 0, r: 30, fill: '#1F2940', 'fill-opacity': 0.9 }));
+
+      const channels = [
+        ...Array.from({ length: 14 }, (_, i) => ({ ch: i + 1, ring: 'lower', az: i * (360 / 14) })),
+        { ch: 15, ring: 'upper', az: 45 },
+        { ch: 16, ring: 'upper', az: 135 },
+        { ch: 17, ring: 'upper', az: 225 },
+        { ch: 18, ring: 'upper', az: 315 },
+        { ch: 19, ring: 'zenith', az: 0 },
+        { ch: 20, ring: 'lfe', az: 0 }
+      ];
+
+      channels.forEach((sp) => {
+        let r = 118, color = '#38BDF8';
+        if (sp.ring === 'upper') { r = 68; color = '#C87D28'; }
+        else if (sp.ring === 'zenith') { r = 0; color = '#10B981'; }
+        else if (sp.ring === 'lfe') { r = 32; color = '#F43F5E'; }
+
+        const rad = ((sp.az - 90) * Math.PI) / 180;
+        const x = sp.ring === 'lfe' ? 0 : Math.cos(rad) * r;
+        const y = sp.ring === 'lfe' ? 32 : Math.sin(rad) * r;
+
+        svg.appendChild(mk('circle', { cx: x, cy: y, r: 11, fill: color, 'fill-opacity': 0.24 }));
+        svg.appendChild(mk('circle', { cx: x, cy: y, r: sp.ring === 'lfe' ? 6.5 : 5, fill: color }));
+      });
+
+      // Render 7-Chakra ACEScg Linear RGB Matrix
+      const chakras = [
+        { name: 'Root', hex: '#B91C1C', dark: false, acescg: [0.3019, 0.0449, 0.0214] },
+        { name: 'Sacral', hex: '#EA580C', dark: false, acescg: [0.5378, 0.1472, 0.0309] },
+        { name: 'Solar', hex: '#EAB308', dark: true, acescg: [0.6576, 0.4709, 0.0685] },
+        { name: 'Heart', hex: '#10B981', dark: true, acescg: [0.1783, 0.4479, 0.2442] },
+        { name: 'Throat', hex: '#0EA5E9', dark: true, acescg: [0.1690, 0.3561, 0.7501] },
+        { name: 'Third Eye', hex: '#3730A3', dark: false, acescg: [0.0508, 0.0347, 0.3226] },
+        { name: 'Crown', hex: '#7E22CE', dark: false, acescg: [0.1626, 0.0376, 0.5429] }
+      ];
+
+      const matrix = document.getElementById('chakraMatrix');
+      chakras.forEach((c) => {
+        const card = document.createElement('div');
+        card.className = 'chakra-col';
+        const textColor = c.dark ? '#090D16' : '#FFFFFF';
+        const [r, g, b] = c.acescg;
+        card.innerHTML = `
+          <div class="chakra-swatch-bar" style="background:${c.hex};color:${textColor};">
+            <strong>${c.name}</strong>
+            <span class="tabular">${c.hex}</span>
+          </div>
+          <div class="chakra-data tabular">
+            <div class="rgb-row">
+              <span style="color:#F87171;">R</span>
+              <div class="rgb-track"><div class="rgb-fill" style="width:${Math.round(r * 100)}%;background:#F87171;"></div></div>
+              <span>${r.toFixed(4)}</span>
+            </div>
+            <div class="rgb-row">
+              <span style="color:#34D399;">G</span>
+              <div class="rgb-track"><div class="rgb-fill" style="width:${Math.round(g * 100)}%;background:#34D399;"></div></div>
+              <span>${g.toFixed(4)}</span>
+            </div>
+            <div class="rgb-row">
+              <span style="color:#38BDF8;">B</span>
+              <div class="rgb-track"><div class="rgb-fill" style="width:${Math.round(b * 100)}%;background:#38BDF8;"></div></div>
+              <span>${b.toFixed(4)}</span>
+            </div>
+          </div>
+        `;
+        matrix.appendChild(card);
+      });
+    })();
+  </script>
+</body>
+</html>
