@@ -452,6 +452,18 @@ body{background:#06080b;color:#FFFFFF;}
 .theater-header{background:#0A0E14 !important;border-bottom:2px solid #F59E0B !important;}
 nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158,11,0.35) !important;}
 
+
+/* COMPACT TABBED STUDIO ARCHIVE SHOWCASE (SHORTENS SCROLL WITHOUT REMOVING ANY WORK) */
+.archive-tabs-shell{max-width:1280px;margin:0 auto;padding:3.5rem 2.5rem 1rem;position:relative;z-index:1;}
+.archive-tabs-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1.25rem;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,0.12);}
+.archive-tab-bar{display:flex;flex-wrap:wrap;gap:8px;}
+.archive-tab-btn{padding:10px 18px;border-radius:2px;border:1px solid rgba(255,255,255,0.2);background:#0D131C;color:#D4D8E0;font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s ease;}
+.archive-tab-btn:hover{border-color:#F59E0B;color:#F59E0B;}
+.archive-tab-btn.active{background:#F59E0B;color:#06080b;border-color:#F59E0B;}
+.archive-panel-hidden{display:none !important;}
+#work360,#photography,#services,#reels,#design{padding-top:2rem !important;padding-bottom:2.5rem !important;}
+@media(max-width:768px){.archive-tabs-shell{padding:2.5rem 1.25rem 0.5rem;}.archive-tab-btn{font-size:.62rem;padding:8px 12px;}}
+
 </style>
 </head>
 <body>
@@ -893,6 +905,24 @@ nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158
 </section>
 
 
+
+<!-- COMPACT TABBED STUDIO ARCHIVE BAR (ALL 5 DISCIPLINES, ZERO ENDLESS SCROLLING) -->
+<div class="archive-tabs-shell reveal" id="archive-showcase">
+  <div class="archive-tabs-header">
+    <div>
+      <p class="eyebrow" style="margin-bottom:0.35rem;">Multidisciplinary Practice Archive · Filter by Discipline</p>
+      <h2 style="margin-bottom:0;">EXPLORE STUDIO <span style="color:var(--gb);">ARCHIVE</span></h2>
+    </div>
+    <div class="archive-tab-bar" role="tablist" aria-label="Portfolio Disciplines">
+      <button type="button" class="archive-tab-btn active" data-target="work360">🌐 360° Spherical Worlds</button>
+      <button type="button" class="archive-tab-btn" data-target="photography">📸 Landscapes &amp; Heritage</button>
+      <button type="button" class="archive-tab-btn" data-target="reels">🎬 Reels &amp; Short Film</button>
+      <button type="button" class="archive-tab-btn" data-target="design">🎨 Commercial &amp; Patriots</button>
+      <button type="button" class="archive-tab-btn" data-target="services">⚙️ Capabilities</button>
+    </div>
+  </div>
+</div>
+
 <section id="work360">
   <div class="reveal">
     <p class="eyebrow">360° Photography</p>
@@ -955,7 +985,7 @@ nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158
     style="display:none"></div>
 </section>
 
-<section id="photography">
+<section id="photography" class="archive-panel-hidden">
   <div class="reveal">
     <p class="eyebrow">Photography</p>
     <h2>LANDSCAPES &amp; TRAVEL</h2>
@@ -1017,7 +1047,7 @@ nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158
     style="display:none"></div>
 </section>
 
-<section id="services">
+<section id="services" class="archive-panel-hidden">
   <div class="reveal">
     <p class="eyebrow">Capabilities &amp; Services</p>
     <h2>WHAT WE BUILD</h2>
@@ -1078,7 +1108,7 @@ nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158
 <div class="divider"></div>
 
 <!-- VIDEO REELS -->
-<section id="reels">
+<section id="reels" class="archive-panel-hidden">
   <div class="reveal">
     <p class="eyebrow">Video Work</p>
     <h2>REELS &amp; SHORT FILM</h2>
@@ -1242,7 +1272,7 @@ nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158
   <a href="https://youtube.com/@mo360uk" target="_blank" class="watch-all-btn">Watch All @mo360uk →</a>
 </section>
 
-<section id="design">
+<section id="design" class="archive-panel-hidden">
   <div class="reveal">
     <p class="eyebrow">Design Portfolio</p>
     <h2>THE WORK</h2>
@@ -1496,6 +1526,44 @@ document.querySelectorAll('.theater-tab').forEach(function(tab) {
     if (link) link.href = tab.dataset.link;
   });
 });
+
+
+(function() {
+  var panelIds = ['work360', 'photography', 'reels', 'design', 'services'];
+  function activateArchiveTab(targetId, scrollToIt) {
+    if (panelIds.indexOf(targetId) === -1) return;
+    document.querySelectorAll('.archive-tab-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.target === targetId);
+    });
+    panelIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (id === targetId) {
+        el.classList.remove('archive-panel-hidden');
+        el.querySelectorAll('.reveal').forEach(function(r) { r.classList.add('visible'); });
+      } else {
+        el.classList.add('archive-panel-hidden');
+      }
+    });
+    if (scrollToIt) {
+      var shell = document.getElementById('archive-showcase');
+      if (shell) shell.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  document.querySelectorAll('.archive-tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activateArchiveTab(btn.dataset.target, false);
+    });
+  });
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function() {
+      var h = a.getAttribute('href').slice(1);
+      if (panelIds.indexOf(h) !== -1) {
+        activateArchiveTab(h, true);
+      }
+    });
+  });
+})();
 
 </script>
 
