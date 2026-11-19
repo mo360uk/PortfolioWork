@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>The Box Plymouth · Real 3D Gaussian Splat Atrium Scan (@Mo360XR) | Plymouth Chronicles</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/",
+        "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/0.1.8/spark.module.js"
+      }
+    }
+  </script>
+  <style>
+    :root { --bg: #070f18; --gold: #e6af4b; --paper: #f2ece1; --muted: #98a4b3; --border: rgba(176, 141, 74, 0.38); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--paper); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    #splatStage { position: fixed; inset: 0; width: 100vw; height: 100vh; cursor: grab; }
+    #splatStage:active { cursor: grabbing; }
+
+    .header {
+      position: fixed; top: 14px; left: 16px; right: 16px; z-index: 20;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 18px; border-radius: 16px; background: rgba(7, 15, 24, 0.86);
+      border: 1px solid var(--border); backdrop-filter: blur(12px);
+    }
+    .header h1 { font-family: 'Cinzel', serif; font-size: 1.15rem; color: var(--paper); }
+    .header h1 em { color: var(--gold); font-style: normal; }
+    .header p { font-size: 0.76rem; color: var(--muted); }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      padding: 7px 14px; border-radius: 99px; border: 1px solid var(--border);
+      background: rgba(13, 27, 42, 0.88); color: var(--paper); font-size: 0.76rem;
+      font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s ease;
+    }
+    .btn:hover { border-color: var(--gold); color: var(--gold); }
+    .btn.primary { background: linear-gradient(135deg, #b08d4a, #e6af4b); color: #070f18; border-color: transparent; font-weight: 700; }
+
+    .hud {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 20;
+      padding: 9px 18px; border-radius: 99px; background: rgba(7, 15, 24, 0.88);
+      border: 1px solid var(--border); backdrop-filter: blur(12px);
+      font-size: 0.76rem; color: var(--muted); white-space: nowrap;
+    }
+    .hud strong { color: var(--gold); }
+
+    .loader {
+      position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      background: radial-gradient(circle at center, #132539 0%, #070f18 100%);
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <div style="font-size:2rem;">⚓</div>
+    <h2 style="font-family:'Cinzel',serif; color:#f2ece1;">Loading Real 3D Gaussian Splat Scan…</h2>
+    <p style="font-size:0.85rem; color:#98a4b3;" id="loaderMsg">444,110 Gaussian Splats · The Box, Plymouth Atrium (@Mo360XR)</p>
+  </div>
+
+  <div id="splatStage"></div>
+
+  <header class="header">
+    <div>
+      <h1>The Box Plymouth · <em>Real 3D Gaussian Splat Atrium</em></h1>
+      <p>Captured on location by Mohamed Hossam Elwakil (@Mo360XR) · 444,110 Compressed .SPZ Splats</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="resetViewBtn">🎯 Reset Atrium View</button>
+      <a href="story.html" class="btn primary">⚓ 3D Scroll Story</a>
+      <a href="index.html#sphinx" class="btn">🏛️ Interactive AR Stage</a>
+    </div>
+  </header>
+
+  <div class="hud">
+    <strong>Drag</strong> to Orbit 360° · <strong>Scroll / Pinch</strong> to Zoom · <strong>Right-Drag</strong> to Pan
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { SplatMesh } from '@sparkjsdev/spark';
+
+    const stage = document.getElementById('splatStage');
+    const loader = document.getElementById('loader');
+    const loaderMsg = document.getElementById('loaderMsg');
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x070f18);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+    camera.position.set(1.5, 1.5, 9.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    stage.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.target.set(1.48, 4.8, -8.5);
+
+    const splatMesh = new SplatMesh({
+      url: 'splats/the_box_atrium_scaniverse.spz',
+      onLoad: () => {
+        loader.classList.add('hidden');
+      }
+    });
+    // Orient Scaniverse coordinate frame upright
+    splatMesh.rotation.x = Math.PI;
+    scene.add(splatMesh);
+
+    // Fallback hide loader once splat initializes
+    setTimeout(() => loader.classList.add('hidden'), 3500);
+
+    document.getElementById('resetViewBtn').addEventListener('click', () => {
+      camera.position.set(1.5, 1.5, 9.5);
+      controls.target.set(1.48, 4.8, -8.5);
+      controls.update();
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

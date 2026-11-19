@@ -858,7 +858,11 @@
         <span id="geminiBtnLabel">Live Gemini AR</span>
       </button>
 
-      <a href="index.html?v=155" class="pill-btn" title="Open classic 3D & WebXR AR Figurehead Stage">
+      <a href="atrium-splat.html" class="pill-btn" title="Explore real-world 444,110-splat 3D Gaussian Splat scan of The Box Atrium">
+        <span>🌌 Real 3D Splat Atrium</span>
+      </a>
+
+      <a href="index.html?v=158" class="pill-btn" title="Open classic 3D & WebXR AR Figurehead Stage">
         <span>🏛️ Interactive 3D Stage</span>
       </a>
     </div>
@@ -1270,10 +1274,10 @@
 
     function getNormalizedGlbUrl(item, useShipBow = false) {
       if (useShipBow) {
-        return `ships3d/${item.id}.glb?v=158`;
+        return `ships3d/${item.id}.glb?v=160`;
       }
       const raw = item.glb.split('?')[0];
-      return `${raw.toLowerCase()}?v=158`;
+      return `${raw.toLowerCase()}?v=160`;
     }
 
     async function loadChapterModel(node, useShipBow = false) {
