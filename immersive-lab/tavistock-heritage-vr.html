@@ -1177,24 +1177,24 @@
     });
     scene.add(new THREE.Mesh(ambSphereGeo, ambSphereMat));
 
-    // 2. Smooth, Un-Bumpy, Distortion-Free Curved VR Cinema Screen (120° arc, radius 9.5m)
-    //    No vertex heightmap bumps! Uses smooth Depth-Anything-V2 planar parallax + VideoTexture!
+    // 2. Smooth, Un-Bumpy, Distortion-Free Exact 16:9 Curved VR Cinema Screen (120° arc, radius 10.5m)
+    //    Exact 16:9 aspect ratio (16.0 x 9.0) so Google Flow videos never stretch!
     function createSmoothCurvedScreenGeometry(wSegs = 128, hSegs = 72) {
-      const geo = new THREE.PlaneGeometry(14.8, 9.8, wSegs, hSegs);
+      const geo = new THREE.PlaneGeometry(16.0, 9.0, wSegs, hSegs);
       const pos = geo.attributes.position;
-      const radius = 10.2;
-      const arcAngle = Math.PI * 0.62;
+      const radius = 10.5;
+      const arcAngle = Math.PI * 0.56;
 
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
         const y = pos.getY(i);
-        const u = x / 14.8;
+        const u = x / 16.0;
         const theta = u * arcAngle;
         pos.setXYZ(
           i,
           Math.sin(theta) * radius,
           y + SEATED_EYE_HEIGHT + 0.15,
-          -Math.cos(theta) * radius + (radius - 8.2)
+          -Math.cos(theta) * radius + (radius - 8.6)
         );
       }
       geo.computeVertexNormals();
@@ -1327,14 +1327,29 @@
     const screenMesh = new THREE.Mesh(screenGeo, screenMat);
     scene.add(screenMesh);
 
-    // HTML5 Video Element for the 3D Neural-Depth Drone MP4 Videos
+    // HTML5 Video Element for the Google Flow & 3D Neural-Depth Drone MP4 Videos
     const videoEl = document.createElement('video');
     videoEl.crossOrigin = 'anonymous';
     videoEl.loop = true;
-    videoEl.muted = true;
+    videoEl.muted = true; // Starts muted for browser autoplay policy; unmutes on Sound toggle or first tap
+    videoEl.volume = 1.0;
     videoEl.playsInline = true;
     videoEl.setAttribute('playsinline', '');
     videoEl.setAttribute('webkit-playsinline', '');
+
+    // Unmute Google Flow narrator automatically when user clicks Sound button or interacts with stage
+    function syncVideoAudioState() {
+      const soundBtn = document.getElementById('soundBtn');
+      const wantsAudio = soundBtn ? soundBtn.classList.contains('active') : false;
+      videoEl.muted = !wantsAudio;
+    }
+    window.addEventListener('pointerdown', () => {
+      const soundBtn = document.getElementById('soundBtn');
+      if (soundBtn && !soundBtn.classList.contains('active')) {
+        soundBtn.click();
+      }
+      syncVideoAudioState();
+    }, { once: true });
 
     const videoTexture = new THREE.VideoTexture(videoEl);
     videoTexture.colorSpace = THREE.SRGBColorSpace;
@@ -1423,15 +1438,19 @@
       screenMat.uniforms.uWaterLevel.value = lm.water_level || 0.0;
       ambSphereMat.uniforms.uTex.value = tSet.col;
 
-      // Load and play the 3D Neural-Depth Drone Fly-Around MP4 Video for this Historical Photograph
+      // Load and play the Google Flow / 3D Neural-Depth Drone Fly-Around MP4 Video for this Historical Photograph
       videoEl.pause();
       screenMat.uniforms.uHasVideo.value = 0.0;
-      videoEl.src = `${lm.drone_mp4}?v=nd3`;
+      videoEl.src = `${lm.drone_mp4}?v=flow1`;
       videoEl.load();
+      syncVideoAudioState();
       videoEl.play().then(() => {
         screenMat.uniforms.uHasVideo.value = 1.0;
-        sceneStatusText.textContent = `${lm.name} · 3D Drone Video Playing`;
-        droneTelemetryText.textContent = `🎬 PLAYING 3D NEURAL-DEPTH DRONE VIDEO · ${lm.name} (${lm.era})`;
+        const flowTag = index === 0 ? 'Google Flow 3D Drone Virtual Tour Playing' : '3D Drone Video Playing';
+        sceneStatusText.textContent = `${lm.name} · ${flowTag}`;
+        droneTelemetryText.textContent = index === 0
+          ? `🎬 GOOGLE FLOW 3D DRONE VIRTUAL TOUR · ${lm.name} (${lm.era}) · Tap Anywhere for Narrator`
+          : `🎬 PLAYING 3D NEURAL-DEPTH DRONE VIDEO · ${lm.name} (${lm.era})`;
       }).catch(() => {
         screenMat.uniforms.uHasVideo.value = 0.0;
         sceneStatusText.textContent = `${lm.name} · 3D Neural Depth Active`;
