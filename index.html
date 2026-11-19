@@ -403,6 +403,55 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
 @media(max-width:1024px){.metrics-strip{grid-template-columns:repeat(2,minmax(0,1fr));}.ecosystem-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.theater-frame-wrap{height:440px;}}
 @media(max-width:640px){.hero{padding-top:112px;}.metrics-strip{grid-template-columns:1fr;}.metric-cell{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;}.metric-cell:last-child{border-bottom:none;}.ecosystem-grid{grid-template-columns:1fr;}.theater-frame-wrap{height:360px;}}
 
+
+/* SHARP ARCHITECTURAL EDGES & FRESH BOLD STUDIO PALETTE OVERRIDE */
+:root{
+  --black:#06080b;
+  --gb:#F59E0B;
+  --white:#FFFFFF;
+  --grey:#B4B9C2;
+  --dark:#0D1117;
+  --border:rgba(245,158,11,0.34);
+}
+body{background:#06080b;color:#FFFFFF;}
+.btn-p,.btn-o,.nav-links a,.patriots-referral-banner,.flagship-card,.flagship-num,.flagship-status,.flagship-tag,.flagship-btn-primary,.flagship-btn-sec,.residency-strip,.metrics-strip,.live-embed-theater,.theater-tab,.eco-card,.cred,.badge,.pstep,.dome-card,.dome-card-hero,.gcard,.dcard,.vcard,.studio-about-photo img,.view-more-btn,.gallery-more-btn{
+  border-radius:2px !important;
+}
+.flagship-card,.eco-card,.live-embed-theater,.metrics-strip,.residency-strip,.cred,.pstep,.dome-card,.gcard,.dcard,.vcard{
+  background:linear-gradient(180deg,#0E131B 0%,#080B10 100%) !important;
+  border:1px solid rgba(255,255,255,0.14) !important;
+  box-shadow:none !important;
+}
+.flagship-card:hover,.eco-card:hover,.cred:hover,.dcard:hover{
+  border-color:#F59E0B !important;
+  box-shadow:0 16px 40px rgba(0,0,0,0.65) !important;
+}
+.flagship-media{border-bottom:2px solid #F59E0B !important;}
+.flagship-num{background:#06080b !important;color:#F59E0B !important;border:1px solid #F59E0B !important;}
+.flagship-status{background:#052e23 !important;color:#34d399 !important;border:1px solid #10b981 !important;}
+.flagship-title,.eco-card-title,h1,h2,h3{color:#FFFFFF !important;}
+.flagship-desc,.eco-card-desc,.sec-sub,.hero-sub{color:#D4D8E0 !important;}
+.flagship-btn-primary,.theater-tab.active{
+  background:#F59E0B !important;
+  color:#06080b !important;
+  border:1px solid #F59E0B !important;
+  font-weight:800 !important;
+  letter-spacing:0.04em;
+}
+.flagship-btn-sec,.theater-tab{
+  background:#0D131C !important;
+  color:#FFFFFF !important;
+  border:1px solid rgba(255,255,255,0.22) !important;
+}
+.flagship-btn-sec:hover,.theater-tab:hover{
+  border-color:#F59E0B !important;
+  color:#F59E0B !important;
+}
+.metric-val{color:#F59E0B !important;}
+.metric-lbl{color:#E2E8F0 !important;}
+.theater-header{background:#0A0E14 !important;border-bottom:2px solid #F59E0B !important;}
+nav{background:rgba(6,8,11,0.96) !important;border-bottom:1px solid rgba(245,158,11,0.35) !important;}
+
 </style>
 </head>
 <body>
@@ -517,9 +566,9 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
       </div>
       <div class="flagship-body">
         <div>
-          <div class="flagship-eyebrow">The Box, Plymouth · 14 Royal Navy Figureheads</div>
-          <h3 class="flagship-title">Plymouth Chronicles: 3D Scroll Story &amp; Live Gemini AR</h3>
-          <p class="flagship-desc">Cinematic Three.js WebGL storytelling corridor featuring all 14 monumental Royal Navy ships' figureheads and custom Blender 3D warship bows, paired with GSAP/Lenis scroll choreography, curator voice narration, 360 degree sculpture inspection, and a live Gemini camera and voice museum guide.</p>
+          <div class="flagship-eyebrow">The Box, Plymouth · Maritime Heritage &amp; Spatial Web</div>
+          <h3 class="flagship-title">Plymouth Chronicles: 14 Monumental Figureheads</h3>
+          <p class="flagship-desc">An interactive 3D heritage experience bringing all 14 carved Royal Navy ships' figureheads from The Box, Plymouth into a continuous WebGL maritime gallery, complete with reconstructed 3D warship bows, curator audio storytelling, and a live voice and camera museum guide.</p>
           <div class="flagship-tags">
             <span class="flagship-tag">Three.js WebGL</span>
             <span class="flagship-tag">Blender 3D Ship Bows</span>
@@ -544,9 +593,9 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
       </div>
       <div class="flagship-body">
         <div>
-          <div class="flagship-eyebrow">Tavistock, Devon · Care Home Reminiscence Pilot</div>
-          <h3 class="flagship-title">Tavistock Historical Archive: 3D Neural Depth Drone VR</h3>
-          <p class="flagship-desc">Built from frontline dementia care experience to turn authentic 1824 to 1950 Tavistock photographs into living 3D depth field drone flights using Depth Anything V2 neural maps, two step raymarching, spatial River Tavy soundscapes, and zero controller 2.0s head gaze interaction for care homes.</p>
+          <div class="flagship-eyebrow">Tavistock, Devon · Dementia Care &amp; Living Archive</div>
+          <h3 class="flagship-title">Tavistock Heritage VR &amp; 360° Living Photographs</h3>
+          <p class="flagship-desc">Informed by frontline dementia care, this seated WebXR virtual tour transforms archival 1824 to 1950 Devon photographs into gentle 360° fly throughs with flowing River Tavy soundscapes, hands free gaze navigation, and iPad or TV co viewing for residents and families.</p>
           <div class="flagship-tags">
             <span class="flagship-tag">Depth Anything V2</span>
             <span class="flagship-tag">WebXR Seated Comfort</span>
@@ -570,9 +619,9 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
       </div>
       <div class="flagship-body">
         <div>
-          <div class="flagship-eyebrow">Devonport, Plymouth · Neurodivergent Sensory Sanctuary</div>
-          <h3 class="flagship-title">TAWAF Sanctuary: 4K Domemaster &amp; 4-7-8 Bio Pacing</h3>
-          <p class="flagship-desc">Zero demand therapeutic 360 degree dome environment engineered for adults with ADHD and Autism. New upgrades include Moroccan Zellige and Azerbaijani Shabaka Girih 4K Domemaster projections, 4 7 8 breathing bio pacing shaders, 432Hz crystal bowl spatial audio for 19 channel d&amp;b arrays, and a Livewell Southwest NHS referral pathway.</p>
+          <div class="flagship-eyebrow">Market Hall 15m Dome, Devonport · Sensory Sanctuary</div>
+          <h3 class="flagship-title">TAWAF: Immersive Healing Sanctuary (2026 Edition)</h3>
+          <p class="flagship-desc">A zero demand 360° therapeutic dome sanctuary created from lived ADHD experience for neurodivergent adults. Combines sacred Moroccan Zellige and Azerbaijani Girih geometry paced to 4-7-8 breathing with 432Hz crystal bowl spatial audio and a Livewell Southwest NHS referral pathway.</p>
           <div class="flagship-tags">
             <span class="flagship-tag">15m Market Hall Dome</span>
             <span class="flagship-tag">4-7-8 Bio Pacing</span>
@@ -591,15 +640,15 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
     <!-- 04: Death of the Nile -->
     <article class="flagship-card reveal" id="death-of-the-nile">
       <div class="flagship-media">
-        <img src="assets/06_the_box_interior_gallery_plymouth_real.jpg" alt="Fulldome Climate Storytelling and Exhibition Practice in Plymouth">
+        <img src="assets/death_of_the_nile_dome_preview.jpg" alt="Death of the Nile Fulldome Projection — Market Hall &amp; University of Plymouth">
         <span class="flagship-num">04 · FULLDOME UK</span>
         <span class="flagship-status">EXHIBITED WORK</span>
       </div>
       <div class="flagship-body">
         <div>
-          <div class="flagship-eyebrow">i-DAT &amp; Market Hall 15m Dome · Climate &amp; Heritage</div>
-          <h3 class="flagship-title">Death of the Nile (Fulldome UK · Market Hall Dome)</h3>
-          <p class="flagship-desc">Interactive Unreal Engine fulldome production visualising climate crisis and water scarcity across the Nile Basin. Developed as MRes Digital Arts thesis with i-DAT and the University of Plymouth Immersive Media Lab, and screened at Fulldome UK inside Devonport's 15m Market Hall Dome.</p>
+          <div class="flagship-eyebrow">Fulldome UK · Market Hall 15m Dome, Devonport</div>
+          <h3 class="flagship-title">Death of the Nile: Interactive Fulldome Film</h3>
+          <p class="flagship-desc">An interactive fulldome cinema work visualising climate change and water scarcity along the Nile River. Developed in Unreal Engine as an MRes thesis with i-DAT at the University of Plymouth and officially exhibited at Fulldome UK inside the 15m Market Hall Dome.</p>
           <div class="flagship-tags">
             <span class="flagship-tag">Unreal Engine</span>
             <span class="flagship-tag">Fulldome UK Official</span>
