@@ -1,968 +1,151 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Creative Coding Plymouth · Official Community Hub &amp; Meetup · Devon, UK</title>
-<meta name="description" content="Creative Coding Plymouth: The official creative technology, TouchDesigner, Unreal Engine 5.8, vvvv gamma 4V, Fulldome, and live coding community in Plymouth, Devon, United Kingdom.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ochre: #C87D28;
-    --ochre-bright: #D4882A;
-    --teal: #0E6BA8;
-    --teal-bright: #1589D6;
-    --emerald: #1B7F69;
-    --emerald-bright: #24A186;
-    --obsidian: #0B0F17;
-    --obsidian-card: #101725;
-    --offwhite: #FAF7F2;
-    --stone: #A8A29E;
-    --border-ochre: rgba(200, 125, 40, 0.38);
-    --border-teal: rgba(14, 107, 168, 0.42);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--obsidian);
-    color: var(--offwhite);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(250, 247, 242, 0.022) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(250, 247, 242, 0.022) 1px, transparent 1px);
-    background-size: 56px 56px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Navigation */
-  .site-nav {
-    position: sticky;
-    top: 0;
-    z-index: 500;
-    background: rgba(11, 15, 23, 0.94);
-    backdrop-filter: blur(16px);
-    border-bottom: 1.5px solid var(--border-ochre);
-    padding: 0.85rem 2.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .brand-link {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-    color: var(--offwhite);
-  }
-  .brand-link img {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    border: 1.5px solid var(--ochre-bright);
-  }
-  .brand-text strong {
-    display: block;
-    font-family: 'Syne', sans-serif;
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    color: var(--offwhite);
-  }
-  .brand-text span {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--ochre-bright);
-    letter-spacing: 0.12em;
-  }
-  .nav-pills {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-  }
-  .nav-pill {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 0.48rem 0.95rem;
-    border-radius: 20px;
-    border: 1px solid rgba(250, 247, 242, 0.18);
-    color: var(--offwhite);
-    transition: all 0.2s;
-  }
-  .nav-pill:hover {
-    border-color: var(--ochre-bright);
-    color: var(--ochre-bright);
-  }
-  .nav-pill.active {
-    background: var(--teal);
-    color: var(--offwhite);
-    border-color: var(--teal-bright);
-  }
-  .nav-pill.lab {
-    background: rgba(200, 125, 40, 0.2);
-    border-color: var(--ochre-bright);
-    color: var(--ochre-bright);
-  }
-  .nav-pill.meetup {
-    background: var(--emerald);
-    border-color: var(--emerald-bright);
-    color: var(--offwhite);
-  }
-
-  .container {
-    max-width: 1360px;
-    margin: 0 auto;
-    padding: 0 2.5rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Hero Section with Live Generative WebGL / Canvas Patch */
-  .hero {
-    padding: 4rem 0 3.5rem;
-    border-bottom: 1.5px solid var(--border-ochre);
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 2.5rem;
-    align-items: center;
-  }
-  .eyebrow-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    color: var(--ochre-bright);
-    background: rgba(200, 125, 40, 0.14);
-    border: 1px solid var(--border-ochre);
-    padding: 0.45rem 1rem;
-    border-radius: 30px;
-    margin-bottom: 1.1rem;
-  }
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.5rem, 4.6vw, 4rem);
-    font-weight: 800;
-    line-height: 1.04;
-    margin-bottom: 1.15rem;
-  }
-  .hero h1 span { color: var(--ochre-bright); }
-  .hero-lead {
-    font-size: 1.05rem;
-    color: rgba(250, 247, 242, 0.86);
-    margin-bottom: 1.5rem;
-  }
-  .benchmark-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.8rem;
-  }
-  .bench-chip {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    font-weight: 600;
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    background: var(--obsidian-card);
-    border: 1px solid rgba(250, 247, 242, 0.16);
-    color: rgba(250, 247, 242, 0.9);
-  }
-  .cta-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.85rem;
-  }
-  .btn-meetup {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.84rem;
-    font-weight: 700;
-    padding: 0.95rem 1.65rem;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--ochre-bright), var(--ochre));
-    color: var(--obsidian);
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 10px 28px rgba(200, 125, 40, 0.35);
-  }
-  .btn-outline {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    font-weight: 700;
-    padding: 0.95rem 1.45rem;
-    border-radius: 10px;
-    background: rgba(14, 107, 168, 0.2);
-    border: 1.5px solid var(--teal-bright);
-    color: var(--offwhite);
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  /* Interactive Generative Hero Synth Card */
-  .synth-card {
-    background: var(--obsidian-card);
-    border: 2px solid var(--border-ochre);
-    border-radius: 18px;
-    padding: 1.35rem;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
-  }
-  .synth-top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--ochre-bright);
-  }
-  #ccpHeroCanvas {
-    width: 100%;
-    height: 310px;
-    border-radius: 12px;
-    background: #06090F;
-    border: 1.5px solid var(--border-teal);
-    display: block;
-    margin-bottom: 1rem;
-  }
-  .synth-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.85rem;
-    background: #0B0F17;
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid rgba(250, 247, 242, 0.12);
-  }
-  .ctrl-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-  .ctrl-group label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--offwhite);
-    display: flex;
-    justify-content: space-between;
-  }
-  .ctrl-group label span { color: var(--ochre-bright); font-weight: 700; }
-  .ctrl-group input[type="range"] {
-    width: 100%;
-    accent-color: var(--ochre-bright);
-    cursor: pointer;
-  }
-  .mode-btn-row {
-    grid-column: span 2;
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.2rem;
-  }
-  .mode-btn {
-    flex: 1;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 0.5rem;
-    border-radius: 6px;
-    background: #101725;
-    border: 1px solid rgba(250, 247, 242, 0.2);
-    color: var(--offwhite);
-    cursor: pointer;
-  }
-  .mode-btn.active {
-    background: var(--teal);
-    border-color: var(--teal-bright);
-  }
-
-  /* Section Headings */
-  .section-header {
-    margin: 3.8rem 0 2rem;
-  }
-  .section-header .eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.76rem;
-    font-weight: 700;
-    color: var(--ochre-bright);
-    letter-spacing: 0.2em;
-    margin-bottom: 0.45rem;
-  }
-  .section-header h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(1.9rem, 3.2vw, 2.75rem);
-    font-weight: 800;
-  }
-  .section-header p {
-    font-size: 1rem;
-    color: rgba(250, 247, 242, 0.8);
-    max-width: 780px;
-    margin-top: 0.35rem;
-  }
-
-  /* Meetup.com Integration & Monthly Gatherings Grid */
-  .meetup-hub-grid {
-    display: grid;
-    grid-template-columns: 420px 1fr;
-    gap: 2rem;
-    margin-bottom: 3.5rem;
-  }
-  .meetup-profile-card {
-    background: linear-gradient(155deg, #131D31, #0B0F17);
-    border: 2px solid var(--ochre-bright);
-    border-radius: 18px;
-    padding: 1.8rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .meetup-logo-lockup {
-    width: 100%;
-    max-width: 250px;
-    margin: 0.8rem auto 1.2rem;
-    display: block;
-    border-radius: 12px;
-    border: 1px solid var(--border-ochre);
-  }
-  .schedule-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-  .event-card {
-    background: var(--obsidian-card);
-    border: 1.5px solid rgba(250, 247, 242, 0.14);
-    border-top: 5px solid var(--ochre-bright);
-    border-radius: 14px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .event-card.teal { border-top-color: var(--teal-bright); }
-  .event-card.emerald { border-top-color: var(--emerald-bright); }
-  .event-date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--ochre-bright);
-    margin-bottom: 0.45rem;
-  }
-  .event-card h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-  .event-card p {
-    font-size: 0.9rem;
-    color: rgba(250, 247, 242, 0.82);
-    margin-bottom: 1rem;
-  }
-  .event-venue {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.74rem;
-    color: #7CC8F8;
-    margin-bottom: 1rem;
-  }
-  .event-actions {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-  }
-  .btn-sm {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 0.5rem 0.9rem;
-    border-radius: 6px;
-    text-decoration: none;
-    background: var(--ochre);
-    color: var(--obsidian);
-    border: none;
-    cursor: pointer;
-  }
-  .btn-sm.secondary {
-    background: #0B0F17;
-    color: var(--offwhite);
-    border: 1px solid rgba(250, 247, 242, 0.25);
-  }
-
-  /* Community Tracks & Academy Bridge */
-  .tracks-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    margin-bottom: 3.5rem;
-  }
-  .track-card {
-    background: var(--obsidian-card);
-    border: 1.5px solid var(--border-teal);
-    border-radius: 14px;
-    padding: 1.5rem;
-  }
-  .track-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--ochre-bright);
-    margin-bottom: 0.4rem;
-  }
-  .track-card h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.12rem;
-    margin-bottom: 0.5rem;
-  }
-  .track-card p {
-    font-size: 0.88rem;
-    color: rgba(250, 247, 242, 0.82);
-  }
-
-  /* Real Plymouth Photography & Cultural Anchors */
-  .venues-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    margin-bottom: 3.5rem;
-  }
-  .venue-card {
-    background: var(--obsidian-card);
-    border: 1.5px solid rgba(250, 247, 242, 0.16);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-  .venue-card img {
-    width: 100%;
-    height: 190px;
-    object-fit: cover;
-    display: block;
-  }
-  .venue-body {
-    padding: 1rem 1.15rem;
-    border-top: 3px solid var(--ochre);
-  }
-  .venue-body strong {
-    display: block;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-  .venue-body span {
-    font-size: 0.82rem;
-    color: rgba(250, 247, 242, 0.78);
-  }
-
-  /* Official Brand Board Showcase */
-  .brand-sheet-box {
-    background: var(--obsidian-card);
-    border: 2px solid var(--border-ochre);
-    border-radius: 18px;
-    padding: 1.8rem;
-    margin-bottom: 3.5rem;
-  }
-  .brand-sheet-box img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    display: block;
-    margin-top: 1rem;
-  }
-
-  .site-footer {
-    border-top: 1.5px solid var(--border-ochre);
-    padding: 2.5rem 0;
-    margin-top: 3rem;
-    font-size: 0.85rem;
-    color: rgba(250, 247, 242, 0.78);
-  }
-  .footer-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  @media (max-width: 1024px) {
-    .hero-grid, .meetup-hub-grid, .schedule-grid, .tracks-grid, .venues-grid {
-      grid-template-columns: minmax(0, 1fr);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Coding Plymouth (&lt;/cc.pl&gt;) · Monthly Community Meetup · Plymouth, UK</title>
+  <meta name="description" content="Creative Coding Plymouth (&lt;/cc.pl&gt;) is a monthly open community meetup in Plymouth, Devon for artists, developers, students, and beginners exploring creative code and digital art." />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col">
+  <style>
+    .ccp-wrap { max-width: 1180px; margin: 0 auto; padding: 48px 24px 80px; }
+    .ccp-hero { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 36px; align-items: center; margin-bottom: 56px; }
+    .ccp-kicker { display: inline-block; background: #15181f; border-left: 4px solid #F59E0B; color: #F59E0B; font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px; margin-bottom: 18px; }
+    .ccp-hero h1 { font-size: clamp(3rem, 6vw, 5.2rem); line-height: 0.95; margin-bottom: 18px; }
+    .ccp-lead { font-size: 1.05rem; line-height: 1.68; color: #e5e7eb; max-width: 620px; margin-bottom: 24px; }
+    .ccp-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+    .ccp-btn-primary { display: inline-flex; align-items: center; justify-content: center; background: #F59E0B; color: #08090c !important; font-family: 'Space Mono', monospace; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 15px 24px; text-decoration: none; border-radius: 2px; border: none; }
+    .ccp-btn-sec { display: inline-flex; align-items: center; justify-content: center; background: #222630; color: #ffffff !important; font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 15px 20px; text-decoration: none; border-radius: 2px; border: none; cursor: pointer; }
+    .ccp-btn-sec:hover { background: #F59E0B; color: #08090c !important; }
+    .ccp-logo-card { background: #15181f; padding: 36px 28px; text-align: center; border-radius: 2px; border-top: 4px solid #F59E0B; }
+    .ccp-logo-card img { width: 200px; height: 200px; object-fit: contain; margin: 0 auto 18px; display: block; }
+    .ccp-logo-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #ffffff; margin-bottom: 6px; }
+    .ccp-logo-sub { font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: #F59E0B; }
+    .ccp-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-bottom: 48px; }
+    .ccp-card { background: #15181f; padding: 26px 24px; border-radius: 2px; border-top: 3px solid #F59E0B; }
+    .ccp-card-num { font-family: 'Space Mono', monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; color: #F59E0B; text-transform: uppercase; margin-bottom: 10px; }
+    .ccp-card h3 { font-size: 1.25rem; margin-bottom: 10px; color: #ffffff; }
+    .ccp-card p { font-size: 0.92rem; line-height: 1.62; color: #cbd5e1; }
+    .ccp-banner { background: #15181f; padding: 34px 30px; border-left: 5px solid #F59E0B; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; }
+    .ccp-banner h2 { font-size: clamp(1.9rem, 3.5vw, 2.7rem); margin-bottom: 8px; }
+    .ccp-banner p { font-size: 0.96rem; color: #e5e7eb; max-width: 640px; }
+    footer { max-width: 1180px; margin: 0 auto; padding: 28px 24px 48px; border-top: 2px solid #1f242d; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #9ca3af; }
+    footer a { color: #F59E0B; text-decoration: none; }
+    @media (max-width: 900px) {
+      .ccp-hero { grid-template-columns: 1fr; gap: 24px; }
+      .ccp-grid-3 { grid-template-columns: 1fr; }
+      .ccp-wrap { padding: 28px 18px 56px; }
+      .ccp-logo-card img { width: 160px; height: 160px; }
     }
-  }
-  .hero-grid > *, .meetup-hub-grid > *, .schedule-grid > *, .tracks-grid > *, .venues-grid > *, .synth-controls > * {
-    min-width: 0;
-    max-width: 100%;
-  }
-  @media (max-width: 768px) {
-    .site-nav { padding: 0.75rem 1rem; }
-    .container { padding: 0 1rem; }
-    .hero { padding: 2.2rem 0 2rem; }
-    .hero h1 { font-size: 1.95rem; overflow-wrap: anywhere; }
-    .section-header h2 { font-size: 1.32rem; overflow-wrap: anywhere; }
-    .synth-card, .meetup-profile-card, .event-card, .track-card, .brand-sheet-box {
-      padding: 1.1rem;
-    }
-    .synth-controls {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .mode-btn-row {
-      grid-column: span 1;
-      flex-wrap: wrap;
-    }
-    .cta-group a, .cta-group button {
-      width: 100%;
-      text-align: center;
-    }
-    .footer-inner > div {
-      text-align: left !important;
-    }
-  }
-</style>
-<!-- MO360_UNIFIED_THEME_HEAD -->
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col">
-<!-- /MO360_UNIFIED_THEME_HEAD -->
+  </style>
 </head>
 <body>
-
-<!-- MO360_UNIFIED_NAV_START -->
-<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
-  <a href="../index.html" class="mo360-nav-brand">
-    <img src="../assets/brand_logos/ccpl_logo_official.png" alt="Creative Coding Plymouth Official Logo">
-    <span class="mo360-brand-stack">
-      <span class="mo360-brand-row">
-        <span class="mo360-brand-main">&lt;/cc.pl&gt;</span>
-        <span class="mo360-brand-badge">CREATIVE CODING</span>
+  <nav class="mo360-nav" aria-label="Creative Coding Plymouth Navigation">
+    <a href="../index.html" class="mo360-nav-brand">
+      <img src="../assets/brand_logos/ccpl_logo_official.png" alt="Creative Coding Plymouth Official Logo">
+      <span class="mo360-brand-stack">
+        <span class="mo360-brand-row">
+          <span class="mo360-brand-main">&lt;/cc.pl&gt;</span>
+          <span class="mo360-brand-badge">CREATIVE CODING</span>
+        </span>
+        <span class="mo360-brand-sub">Monthly Meetup · Plymouth UK</span>
       </span>
-      <span class="mo360-brand-sub">Immersive Studio · Plymouth UK</span>
-    </span>
-  </a>
-  <ul class="mo360-nav-links">
-    <li><a href="../index.html">Home</a></li>
-    <li><a href="../studio/">Studio</a></li>
-    <li><a href="../immersive-lab/">Immersive Lab</a></li>
-    <li><a href="../creative-coding-plymouth/" class="active">Creative Coding</a></li>
-    <li><a href="../tours/">Immersive Tours</a></li>
-    <li><a href="../surveys/">Surveys</a></li>
-    <li><a href="../lab/">Lab</a></li>
-    <li><a href="../index.html#contact" class="cta">Contact</a></li>
-  </ul>
-  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<div class="mo360-drawer" id="mo360Drawer">
-  <a href="../index.html">Mo360 Immersive Studio Home</a>
-  <a href="../studio/">Commercial Studio</a>
-  <a href="../immersive-lab/">Mo360 Immersive Lab (5 Courses)</a>
-  <a href="../creative-coding-plymouth/" class="active">Creative Coding Plymouth</a>
-  <a href="../tours/">Mo360 Immersive Tours</a>
-  <a href="../surveys/">Drone &amp; LiDAR Surveys</a>
-  <a href="../lab/">R&amp;D Fulldome Lab</a>
-  <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Contact Studio</a>
-</div>
-<!-- MO360_UNIFIED_NAV_END -->
+    </a>
+    <ul class="mo360-nav-links">
+      <li><a href="../index.html">Studio Home</a></li>
+      <li><a href="../immersive-lab/">Immersive Media Lab</a></li>
+      <li><a href="../creative-coding-plymouth/" class="active">Creative Coding</a></li>
+      <li><a href="../tours/">Immersive Tours</a></li>
+      <li><a href="https://www.meetup.com/creative-coding-plymouth/" target="_blank" rel="noopener" class="cta">Join Meetup</a></li>
+    </ul>
+    <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mo360-drawer" id="mo360Drawer">
+    <a href="../index.html">Mo360 Immersive Studio Home</a>
+    <a href="../immersive-lab/">Mo360 Immersive Media Lab</a>
+    <a href="../creative-coding-plymouth/" class="active">Creative Coding Plymouth</a>
+    <a href="../tours/">Mo360 Immersive Tours</a>
+    <a href="https://www.meetup.com/creative-coding-plymouth/" target="_blank" rel="noopener" style="background:#F59E0B;color:#08090c;">Join Next Meetup on Meetup.com</a>
+  </div>
 
-<main class="container">
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <div class="hero-grid">
+  <main class="ccp-wrap">
+    <section class="ccp-hero">
       <div>
-        <div class="eyebrow-badge">🇬🇧 PLYMOUTH, DEVON, UNITED KINGDOM · OPEN COMMUNITY COLLECTIVE</div>
+        <div class="ccp-kicker">Plymouth, Devon, United Kingdom · Once Every Month</div>
         <h1>CREATIVE CODING <span>PLYMOUTH</span></h1>
-        <p class="hero-lead">
-          The South West community hub for visual artists, creative technologists, musicians, live coders, researchers, and curious beginners in <strong>Plymouth, Devon, United Kingdom</strong>. Connecting independent artists, creative coders, and community spaces across <strong>Plymouth and Devon</strong>.
+        <p class="ccp-lead">
+          An open, welcoming monthly community meetup in Plymouth for visual artists, developers, musicians, students, and complete beginners who want to explore creative coding, generative art, interactive sound, and experimental digital tools together.
         </p>
-        <div class="benchmark-strip">
-          <span class="bench-chip">Inspired by: Creative Coding Amsterdam</span>
-          <span class="bench-chip">Creative Code Berlin</span>
-          <span class="bench-chip">Creative Coding Utrecht</span>
-          <span class="bench-chip">Processing Community Day</span>
-          <span class="bench-chip">Plymouth Creative Tech</span>
-        </div>
-        <div class="cta-group">
-          <a href="https://www.meetup.com/find/?keywords=creative+coding&location=gb--devon--plymouth" target="_blank" rel="noopener noreferrer" class="btn-meetup">
-            🤝 Join Us on Meetup.com
-          </a>
-          <a href="../immersive-lab/index.html" class="btn-outline">
-            ⚗ Explore 5 Free Academy Courses
-          </a>
-          <button type="button" class="btn-outline" onclick="downloadMeetupICS()">
-            📅 1·Click Calendar (.ICS)
-          </button>
+        <div class="ccp-cta-row">
+          <a class="ccp-btn-primary" href="https://www.meetup.com/creative-coding-plymouth/" target="_blank" rel="noopener">Join Next Meetup on Meetup.com</a>
+          <button class="ccp-btn-sec" type="button" onclick="downloadMonthlyICS()">Add Monthly Reminder (.ICS)</button>
         </div>
       </div>
 
-      <!-- Interactive Generative Node & Wave Canvas -->
-      <div class="synth-card">
-        <div class="synth-top-bar">
-          <span>INTERACTIVE HERO PATCH · SMEATON BEACON &amp; NODE WAVE</span>
-          <span id="fpsReadout">60 FPS · LIVE</span>
-        </div>
-        <canvas id="ccpHeroCanvas" width="580" height="310"></canvas>
-        <div class="synth-controls">
-          <div class="ctrl-group">
-            <label for="symSlider">Symmetry Fold <span id="symVal">12 Fold</span></label>
-            <input type="range" id="symSlider" min="4" max="16" step="2" value="12">
-          </div>
-          <div class="ctrl-group">
-            <label for="freqSlider">Audio Frequency <span id="freqVal">136.1 Hz</span></label>
-            <input type="range" id="freqSlider" min="68" max="528" step="1" value="136">
-          </div>
-          <div class="ctrl-group">
-            <label for="coupleSlider">Node Coupling <span id="coupleVal">78%</span></label>
-            <input type="range" id="coupleSlider" min="10" max="100" step="1" value="78">
-          </div>
-          <div class="ctrl-group">
-            <label for="waveSlider">Plymouth Sound Wave <span id="waveVal">64%</span></label>
-            <input type="range" id="waveSlider" min="10" max="100" step="1" value="64">
-          </div>
-          <div class="mode-btn-row">
-            <button type="button" class="mode-btn active" onclick="setProjMode('dome', this)">Projection: 180° Dome</button>
-            <button type="button" class="mode-btn" onclick="setProjMode('facade', this)">Projection: Facade</button>
-            <button type="button" class="mode-btn" onclick="setProjMode('pointcloud', this)">Projection: PointCloud</button>
-          </div>
-        </div>
+      <aside class="ccp-logo-card">
+        <img src="../assets/brand_logos/ccpl_logo_official.png" alt="Creative Coding Plymouth </cc.pl> Logo" />
+        <div class="ccp-logo-title">ALL AGES · ALL SKILLS</div>
+        <div class="ccp-logo-sub">1 Community Meeting Every Month</div>
+      </aside>
+    </section>
+
+    <section class="ccp-grid-3" aria-label="How the Monthly Meetup Works">
+      <div class="ccp-card">
+        <div class="ccp-card-num">01 · MONTHLY CADENCE</div>
+        <h3>One Meetup Every Month</h3>
+        <p>We gather once a month in Plymouth to share work in progress, talk through creative tools, and learn from each other in a relaxed, zero pressure setting. Exact dates and venues are posted on Meetup.com.</p>
       </div>
-    </div>
-  </section>
+      <div class="ccp-card">
+        <div class="ccp-card-num">02 · OPEN TO EVERYONE</div>
+        <h3>Artists, Coders &amp; Beginners</h3>
+        <p>Whether you write shaders, build installations in TouchDesigner or Unreal, experiment with p5.js and Processing, or have never written a single line of code, you are welcome to join, listen, or share.</p>
+      </div>
+      <div class="ccp-card">
+        <div class="ccp-card-num">03 · SHOW &amp; TELL</div>
+        <h3>Peer Exchange &amp; Collaboration</h3>
+        <p>Bring a laptop sketch, a work in progress, a question, or just curiosity. Every session leaves open time for short informal demos, feedback, and meeting fellow creative practitioners across Devon.</p>
+      </div>
+    </section>
 
-  <!-- DIRECT CONNECTION TO MEETUP.COM & MONTHLY GATHERINGS -->
-  <section class="section-header" id="meetup">
-    <div class="eyebrow">OFFICIAL MEETUP.COM INTEGRATION · OPEN CALL FOR SHOW &amp; TELL</div>
-    <h2>MONTHLY GATHERINGS ACROSS PLYMOUTH &amp; BRISTOL</h2>
-    <p>Every session is beginner friendly and open to all. Bring a laptop with TouchDesigner, Unreal Engine 5.8, vvvv gamma 4V, Blender, p5.js, or Strudel, or simply come to watch and meet fellow practitioners.</p>
-  </section>
-
-  <div class="meetup-hub-grid">
-    <div class="meetup-profile-card">
+    <section class="ccp-banner">
       <div>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:#24A186;font-weight:700;">● OFFICIAL COMMUNITY CHAPTER</span>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1.65rem;margin-top:0.3rem;">Creative Coding Plymouth on Meetup.com</h3>
-        <img src="assets/creative_coding_plymouth_logo.svg" alt="Creative Coding Plymouth Official SVG Emblem" class="meetup-logo-lockup">
-        <p style="font-size:0.9rem;color:rgba(250,247,242,0.84);margin-bottom:1rem;">
-          Founded &amp; curated by <strong>Mohamed Hossam Elwakil</strong> at <strong>Mo360 Immersive Studio</strong>. Connect via Meetup.com, download the monthly calendar invite, or message directly on WhatsApp or phone at <strong>+44 7568 668918</strong>.
-        </p>
+        <h2>JOIN OUR NEXT <span>MONTHLY MEETUP</span></h2>
+        <p>RSVP on our official Meetup.com page to see the next Plymouth session date, venue details, and open call for short Show &amp; Tell demos. Organised by Mohamed Hossam Elwakil (Mo360 Immersive Studio).</p>
       </div>
-      <div style="display:flex;flex-direction:column;gap:0.65rem;">
-        <a href="https://www.meetup.com/find/?keywords=creative+coding&location=gb--devon--plymouth" target="_blank" rel="noopener noreferrer" class="btn-meetup" style="text-align:center;">
-          ↗ Open Plymouth Creative Coding on Meetup.com
-        </a>
-        <a href="https://wa.me/447568668918?text=Hello%20Mohamed%2C%20I%20would%20love%20to%20join%20Creative%20Coding%20Plymouth" target="_blank" rel="noopener noreferrer" class="btn-outline" style="text-align:center;">
-          💬 RSVP &amp; Show &amp; Tell Pitch (+44 7568 668918)
-        </a>
+      <div class="ccp-cta-row" style="margin-bottom:0;">
+        <a class="ccp-btn-primary" href="https://www.meetup.com/creative-coding-plymouth/" target="_blank" rel="noopener">RSVP on Meetup.com</a>
+        <a class="ccp-btn-sec" href="https://wa.me/447568668918" target="_blank" rel="noopener">WhatsApp +44 7568 668918</a>
       </div>
-    </div>
+    </section>
+  </main>
 
-    <div class="schedule-grid">
-      <div class="event-card">
-        <div>
-          <div class="event-date">SESSION 01 · FIRST THURSDAY MONTHLY · 18:30 GMT</div>
-          <h3>Fulldome &amp; Projection Lab · Plymouth</h3>
-          <p>Test your 4096x4096 180° Equidistant Fisheye domemasters, TouchDesigner CubeMap rigs, and Unreal Engine 5.8 scenes inside the 15m Fulldome Studio.</p>
-          <div class="event-venue">📍 Plymouth City Centre &amp; Online · Mo360 Community</div>
-        </div>
-        <div class="event-actions">
-          <a href="https://www.meetup.com/find/?keywords=creative+coding&location=gb--devon--plymouth" target="_blank" rel="noopener noreferrer" class="btn-sm">RSVP on Meetup.com ↗</a>
-          <button type="button" class="btn-sm secondary" onclick="downloadMeetupICS('Plymouth Fulldome Lab · Devonport')">+ Add .ICS</button>
-        </div>
-      </div>
+  <footer>
+    <span>&lt;/cc.pl&gt; Creative Coding Plymouth · Monthly Community Meetup · Plymouth, Devon, UK</span>
+    <span>Curated by <a href="../index.html">Mo360 Immersive Studio</a> · +44 7568 668918</span>
+  </footer>
 
-      <div class="event-card teal">
-        <div>
-          <div class="event-date">SESSION 02 · SECOND TUESDAY MONTHLY · 18:00 GMT</div>
-          <h3>Real Ideas Creative Tech &amp; Node Clinic</h3>
-          <p>Hands on beginner clinic covering TouchDesigner TOP/CHOP/SOP operators, vvvv gamma 4V VL.Stride &amp; VL.Fuse patching, and peer troubleshooting.</p>
-          <div class="event-venue">📍 Plymouth Community Venue · TBC on Meetup</div>
-        </div>
-        <div class="event-actions">
-          <a href="https://www.meetup.com/find/?keywords=creative+coding&location=gb--devon--plymouth" target="_blank" rel="noopener noreferrer" class="btn-sm">RSVP on Meetup.com ↗</a>
-          <button type="button" class="btn-sm secondary" onclick="downloadMeetupICS('Real Ideas Creative Tech Night')">+ Add .ICS</button>
-        </div>
-      </div>
-
-      <div class="event-card emerald">
-        <div>
-          <div class="event-date">SESSION 03 · THIRD FRIDAY MONTHLY · 19:00 GMT</div>
-          <h3>KARST &amp; Barbican Live Coding &amp; Projection Jam</h3>
-          <p>Open projector night and audiovisual algorave combining KantanMapper, CamSchnappr, 3D LiDAR point clouds, and spatial sound baths.</p>
-          <div class="event-venue">📍 KARST Gallery, Millbay &amp; Barbican Waterfront, Plymouth</div>
-        </div>
-        <div class="event-actions">
-          <a href="https://www.meetup.com/find/?keywords=creative+coding&location=gb--devon--plymouth" target="_blank" rel="noopener noreferrer" class="btn-sm">RSVP on Meetup.com ↗</a>
-          <button type="button" class="btn-sm secondary" onclick="downloadMeetupICS('KARST Live Coding & Projection Jam')">+ Add .ICS</button>
-        </div>
-      </div>
-
-      <div class="event-card teal">
-        <div>
-          <div class="event-date">SESSION 04 · QUARTERLY SOUTH WEST EXCHANGE</div>
-          <h3>South West Creative Tech Exchange · Plymouth</h3>
-          <p>Regional creative technology exchange linking Plymouth practitioners with South West Creative Tech Network residents at Watershed in Bristol.</p>
-          <div class="event-venue">📍 Plymouth, Devon &amp; Online Stream</div>
-        </div>
-        <div class="event-actions">
-          <a href="https://www.meetup.com/find/?keywords=creative+coding&location=gb--devon--plymouth" target="_blank" rel="noopener noreferrer" class="btn-sm">RSVP on Meetup.com ↗</a>
-          <a href="../immersive-lab/index.html#course_04" class="btn-sm secondary">View Course 04 →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- COMMUNITY TRACKS & DIRECT LINK TO MO360 IMMERSIVE LAB -->
-  <section class="section-header">
-    <div class="eyebrow">FOUR PILLARS OF CREATIVE CODING PLYMOUTH</div>
-    <h2>COMMUNITY TRACKS &amp; ONLINE ACADEMY BRIDGE</h2>
-    <p>Every community track pairs directly with our free online courses, British English voice narrator walkthroughs, and .zip starter kits at Mo360 Immersive Lab.</p>
-  </section>
-
-  <div class="tracks-grid">
-    <div class="track-card">
-      <div class="track-num">01</div>
-      <h4>180° Fulldome Cinema</h4>
-      <p>Equidistant fisheye mastering, CubeMap rendering, and sacred geometry for 360° and 180° fulldome formats in Devonport.</p>
-      <div style="margin-top:1rem;"><a href="../immersive-lab/index.html#course_01" style="color:#D4882A;font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;">Launch Course 01 →</a></div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">02</div>
-      <h4>Projection Mapping &amp; LiDAR</h4>
-      <p>Polycam 3D heritage scanning, KantanMapper 2D masks, CamSchnappr 3D calibration, and Unreal 5.8 nDisplay.</p>
-      <div style="margin-top:1rem;"><a href="../immersive-lab/index.html#course_02" style="color:#D4882A;font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;">Launch Course 02 →</a></div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">03</div>
-      <h4>vvvv gamma 4V &amp; Shaders</h4>
-      <p>Visual live programming in .NET with VL.Stride PBR materials, VL.Fuse GPU signed distance fields, and RayTK.</p>
-      <div style="margin-top:1rem;"><a href="../immersive-lab/index.html#course_03" style="color:#D4882A;font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;">Launch Course 03 →</a></div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">04</div>
-      <h4>Sensors &amp; 36.4 Spatial Audio</h4>
-      <p>MediaPipe AI hand tracking, OSC telemetry, Unreal MetaSounds, and 4·7·8 neuro sensory sound bath design.</p>
-      <div style="margin-top:1rem;"><a href="../immersive-lab/index.html#course_05" style="color:#D4882A;font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;">Launch Courses 04 &amp; 05 →</a></div>
-    </div>
-  </div>
-
-  <!-- VERIFIED REAL PLYMOUTH CULTURAL ANCHORS -->
-  <section class="section-header">
-    <div class="eyebrow">100% VERIFIED UK GEOGRAPHY · REAL PUBLIC PHOTOGRAPHY</div>
-    <h2>PLYMOUTH CULTURAL ANCHORS &amp; ARCHITECTURE</h2>
-    <p>Rooted in Britain's Ocean City: Plymouth, Devon, United Kingdom.</p>
-  </section>
-
-  <div class="venues-grid">
-    <div class="venue-card">
-      <img src="../assets/02_smeatons_tower_plymouth_hoe_real.jpg" alt="Smeaton's Tower on Plymouth Hoe">
-      <div class="venue-body">
-        <strong>Smeaton's Tower · Plymouth Hoe</strong>
-        <span>Iconic lighthouse geometry inspiring the Creative Coding Plymouth emblem.</span>
-      </div>
-    </div>
-    <div class="venue-card">
-      <img src="../assets/01_the_box_plymouth_real.jpg" alt="The Box Museum and Gallery Plymouth">
-      <div class="venue-body">
-        <strong>The Box · Plymouth Museum</strong>
-        <span>Archive, media lab, and 3D naval figureheads preservation partner.</span>
-      </div>
-    </div>
-    <div class="venue-card">
-      <img src="../assets/08_royal_william_yard_plymouth_real.jpg" alt="Royal William Yard Plymouth Waterfront">
-      <div class="venue-body">
-        <strong>Royal William Yard · Stonehouse</strong>
-        <span>Historic limestone architecture for 3D LiDAR scanning &amp; projection mapping.</span>
-      </div>
-    </div>
-    <div class="venue-card">
-      <img src="../assets/09_plymouth_sound_mount_edgcumbe_real.jpg" alt="Plymouth Sound and Devonport Coastline">
-      <div class="venue-body">
-        <strong>Plymouth Sound &amp; Devonport</strong>
-        <span>Historic maritime and cultural quarter of Plymouth, Devon.</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- OFFICIAL BRAND BOARD SHEET -->
-  <div class="brand-sheet-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
-      <div>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#D4882A;">OFFICIAL BRAND IDENTITY SHEET · 2400x1350</span>
-        <h3 style="font-family:'Syne',sans-serif;font-size:1.5rem;">Creative Coding Plymouth · Logo System &amp; Community Poster</h3>
-      </div>
-      <div style="display:flex;gap:0.6rem;">
-        <a href="assets/creative_coding_plymouth_logo.svg" download class="btn-sm secondary">⬇ Download Logo (.SVG)</a>
-        <a href="assets/creative_coding_plymouth_brand_board.png" download class="btn-sm">⬇ Download Brand Board (.PNG)</a>
-      </div>
-    </div>
-    <img src="assets/creative_coding_plymouth_brand_board.png" alt="Creative Coding Plymouth Brand Identity Board">
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div>
-      <strong>Creative Coding Plymouth · Mo360 Immersive Studio</strong> · Plymouth, Devon, United Kingdom 🇬🇧<br>
-      Founded &amp; Curated by <strong>Mohamed Hossam Elwakil</strong> · Visual Artist, Creative Technologist, Curator, and Creative Director<br>
-      Past experience across The Box Museum, KARST Gallery, MIRROR Gallery, Ars Electronica, and the Egyptian Museum in Cairo.
-    </div>
-    <div style="text-align:right;font-family:'JetBrains Mono',monospace;">
-      <div>SOLE UK PHONE: <a href="tel:+447568668918" style="color:#D4882A;text-decoration:none;font-weight:700;">+44 7568 668918</a></div>
-      <div style="margin-top:0.3rem;">
-        <a href="../index.html" style="color:#FAF7F2;">Mo360 Studio</a> ·
-        <a href="../immersive-lab/index.html" style="color:#D4882A;">Mo360 Immersive Lab</a> ·
-        <a href="../figureheads/index.html" style="color:#FAF7F2;">3D Figureheads</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<script>
-  let currentProjMode = 'dome';
-  function setProjMode(mode, btn) {
-    currentProjMode = mode;
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  (function initInteractiveHero() {
-    const canvas = document.getElementById('ccpHeroCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const symSlider = document.getElementById('symSlider');
-    const freqSlider = document.getElementById('freqSlider');
-    const coupleSlider = document.getElementById('coupleSlider');
-    const waveSlider = document.getElementById('waveSlider');
-
-    let phase = 0;
-    function render() {
-      const sym = parseInt(symSlider.value, 10);
-      const freq = parseFloat(freqSlider.value);
-      const couple = parseInt(coupleSlider.value, 10) / 100;
-      const waveAmp = parseInt(waveSlider.value, 10) / 100;
-
-      document.getElementById('symVal').textContent = sym + ' Fold';
-      document.getElementById('freqVal').textContent = freq.toFixed(1) + ' Hz';
-      document.getElementById('coupleVal').textContent = Math.round(couple * 100) + '%';
-      document.getElementById('waveVal').textContent = Math.round(waveAmp * 100) + '%';
-
-      phase += 0.012 + (freq / 12000);
-      const w = canvas.width, h = canvas.height;
-      ctx.fillStyle = '#06090F';
-      ctx.fillRect(0, 0, w, h);
-
-      const cx = w * 0.5, cy = h * 0.48;
-      const radius = Math.min(w, h) * 0.41;
-
-      if (currentProjMode === 'dome') {
-        // 180° Fulldome Geodesic Ring & Sacred Chords
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = '#0E6BA8';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        const pts = [];
-        for (let i = 0; i < sym; i++) {
-          const ang = (i / sym) * Math.PI * 2 - phase;
-          const rMod = radius * (0.78 + 0.18 * Math.sin(phase * 2 + i));
-          pts.push({ x: cx + Math.cos(ang) * rMod, y: cy + Math.sin(ang) * rMod });
-        }
-        for (let i = 0; i < pts.length; i++) {
-          for (let j = i + 1; j < pts.length; j++) {
-            if (((j - i) % Math.max(2, Math.floor((1 - couple) * 5 + 1))) === 0) {
-              ctx.beginPath();
-              ctx.moveTo(pts[i].x, pts[i].y);
-              ctx.lineTo(pts[j].x, pts[j].y);
-              ctx.strokeStyle = (i + j) % 2 === 0 ? 'rgba(212, 136, 42, 0.55)' : 'rgba(27, 127, 105, 0.55)';
-              ctx.lineWidth = 1.3;
-              ctx.stroke();
-            }
-          }
-          ctx.beginPath();
-          ctx.arc(pts[i].x, pts[i].y, 4, 0, Math.PI * 2);
-          ctx.fillStyle = '#FAF7F2';
-          ctx.fill();
-        }
-      } else if (currentProjMode === 'facade') {
-        // Architectural Facade Projection Grid
-        const cols = sym;
-        const rows = 4;
-        const gw = w * 0.76, gh = h * 0.68;
-        const gx = (w - gw) / 2, gy = (h - gh) / 2;
-        for (let c = 0; c <= cols; c++) {
-          for (let r = 0; r <= rows; r++) {
-            const x = gx + (c / cols) * gw + Math.sin(phase + r) * 8 * couple;
-            const y = gy + (r / rows) * gh + Math.cos(phase + c) * 6 * waveAmp;
-            ctx.beginPath();
-            ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-            ctx.fillStyle = (c + r) % 2 === 0 ? '#D4882A' : '#0E6BA8';
-            ctx.fill();
-          }
-        }
-      } else {
-        // 3D LiDAR Point Cloud Wave
-        for (let i = 0; i < sym * 14; i++) {
-          const a = i * 0.37 + phase;
-          const r = (i / (sym * 14)) * radius * 1.25;
-          const x = cx + Math.cos(a) * r * 1.3;
-          const y = cy + Math.sin(a) * r * 0.8 + Math.sin(i * 0.2 + phase * 3) * 18 * waveAmp;
-          ctx.fillStyle = i % 3 === 0 ? '#D4882A' : (i % 3 === 1 ? '#24A186' : '#1589D6');
-          ctx.fillRect(x, y, 3, 3);
-        }
-      }
-
-      // Plymouth Sound Harmonic Wave Footer inside Canvas
-      ctx.beginPath();
-      for (let x = 20; x < w - 20; x += 6) {
-        const y = h - 28 + Math.sin(x * 0.03 + phase * 2.5) * (14 * waveAmp);
-        if (x === 20) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = '#24A186';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      requestAnimationFrame(render);
+  <script>
+    function downloadMonthlyICS() {
+      var ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Creative Coding Plymouth//Monthly Meetup//EN',
+        'BEGIN:VEVENT',
+        'SUMMARY:Creative Coding Plymouth (</cc.pl>) Monthly Community Meetup',
+        'DESCRIPTION:Monthly Creative Coding Plymouth meetup (once every month). Check https://www.meetup.com/creative-coding-plymouth/ for exact venue and time.',
+        'LOCATION:Plymouth, Devon, United Kingdom',
+        'URL:https://www.meetup.com/creative-coding-plymouth/',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+      var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'creative-coding-plymouth-monthly.ics';
+      a.click();
     }
-    render();
-  })();
-
-  function downloadMeetupICS(title) {
-    const evTitle = title || 'Creative Coding Plymouth · Monthly Gathering';
-    const icsLines = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:Mo360ImmersiveStudio//CreativeCodingPlymouth//EN',
-      'BEGIN:VEVENT',
-      'SUMMARY:' + evTitle,
-      'LOCATION:Plymouth, Devon, United Kingdom (Venue confirmed on Meetup)',
-      'DESCRIPTION:Creative Coding Plymouth monthly community session curated by Mohamed Hossam Elwakil (Mo360 Immersive Studio). Contact +44 7568 668918.',
-      'DTSTART:20261203T183000Z',
-      'DTEND:20261203T210000Z',
-      'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\r\n');
-    const blob = new Blob([icsLines], { type: 'text/calendar;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'creative_coding_plymouth_meetup.ics';
-    a.click();
-  }
-</script>
+  </script>
 </body>
 </html>
