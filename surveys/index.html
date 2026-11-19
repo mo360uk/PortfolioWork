@@ -755,39 +755,51 @@
             .promo-inner { flex-direction: column; text-align: center; }
         }
     </style>
+<!-- MO360_UNIFIED_THEME_HEAD -->
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col">
+<!-- /MO360_UNIFIED_THEME_HEAD -->
 </head>
 <body>
 
     <!-- MASTER NAVIGATION BRIDGE -->
-    <nav class="master-dock">
-        <a href="../index.html" class="dock-brand">
-            <img src="assets/mo360_mark.png" alt="Mo360 Immersive Studio" class="dock-logo">
-            <div>
-                <div class="dock-brand-name">Mo360immersive</div>
-                <div class="dock-brand-tag">Mo360 Immersive Studio</div>
-            </div>
-        </a>
-
-        <div class="dock-nav">
-            <a href="../studio/" class="dock-link" title="Commercial Brand &amp; Web3D">
-                <span>✦</span> Studio
-            </a>
-            <a href="./index.html" class="dock-link active" title="Drone &amp; LiDAR Trade Surveys">
-                <span>⌖</span> Surveys
-            </a>
-            <a href="../lab/" class="dock-link" title="Artistic R&amp;D &amp; Spatial Research">
-                <span>⚗</span> Lab
-            </a>
-            <a href="https://shop.mo360immersivestudio.co.uk" target="_blank" rel="noopener noreferrer" class="dock-link dock-store" title="Curated Store (Shopify)">
-                <span>↗</span> Store
-            </a>
-        </div>
-
-        <a href="#quote-dock" class="dock-cta-btn">
-            <i data-lucide="phone-call" style="width:14px;height:14px"></i>
-            <span>Book Survey</span>
-        </a>
-    </nav>
+    <!-- MO360_UNIFIED_NAV_START -->
+<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
+  <a href="../index.html" class="mo360-nav-brand">
+    <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Immersive Studio Logo">
+    <span class="mo360-brand-stack">
+      <span class="mo360-brand-row">
+        <span class="mo360-brand-main">MO360</span>
+        <span class="mo360-brand-badge">3D SURVEYS</span>
+      </span>
+      <span class="mo360-brand-sub">Immersive Studio · Plymouth UK</span>
+    </span>
+  </a>
+  <ul class="mo360-nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../studio/">Studio</a></li>
+    <li><a href="../immersive-lab/">Immersive Lab</a></li>
+    <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
+    <li><a href="../tours/">Immersive Tours</a></li>
+    <li><a href="../surveys/" class="active">Surveys</a></li>
+    <li><a href="../lab/">Lab</a></li>
+    <li><a href="../index.html#contact" class="cta">Contact</a></li>
+  </ul>
+  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mo360-drawer" id="mo360Drawer">
+  <a href="../index.html">Mo360 Immersive Studio Home</a>
+  <a href="../studio/">Commercial Studio</a>
+  <a href="../immersive-lab/">Mo360 Immersive Lab (5 Courses)</a>
+  <a href="../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../tours/">Mo360 Immersive Tours</a>
+  <a href="../surveys/" class="active">Drone &amp; LiDAR Surveys</a>
+  <a href="../lab/">R&amp;D Fulldome Lab</a>
+  <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Contact Studio</a>
+</div>
+<!-- MO360_UNIFIED_NAV_END -->
 
     <!-- HERO & 3D LIDAR POINT CLOUD CANVAS -->
     <section class="hero-stage">

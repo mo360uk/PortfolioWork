@@ -951,26 +951,50 @@
     .steps-list li { flex-direction: column; gap: 0.25rem; }
   }
 </style>
+<!-- MO360_UNIFIED_THEME_HEAD -->
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col">
+<!-- /MO360_UNIFIED_THEME_HEAD -->
 </head>
 <body>
 
-<nav class="site-nav" aria-label="Primary Navigation">
-  <a href="../index.html" class="brand-link">
-    <img src="assets/creative_coding_plymouth_logo.png" alt="Mo360 Immersive Lab Logo">
-    <div class="brand-text">
-      <strong>MO360 IMMERSIVE LAB</strong>
-      <span>CREATIVE CODING &amp; CREATIVE TECH ACADEMY · PLYMOUTH UK</span>
-    </div>
+<!-- MO360_UNIFIED_NAV_START -->
+<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
+  <a href="../index.html" class="mo360-nav-brand">
+    <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Immersive Studio Logo">
+    <span class="mo360-brand-stack">
+      <span class="mo360-brand-row">
+        <span class="mo360-brand-main">MO360</span>
+        <span class="mo360-brand-badge">IMMERSIVE LAB</span>
+      </span>
+      <span class="mo360-brand-sub">Immersive Studio · Plymouth UK</span>
+    </span>
   </a>
-  <div class="nav-pills">
-    <a href="../index.html" class="nav-pill">✦ Mo360 Studio</a>
-    <a href="index.html" class="nav-pill active">⚗ Immersive Lab (5 Courses)</a>
-    <a href="tawaf-domemaster-live.html" class="nav-pill emerald">◎ TAWAF Domemaster Synth</a>
-    <a href="../creative-coding-plymouth/index.html" class="nav-pill ccp">⚡ Creative Coding Plymouth</a>
-    <a href="../figureheads/index.html" class="nav-pill">⚓ 3D Figureheads</a>
-    <a href="../studio/index.html" class="nav-pill">🏢 3D Commercial</a>
-  </div>
+  <ul class="mo360-nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../studio/">Studio</a></li>
+    <li><a href="../immersive-lab/" class="active">Immersive Lab</a></li>
+    <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
+    <li><a href="../tours/">Immersive Tours</a></li>
+    <li><a href="../surveys/">Surveys</a></li>
+    <li><a href="../lab/">Lab</a></li>
+    <li><a href="../index.html#contact" class="cta">Contact</a></li>
+  </ul>
+  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mo360-drawer" id="mo360Drawer">
+  <a href="../index.html">Mo360 Immersive Studio Home</a>
+  <a href="../studio/">Commercial Studio</a>
+  <a href="../immersive-lab/" class="active">Mo360 Immersive Lab (5 Courses)</a>
+  <a href="../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../tours/">Mo360 Immersive Tours</a>
+  <a href="../surveys/">Drone &amp; LiDAR Surveys</a>
+  <a href="../lab/">R&amp;D Fulldome Lab</a>
+  <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Contact Studio</a>
+</div>
+<!-- MO360_UNIFIED_NAV_END -->
 
 <main class="container">
   <!-- HERO SECTION -->
@@ -990,7 +1014,7 @@
         </div>
         <div class="hero-cta-row">
           <a href="#course_01" class="btn-primary">▶ Explore All 5 Beginner Courses</a>
-          <a href="./tawaf-domemaster-live.html" class="btn-secondary" style="border-color:#24A186;background:rgba(27,127,105,0.25);">◎ Launch TAWAF Domemaster Live Synth</a>
+          <a href="./tawaf-domemaster-live.html" class="btn-secondary" style="border-color:#24A186;background:#222630;">◎ Launch TAWAF Domemaster Live Synth</a>
           <a href="#live-bridge" class="btn-secondary">⚡ Antigravity Live Bridge (TD · UE 5.8 · 4V)</a>
           <a href="../creative-coding-plymouth/index.html" class="btn-secondary">🤝 Creative Coding Plymouth Meetup</a>
         </div>

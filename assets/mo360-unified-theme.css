@@ -1,0 +1,266 @@
+/* ==========================================================================
+   MO360 IMMERSIVE STUDIO · UNIFIED BOLD SOLID 3-COLOUR ARCHITECTURAL THEME
+   Strict Palette: Black (#08090c) + Dark Grey (#15181f / #222630) + Ochre (#F59E0B) + White (#ffffff)
+   Fonts: Bebas Neue (Display) · DM Sans (Body) · Space Mono (Labels)
+   Zero Outline Frames · Zero Multi-Colour Buttons · Desktop / Tablet / Phone
+   ========================================================================== */
+
+:root {
+  --mo-black: #08090c;
+  --mo-nav: #0b0d11;
+  --mo-grey: #15181f;
+  --mo-grey-2: #222630;
+  --mo-grey-hover: #2b313e;
+  --mo-ochre: #F59E0B;
+  --mo-white: #ffffff;
+  --mo-text: #e5e7eb;
+  --mo-muted: #9ca3af;
+}
+
+html, body {
+  background: var(--mo-black) !important;
+  color: var(--mo-white) !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  overflow-x: hidden !important;
+  background-image: none !important;
+}
+
+body::before, body::after {
+  display: none !important;
+}
+
+/* UNIFIED COMPACT 72PX NAVBAR */
+.mo360-nav {
+  position: fixed !important;
+  top: 0; left: 0; right: 0;
+  height: 72px !important;
+  padding: 0 24px !important;
+  background: var(--mo-nav) !important;
+  border-bottom: 2px solid #1f242d !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  z-index: 9999 !important;
+  box-sizing: border-box !important;
+}
+.mo360-nav-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  text-decoration: none !important;
+  flex-shrink: 0 !important;
+}
+.mo360-nav-brand img {
+  width: 38px !important;
+  height: 38px !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+.mo360-brand-stack {
+  display: flex !important;
+  flex-direction: column !important;
+  line-height: 1.05 !important;
+}
+.mo360-brand-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+.mo360-brand-main {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.02rem !important;
+  letter-spacing: 0.12em !important;
+  color: #ffffff !important;
+}
+.mo360-brand-badge {
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.52rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  padding: 3px 7px !important;
+  background: var(--mo-ochre) !important;
+  color: var(--mo-black) !important;
+  border-radius: 2px !important;
+  text-transform: uppercase !important;
+}
+.mo360-brand-sub {
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.48rem !important;
+  letter-spacing: 0.16em !important;
+  color: var(--mo-muted) !important;
+  text-transform: uppercase !important;
+  margin-top: 3px !important;
+}
+
+.mo360-nav-links {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.mo360-nav-links a {
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  color: var(--mo-text) !important;
+  padding: 8px 12px !important;
+  border-radius: 2px !important;
+  border: none !important;
+  background: transparent !important;
+  transition: background 0.2s ease, color 0.2s ease !important;
+}
+.mo360-nav-links a:hover,
+.mo360-nav-links a.active {
+  background: var(--mo-grey-2) !important;
+  color: var(--mo-ochre) !important;
+}
+.mo360-nav-links a.cta {
+  background: var(--mo-ochre) !important;
+  color: var(--mo-black) !important;
+}
+
+.mo360-ham {
+  display: none !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  background: var(--mo-grey-2) !important;
+  border: none !important;
+  padding: 10px !important;
+  border-radius: 2px !important;
+  cursor: pointer !important;
+}
+.mo360-ham span {
+  display: block !important;
+  width: 22px !important;
+  height: 2px !important;
+  background: var(--mo-ochre) !important;
+}
+
+.mo360-drawer {
+  display: none !important;
+  position: fixed !important;
+  top: 72px !important;
+  left: 0; right: 0 !important;
+  background: var(--mo-nav) !important;
+  padding: 18px 24px 26px !important;
+  z-index: 9998 !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  border-bottom: 3px solid var(--mo-ochre) !important;
+}
+.mo360-drawer.open {
+  display: flex !important;
+}
+.mo360-drawer a {
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  background: var(--mo-grey) !important;
+  padding: 13px 16px !important;
+  border-radius: 2px !important;
+  border: none !important;
+}
+.mo360-drawer a.active,
+.mo360-drawer a:hover {
+  background: var(--mo-ochre) !important;
+  color: var(--mo-black) !important;
+}
+
+@media (max-width: 980px) {
+  .mo360-nav { padding: 0 16px !important; }
+  .mo360-nav-links { display: none !important; }
+  .mo360-ham { display: flex !important; }
+}
+
+/* Reserve top space for fixed 72px navbar */
+body {
+  padding-top: 72px !important;
+}
+
+/* TYPOGRAPHY ALIGNMENT WITH MAIN PAGE */
+h1, .hero-title, .section-title {
+  font-family: 'Bebas Neue', sans-serif !important;
+  letter-spacing: 0.03em !important;
+  color: #ffffff !important;
+  line-height: 0.98 !important;
+}
+h1 span, h2 span {
+  color: var(--mo-ochre) !important;
+}
+h2 {
+  font-family: 'Bebas Neue', sans-serif !important;
+  letter-spacing: 0.04em !important;
+  color: #ffffff !important;
+}
+h3, h4 {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+p, li {
+  color: var(--mo-text) !important;
+}
+
+/* BOLD SOLID CARDS & PANELS (ZERO OUTLINE FRAMES) */
+.card, .course-card, .board-card, .module-card, .hero-card, .panel, .box, .stat-card,
+.feature-card, .workshop-card, .meetup-card, .event-card, .resource-card, .audio-card,
+.jump-card, .bridge-card, .spec-card, .tier-card, .package-card, .survey-card, .dossier-card,
+article, .glass-card, .bento-card {
+  background: var(--mo-grey) !important;
+  border: none !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+
+/* STRICT SOLID 3-COLOUR BUTTONS & PILLS (ZERO GREEN/BLUE/PURPLE/RED OUTLINES) */
+.btn, .btn-primary, .cta-btn, .button, .pill, .tag, .badge, .chip, .jump-link,
+.course-pill, .action-btn, .download-btn, a.btn, button.btn {
+  border: none !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  font-family: 'Space Mono', monospace !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+.btn-primary, .cta-primary, .btn-ochre, .btn-gold, .btn-amber {
+  background: var(--mo-ochre) !important;
+  color: var(--mo-black) !important;
+}
+.btn-secondary, .btn-outline, .btn-teal, .btn-emerald, .btn-blue, .btn-cyan,
+.btn-ghost, .download-btn, .jump-link, .pill, .tag, .badge, .chip {
+  background: var(--mo-grey-2) !important;
+  color: #ffffff !important;
+}
+.btn-secondary:hover, .btn-outline:hover, .btn-teal:hover, .btn-emerald:hover,
+.btn-blue:hover, .btn-cyan:hover, .download-btn:hover, .jump-link:hover {
+  background: var(--mo-ochre) !important;
+  color: var(--mo-black) !important;
+}
+
+/* Clean eye-catching left Ochre accent on callout/banner pills instead of outline */
+.eyebrow, .hero-pill, .hero-badge, .status-pill {
+  background: var(--mo-grey) !important;
+  color: var(--mo-ochre) !important;
+  border: none !important;
+  border-left: 3px solid var(--mo-ochre) !important;
+  border-radius: 2px !important;
+  font-family: 'Space Mono', monospace !important;
+}
+
+/* Responsive images & media safety */
+img, video, canvas, iframe {
+  max-width: 100% !important;
+}
