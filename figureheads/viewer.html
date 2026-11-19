@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Figurehead Viewer · Plymouth Chronicles</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg: #06080b;
+      --panel: rgba(12, 16, 23, 0.92);
+      --ochre: #F59E0B;
+      --white: #ffffff;
+      --muted: #cbd5e1;
+      --border: rgba(245, 158, 11, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; background: radial-gradient(circle at 55% 42%, #141c28 0%, #06080b 70%); color: var(--white); font-family: 'DM Sans', sans-serif; overflow: hidden; }
+
+    .stage-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes floatAir {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .air-float {
+      width: 100%;
+      height: 100%;
+      animation: floatAir 5.2s ease-in-out infinite;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      --poster-color: transparent;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 22px;
+      background: linear-gradient(180deg, rgba(6,8,11,0.92) 0%, rgba(6,8,11,0) 100%);
+      pointer-events: none;
+    }
+    .topbar > * { pointer-events: auto; }
+
+    .brand-title { display: flex; flex-direction: column; gap: 3px; }
+    .eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ochre);
+    }
+    .ship-heading {
+      font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--white);
+    }
+
+    .controls-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 9px 14px;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: #0d131c;
+      color: var(--white);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn:hover { border-color: var(--ochre); color: var(--ochre); }
+    .btn.primary { background: var(--ochre); color: #06080b; border-color: var(--ochre); }
+    .btn.primary:hover { filter: brightness(1.08); color: #06080b; }
+
+    .info-card {
+      position: fixed;
+      left: 22px;
+      bottom: 72px;
+      z-index: 20;
+      width: min(380px, calc(100vw - 44px));
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--ochre);
+      border-radius: 2px;
+      padding: 16px 18px;
+      backdrop-filter: blur(12px);
+    }
+    .info-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.12em;
+      color: var(--ochre);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .info-desc {
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .info-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .switcher-bar {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: rgba(6, 8, 11, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      overflow-x: auto;
+    }
+    .pill {
+      flex-shrink: 0;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 11px;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: #0d131c;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .pill:hover { border-color: var(--ochre); color: var(--ochre); }
+    .pill.active { background: var(--ochre); color: #06080b; border-color: var(--ochre); }
+
+    @media (max-width: 720px) {
+      .info-card { display: none; }
+      .topbar { padding: 10px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-title">
+      <div class="eyebrow" id="eyebrowText">THE BOX PLYMOUTH · 3D FIGUREHEAD ARCHIVE</div>
+      <h1 class="ship-heading" id="shipHeading">Loading Figurehead...</h1>
+    </div>
+    <div class="controls-top">
+      <button class="btn primary" id="toggleBowBtn" type="button">Mount on 3D Ship Bow</button>
+      <button class="btn" id="toggleSpinBtn" type="button">Pause Spin</button>
+      <a class="btn" href="story.html">3D Story</a>
+    </div>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="air-float">
+      <model-viewer
+        id="viewer"
+        alt="3D Ship Figurehead"
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="22deg"
+        camera-controls
+        shadow-intensity="0.85"
+        shadow-softness="0.9"
+        exposure="1.2"
+        environment-image="neutral"
+        tone-mapping="aces"
+        interaction-prompt="none"
+        camera-orbit="0deg 78deg auto"
+      ></model-viewer>
+    </div>
+  </main>
+
+  <aside class="info-card" id="infoCard">
+    <div class="info-meta" id="infoMeta">ACCESSION · MATERIAL</div>
+    <p class="info-desc" id="infoDesc"></p>
+    <div class="info-actions">
+      <button class="btn" id="speakBtn" type="button">Play Curator Voice</button>
+      <button class="btn" id="resetCamBtn" type="button">Reset Angle</button>
+    </div>
+  </aside>
+
+  <nav class="switcher-bar" id="switcherBar" aria-label="14 Figureheads Selector"></nav>
+
+  <script src="data.js"></script>
+  <script>
+    (function () {
+      var list = window.COLLECTION || [];
+      var params = new URLSearchParams(window.location.search);
+      var reqSlug = (params.get('ship') || 'aurora').toLowerCase();
+      var item = list.find(function (x) { return x.id === reqSlug; }) || list[0];
+      if (!item) return;
+
+      var viewer = document.getElementById('viewer');
+      var heading = document.getElementById('shipHeading');
+      var eyebrow = document.getElementById('eyebrowText');
+      var infoMeta = document.getElementById('infoMeta');
+      var infoDesc = document.getElementById('infoDesc');
+      var toggleBowBtn = document.getElementById('toggleBowBtn');
+      var toggleSpinBtn = document.getElementById('toggleSpinBtn');
+      var speakBtn = document.getElementById('speakBtn');
+      var resetCamBtn = document.getElementById('resetCamBtn');
+      var switcherBar = document.getElementById('switcherBar');
+
+      var bowMode = false;
+      var spinning = true;
+
+      document.title = item.ship + ' (3D Figurehead) · Mo360 Studio';
+      eyebrow.textContent = 'THE BOX, PLYMOUTH · ' + (item.accession || '') + ' · LAUNCHED ' + (item.launched || '');
+      heading.textContent = item.ship;
+      infoMeta.textContent = (item.date || '') + ' · ' + (item.material || '');
+      infoDesc.textContent = item.shipStory || item.blurb || '';
+
+      function loadModel() {
+        var src = bowMode ? ('ships3d/' + item.id + '.glb?v=solid166') : (item.glb + '?v=solid166');
+        viewer.setAttribute('src', src);
+        viewer.setAttribute('alt', item.ship + (bowMode ? ' 3D Ship Bow' : ' 3D Figurehead'));
+        toggleBowBtn.textContent = bowMode ? 'View Floating Figurehead' : 'Mount on 3D Ship Bow';
+      }
+
+      loadModel();
+
+      toggleBowBtn.addEventListener('click', function () {
+        bowMode = !bowMode;
+        loadModel();
+      });
+
+      toggleSpinBtn.addEventListener('click', function () {
+        spinning = !spinning;
+        if (spinning) {
+          viewer.setAttribute('auto-rotate', '');
+          toggleSpinBtn.textContent = 'Pause Spin';
+        } else {
+          viewer.removeAttribute('auto-rotate');
+          toggleSpinBtn.textContent = 'Resume Spin';
+        }
+      });
+
+      resetCamBtn.addEventListener('click', function () {
+        viewer.cameraOrbit = '0deg 78deg auto';
+        viewer.fieldOfView = 'auto';
+      });
+
+      speakBtn.addEventListener('click', function () {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(item.narration || item.shipStory || item.blurb || item.ship);
+        u.rate = 0.96;
+        window.speechSynthesis.speak(u);
+      });
+
+      list.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = 'viewer.html?ship=' + encodeURIComponent(entry.id);
+        a.className = 'pill' + (entry.id === item.id ? ' active' : '');
+        a.textContent = entry.short || entry.ship;
+        switcherBar.appendChild(a);
+      });
+    })();
+  </script>
+</body>
+</html>
