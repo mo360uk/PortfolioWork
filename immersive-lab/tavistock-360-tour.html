@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tavistock Abbey Bridge · 360° Virtual Tour (Google Flow + Neural Depth) | Mo360 Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg: #07131d;
+      --panel: rgba(8, 22, 34, 0.88);
+      --gold: #e6c88b;
+      --cyan: #4ca8b8;
+      --text: #f3f0e8;
+      --muted: #a6bcc9;
+      --border: rgba(76, 168, 184, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    #stage360 { position: fixed; inset: 0; width: 100vw; height: 100vh; cursor: grab; }
+    #stage360.dragging { cursor: grabbing; }
+
+    .top-bar {
+      position: fixed; top: 14px; left: 14px; right: 14px; z-index: 20;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 12px 16px; border-radius: 16px; background: var(--panel); border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .brand h1 { font-size: 1rem; font-weight: 800; color: var(--text); }
+    .brand p { font-size: 0.76rem; color: var(--muted); }
+    .top-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+    .btn {
+      padding: 8px 14px; border-radius: 99px; border: 1px solid var(--border);
+      background: rgba(14, 34, 52, 0.85); color: var(--text); font-family: inherit;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; text-decoration: none;
+      transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:hover { border-color: var(--gold); color: var(--gold); }
+    .btn.active { background: linear-gradient(135deg, #4ca8b8, #58b07a); color: #04121a; border-color: transparent; }
+    .btn.gold { background: linear-gradient(135deg, #D49345, #C87D28); color: #0a0a0a; border-color: transparent; }
+
+    .bottom-dock {
+      position: fixed; bottom: 14px; left: 14px; right: 14px; z-index: 20;
+      padding: 12px 16px; border-radius: 18px; background: var(--panel); border: 1px solid var(--border);
+      backdrop-filter: blur(12px); display: flex; flex-direction: column; gap: 10px;
+    }
+    .dock-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .node-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .node-btn {
+      padding: 7px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(8, 18, 28, 0.85); color: var(--muted); font-family: inherit;
+      font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+    }
+    .node-btn.active { background: var(--cyan); color: #04121a; border-color: transparent; }
+    .hint { font-size: 0.78rem; color: var(--gold); font-weight: 600; }
+
+    @media (max-width: 720px) {
+      .brand p { display: none; }
+      .btn, .node-btn { font-size: 0.72rem; padding: 6px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="stage360" title="Drag to look 360° around Abbey Bridge & River Tavy"></div>
+
+  <header class="top-bar">
+    <div class="brand">
+      <h1>Tavistock Abbey Bridge · 360° Interactive Virtual Tour</h1>
+      <p>Converted from Google Flow Drone Flight + Depth-Anything-V2 3D Parallax · Mo360 Immersive Studio</p>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn active" id="narratorBtn">🔊 Play Narrator Audio</button>
+      <button type="button" class="btn" id="autoWalkBtn">🚁 Auto-Fly 4 Stops</button>
+      <a href="tavistock-heritage-vr.html" class="btn gold">🎬 Full 8-Photo VR Suite</a>
+    </div>
+  </header>
+
+  <footer class="bottom-dock">
+    <div class="dock-row">
+      <span class="hint" id="waypointCaption">Stop 1 / 4 · River Tavy Weir &amp; Abbey House — Drag anywhere to look 360°, click glowing floor arrows to walk forward</span>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn" id="prevStopBtn">← Step Back</button>
+        <button type="button" class="btn gold" id="nextStopBtn">Walk Forward →</button>
+      </div>
+    </div>
+    <div class="node-pills" id="nodePills">
+      <button type="button" class="node-btn active" data-idx="0">1. River Tavy Weir</button>
+      <button type="button" class="node-btn" data-idx="1">2. Approaching Abbey Bridge</button>
+      <button type="button" class="node-btn" data-idx="2">3. Entering Stone Arch</button>
+      <button type="button" class="node-btn" data-idx="3">4. Beneath Bridge Vault</button>
+    </div>
+  </footer>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { VRButton } from 'three/addons/webxr/VRButton.js';
+
+    const NODES = [
+      {
+        id: 'wp1_weir',
+        title: 'Stop 1 / 4 · River Tavy Weir & Abbey House',
+        pano: 'assets/tavistock_360_tour/wp1_weir_360.jpg',
+        depth: 'assets/tavistock_360_tour/wp1_weir_360_depth.jpg'
+      },
+      {
+        id: 'wp2_approach',
+        title: 'Stop 2 / 4 · Approaching Abbey Bridge',
+        pano: 'assets/tavistock_360_tour/wp2_approach_360.jpg',
+        depth: 'assets/tavistock_360_tour/wp2_approach_360_depth.jpg'
+      },
+      {
+        id: 'wp3_arch_entry',
+        title: 'Stop 3 / 4 · Entering the Stone Arch',
+        pano: 'assets/tavistock_360_tour/wp3_arch_entry_360.jpg',
+        depth: 'assets/tavistock_360_tour/wp3_arch_entry_360_depth.jpg'
+      },
+      {
+        id: 'wp4_under_arch',
+        title: 'Stop 4 / 4 · Beneath Abbey Bridge Vault',
+        pano: 'assets/tavistock_360_tour/wp4_under_arch_360.jpg',
+        depth: 'assets/tavistock_360_tour/wp4_under_arch_360_depth.jpg'
+      }
+    ];
+
+    const stage = document.getElementById('stage360');
+    const captionEl = document.getElementById('waypointCaption');
+    const nodeBtns = Array.from(document.querySelectorAll('.node-btn'));
+    const narratorBtn = document.getElementById('narratorBtn');
+    const autoWalkBtn = document.getElementById('autoWalkBtn');
+    const prevStopBtn = document.getElementById('prevStopBtn');
+    const nextStopBtn = document.getElementById('nextStopBtn');
+
+    // Google Flow Narrator Audio
+    const narratorAudio = new Audio('assets/tavistock_360_tour/abbey_flow_narrator.mp3');
+    narratorAudio.loop = true;
+    let audioPlaying = false;
+
+    function toggleAudio(forcePlay = false) {
+      if (forcePlay || !audioPlaying) {
+        narratorAudio.play().then(() => {
+          audioPlaying = true;
+          narratorBtn.classList.add('active');
+          narratorBtn.textContent = '🔊 Narrator Playing (Tap to Mute)';
+        }).catch(() => {});
+      } else {
+        narratorAudio.pause();
+        audioPlaying = false;
+        narratorBtn.classList.remove('active');
+        narratorBtn.textContent = '🔇 Narrator Muted (Tap to Play)';
+      }
+    }
+    narratorBtn.addEventListener('click', () => toggleAudio(false));
+    window.addEventListener('pointerdown', () => { if (!audioPlaying) toggleAudio(true); }, { once: true });
+
+    // Three.js 360° Equirectangular Sphere + WebXR
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 0.01);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.xr.enabled = true;
+    stage.appendChild(renderer.domElement);
+
+    const vrBtn = VRButton.createButton(renderer);
+    vrBtn.style.bottom = '112px';
+    document.body.appendChild(vrBtn);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.rotateSpeed = -0.45; // Natural 360° inside-sphere drag direction
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
+    // 360° Equirectangular Dome with subtle Depth-Anything-V2 3D parallax & smooth crossfade
+    const sphereGeo = new THREE.SphereGeometry(24, 96, 64);
+    sphereGeo.scale(-1, 1, 1);
+
+    const sphereMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTexA: { value: null },
+        uTexB: { value: null },
+        uDepthB: { value: null },
+        uFade: { value: 1.0 },
+        uTime: { value: 0.0 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D uTexA;
+        uniform sampler2D uTexB;
+        uniform sampler2D uDepthB;
+        uniform float uFade;
+        uniform float uTime;
+        varying vec2 vUv;
+
+        void main() {
+          // Subtle living water & parallax breathing on the 360° sphere
+          float d = texture2D(uDepthB, vUv).r;
+          vec2 uv = vUv;
+          if (uv.y < 0.44 && uv.y > 0.16) {
+            uv.x += sin(uv.y * 90.0 - uTime * 2.5) * 0.0008;
+          }
+          vec4 colA = texture2D(uTexA, uv);
+          vec4 colB = texture2D(uTexB, uv);
+          vec4 col = mix(colA, colB, clamp(uFade, 0.0, 1.0));
+          gl_FragColor = vec4(col.rgb, 1.0);
+        }
+      `
+    });
+    const panoSphere = new THREE.Mesh(sphereGeo, sphereMat);
+    // Orient front of 360° panorama toward initial camera look direction (-Z)
+    panoSphere.rotation.y = Math.PI * 0.5;
+    scene.add(panoSphere);
+
+    // 3D Floor Navigation Hotspots (Matterport-style glowing rings on the river path)
+    const hotspotGroup = new THREE.Group();
+    scene.add(hotspotGroup);
+
+    function makeHotspot(x, y, z, label, onClick) {
+      const g = new THREE.Group();
+      g.position.set(x, y, z);
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(0.28, 0.38, 32),
+        new THREE.MeshBasicMaterial({ color: 0xe6c88b, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
+      );
+      ring.rotation.x = -Math.PI / 2;
+      const disc = new THREE.Mesh(
+        new THREE.CircleGeometry(0.24, 32),
+        new THREE.MeshBasicMaterial({ color: 0x4ca8b8, side: THREE.DoubleSide, transparent: true, opacity: 0.72 })
+      );
+      disc.rotation.x = -Math.PI / 2;
+      disc.userData.onClick = onClick;
+      g.add(ring, disc);
+      hotspotGroup.add(g);
+      return disc;
+    }
+
+    const clickTargets = [];
+    clickTargets.push(makeHotspot(0, -1.65, -4.5, 'Walk Forward', () => goToStop((currentIdx + 1) % NODES.length)));
+    clickTargets.push(makeHotspot(0, -1.65, 4.5, 'Step Back', () => goToStop((currentIdx - 1 + NODES.length) % NODES.length)));
+
+    const texLoader = new THREE.TextureLoader();
+    const cache = {};
+    let currentIdx = 0;
+    let fadeStart = 0;
+    let isFading = false;
+
+    function loadTex(url, linear = false) {
+      return new Promise((res) => {
+        texLoader.load(url, (t) => {
+          t.colorSpace = linear ? THREE.NoColorSpace : THREE.SRGBColorSpace;
+          t.wrapS = THREE.RepeatWrapping;
+          res(t);
+        });
+      });
+    }
+
+    async function goToStop(idx) {
+      currentIdx = idx;
+      const node = NODES[idx];
+      nodeBtns.forEach((b, i) => b.classList.toggle('active', i === idx));
+      captionEl.textContent = `${node.title} — Drag anywhere to look 360°, click glowing floor ring to move`;
+
+      if (!cache[node.id]) {
+        const [p, d] = await Promise.all([loadTex(node.pano, false), loadTex(node.depth, true)]);
+        cache[node.id] = { p, d };
+      }
+
+      if (!sphereMat.uniforms.uTexB.value) {
+        sphereMat.uniforms.uTexA.value = cache[node.id].p;
+        sphereMat.uniforms.uTexB.value = cache[node.id].p;
+        sphereMat.uniforms.uDepthB.value = cache[node.id].d;
+        sphereMat.uniforms.uFade.value = 1.0;
+      } else {
+        sphereMat.uniforms.uTexA.value = sphereMat.uniforms.uTexB.value;
+        sphereMat.uniforms.uTexB.value = cache[node.id].p;
+        sphereMat.uniforms.uDepthB.value = cache[node.id].d;
+        sphereMat.uniforms.uFade.value = 0.0;
+        fadeStart = performance.now();
+        isFading = true;
+      }
+    }
+
+    nodeBtns.forEach((b) => b.addEventListener('click', () => goToStop(parseInt(b.dataset.idx, 10))));
+    prevStopBtn.addEventListener('click', () => goToStop((currentIdx - 1 + NODES.length) % NODES.length));
+    nextStopBtn.addEventListener('click', () => goToStop((currentIdx + 1) % NODES.length));
+
+    let autoFlyTimer = null;
+    autoWalkBtn.addEventListener('click', () => {
+      if (autoFlyTimer) {
+        clearInterval(autoFlyTimer);
+        autoFlyTimer = null;
+        autoWalkBtn.classList.remove('active');
+        autoWalkBtn.textContent = '🚁 Auto-Fly 4 Stops';
+      } else {
+        autoWalkBtn.classList.add('active');
+        autoWalkBtn.textContent = '⏸ Pause Auto-Fly';
+        autoFlyTimer = setInterval(() => goToStop((currentIdx + 1) % NODES.length), 3600);
+      }
+    });
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let downPos = { x: 0, y: 0 };
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      downPos = { x: e.clientX, y: e.clientY };
+      stage.classList.add('dragging');
+    });
+    renderer.domElement.addEventListener('pointerup', (e) => {
+      stage.classList.remove('dragging');
+      const dist = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+      if (dist < 6) {
+        pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObjects(clickTargets, false);
+        if (hits.length > 0 && hits[0].object.userData.onClick) {
+          hits[0].object.userData.onClick();
+        }
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const clock = new THREE.Clock();
+    renderer.setAnimationLoop(() => {
+      const dt = clock.getDelta();
+      sphereMat.uniforms.uTime.value += dt;
+      if (isFading) {
+        const p = Math.min((performance.now() - fadeStart) / 700.0, 1.0);
+        sphereMat.uniforms.uFade.value = p;
+        if (p >= 1.0) isFading = false;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    });
+
+    goToStop(0);
+  </script>
+</body>
+</html>
