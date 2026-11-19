@@ -1,0 +1,1010 @@
+{
+  "academy": {
+    "title": "Mo360 Immersive Lab · Creative Coding & Creative Technology Academy",
+    "studio": "Mo360 Immersive Studio",
+    "founder": "Mohamed Hossam Elwakil",
+    "location": "Plymouth, Devon, United Kingdom",
+    "phone": "+44 7568 668918",
+    "regional_partners": [
+      "Real Ideas (Market Hall 15m Fulldome Cinema & Devonport Guildhall)",
+      "Pervasive Media Studio (Watershed, Bristol)",
+      "KARST Gallery (Plymouth)",
+      "The Box Museum & Archive (Plymouth)"
+    ],
+    "narrator_voice": "Microsoft Hazel Desktop - English (Great Britain)",
+    "welcome_audio_wav": "assets/audio/narrator_00_academy_welcome.wav",
+    "welcome_audio_mp3": "assets/audio/narrator_00_academy_welcome.mp3",
+    "welcome_transcript": "Welcome to Mo360 Immersive Lab, the Creative Coding and Creative Technology Academy at Mo360 Immersive Studio in Plymouth, Devon, United Kingdom. Whether you are opening TouchDesigner, Unreal Engine 5.8, or vvvv gamma for the very first time, our five structured courses guide you step by step from your first visual node to real exhibition work. Every programme is purpose built for the South West creative technology ecosystem, from the fifteen metre Market Hall Fulldome Cinema at Real Ideas in Devonport, to architectural projection mapping across Plymouth heritage landmarks, to interactive sensor performances inspired by Pervasive Media Studio in Bristol. Press play on any course walkthrough below, explore the interactive node network, and download the ready to run starter project kit to begin building today."
+  },
+  "courses": [
+    {
+      "id": "course_01",
+      "number": "01",
+      "slug": "fulldome-360-180-fisheye-cinema",
+      "title": "Fulldome 360° & 180° Fisheye Cinema in TouchDesigner & Unreal Engine 5.8",
+      "subtitle": "From zero node knowledge to 4096x4096 Equidistant Domemasters & live Spout streaming",
+      "tailored_for": "Market Hall 15m Fulldome Cinema (Real Ideas, Devonport, Plymouth)",
+      "difficulty": "Beginner to Pro",
+      "duration_weeks": 6,
+      "accent_color": "#0E6BA8",
+      "core_stack": [
+        "TouchDesigner (Render TOP CubeMap, Projection TOP 180° Fisheye)",
+        "Unreal Engine 5.8 (BP_DomeMasterRig, RTC_DomeMaster_Cube, M_DomeMaster_Equidistant)",
+        "Spout2 Zero Copy GPU Bridge",
+        "OSC Control Protocol (Port 7000 / 9000)"
+      ],
+      "starter_kit_zip": "assets/starter_kits/course_01_fulldome_180_rig.zip",
+      "audio_wav": "assets/audio/narrator_01_fulldome_cinema.wav",
+      "audio_mp3": "assets/audio/narrator_01_fulldome_cinema.mp3",
+      "node_graph": {
+        "nodes": [
+          {
+            "id": "n1",
+            "engine": "TouchDesigner",
+            "family": "COMP",
+            "label": "geo1 + cam1",
+            "role": "3D Dome Geometry & Zenith Camera"
+          },
+          {
+            "id": "n2",
+            "engine": "TouchDesigner",
+            "family": "TOP",
+            "label": "render1 (CubeMap)",
+            "role": "6 Face Spherical Scene Render"
+          },
+          {
+            "id": "n3",
+            "engine": "TouchDesigner",
+            "family": "TOP",
+            "label": "projection1 (180°)",
+            "role": "CubeMap to Equidistant Fisheye 4096x4096"
+          },
+          {
+            "id": "n4",
+            "engine": "Unreal Engine 5.8",
+            "family": "Blueprint",
+            "label": "BP_DomeMasterRig",
+            "role": "Real Time 3D World & Niagara FX"
+          },
+          {
+            "id": "n5",
+            "engine": "Bridge",
+            "family": "Spout2 / OSC",
+            "label": "spoutin1 / oscout1",
+            "role": "Live 4K GPU Frame & Parameter Sync"
+          },
+          {
+            "id": "n6",
+            "engine": "Output",
+            "family": "TOP",
+            "label": "moviefileout1",
+            "role": "4096x4096 30 fps Market Hall Master"
+          }
+        ],
+        "edges": [
+          [
+            "n1",
+            "n2"
+          ],
+          [
+            "n2",
+            "n3"
+          ],
+          [
+            "n4",
+            "n5"
+          ],
+          [
+            "n5",
+            "n3"
+          ],
+          [
+            "n3",
+            "n6"
+          ]
+        ]
+      },
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "Navigating TouchDesigner & Your First 3D Scene",
+          "duration": "Week 1 · 90 mins",
+          "learning_outcome": "Understand TOP, CHOP, SOP, MAT, and COMP operator families and build a rotating 3D geometric vault.",
+          "operators_to_place": [
+            "Sphere SOP (Radius 7.5, Rows 32, Columns 64)",
+            "Geometry COMP (geo1)",
+            "Camera COMP (cam1 at 0, 0, 0 looking +Y/+Z)",
+            "Light COMP (light1)"
+          ],
+          "step_by_step_instructions": [
+            "Open TouchDesigner, select all default nodes with Ctrl A, and press Delete for a clean canvas.",
+            "Press Tab, switch to the SOP tab, place a Sphere SOP, and set Radius to 7.5 to match the 15 metre Market Hall dome.",
+            "Right click the right output connector of the Sphere SOP and attach a Geometry COMP named geo1.",
+            "Press Tab, open COMP, and place a Camera COMP and Light COMP beside geo1."
+          ],
+          "checkpoint": "You see a cleanly lit 3D wireframe sphere geometry inside your Geometry COMP viewer."
+        },
+        {
+          "module_number": 2,
+          "title": "CubeMap Rendering Inside the Render TOP",
+          "duration": "Week 2 · 90 mins",
+          "learning_outcome": "Capture a complete 360 degree environment inside TouchDesigner using a six face CubeMap Render TOP.",
+          "operators_to_place": [
+            "Render TOP (Resolution 2048 x 2048)",
+            "Parameter: Render Mode -> Cube Map"
+          ],
+          "step_by_step_instructions": [
+            "Press Tab, open the TOP family, and place a Render TOP.",
+            "In the Render TOP Common page, set Resolution to 2048 by 2048.",
+            "On the Render page, change Render Mode from Normal to Cube Map so TouchDesigner renders all six faces around your zenith camera.",
+            "Confirm Camera points to cam1 and Geometry points to geo1."
+          ],
+          "checkpoint": "The Render TOP viewer displays a six panel cross layout representing your full 360 degree dome interior."
+        },
+        {
+          "module_number": 3,
+          "title": "Projection TOP: CubeMap to 180° Equidistant Fisheye",
+          "duration": "Week 3 · 105 mins",
+          "learning_outcome": "Convert the six face CubeMap into a true 4096x4096 180 degree Equidistant Domemaster circle.",
+          "operators_to_place": [
+            "Projection TOP (Input: Cube Map, Output: Equidistant Fisheye)",
+            "Circle TOP (Soft circular horizon mask)"
+          ],
+          "step_by_step_instructions": [
+            "Wire the output of render1 into a new Projection TOP.",
+            "Set Input Projection to Cube Map and Output Projection to Fish Eye (Equidistant) with a 180 degree field of view.",
+            "In the Common tab of projection1, set Output Resolution to Custom 4096 by 4096 and Pixel Format to 16 bit float RGBA.",
+            "Multiply with a crisp Circle TOP set to radius 0.5 to guarantee pure black outside the active dome circle."
+          ],
+          "checkpoint": "A sharp 4096x4096 circular 180 degree Domemaster image fills your viewer with zero seam artifacts."
+        },
+        {
+          "module_number": 4,
+          "title": "Unreal Engine 5.8 BP_DomeMasterRig Integration",
+          "duration": "Week 4 · 120 mins",
+          "learning_outcome": "Inspect and drive Unreal Engine 5.8's BP_DomeMasterRig and M_DomeMaster_Equidistant inside a real time scene.",
+          "operators_to_place": [
+            "UE 5.8: BP_DomeMasterRig Blueprint",
+            "UE 5.8: RTC_DomeMaster_Cube & RT_DomeMaster_4K",
+            "UE 5.8: M_DomeMaster_Equidistant Material"
+          ],
+          "step_by_step_instructions": [
+            "Open the starter Unreal Engine 5.8 level and locate BP_DomeMasterRig in the Content Browser.",
+            "Inspect how SceneCaptureCube writes into RTC_DomeMaster_Cube at 2048 resolution.",
+            "Open M_DomeMaster_Equidistant to trace how equirectangular and cubemap vectors map onto the 180 degree Domemaster render target RT_DomeMaster_4K.",
+            "Run the included ue58_course01_domemaster_link.py script from Unreal's Python Console to verify live rig coordinates."
+          ],
+          "checkpoint": "Unreal Engine 5.8 renders a live 4K Domemaster preview inside WBP_DomeMasterHUD."
+        },
+        {
+          "module_number": 5,
+          "title": "Live Spout2 Video & OSC Control Bridge",
+          "duration": "Week 5 · 105 mins",
+          "learning_outcome": "Stream real time 4K frames from Unreal Engine 5.8 into TouchDesigner via Spout2 while controlling rotation over OSC.",
+          "operators_to_place": [
+            "Spout In TOP (Sender: UE5_DomeMaster)",
+            "LFO CHOP (0.5 to 1.2 RPM counter clockwise rotation)",
+            "OSC Out CHOP (Address 127.0.0.1, Port 7000)"
+          ],
+          "step_by_step_instructions": [
+            "In TouchDesigner, place a Spout In TOP and select the live Unreal Engine 5.8 sender.",
+            "Create an LFO CHOP set to Ramp mode with slow 0.015 Hz frequency to drive gentle counter clockwise Tawaf dome rotation.",
+            "Wire the LFO CHOP through a Rename CHOP (/dome/yaw) into an OSC Out CHOP targeting port 7000.",
+            "Blend Unreal Engine volumetric Niagara layers with TouchDesigner sacred overlays using a Composite TOP."
+          ],
+          "checkpoint": "Moving sliders in TouchDesigner smoothly rotates Unreal Engine 5.8 dome visuals with sub frame latency."
+        },
+        {
+          "module_number": 6,
+          "title": "Market Hall 15m Dome Mastering & 4096x4096 Export",
+          "duration": "Week 6 · 90 mins",
+          "learning_outcome": "Package and export an exhibition ready 4096x4096 30 fps Domemaster video calibrated for Market Hall Devonport.",
+          "operators_to_place": [
+            "Movie File Out TOP (HAP Q / H.265 / PNG Sequence)",
+            "Audio File In CHOP (48 kHz Stereo Master)"
+          ],
+          "step_by_step_instructions": [
+            "Verify dome horizon tilt alignment (15 to 21 degree venue tilt compensation inside Transform TOP or Camera COMP).",
+            "Place a Movie File Out TOP, set Type to Movie, Codec to HAP Q or H.265, and connect your 48 kHz stereo audio CHOP.",
+            "Toggle Record On for a deterministic 30 second timeline export using non realtime frame lock.",
+            "Preview the final Domemaster circle inside the Market Hall dome simulator template."
+          ],
+          "checkpoint": "A clean 4096x4096 30 fps Domemaster file ready for playback at Market Hall 15m Fulldome Cinema."
+        }
+      ],
+      "narrator_transcript": "Course One: Fulldome 360 and 180 Degree Fisheye Cinema in TouchDesigner and Unreal Engine 5.8, tailored specifically for the fifteen metre Market Hall Fulldome Cinema at Real Ideas in Devonport, Plymouth. In Module One, we start from a completely blank TouchDesigner canvas. You will learn the core operator families, placing a seven point five metre Sphere SOP, a Geometry COMP, and a zenith Camera COMP pointing straight upward. In Module Two, we place a Render TOP, set its resolution to 2048 by 2048, and switch Render Mode to Cube Map so TouchDesigner captures every direction around the dome simultaneously. In Module Three, you wire that CubeMap into a Projection TOP configured for 180 degree Equidistant Fisheye output at 4096 by 4096 pixels, producing a razor sharp Domemaster circle framed cleanly with a black horizon mask. In Module Four, we open Unreal Engine 5.8 and inspect BP_DomeMasterRig, tracing how RTC_DomeMaster_Cube feeds M_DomeMaster_Equidistant and RT_DomeMaster_4K in real time. In Module Five, you connect both engines together using a Spout In TOP for zero copy GPU video streaming and an OSC Out CHOP on port 7000 to drive gentle counter clockwise rotation. Finally, in Module Six, you configure a Movie File Out TOP with deterministic frame locking and 48 kilohertz stereo audio to export an exhibition ready 4096 by 4096 Domemaster master for Market Hall."
+    },
+    {
+      "id": "course_02",
+      "number": "02",
+      "slug": "architectural-projection-mapping-lidar-scanning",
+      "title": "Architectural Projection Mapping, 3D Scanning & LiDAR Workflows",
+      "subtitle": "From handheld LiDAR heritage scans to KantanMapper, CamSchnappr & Unreal 5.8 nDisplay",
+      "tailored_for": "Real Ideas Heritage Buildings (Devonport Guildhall / Market Hall) & Live Site Specific Installations",
+      "difficulty": "Beginner to Pro",
+      "duration_weeks": 6,
+      "accent_color": "#C87D28",
+      "core_stack": [
+        "Polycam / iPhone LiDAR / RealityCapture (.ply & .fbx meshes)",
+        "TouchDesigner (Point File In TOP, KantanMapper, CamSchnappr)",
+        "Unreal Engine 5.8 (nDisplay & Mesh Projection)",
+        "Multi Projector Edge Blending"
+      ],
+      "starter_kit_zip": "assets/starter_kits/course_02_projection_mapping_scanner.zip",
+      "audio_wav": "assets/audio/narrator_02_projection_mapping_scanning.wav",
+      "audio_mp3": "assets/audio/narrator_02_projection_mapping_scanning.mp3",
+      "node_graph": {
+        "nodes": [
+          {
+            "id": "n1",
+            "engine": "Capture",
+            "family": "LiDAR / Photo",
+            "label": "Heritage Scan (.ply)",
+            "role": "Polycam & RealityCapture Facade Capture"
+          },
+          {
+            "id": "n2",
+            "engine": "TouchDesigner",
+            "family": "TOP",
+            "label": "pointfilein1",
+            "role": "GPU Point Cloud Decimation & Normal Map"
+          },
+          {
+            "id": "n3",
+            "engine": "TouchDesigner",
+            "family": "COMP",
+            "label": "kantanMapper",
+            "role": "2D Planar & Bezier Architectural Masks"
+          },
+          {
+            "id": "n4",
+            "engine": "TouchDesigner",
+            "family": "COMP",
+            "label": "camSchnappr",
+            "role": "3D Virtual to Physical Projector Alignment"
+          },
+          {
+            "id": "n5",
+            "engine": "Unreal Engine 5.8",
+            "family": "nDisplay",
+            "label": "nDisplay Cluster",
+            "role": "Multi Projector Mesh UV & Warping"
+          },
+          {
+            "id": "n6",
+            "engine": "Output",
+            "family": "COMP",
+            "label": "window1 (Borderless)",
+            "role": "Live 1920x1080 / 4K Projector Output"
+          }
+        ],
+        "edges": [
+          [
+            "n1",
+            "n2"
+          ],
+          [
+            "n2",
+            "n4"
+          ],
+          [
+            "n3",
+            "n6"
+          ],
+          [
+            "n4",
+            "n6"
+          ],
+          [
+            "n5",
+            "n4"
+          ]
+        ]
+      },
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "3D LiDAR & Photogrammetry Capture for Heritage Spaces",
+          "duration": "Week 1 · 90 mins",
+          "learning_outcome": "Capture clean architectural geometry and point clouds of historic rooms or stone facades using LiDAR and RealityCapture.",
+          "operators_to_place": [
+            "Polycam / Handheld LiDAR Exporter (.ply / .xyz)",
+            "RealityCapture Mesh Decimation (Under 150k tris)"
+          ],
+          "step_by_step_instructions": [
+            "Walk the target facade or interior archways in overlapping passes under even, diffused daylight or soft architectural wash lighting.",
+            "Export both a dense colour point cloud in PLY format and a clean low polygon OBJ or FBX collision mesh.",
+            "Align the model floor plane to Y=0 and orient the primary facade toward +Z so TouchDesigner and Unreal share identical coordinates.",
+            "Place the exported heritage scan inside your starter kit assets folder."
+          ],
+          "checkpoint": "A watertight low poly facade FBX and aligned PLY point cloud ready for real time rendering."
+        },
+        {
+          "module_number": 2,
+          "title": "Point Cloud Rendering with Point File In TOP",
+          "duration": "Week 2 · 90 mins",
+          "learning_outcome": "Load millions of LiDAR points directly onto the GPU in TouchDesigner without slowing down the CPU.",
+          "operators_to_place": [
+            "Point File In TOP (Load .ply / .xyz)",
+            "Point Transform TOP & Point File Select TOP",
+            "Geometry COMP (Instancing from Point TOP)"
+          ],
+          "step_by_step_instructions": [
+            "Press Tab, open TOP, and place a Point File In TOP pointing to your scanned PLY file.",
+            "Place a Point File Select TOP to extract separate XYZ positions and RGB colour textures.",
+            "Feed the XYZ texture into a Geometry COMP Instancing tab with a tiny Box SOP or Sprite.",
+            "Animate a Noise TOP displacement wave across the point positions so the stone building breathes."
+          ],
+          "checkpoint": "Millions of scanned architectural LiDAR points shimmer and animate at 60 frames per second."
+        },
+        {
+          "module_number": 3,
+          "title": "2D Architectural Masking with KantanMapper",
+          "duration": "Week 3 · 105 mins",
+          "learning_outcome": "Quickly mask windows, cornices, columns, and doorways for live events using TouchDesigner's KantanMapper.",
+          "operators_to_place": [
+            "Palette -> Mapping -> kantanMapper COMP",
+            "Quad & Freeform Bezier Shapes",
+            "Ramp TOP / Edge TOP Content Inputs"
+          ],
+          "step_by_step_instructions": [
+            "Open the TouchDesigner Palette, browse to Mapping, and drag kantanMapper onto your network.",
+            "Click Open Kantan Window and assign a secondary projector display output.",
+            "Draw Freeform Bezier shapes around archways and Quad layers across stone columns.",
+            "Bind generative TOP textures to each masked shape ID to illuminate architectural relief without spilling light into windows."
+          ],
+          "checkpoint": "Crisp, razor aligned architectural masks isolate each column and window arch on site."
+        },
+        {
+          "module_number": 4,
+          "title": "3D Calibration with CamSchnappr",
+          "duration": "Week 4 · 120 mins",
+          "learning_outcome": "Solve exact physical projector lens position and perspective from six virtual to real reference points using CamSchnappr.",
+          "operators_to_place": [
+            "Palette -> Mapping -> camSchnappr COMP",
+            "File In SOP (Decimated Heritage FBX/OBJ)",
+            "Phong MAT / Wireframe MAT"
+          ],
+          "step_by_step_instructions": [
+            "Load your clean 3D heritage mesh into a File In SOP and pass it into camSchnappr's Geo input.",
+            "Open the CamSchnappr UI and click six non coplanar architectural corners on the virtual 3D model.",
+            "Use the projector cursor output to place those exact six crosshairs onto the matching physical stone corners.",
+            "Let CamSchnappr compute the intrinsic focal length and extrinsic projector matrix automatically."
+          ],
+          "checkpoint": "Your virtual wireframe projection locks onto the physical 3D sculpture or building facade."
+        },
+        {
+          "module_number": 5,
+          "title": "Unreal Engine 5.8 nDisplay & Mesh Projection",
+          "duration": "Week 5 · 120 mins",
+          "learning_outcome": "Configure Unreal Engine 5.8 nDisplay projection screens and dynamically relight scanned heritage geometry.",
+          "operators_to_place": [
+            "UE 5.8: nDisplay Config Asset",
+            "UE 5.8: ICVFX / Projection Mesh Stage",
+            "TouchDesigner Spout / NDI Feed"
+          ],
+          "step_by_step_instructions": [
+            "Import the decimated heritage FBX into Unreal Engine 5.8 and assign Lumen dynamic spotlighting.",
+            "Configure an nDisplay Projection Policy pointing at your calibrated physical projector frustum or TouchDesigner CamSchnappr camera.",
+            "Run ue58_course02_projection_mesh.py to spawn dynamic virtual sun sweep and architectural gold edge highlights.",
+            "Route the warped output to your physical projector or multi projector blend zone."
+          ],
+          "checkpoint": "Photorealistic Unreal Engine 5.8 shadows sweep convincingly across real physical architecture."
+        },
+        {
+          "module_number": 6,
+          "title": "Multi Projector Edge Blending & Show Reliability",
+          "duration": "Week 6 · 90 mins",
+          "learning_outcome": "Soft blend two overlapping projectors seamlessly and lock a resilient borderless Window COMP for live exhibitions.",
+          "operators_to_place": [
+            "Edge Blend TOP / KantanUV",
+            "Window COMP (Borderless Fullscreen, Perform Mode)"
+          ],
+          "step_by_step_instructions": [
+            "Measure the 15 percent overlap strip between Projector A and Projector B.",
+            "Apply gamma corrected cosine soft edge feathering across both projector feeds.",
+            "Set up a Perform Mode Window COMP spanning the combined extended desktop resolution.",
+            "Save a one click boot project file verified for unattended gallery or heritage festival operation."
+          ],
+          "checkpoint": "Two projectors merge into one seamless canvas with invisible overlap seams."
+        }
+      ],
+      "narrator_transcript": "Course Two: Architectural Projection Mapping, 3D Scanning, and LiDAR Workflows, designed for Real Ideas heritage buildings such as Devonport Guildhall and live site specific installations across Plymouth. In Module One, you learn how to capture accurate architectural geometry using mobile LiDAR, Polycam, and RealityCapture, producing both dense point clouds and clean decimated meshes. In Module Two, we import that point cloud directly onto the GPU using TouchDesigner's Point File In TOP, instancing millions of heritage points at sixty frames per second. In Module Three, you master rapid 2D masking with KantanMapper, isolating columns, cornices, and arched windows with bezier precision. In Module Four, we step into true 3D calibration with CamSchnappr, matching six virtual mesh corners to physical architectural landmarks so TouchDesigner solves your projector's exact lens position in space. In Module Five, you connect your scanned mesh to Unreal Engine 5.8 nDisplay for dynamic Lumen relighting. And in Module Six, you build seamless multi projector edge blending and lock a borderless Perform Mode window for live exhibition reliability."
+    },
+    {
+      "id": "course_03",
+      "number": "03",
+      "slug": "generative-sacred-geometry-vvvv-gamma",
+      "title": "Generative 3D Sacred Geometry, Realtime Shaders & vvvv gamma (4V) Patching",
+      "subtitle": "8/10/12 fold GPU instancing & RayTK in TouchDesigner plus VL.Stride, VL.Fuse & .exe export in vvvv",
+      "tailored_for": "Contemporary Digital Artists, Generative Visualists & Live Coders",
+      "difficulty": "Beginner to Pro",
+      "duration_weeks": 6,
+      "accent_color": "#D4AF37",
+      "core_stack": [
+        "TouchDesigner (SOP to CHOP GPU Instancing, RayTK SDFs)",
+        "vvvv gamma 6.5 (4V / VL Visual Programming in .NET)",
+        "VL.Stride PBR 3D Rendering & VL.Fuse GPU Particles / SDFs",
+        "Standalone Royalty Free .exe Application Export"
+      ],
+      "starter_kit_zip": "assets/starter_kits/course_03_generative_sacred_geometry_4v.zip",
+      "audio_wav": "assets/audio/narrator_03_generative_3d_vvvv.wav",
+      "audio_mp3": "assets/audio/narrator_03_generative_3d_vvvv.mp3",
+      "node_graph": {
+        "nodes": [
+          {
+            "id": "n1",
+            "engine": "TouchDesigner",
+            "family": "SOP / CHOP",
+            "label": "circle1 -> sopto1",
+            "role": "8/10/12 Fold Parametric Coordinate Arrays"
+          },
+          {
+            "id": "n2",
+            "engine": "TouchDesigner",
+            "family": "COMP / RayTK",
+            "label": "geo1 (Instancing) + raytk",
+            "role": "GPU Sacred Rosette & SDF Raymarching"
+          },
+          {
+            "id": "n3",
+            "engine": "vvvv gamma (4V)",
+            "family": "VL Spreads",
+            "label": "LinearSpread + ForEach",
+            "role": "Strongly Typed .NET Parametric Patching"
+          },
+          {
+            "id": "n4",
+            "engine": "vvvv gamma (4V)",
+            "family": "VL.Fuse",
+            "label": "SDF + Compute Particles",
+            "role": "Real Time GPU Signed Distance Fields"
+          },
+          {
+            "id": "n5",
+            "engine": "vvvv gamma (4V)",
+            "family": "VL.Stride",
+            "label": "PBRMaterial + SceneWindow",
+            "role": "Gold & Ceramic Metallic Shading"
+          },
+          {
+            "id": "n6",
+            "engine": "Output",
+            "family": ".NET Build",
+            "label": "Standalone .exe",
+            "role": "Royalty Free Kiosk & Gallery Executable"
+          }
+        ],
+        "edges": [
+          [
+            "n1",
+            "n2"
+          ],
+          [
+            "n3",
+            "n4"
+          ],
+          [
+            "n4",
+            "n5"
+          ],
+          [
+            "n5",
+            "n6"
+          ]
+        ]
+      },
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "Parametric Sacred Geometry & GPU Instancing in TouchDesigner",
+          "duration": "Week 1 · 90 mins",
+          "learning_outcome": "Transform simple Circle and Polygon SOP coordinates into intricate 8, 10, and 12 fold instanced mandalas.",
+          "operators_to_place": [
+            "Circle SOP (Divisions 8 / 10 / 12)",
+            "SOP to CHOP (tx, ty, tz channels)",
+            "Geometry COMP (Instancing On)",
+            "PBR MAT (Gold Metallic 0.9, Roughness 0.2)"
+          ],
+          "step_by_step_instructions": [
+            "Place a Circle SOP and set Divisions to 12 to establish a twelve fold Girih rosette ring.",
+            "Convert point coordinates to numeric channels using a SOP to CHOP.",
+            "Enable Instancing on a Geometry COMP containing a bevelled Box or Torus SOP, mapping tx, ty, tz and rotation rz.",
+            "Apply a PBR MAT with satin gold albedo and an Environment Light COMP for realistic architectural sheen."
+          ],
+          "checkpoint": "An interlocking twelve fold 3D sacred rosette rotates smoothly at 60 frames per second."
+        },
+        {
+          "module_number": 2,
+          "title": "Node Based Raymarching & SDFs with RayTK",
+          "duration": "Week 2 · 105 mins",
+          "learning_outcome": "Construct smooth organic sacred geometries using Signed Distance Fields in TouchDesigner's RayTK without raw GLSL boilerplate.",
+          "operators_to_place": [
+            "RayTK: raymarchRender3d",
+            "RayTK: torusSdf, boxFrameSdf, simpleUnion",
+            "RayTK: moduloPolar (8 / 12 Fold Symmetry)"
+          ],
+          "step_by_step_instructions": [
+            "Drop in the RayTK starter palette and place a raymarchRender3d COMP.",
+            "Create a boxFrameSdf and pass it through a moduloPolar operator set to 8 or 12 repetitions.",
+            "Blend a pulsing central sphereSdf using smoothUnion for liquid metallic transitions.",
+            "Animate the polar twist parameter with a slow LFO CHOP."
+          ],
+          "checkpoint": "A raymarched infinite sacred lattice morphs seamlessly in real time."
+        },
+        {
+          "module_number": 3,
+          "title": "Welcome to vvvv gamma (4V): Live .NET Patching & Spreads",
+          "duration": "Week 3 · 105 mins",
+          "learning_outcome": "Understand vvvv gamma's live compiling VL canvas, Spreads, and ForEach regions.",
+          "operators_to_place": [
+            "VL: CircleSpread / LinearSpread",
+            "VL: ForEach Region (Spread Processing)",
+            "VL.Skia: Renderer & Fill"
+          ],
+          "step_by_step_instructions": [
+            "Open vvvv gamma and inspect the pre generated vvvv_course03_fuse_sdf_geometry.vl patch.",
+            "Double click the canvas to place a CircleSpread node with Count set to 24.",
+            "Wrap a transformation node inside a ForEach region so every spread slice renders independently.",
+            "Notice how changes compile instantaneously with zero pause or restart."
+          ],
+          "checkpoint": "Your first strongly typed VL Spread generates an animated 2D sacred lattice in VL.Skia."
+        },
+        {
+          "module_number": 4,
+          "title": "VL.Stride: Physically Based 3D Rendering in vvvv",
+          "duration": "Week 4 · 120 mins",
+          "learning_outcome": "Render metallic gold and glazed turquoise ceramic 3D geometries in vvvv's Stride 3D engine.",
+          "operators_to_place": [
+            "VL.Stride: SceneWindow & RootScene",
+            "VL.Stride: PBRMaterial & DirectionalLight",
+            "VL.Stride: PostFX Bloom & Ambient Occlusion"
+          ],
+          "step_by_step_instructions": [
+            "Reference the VL.Stride package via the Document Menu Dependencies.",
+            "Build a RootScene containing a SkyboxLight, DirectionalLight, and instanced MeshEntity.",
+            "Create two PBRMaterial nodes: Deep Glazed Turquoise (#0E6BA8) and Brushed 24k Gold (#D4AF37).",
+            "Connect a SceneWindow and tune PostFX subtle bloom for warm architectural depth."
+          ],
+          "checkpoint": "Photorealistic PBR 3D geometry renders inside vvvv gamma's Stride viewport."
+        },
+        {
+          "module_number": 5,
+          "title": "VL.Fuse: GPU SDFs, Curl Noise & Million Particle Flows",
+          "duration": "Week 5 · 120 mins",
+          "learning_outcome": "Patch high speed GPU compute shaders visually using VL.Fuse SDFs and particle systems.",
+          "operators_to_place": [
+            "VL.Fuse: FuseContext & ComputeSystem",
+            "VL.Fuse: TorusSDF / OctahedronSDF + CurlNoise3D",
+            "VL.Fuse: EmitParticles & SpriteRenderer"
+          ],
+          "step_by_step_instructions": [
+            "Add the VL.Fuse NuGet dependency and place a Fuse ComputeSystem.",
+            "Construct a procedural 3D Signed Distance Field using Fuse domain repetition and rotational symmetry.",
+            "Emit 250,000 GPU particles attracted along the SDF surface using a CurlNoise3D force field.",
+            "Shade particles with a colour ramp transitioning from Studio Ochre to Fulldome Teal."
+          ],
+          "checkpoint": "250,000 GPU particles swirl effortlessly along sacred geometric attractors."
+        },
+        {
+          "module_number": 6,
+          "title": "Records, Classes & Exporting a Standalone Windows .exe",
+          "duration": "Week 6 · 90 mins",
+          "learning_outcome": "Structure clean state using VL Records vs Classes and compile a royalty free standalone .exe for museum kiosks.",
+          "operators_to_place": [
+            "VL: Record / Class Patch Definition",
+            "VL: Cache Region & State Machine",
+            "vvvv Exporter (F9 -> Build Executable)"
+          ],
+          "step_by_step_instructions": [
+            "Encapsulate your symmetry fold count and rotation speed inside a clean VL Record.",
+            "Wrap heavy geometry generation inside a Cache region so it updates only when inputs change.",
+            "Press F9 to open the vvvv Application Exporter and choose your target output directory.",
+            "Compile and launch your standalone Windows executable on a fresh machine with zero TouchDesigner runtime license required."
+          ],
+          "checkpoint": "A self contained Windows .exe gallery application boots straight into fullscreen 60 fps generative geometry."
+        }
+      ],
+      "narrator_transcript": "Course Three: Generative 3D Sacred Geometry, Realtime Shaders, and vvvv gamma 4V Patching, built for contemporary digital artists, generative visualists, and live coders. In Module One, we begin in TouchDesigner by converting a twelve division Circle SOP into CHOP channels to drive GPU instancing for interlocking eight, ten, and twelve fold architectural rosettes. In Module Two, you explore node based raymarching with RayTK, blending Signed Distance Fields and polar symmetry without boilerplate shader code. In Module Three, we cross into vvvv gamma, known as 4V, where live hot reload patching on top of dot NET lets you manipulate strongly typed Spreads and ForEach regions instantaneously. In Module Four, you build a physically based 3D scene in VL Stride with glazed turquoise ceramic and satin gold materials. In Module Five, you unlock VL Fuse to drive two hundred and fifty thousand GPU particles along curl noise SDF fields. Finally, in Module Six, you organise clean Records and Cache regions and press F9 to compile a royalty free standalone Windows executable ready for permanent museum and gallery installations."
+    },
+    {
+      "id": "course_04",
+      "number": "04",
+      "slug": "interactive-sensors-body-tracking-pervasive-media",
+      "title": "Interactive Sensors, Body Tracking & Pervasive Media Performance",
+      "subtitle": "MediaPipe AI pose tracking, LiDAR depth & OSC driving Unreal Niagara & vvvv state machines",
+      "tailored_for": "Pervasive Media Studio (Watershed, Bristol) & Interactive Gallery Commissions",
+      "difficulty": "Beginner to Pro",
+      "duration_weeks": 6,
+      "accent_color": "#1B7F69",
+      "core_stack": [
+        "TouchDesigner (MediaPipe AI Hand/Pose Tracking, Video Device In TOP)",
+        "LiDAR / Depth Cameras & Arduino / ESP32 Serial CHOP",
+        "OSC In / Out CHOP with Filter & Lag Hysteresis Smoothing",
+        "Unreal Engine 5.8 Niagara Particles & vvvv VL.OpenCV State Machines"
+      ],
+      "starter_kit_zip": "assets/starter_kits/course_04_interactive_sensors_pervasive.zip",
+      "audio_wav": "assets/audio/narrator_04_interactive_pervasive_media.wav",
+      "audio_mp3": "assets/audio/narrator_04_interactive_pervasive_media.mp3",
+      "node_graph": {
+        "nodes": [
+          {
+            "id": "n1",
+            "engine": "Sensors",
+            "family": "Camera / LiDAR",
+            "label": "Webcam + LiDAR + ESP32",
+            "role": "Raw Human Presence & Hand Pose Capture"
+          },
+          {
+            "id": "n2",
+            "engine": "TouchDesigner",
+            "family": "COMP / TOP",
+            "label": "MediaPipe + BlobTrack",
+            "role": "21 Hand Landmarks & 33 Body Joints"
+          },
+          {
+            "id": "n3",
+            "engine": "TouchDesigner",
+            "family": "CHOP",
+            "label": "filter1 + lag1 + math1",
+            "role": "Jitter Removal & Range Remapping"
+          },
+          {
+            "id": "n4",
+            "engine": "Bridge",
+            "family": "OSC / Serial",
+            "label": "oscout1 (Port 7000)",
+            "role": "Low Latency Normalized Control Stream"
+          },
+          {
+            "id": "n5",
+            "engine": "Unreal Engine 5.8",
+            "family": "Niagara",
+            "label": "NS_DomeFlow",
+            "role": "Attractors & Ribbon Trails Driven by Hands"
+          },
+          {
+            "id": "n6",
+            "engine": "vvvv gamma (4V)",
+            "family": "VL.OpenCV",
+            "label": "PresenceStateMachine",
+            "role": "Idle / Active / Cooldown Exhibition States"
+          }
+        ],
+        "edges": [
+          [
+            "n1",
+            "n2"
+          ],
+          [
+            "n2",
+            "n3"
+          ],
+          [
+            "n3",
+            "n4"
+          ],
+          [
+            "n4",
+            "n5"
+          ],
+          [
+            "n3",
+            "n6"
+          ]
+        ]
+      },
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "Zero Hardware Setup: Webcam AI Hand & Pose Tracking with MediaPipe",
+          "duration": "Week 1 · 90 mins",
+          "learning_outcome": "Track 21 hand landmarks and 33 body joints in real time using only a standard laptop webcam inside TouchDesigner.",
+          "operators_to_place": [
+            "Video Device In TOP (Webcam)",
+            "MediaPipe TouchDesigner Plugin COMP",
+            "Select CHOP (wrist_x, wrist_y, pinch_dist)"
+          ],
+          "step_by_step_instructions": [
+            "Place a Video Device In TOP and verify your webcam feed at 30 or 60 frames per second.",
+            "Drop in the MediaPipe TouchDesigner component and enable Hand and Pose landmark detection.",
+            "Use a Select CHOP to isolate normalized wrist X, wrist Y, and thumb to index pinch distance.",
+            "Observe how coordinates cleanly stay between zero and one regardless of performer height."
+          ],
+          "checkpoint": "Raising or pinching your hand smoothly moves numeric channels inside TouchDesigner."
+        },
+        {
+          "module_number": 2,
+          "title": "Signal Conditioning: Filter CHOP, Lag CHOP & Hysteresis",
+          "duration": "Week 2 · 90 mins",
+          "learning_outcome": "Eliminate raw sensor jitter and flickering triggers so gallery visitors feel fluid, organic responsiveness.",
+          "operators_to_place": [
+            "Filter CHOP (One Euro / Gaussian Width 0.12s)",
+            "Lag CHOP (Lag 0.18, Overshoot 0)",
+            "Logic CHOP + Speed CHOP (Gesture Velocity)"
+          ],
+          "step_by_step_instructions": [
+            "Pass raw MediaPipe channels into a Filter CHOP set to Gaussian smoothing with a 0.12 second window.",
+            "Follow with a Lag CHOP to add graceful weight and physical momentum to rapid arm sweeps.",
+            "Derive hand velocity using a Slope CHOP or Speed CHOP so gentle stillness creates calm visuals while sweeping gestures burst into particles.",
+            "Add a Trigger CHOP with hysteresis thresholds so presence detection never chatters at zone edges."
+          ],
+          "checkpoint": "Visual curves glide like water with zero nervous camera jitter."
+        },
+        {
+          "module_number": 3,
+          "title": "LiDAR Depth Zones & Arduino / ESP32 Serial Sensors",
+          "duration": "Week 3 · 105 mins",
+          "learning_outcome": "Read real distance telemetry from floor LiDAR sweeps or wireless ESP32 capacitive touch sensors.",
+          "operators_to_place": [
+            "Serial DAT / Serial CHOP (115200 baud)",
+            "OSC In CHOP (WiFi ESP32 telemetry)",
+            "Blob Track TOP (Depth Threshold Mask)"
+          ],
+          "step_by_step_instructions": [
+            "Connect a microcontroller via USB Serial DAT or WiFi OSC In CHOP.",
+            "Parse comma separated sensor values cleanly into named CHOP channels using Convert DAT and DAT to CHOP.",
+            "For camera or LiDAR depth feeds, apply a Threshold TOP followed by a Blob Track TOP to detect up to eight simultaneous visitors on a gallery floor.",
+            "Map visitor XY coordinates onto normalized room space."
+          ],
+          "checkpoint": "Multiple floor positions and physical touch sensors trigger isolated channels simultaneously."
+        },
+        {
+          "module_number": 4,
+          "title": "Driving Unreal Engine 5.8 Niagara Particles via OSC",
+          "duration": "Week 4 · 120 mins",
+          "learning_outcome": "Stream live body tracking vectors from TouchDesigner into Unreal Engine 5.8 Niagara systems.",
+          "operators_to_place": [
+            "TouchDesigner: OSC Out CHOP (Port 7000)",
+            "UE 5.8: OSC Server & NS_DomeFlow Niagara User Parameters"
+          ],
+          "step_by_step_instructions": [
+            "Bundle smoothed hand X, Y, Z and velocity channels into an OSC Out CHOP targeting 127.0.0.1 port 7000.",
+            "Inside Unreal Engine 5.8, run ue58_course04_osc_interactive_avatar.py to bind incoming OSC addresses to Niagara User Parameters.",
+            "Link wrist position to a Niagara Point Attractor force and pinch distance to particle spawn rate.",
+            "Test full round trip latency in real time Play In Editor mode."
+          ],
+          "checkpoint": "Moving your hands in front of the webcam visibly steers swirling Unreal Engine 5.8 Niagara ribbons."
+        },
+        {
+          "module_number": 5,
+          "title": "Deterministic Exhibition State Machines in vvvv (VL.OpenCV)",
+          "duration": "Week 5 · 105 mins",
+          "learning_outcome": "Build a rock solid Idle, Attract, Active, and Cooldown installation state machine in vvvv gamma.",
+          "operators_to_place": [
+            "VL.OpenCV: VideoIn & BackgroundSubtractor",
+            "VL: Enum State Machine (Idle / Active / Cooldown)",
+            "VL: Stopwatch & Damper"
+          ],
+          "step_by_step_instructions": [
+            "Open vvvv_course04_state_machine_tracker.vl and inspect the four state Enum architecture.",
+            "Configure VL.OpenCV motion energy thresholds to transition cleanly from Idle Attract Mode into Active Performance.",
+            "Add a 6 second Cooldown timer so the installation gently returns to sanctuary mode after a visitor departs.",
+            "Test edge cases such as sudden lighting shifts or empty room periods."
+          ],
+          "checkpoint": "The installation autonomously cycles between calm attract mode and active interaction without manual intervention."
+        },
+        {
+          "module_number": 6,
+          "title": "Pervasive Media Showcase Prep & Live Performance Cueing",
+          "duration": "Week 6 · 90 mins",
+          "learning_outcome": "Package an accessible public installation ready for Pervasive Media Studio Lunchtime Talks or gallery playtesting.",
+          "operators_to_place": [
+            "TouchDesigner: Widget COMP Calibration UI",
+            "Auto Recovery Watchdog & Calibration Overlay"
+          ],
+          "step_by_step_instructions": [
+            "Build a clean one page technician dashboard using Widget COMPs for room lighting sensitivity and floor bounds.",
+            "Add a visual debug toggle (keyboard key D) that overlays tracked skeleton points for quick venue calibration.",
+            "Document sensor mounting heights, cable runs, and accessibility clearances for wheelchair and seated visitors.",
+            "Rehearse a three minute live demonstration combining body movement, visuals, and responsive sound."
+          ],
+          "checkpoint": "A complete, accessible, visitor tested interactive system ready for public exhibition."
+        }
+      ],
+      "narrator_transcript": "Course Four: Interactive Sensors, Body Tracking, and Pervasive Media Performance, modelled on the collaborative prototyping ethos of Pervasive Media Studio at Watershed in Bristol. In Module One, you begin with zero specialist hardware, using a standard webcam and MediaPipe inside TouchDesigner to track twenty one hand landmarks and thirty three body joints in real time. In Module Two, we tame raw sensor noise using the Filter CHOP, Lag CHOP, and hysteresis thresholds so visitor gestures feel organic and responsive rather than jittery. In Module Three, you expand into room scale LiDAR floor tracking, Blob Track TOPs, and wireless ESP32 serial sensors. In Module Four, you transmit normalized tracking coordinates over OSC port 7000 straight into Unreal Engine 5.8, steering Niagara particle systems with live hand movements. In Module Five, we build a deterministic Idle, Active, and Cooldown exhibition state machine in vvvv gamma with VL OpenCV. Finally, in Module Six, you assemble a technician calibration dashboard and accessibility checklist for public gallery playtesting."
+    },
+    {
+      "id": "course_05",
+      "number": "05",
+      "slug": "sonic-arts-spatial-audio-neuro-sensory-performance",
+      "title": "Sonic Arts, 3D Spatial Audio & Neuro Sensory Audiovisual Performance",
+      "subtitle": "Audio Spectrum CHOP, 36.4 Ambisonic panning, 4-7-8 frequencies & Unreal MetaSounds",
+      "tailored_for": "Market Hall Spatial Audio Dome, Sound Bath Practitioners & Audiovisual Performers",
+      "difficulty": "Beginner to Pro",
+      "duration_weeks": 6,
+      "accent_color": "#5A189A",
+      "core_stack": [
+        "TouchDesigner (Audio Device In CHOP, Audio Spectrum CHOP, Audio Binaural)",
+        "36.4 Multichannel Spatial Audio & Ambisonic Panning",
+        "Ableton Link / TD-Ableton Live Synchronization",
+        "Unreal Engine 5.8 (MetaSounds & Audio_ReactiveScaffold) + 4-7-8 Safe Mapping"
+      ],
+      "starter_kit_zip": "assets/starter_kits/course_05_spatial_audio_sonic_performance.zip",
+      "audio_wav": "assets/audio/narrator_05_spatial_audio_sonic_performance.wav",
+      "audio_mp3": "assets/audio/narrator_05_spatial_audio_sonic_performance.mp3",
+      "node_graph": {
+        "nodes": [
+          {
+            "id": "n1",
+            "engine": "Audio Input",
+            "family": "Chamber / DAW",
+            "label": "48 kHz Stems + Ableton Link",
+            "role": "Cello, Felt Piano & 136.10 to 432 Hz Bowls"
+          },
+          {
+            "id": "n2",
+            "engine": "TouchDesigner",
+            "family": "CHOP",
+            "label": "audiospectrum1 + analyze1",
+            "role": "Sub Bass, Warm Mid & Air Band Extraction"
+          },
+          {
+            "id": "n3",
+            "engine": "TouchDesigner",
+            "family": "CHOP",
+            "label": "4-7-8 Breath LFO (19.0 s)",
+            "role": "4s Inhale / 7s Hold / 8s Exhale Envelope"
+          },
+          {
+            "id": "n4",
+            "engine": "TouchDesigner",
+            "family": "CHOP",
+            "label": "audiobinaural1 / Ambisonics",
+            "role": "36.4 Dome & Headphone Spatial Panning"
+          },
+          {
+            "id": "n5",
+            "engine": "Unreal Engine 5.8",
+            "family": "MetaSounds",
+            "label": "Audio_ReactiveScaffold",
+            "role": "Procedural Soundscapes & Dome Glow Sync"
+          },
+          {
+            "id": "n6",
+            "engine": "Output",
+            "family": "Dome / Stereo",
+            "label": "audiodeviceout1 + Visuals",
+            "role": "Neurodivergent Safe Spatial Performance"
+          }
+        ],
+        "edges": [
+          [
+            "n1",
+            "n2"
+          ],
+          [
+            "n3",
+            "n2"
+          ],
+          [
+            "n2",
+            "n4"
+          ],
+          [
+            "n2",
+            "n5"
+          ],
+          [
+            "n4",
+            "n6"
+          ],
+          [
+            "n5",
+            "n6"
+          ]
+        ]
+      },
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "Acoustic Anatomy Inside TouchDesigner CHOPs",
+          "duration": "Week 1 · 90 mins",
+          "learning_outcome": "Bring live microphone or studio audio into TouchDesigner and isolate sub bass, warm mid, and upper harmonic bands.",
+          "operators_to_place": [
+            "Audio Device In CHOP / Audio File In CHOP",
+            "Audio Spectrum CHOP (Logarithmic Frequency Scale)",
+            "Trim CHOP + Analyze CHOP (RMS Power)"
+          ],
+          "step_by_step_instructions": [
+            "Place an Audio File In CHOP loaded with the starter 48 kHz Western chamber and singing bowl stem.",
+            "Wire it into an Audio Spectrum CHOP and enable Logarithmic Scaling so musical octaves occupy equal visual width.",
+            "Use three Trim CHOPs followed by Analyze CHOPs set to RMS Average to extract Sub Bass (40 to 160 Hz), Warm Mid (160 to 1200 Hz), and Air (1.2 to 4 kHz).",
+            "Smooth each band with a Lag CHOP so visual geometry swells naturally with bowed cello phrasing."
+          ],
+          "checkpoint": "Three clean, musical CHOP envelopes track cello resonance, piano chords, and bowl shimmer."
+        },
+        {
+          "module_number": 2,
+          "title": "Neurodivergent Safe Acoustic Design & 4-7-8 Vagal Coherence",
+          "duration": "Week 2 · 105 mins",
+          "learning_outcome": "Understand why naked sine waves cause auditory fatigue and build a 19 second 4-7-8 breathing envelope modulating 136.10 Hz to 432 Hz voicings.",
+          "operators_to_place": [
+            "Audio Filter CHOP (Low Pass Softening < 2.0 kHz)",
+            "Animation COMP / Pattern CHOP (4s Inhale, 7s Hold, 8s Exhale)",
+            "Math CHOP (Luminance Cap <= 55 percent Matte)"
+          ],
+          "step_by_step_instructions": [
+            "Build a 19.0 second cyclic Pattern CHOP following the exact 4 second inhale rise, 7 second hold plateau, and 8 second exhale release.",
+            "Apply a gentle Audio Filter CHOP rolling off harsh partials above 2.0 kilohertz to protect listeners with hyperacusis.",
+            "Map the 4-7-8 curve simultaneously to audio swell (+3.5 dB) and dome horizon colour warmth.",
+            "Cap visual emissive brightness below 55 percent matte value with zero sudden flashes."
+          ],
+          "checkpoint": "Audio and visuals breathe together in an unhurried, deeply calming 19 second vagal coherence cycle."
+        },
+        {
+          "module_number": 3,
+          "title": "3D Spatial Audio: Binaural Headphones & 36.4 Dome Panning",
+          "duration": "Week 3 · 120 mins",
+          "learning_outcome": "Move sound objects smoothly in counter clockwise orbits around a 3D hemisphere for both binaural headphones and multi speaker domes.",
+          "operators_to_place": [
+            "Audio Binaural CHOP (Azimuth & Elevation)",
+            "Audio Oscillator CHOP / Stem Routing",
+            "LFO CHOP (0.6 RPM Counter Clockwise Orbit)"
+          ],
+          "step_by_step_instructions": [
+            "Feed a concert harp or flute stem into an Audio Binaural CHOP for instant 3D spatialisation over standard studio headphones.",
+            "Drive the Azimuth parameter with a slow counter clockwise ramp between 0.5 and 1.2 revolutions per minute.",
+            "Inspect how the 36.4 Ambisonic and speaker ring matrix scales the exact same azimuth and elevation coordinates to Market Hall's spatial array.",
+            "Verify smooth crossfades across speaker quadrants with zero phase cancellation."
+          ],
+          "checkpoint": "Closing your eyes with headphones reveals sounds gliding gently around and above your head."
+        },
+        {
+          "module_number": 4,
+          "title": "Ableton Link & TD-Ableton Bidirectional DAW Sync",
+          "duration": "Week 4 · 105 mins",
+          "learning_outcome": "Lock TouchDesigner visuals to Ableton Live bars, beats, MIDI clips, and automation lanes in real time.",
+          "operators_to_place": [
+            "Ableton Link CHOP (Beat / Phase Sync)",
+            "Palette -> TD-Ableton Package",
+            "OSC / MIDI In CHOP"
+          ],
+          "step_by_step_instructions": [
+            "Place an Ableton Link CHOP and toggle Link Active to share sample accurate tempo over local WiFi or localhost.",
+            "Connect Beat and Phase channels to trigger subtle geometric phase shifts on musical downbeats.",
+            "Use TD-Ableton or MIDI In CHOP to capture live MIDI note velocity from a felt piano controller.",
+            "Verify zero drift across a continuous five minute live performance loop."
+          ],
+          "checkpoint": "Visual geometry and DAW tempo stay sample locked across live tempo changes."
+        },
+        {
+          "module_number": 5,
+          "title": "Unreal Engine 5.8 MetaSounds & Audio_ReactiveScaffold",
+          "duration": "Week 5 · 120 mins",
+          "learning_outcome": "Author procedural audio graphs inside Unreal Engine 5.8 MetaSounds and connect Audio_ReactiveScaffold to dome materials.",
+          "operators_to_place": [
+            "UE 5.8: MetaSound Source Asset",
+            "UE 5.8: Audio_ReactiveScaffold AmbientSound",
+            "UE 5.8: Envelope Follower -> Material Parameter Collection"
+          ],
+          "step_by_step_instructions": [
+            "Open Unreal Engine 5.8 and create a MetaSound Source blending a 136.10 Hz fundamental with warm harmonic fifths.",
+            "Run ue58_course05_metasounds_478_breath.py to configure Audio_ReactiveScaffold parameters inside the dome scene.",
+            "Bind Unreal's Audio Envelope Follower to a Material Parameter Collection driving subtle golden bevel luminosity.",
+            "Cross check level matching with TouchDesigner's OSC frequency triggers."
+          ],
+          "checkpoint": "Unreal Engine 5.8 synthesizes and reacts to spatial sound directly inside the 3D dome environment."
+        },
+        {
+          "module_number": 6,
+          "title": "Live Audiovisual Set Architecture & Sound Bath Recording",
+          "duration": "Week 6 · 90 mins",
+          "learning_outcome": "Combine spatial stems, TouchDesigner spectrum visuals, and Unreal MetaSounds into a touring live audiovisual set.",
+          "operators_to_place": [
+            "Switch COMP / Scene Crossfader (4 TAWAF Zones)",
+            "Audio Movie Out / 48 kHz Multitrack Master"
+          ],
+          "step_by_step_instructions": [
+            "Organise your four sonic movements (Grounding 136.10 Hz, Compassion 396 to 432 Hz, Clarity 528 Hz, Integration 480 Hz) behind a smooth crossfade Switch.",
+            "Map hardware MIDI faders or a clean touch UI to transition effortlessly during live sets.",
+            "Measure final stereo master loudness (target minus 16 LUFS, zero clipped samples, soft high frequency roll off).",
+            "Export a synchronised audiovisual demo reel ready for Market Hall or touring festivals."
+          ],
+          "checkpoint": "A complete, calming, studio calibrated audiovisual performance set ready for live dome audiences."
+        }
+      ],
+      "narrator_transcript": "Course Five: Sonic Arts, 3D Spatial Audio, and Neuro Sensory Audiovisual Performance, crafted for the Market Hall Spatial Audio Dome, sound bath practitioners, and contemporary audiovisual performers. In Module One, you learn to analyse live music inside TouchDesigner using the Audio Device In CHOP and logarithmic Audio Spectrum CHOP, extracting warm sub bass, midrange, and delicate upper harmonic envelopes. In Module Two, we explore neurodivergent safe acoustic design, replacing fatiguing naked sine tones with warm Western chamber stems between 136.10 Hertz and 432 Hertz modulated by a calming nineteen second 4 7 8 breathing curve. In Module Three, you animate 3D sound objects using the Audio Binaural CHOP and 36 point 4 Ambisonic dome panning. In Module Four, you lock visuals directly to your DAW using Ableton Link and TD Ableton. In Module Five, you step inside Unreal Engine 5.8 MetaSounds and Audio ReactiveScaffold to drive responsive lighting from live envelope followers. And in Module Six, you assemble all four acoustic zones into a touring live performance set calibrated to studio loudness standards."
+    }
+  ]
+}

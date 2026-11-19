@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns:p="property" xmlns:r="reflection" Id="Aem3oiuIy7E1XzyCOl7E23" LanguageVersion="2024.6.7" Version="0.128">
+  <!-- Course 04 vvvv gamma Interactive Installation State Machine — Receives smoothed OSC tracking coordinates, drives Idle/Active/Peak state machine, and visualizes in VL.Skia + VL.Stride. -->
+  <NugetDependency Id="DC6bmRyJNcg2SmEMK1PeYK" Location="VL.CoreLib" Version="2024.6.7" />
+  <NugetDependency Id="yZyEkWorxP59Emtky3g2kj" Location="VL.Skia" Version="2024.6.7" />
+  <NugetDependency Id="get7SAl3pYY7zyqf7dG5RG" Location="VL.Stride" Version="2024.6.7" />
+  <NugetDependency Id="XElXZ45MOax5oCN3uA4vRr" Location="VL.IO.OSC" Version="2.0.0" />
+  <Patch Id="5sSI1URuhEaUZULbd1Hgu2" Name="Course04_StateMachine_Tracker">
+    <Canvas Id="cqQwQzJAZ5ePQOB3aGFpB1" Name="Main" Position="0,0">
+      <Pad Id="Z9CvJ5wPOJt1Xo4pNE1AYX" Comment="OSC_Listen_Port" Bounds="80,80,55,15" ShowValueBox="true" isIOBox="true" Value="8000">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Integer32" Id="rKlWCFTAqKVXC02aC7ioLp" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="cEvDr1M87lboOJ18NCXSw0" Name="Value" Kind="OutputPin" Bounds="80,80" />
+      </Pad>
+      <Pad Id="ex1PBEb467eDUqQFD9woq4" Comment="Presence_Threshold" Bounds="260,80,55,15" ShowValueBox="true" isIOBox="true" Value="0.35">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="yshNiMek9ywS8P5XRIIwhX" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="YzesO8nHQE6mrkiNH483Qf" Name="Value" Kind="OutputPin" Bounds="260,80" />
+      </Pad>
+      <Node Id="uaMElHiP3Gi8s50U31Urgc" Bounds="80,160,115,19" Kind="NodeFlag" Name="OSCServer">
+        <p:NodeReference LastCategoryFullName="IO.OSC">
+          <Choice Kind="NodeFlag" Name="OSCServer" Category="IO.OSC" />
+        </p:NodeReference>
+        <Pin Id="sSPzKQqyTaaLz8phdy8sGt" Name="Port" Kind="InputPin" DefaultValue="8000" />
+        <Pin Id="9dOyQ9IQsOcqr6bIlPiGv6" Name="Enabled" Kind="InputPin" DefaultValue="true" />
+        <Pin Id="lYJQ8pBQ5MuoCs9tDo3dSj" Name="Data" Kind="OutputPin" />
+        <Pin Id="h2SmKKEFhJPB2WkYsXiWu1" Name="Is Open" Kind="OutputPin" />
+      </Node>
+      <Node Id="WVDJI8VGbQreMhpmOQZQzN" Bounds="260,160,110,19" Kind="NodeFlag" Name="Damper">
+        <p:NodeReference LastCategoryFullName="Animation">
+          <Choice Kind="NodeFlag" Name="Damper" Category="Animation" />
+        </p:NodeReference>
+        <Pin Id="7Mvj3mK0AlHSRyr6v83989" Name="Filter Time" Kind="InputPin" DefaultValue="0.45" />
+        <Pin Id="7d7Ud9WrhPeutbCpYWC6jW" Name="Position" Kind="OutputPin" />
+        <Pin Id="1PEMqjfwOiU9yGHLzWAM8V" Name="Velocity" Kind="OutputPin" />
+      </Node>
+      <Node Id="4FBIN2xco7sxyMM6bB1Y4q" Bounds="430,160,110,19" Kind="NodeFlag" Name="GreaterThan">
+        <p:NodeReference LastCategoryFullName="Math">
+          <Choice Kind="NodeFlag" Name="GreaterThan" Category="Math" />
+        </p:NodeReference>
+        <Pin Id="yFkNducQAXFTPbHLVLIAms" Name="Input" Kind="InputPin" />
+        <Pin Id="jipPI7ZwruAGp7d3ZQDsvA" Name="Input 2" Kind="InputPin" DefaultValue="0.35" />
+        <Pin Id="Jindo8d30NHfmZ7C5XR2Ei" Name="Result" Kind="OutputPin" />
+      </Node>
+      <Node Id="p019pba6hypViDkC07ycC3" Bounds="260,270,110,19" Kind="NodeFlag" Name="Circle">
+        <p:NodeReference LastCategoryFullName="Skia.Layers">
+          <Choice Kind="NodeFlag" Name="Circle" Category="Skia.Layers" />
+        </p:NodeReference>
+        <Pin Id="bfbltbQQyi13ySgoPktMb1" Name="Radius" Kind="InputPin" DefaultValue="0.4" />
+        <Pin Id="vcMaFVfL7CSXCHzxRphJCb" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="AuG7ovVtKU3DuQN78djVop" Bounds="260,360,120,19" Kind="NodeFlag" Name="SkiaRenderer">
+        <p:NodeReference LastCategoryFullName="Skia">
+          <Choice Kind="NodeFlag" Name="SkiaRenderer" Category="Skia" />
+        </p:NodeReference>
+        <Pin Id="CzJ4r47548y1E4Rwkb3XvI" Name="Input" Kind="InputPin" />
+        <Pin Id="5wU7gjvXh5eJ2vkBWuBtO4" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Link Id="ipIf95rQ0P2zmilXpi18lC" Ids="cEvDr1M87lboOJ18NCXSw0,sSPzKQqyTaaLz8phdy8sGt" />
+      <Link Id="Q8Ius5sb5yOSYjo7qiN3yy" Ids="YzesO8nHQE6mrkiNH483Qf,jipPI7ZwruAGp7d3ZQDsvA" />
+      <Link Id="xXxX15kFsuHNC4si4Z8q7O" Ids="7d7Ud9WrhPeutbCpYWC6jW,yFkNducQAXFTPbHLVLIAms" />
+      <Link Id="RZSOevIQZrGVQmJ8nBFFlY" Ids="vcMaFVfL7CSXCHzxRphJCb,CzJ4r47548y1E4Rwkb3XvI" />
+    </Canvas>
+  </Patch>
+</Document>

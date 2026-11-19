@@ -1,0 +1,54 @@
+{
+  "course_id": "02",
+  "title": "Architectural Projection Mapping & 3D LiDAR Scanning",
+  "nodes": [
+    {
+      "id": "td_ply",
+      "engine": "TD",
+      "type": "TOP",
+      "label": "Point File In TOP (.ply/.xyz)"
+    },
+    {
+      "id": "td_cam",
+      "engine": "TD",
+      "type": "COMP",
+      "label": "CamSchnappr 3D Calibration"
+    },
+    {
+      "id": "td_kantan",
+      "engine": "TD",
+      "type": "COMP",
+      "label": "KantanMapper Mask"
+    },
+    {
+      "id": "ue_proj",
+      "engine": "UE5.8",
+      "type": "MAT",
+      "label": "M_ProjectionCalibrationGrid"
+    },
+    {
+      "id": "vv_pcd",
+      "engine": "vvvv",
+      "type": "Stride",
+      "label": "PointBuffer + Projector Camera"
+    }
+  ],
+  "edges": [
+    [
+      "td_ply",
+      "td_cam"
+    ],
+    [
+      "td_cam",
+      "td_kantan"
+    ],
+    [
+      "td_kantan",
+      "ue_proj"
+    ],
+    [
+      "ue_proj",
+      "vv_pcd"
+    ]
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "course_id": "05",
+  "title": "Sonic Arts, 3D Spatial Audio & Neuro-Sensory Sound Bath",
+  "nodes": [
+    {
+      "id": "td_fft",
+      "engine": "TD",
+      "type": "CHOP",
+      "label": "Audio Spectrum CHOP (4096 FFT)"
+    },
+    {
+      "id": "td_lfo",
+      "engine": "TD",
+      "type": "CHOP",
+      "label": "4-7-8 Breath LFO (19s / 0.0526Hz)"
+    },
+    {
+      "id": "ue_meta",
+      "engine": "UE5.8",
+      "type": "MetaSounds",
+      "label": "36.4 Spatial Speakers + MPC_SpatialAudio_478"
+    },
+    {
+      "id": "vv_audio",
+      "engine": "vvvv",
+      "type": "VL.Audio",
+      "label": "AudioIn -> FFT -> OSCClient"
+    }
+  ],
+  "edges": [
+    [
+      "td_fft",
+      "ue_meta"
+    ],
+    [
+      "td_lfo",
+      "ue_meta"
+    ],
+    [
+      "td_fft",
+      "vv_audio"
+    ]
+  ]
+}

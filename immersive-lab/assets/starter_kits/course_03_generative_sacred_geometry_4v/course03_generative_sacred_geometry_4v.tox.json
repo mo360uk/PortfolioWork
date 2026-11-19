@@ -1,0 +1,141 @@
+{
+  "schema": "mo360.td.tox_manifest.v1",
+  "project_name": "course03_generative_sacred_geometry_4v",
+  "title": "Course 03: 8/10/12-Fold Sacred Geometry GPU Instancing",
+  "description": "Generates 12-fold rotational Girih & Rub el Hizb rings via Pattern CHOP + Geometry COMP GPU Instancing.",
+  "parent_path": "/project1",
+  "fps": 60,
+  "ports": {
+    "webserver_http": 9980,
+    "osc_in": 9000,
+    "osc_out": 9001
+  },
+  "operators": [
+    {
+      "name": "fold_symmetry",
+      "op_type": "constantCHOP",
+      "nodeX": 0,
+      "nodeY": 260,
+      "params": {
+        "name0": "fold",
+        "value0": 12
+      },
+      "comment": "8/10/12-Fold Symmetry Control"
+    },
+    {
+      "name": "ring_angles",
+      "op_type": "patternCHOP",
+      "nodeX": 220,
+      "nodeY": 260,
+      "params": {
+        "type": "ramp",
+        "length": 12,
+        "to": 360
+      },
+      "comment": "Angular Distribution CHOP"
+    },
+    {
+      "name": "noise_radius",
+      "op_type": "noiseCHOP",
+      "nodeX": 220,
+      "nodeY": 100,
+      "params": {
+        "roughness": 0.35,
+        "period": 4.0
+      },
+      "comment": "Organic Breathing Modulation"
+    },
+    {
+      "name": "math_pos",
+      "op_type": "mathCHOP",
+      "nodeX": 450,
+      "nodeY": 200,
+      "params": {
+        "gain": 5.0
+      },
+      "comment": "Radial Position Transform"
+    },
+    {
+      "name": "null_inst",
+      "op_type": "nullCHOP",
+      "nodeX": 660,
+      "nodeY": 200,
+      "params": {},
+      "comment": "Instance Attribute Table"
+    },
+    {
+      "name": "star_sop",
+      "op_type": "circleSOP",
+      "nodeX": 450,
+      "nodeY": 380,
+      "params": {
+        "divisions": 8,
+        "radx": 0.45,
+        "rady": 0.45
+      },
+      "comment": "8-Fold Rub el Hizb Base Profile"
+    },
+    {
+      "name": "geo_instancer",
+      "op_type": "geometryCOMP",
+      "nodeX": 700,
+      "nodeY": 380,
+      "params": {
+        "instancing": true,
+        "instancechop": "null_inst"
+      },
+      "comment": "GPU Instanced Sacred Ring"
+    },
+    {
+      "name": "mat_gold",
+      "op_type": "pbrMAT",
+      "nodeX": 700,
+      "nodeY": 520,
+      "params": {
+        "metallic": 0.92,
+        "roughness": 0.22,
+        "basecolorr": 0.83,
+        "basecolorg": 0.69,
+        "basecolorb": 0.22
+      },
+      "comment": "24k Satin Gold PBR"
+    },
+    {
+      "name": "render_sacred",
+      "op_type": "renderTOP",
+      "nodeX": 950,
+      "nodeY": 380,
+      "params": {
+        "resolutionw": 2048,
+        "resolutionh": 2048
+      },
+      "comment": "Sacred Geometry Pass"
+    }
+  ],
+  "connections": [
+    {
+      "src": "ring_angles",
+      "dst": "math_pos",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "noise_radius",
+      "dst": "math_pos",
+      "output_index": 0,
+      "input_index": 1
+    },
+    {
+      "src": "math_pos",
+      "dst": "null_inst",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "star_sop",
+      "dst": "geo_instancer",
+      "output_index": 0,
+      "input_index": 0
+    }
+  ]
+}

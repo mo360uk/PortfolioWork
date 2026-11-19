@@ -1,0 +1,54 @@
+{
+  "course_id": "01",
+  "title": "Fulldome 360\u00b0 & 180\u00b0 Fisheye Cinema",
+  "nodes": [
+    {
+      "id": "td_geo",
+      "engine": "TD",
+      "type": "COMP",
+      "label": "Geometry + Camera"
+    },
+    {
+      "id": "td_cube",
+      "engine": "TD",
+      "type": "TOP",
+      "label": "Render TOP (CubeMap 2048)"
+    },
+    {
+      "id": "td_fish",
+      "engine": "TD",
+      "type": "TOP",
+      "label": "Projection TOP (180\u00b0 Fisheye 4096)"
+    },
+    {
+      "id": "ue_rig",
+      "engine": "UE5.8",
+      "type": "BP",
+      "label": "BP_DomeMasterRig (/Game/TAWAF_DomeTest)"
+    },
+    {
+      "id": "vv_dome",
+      "engine": "vvvv",
+      "type": "Stride",
+      "label": "VL.Stride Dome Preview + OSC"
+    }
+  ],
+  "edges": [
+    [
+      "td_geo",
+      "td_cube"
+    ],
+    [
+      "td_cube",
+      "td_fish"
+    ],
+    [
+      "td_fish",
+      "ue_rig"
+    ],
+    [
+      "ue_rig",
+      "vv_dome"
+    ]
+  ]
+}

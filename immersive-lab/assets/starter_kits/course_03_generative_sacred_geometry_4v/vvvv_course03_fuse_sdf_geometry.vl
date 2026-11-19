@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns:p="property" xmlns:r="reflection" Id="8mIQUm1ifaQuumdF5k9laC" LanguageVersion="2024.6.7" Version="0.128">
+  <!-- Course 03 vvvv gamma (4V) VL.Fuse Raymarched SDF & VL.Stride PBR — Procedural 12-fold Raymarched SDF torus/octagram lattice using VL.Fuse and ForEach Spread instancing. -->
+  <NugetDependency Id="0Pe9zDL3UP2cP9Iwbl5o7p" Location="VL.CoreLib" Version="2024.6.7" />
+  <NugetDependency Id="olebDi1MjnBcLSMll3UlSi" Location="VL.Stride" Version="2024.6.7" />
+  <NugetDependency Id="nFOWw5mp9Bl4fZUGgGsBcZ" Location="VL.Fuse" Version="1.0.3-beta01" />
+  <NugetDependency Id="CFa2Vbj78RblCXPtongvI7" Location="VL.IO.OSC" Version="2.0.0" />
+  <Patch Id="WDvQS5eTO1yGQubouUH7fd" Name="Course03_Fuse_SDF_SacredGeometry">
+    <Canvas Id="6Pq6tl95JUmJndc7ujWweb" Name="Main" Position="0,0">
+      <Pad Id="Z2Nxz0ihutIpcBKJ1P4np1" Comment="Symmetry_Fold" Bounds="80,90,50,15" ShowValueBox="true" isIOBox="true" Value="12">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Integer32" Id="9nz0LV7za5aV13e0P2EYGp" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="BNXaVytneVdeaPnlFnofBC" Name="Value" Kind="OutputPin" Bounds="80,90" />
+      </Pad>
+      <Pad Id="CuoYZODq3djkdsSi4r2teO" Comment="Torus_Radius" Bounds="260,90,50,15" ShowValueBox="true" isIOBox="true" Value="2.4">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="BElxxtDLoNOdF04mLEchbp" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="4AHV78YpxU7UhSjS4iFrsJ" Name="Value" Kind="OutputPin" Bounds="260,90" />
+      </Pad>
+      <Node Id="DHQ5tOCL0Ytgs1D4adKfCw" Bounds="80,180,120,19" Kind="NodeFlag" Name="CircularSpread">
+        <p:NodeReference LastCategoryFullName="Collections.Spread">
+          <Choice Kind="NodeFlag" Name="CircularSpread" Category="Collections.Spread" />
+        </p:NodeReference>
+        <Pin Id="9djZxgtLJygVbJsjaBlN7b" Name="Count" Kind="InputPin" DefaultValue="12" />
+        <Pin Id="ZkT1LiIyG1bvfBUckdPk7n" Name="Width" Kind="InputPin" DefaultValue="1.0" />
+        <Pin Id="C0duVLq0N1lCPgUoadS3Zf" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="oJv5cElXB6jEsmH5VM7zQy" Bounds="80,260,280,150" Kind="ApplicationFlag" Name="ForEach">
+        <p:Bounds Type="Box" Left="80" Top="260" Width="280" Height="150" />
+        <p:NodeReference>
+          <Choice Kind="ApplicationFlag" Name="ForEach" Category="Primitive.Collections" />
+        </p:NodeReference>
+        <Patch Id="h2WEOlCfQnx7Qg6I2WXu09" ManuallySortedPins="true">
+          <Node Id="1eHpBJy3IfvbmnsYfK3bap" Bounds="120,310,125,19" Kind="NodeFlag" Name="TorusSDF">
+            <p:NodeReference LastCategoryFullName="Fuse.SDF.3D">
+              <Choice Kind="NodeFlag" Name="TorusSDF" Category="Fuse.SDF.3D" />
+            </p:NodeReference>
+            <Pin Id="nE6c9XxG2aYHYgZI9iRRAS" Name="Radius" Kind="InputPin" DefaultValue="2.4" />
+            <Pin Id="bxIhDJ0z2h04YVhWZo6lbY" Name="Thickness" Kind="InputPin" DefaultValue="0.18" />
+            <Pin Id="kjcEgX4OUJoEtCNpiwS3tJ" Name="Output" Kind="OutputPin" />
+          </Node>
+        </Patch>
+        <Pin Id="NGDtvj2pTSaAkBO0xlP7QG" Name="Spread" Kind="InputPin" />
+        <Pin Id="WRghMEbm3HFrqyYMtR4X3v" Name="SDFs" Kind="OutputPin" />
+      </Node>
+      <Node Id="juEXYcaestaXfwfqVqvIHJ" Bounds="80,450,130,19" Kind="NodeFlag" Name="Raymarch">
+        <p:NodeReference LastCategoryFullName="Fuse.Raymarching">
+          <Choice Kind="NodeFlag" Name="Raymarch" Category="Fuse.Raymarching" />
+        </p:NodeReference>
+        <Pin Id="gSq70Gt8hqeut1LjvsQwJ3" Name="SDF" Kind="InputPin" />
+        <Pin Id="A4bLJ1Pt06JoO2marzuNyF" Name="Entity" Kind="OutputPin" />
+      </Node>
+      <Node Id="OzCZ7w2FCVWGPtiPXsvThh" Bounds="80,530,115,19" Kind="NodeFlag" Name="RootScene">
+        <p:NodeReference LastCategoryFullName="Stride">
+          <Choice Kind="NodeFlag" Name="RootScene" Category="Stride" />
+        </p:NodeReference>
+        <Pin Id="Be36LvQuIRXRDeGYyoeinG" Name="Children" Kind="InputPin" />
+        <Pin Id="mDL4e11JLSSMXzG1J31K4T" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="Vg1wFGhHXpMwJvhicgvgWQ" Bounds="80,610,120,19" Kind="NodeFlag" Name="SceneWindow">
+        <p:NodeReference LastCategoryFullName="Stride">
+          <Choice Kind="NodeFlag" Name="SceneWindow" Category="Stride" />
+        </p:NodeReference>
+        <Pin Id="5y5oq1k05rWZmsemyhwKhc" Name="Scene" Kind="InputPin" />
+        <Pin Id="q6CQjk03vUOA3uW97WMkjO" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Link Id="t4r4mOGSfiZ9ePWRG0kGg2" Ids="BNXaVytneVdeaPnlFnofBC,9djZxgtLJygVbJsjaBlN7b" />
+      <Link Id="8YjOkkZTK7l4GOsJAKkVG0" Ids="C0duVLq0N1lCPgUoadS3Zf,NGDtvj2pTSaAkBO0xlP7QG" />
+      <Link Id="pOY8iLfTx8Nm9vqSkad9FU" Ids="WRghMEbm3HFrqyYMtR4X3v,gSq70Gt8hqeut1LjvsQwJ3" />
+      <Link Id="p6dgDfLHasDWPn41M47pW4" Ids="A4bLJ1Pt06JoO2marzuNyF,Be36LvQuIRXRDeGYyoeinG" />
+      <Link Id="WFTUjhHHOPge5FQyHbaY6n" Ids="mDL4e11JLSSMXzG1J31K4T,5y5oq1k05rWZmsemyhwKhc" />
+    </Canvas>
+  </Patch>
+</Document>

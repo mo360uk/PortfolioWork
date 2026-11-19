@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns:p="property" xmlns:r="reflection" Id="4q2VQgprUnnWIlAIJBFtCk" LanguageVersion="2024.6.7" Version="0.128">
+  <!-- Course 05 vvvv gamma VL.Audio FFT & 4-7-8 Spatial Resonator — Samples live VL.Audio FFT spectrum and modulates 36.4-channel spatial particle luminance via OSC. -->
+  <NugetDependency Id="HrtKkjJSvi0rrOoBr68P0H" Location="VL.CoreLib" Version="2024.6.7" />
+  <NugetDependency Id="aZ2G5HgOIRXjYis5w6KXXR" Location="VL.Audio" Version="1.9.1" />
+  <NugetDependency Id="TJQLw6AqK4kovdiKugiGk6" Location="VL.Stride" Version="2024.6.7" />
+  <NugetDependency Id="04BJZBHhHMDYdG2llOgvmK" Location="VL.IO.OSC" Version="2.0.0" />
+  <Patch Id="MGvgF733foz0MWag9Mze8w" Name="Course05_SpatialAudio_Reactive">
+    <Canvas Id="1zMFuxRpEslLgXn3fvlFfp" Name="Main" Position="0,0">
+      <Pad Id="P5z2aljbjbnUXaCRgLxTQy" Comment="Breath_Period_Sec" Bounds="80,90,55,15" ShowValueBox="true" isIOBox="true" Value="19.0">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="J2wxh65Goq8OUcx5BeJlBq" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="LxmHKkfU5aVICen6cD46Oy" Name="Value" Kind="OutputPin" Bounds="80,90" />
+      </Pad>
+      <Pad Id="gAghUKtF8RbjekGHk8qtUA" Comment="FFT_Gain" Bounds="260,90,50,15" ShowValueBox="true" isIOBox="true" Value="2.5">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="zBV61PnJAIB1y39SL1abj6" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="dgC53z2wvOPcQZIkW2wdOw" Name="Value" Kind="OutputPin" Bounds="260,90" />
+      </Pad>
+      <Node Id="YhKrjXvFgae45YvapARZqX" Bounds="80,170,110,19" Kind="NodeFlag" Name="AudioIn">
+        <p:NodeReference LastCategoryFullName="Audio.Source">
+          <Choice Kind="NodeFlag" Name="AudioIn" Category="Audio.Source" />
+        </p:NodeReference>
+        <Pin Id="BJ6hmuB378cVQT9DwKVAyp" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="Fm2Xm600sYHD6EZXPdTEIT" Bounds="260,170,110,19" Kind="NodeFlag" Name="FFT">
+        <p:NodeReference LastCategoryFullName="Audio.Analysis">
+          <Choice Kind="NodeFlag" Name="FFT" Category="Audio.Analysis" />
+        </p:NodeReference>
+        <Pin Id="EazlXqBH4zjMsMlYhAv3Zz" Name="Input" Kind="InputPin" />
+        <Pin Id="8r8pWM8WfUhMEc2RBI17Iq" Name="Gain" Kind="InputPin" DefaultValue="2.5" />
+        <Pin Id="wR1368iexf9xHdW70M2eDH" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="UWwY4Kf6Ax2YDn16zC3qDA" Bounds="80,270,110,19" Kind="NodeFlag" Name="LFO">
+        <p:NodeReference LastCategoryFullName="Animation">
+          <Choice Kind="NodeFlag" Name="LFO" Category="Animation" />
+        </p:NodeReference>
+        <Pin Id="nw5bkriUCMW2IqE0iI7Nsa" Name="Period" Kind="InputPin" DefaultValue="19.0" />
+        <Pin Id="rV94NBKWb57lx5DMpUC4Bf" Name="Phase" Kind="OutputPin" />
+        <Pin Id="pNVV34HSpNzD1ztMkVqs9d" Name="Cycles" Kind="OutputPin" />
+      </Node>
+      <Node Id="CmRJn5zAuDnFDYbfBJoQaA" Bounds="260,270,115,19" Kind="NodeFlag" Name="OSCClient">
+        <p:NodeReference LastCategoryFullName="IO.OSC">
+          <Choice Kind="NodeFlag" Name="OSCClient" Category="IO.OSC" />
+        </p:NodeReference>
+        <Pin Id="iQDWcMZ46Hq17TfEpcCgDG" Name="Server" Kind="InputPin" DefaultValue="127.0.0.1" />
+        <Pin Id="FSs8j7DXbcwFu5eonsmT2P" Name="Port" Kind="InputPin" DefaultValue="7000" />
+        <Pin Id="jRq2Cv9qJrQnfQCB57iMCA" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Link Id="C9A4EcgYrS61nL4YR90Ylw" Ids="BJ6hmuB378cVQT9DwKVAyp,EazlXqBH4zjMsMlYhAv3Zz" />
+      <Link Id="eMXWnxQcwck14EF8oGaVFv" Ids="dgC53z2wvOPcQZIkW2wdOw,8r8pWM8WfUhMEc2RBI17Iq" />
+      <Link Id="VWCEdF2t72N4s1jU1X27s0" Ids="LxmHKkfU5aVICen6cD46Oy,nw5bkriUCMW2IqE0iI7Nsa" />
+    </Canvas>
+  </Patch>
+</Document>

@@ -1,0 +1,111 @@
+{
+  "schema": "mo360.td.tox_manifest.v1",
+  "project_name": "course02_projection_mapping_scanner",
+  "title": "Course 02: Real Ideas LiDAR Point Cloud + CamSchnappr & KantanMapper Rig",
+  "description": "Loads .ply/.xyz LiDAR scans via Point File In TOP, calibrates 3D projector frustum, and outputs Kantan-style architectural masks.",
+  "parent_path": "/project1",
+  "fps": 60,
+  "ports": {
+    "webserver_http": 9980,
+    "osc_in": 9000,
+    "osc_out": 9001
+  },
+  "operators": [
+    {
+      "name": "lidar_pointfile",
+      "op_type": "pointfileinTOP",
+      "nodeX": 0,
+      "nodeY": 220,
+      "params": {
+        "file": "scan_guildhall.ply"
+      },
+      "comment": "LiDAR .ply/.xyz Loader"
+    },
+    {
+      "name": "point_transform",
+      "op_type": "pointtransformTOP",
+      "nodeX": 250,
+      "nodeY": 220,
+      "params": {
+        "sx": 1.0,
+        "sy": 1.0,
+        "sz": 1.0
+      },
+      "comment": "Scale & Orient Point Cloud"
+    },
+    {
+      "name": "camschnappr_calib",
+      "op_type": "baseCOMP",
+      "nodeX": 500,
+      "nodeY": 220,
+      "params": {},
+      "comment": "CamSchnappr 3D Calibration Stage"
+    },
+    {
+      "name": "kantan_mapper",
+      "op_type": "baseCOMP",
+      "nodeX": 500,
+      "nodeY": 50,
+      "params": {},
+      "comment": "KantanMapper 2D Architectural Masking"
+    },
+    {
+      "name": "render_projector",
+      "op_type": "renderTOP",
+      "nodeX": 760,
+      "nodeY": 220,
+      "params": {
+        "resolutionw": 3840,
+        "resolutionh": 2160
+      },
+      "comment": "4K Projector Output Render"
+    },
+    {
+      "name": "edge_blend_level",
+      "op_type": "levelTOP",
+      "nodeX": 1010,
+      "nodeY": 220,
+      "params": {
+        "gamma1": 1.08,
+        "blacklevel": 0.01
+      },
+      "comment": "Soft-Edge Projector Blending"
+    },
+    {
+      "name": "ndi_projector",
+      "op_type": "ndiOutTOP",
+      "nodeX": 1250,
+      "nodeY": 220,
+      "params": {
+        "name": "MO360_PROJECTOR_4K"
+      },
+      "comment": "NDI Projector Feed"
+    }
+  ],
+  "connections": [
+    {
+      "src": "lidar_pointfile",
+      "dst": "point_transform",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "point_transform",
+      "dst": "render_projector",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "render_projector",
+      "dst": "edge_blend_level",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "edge_blend_level",
+      "dst": "ndi_projector",
+      "output_index": 0,
+      "input_index": 0
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "schema": "mo360.td.tox_manifest.v1",
+  "project_name": "course04_interactive_sensors_pervasive",
+  "title": "Course 04: MediaPipe / Depth Body Tracking + Hysteresis Smoothing & OSC Out",
+  "description": "Captures webcam/depth tracking, applies Lag/Filter CHOP hysteresis smoothing, and broadcasts /sensor/skeleton OSC to UE 5.8 & vvvv.",
+  "parent_path": "/project1",
+  "fps": 60,
+  "ports": {
+    "webserver_http": 9980,
+    "osc_in": 9000,
+    "osc_out": 9001
+  },
+  "operators": [
+    {
+      "name": "cam_depth_in",
+      "op_type": "videodeviceinTOP",
+      "nodeX": 0,
+      "nodeY": 220,
+      "params": {
+        "resolutionw": 1280,
+        "resolutionh": 720
+      },
+      "comment": "Webcam / Depth Sensor Input"
+    },
+    {
+      "name": "blob_track",
+      "op_type": "blobtrackTOP",
+      "nodeX": 240,
+      "nodeY": 220,
+      "params": {
+        "threshold": 0.42
+      },
+      "comment": "Visitor Silhouette & Centroid Tracker"
+    },
+    {
+      "name": "osc_sensor_in",
+      "op_type": "oscinCHOP",
+      "nodeX": 0,
+      "nodeY": 40,
+      "params": {
+        "port": 9002
+      },
+      "comment": "External MediaPipe / LiDAR OSC"
+    },
+    {
+      "name": "filter_smooth",
+      "op_type": "filterCHOP",
+      "nodeX": 260,
+      "nodeY": 40,
+      "params": {
+        "filterwidth": 0.25
+      },
+      "comment": "Jitter Removal Filter CHOP"
+    },
+    {
+      "name": "lag_hysteresis",
+      "op_type": "lagCHOP",
+      "nodeX": 480,
+      "nodeY": 40,
+      "params": {
+        "lag1": 0.18,
+        "lag2": 0.45
+      },
+      "comment": "Asymmetric Rise/Fall Hysteresis"
+    },
+    {
+      "name": "logic_presence",
+      "op_type": "logicCHOP",
+      "nodeX": 700,
+      "nodeY": 40,
+      "params": {
+        "preop": "off",
+        "bound": true
+      },
+      "comment": "Presence Trigger Gate"
+    },
+    {
+      "name": "osc_out_ue",
+      "op_type": "oscoutCHOP",
+      "nodeX": 930,
+      "nodeY": 120,
+      "params": {
+        "address": "127.0.0.1",
+        "port": 7000
+      },
+      "comment": "Send /sensor/skeleton to UE 5.8"
+    },
+    {
+      "name": "osc_out_vvvv",
+      "op_type": "oscoutCHOP",
+      "nodeX": 930,
+      "nodeY": -40,
+      "params": {
+        "address": "127.0.0.1",
+        "port": 8000
+      },
+      "comment": "Send /sensor/skeleton to vvvv 4V"
+    }
+  ],
+  "connections": [
+    {
+      "src": "cam_depth_in",
+      "dst": "blob_track",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "osc_sensor_in",
+      "dst": "filter_smooth",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "filter_smooth",
+      "dst": "lag_hysteresis",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "lag_hysteresis",
+      "dst": "logic_presence",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "logic_presence",
+      "dst": "osc_out_ue",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "logic_presence",
+      "dst": "osc_out_vvvv",
+      "output_index": 0,
+      "input_index": 0
+    }
+  ]
+}

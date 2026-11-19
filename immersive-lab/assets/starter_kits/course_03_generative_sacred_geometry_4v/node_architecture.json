@@ -1,0 +1,54 @@
+{
+  "course_id": "03",
+  "title": "Generative 3D Sacred Geometry & vvvv gamma (4V)",
+  "nodes": [
+    {
+      "id": "td_chop",
+      "engine": "TD",
+      "type": "CHOP",
+      "label": "Pattern CHOP (8/10/12-Fold)"
+    },
+    {
+      "id": "td_geo",
+      "engine": "TD",
+      "type": "COMP",
+      "label": "Geometry COMP GPU Instancing"
+    },
+    {
+      "id": "vv_foreach",
+      "engine": "vvvv",
+      "type": "Region",
+      "label": "ForEach Spread + VL.Fuse TorusSDF"
+    },
+    {
+      "id": "vv_ray",
+      "engine": "vvvv",
+      "type": "Stride",
+      "label": "Raymarch -> VL.Stride SceneWindow"
+    },
+    {
+      "id": "ue_niagara",
+      "engine": "UE5.8",
+      "type": "Niagara",
+      "label": "NS_SacredGeometry_Orbit (12-Fold)"
+    }
+  ],
+  "edges": [
+    [
+      "td_chop",
+      "td_geo"
+    ],
+    [
+      "td_geo",
+      "vv_foreach"
+    ],
+    [
+      "vv_foreach",
+      "vv_ray"
+    ],
+    [
+      "vv_ray",
+      "ue_niagara"
+    ]
+  ]
+}

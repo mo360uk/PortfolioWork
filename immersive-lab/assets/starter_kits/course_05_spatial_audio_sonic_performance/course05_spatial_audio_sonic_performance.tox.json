@@ -1,0 +1,127 @@
+{
+  "schema": "mo360.td.tox_manifest.v1",
+  "project_name": "course05_spatial_audio_sonic_performance",
+  "title": "Course 05: 36.4 Spatial Audio Spectrum Extractor & 4-7-8 Respiratory LFO",
+  "description": "Splits audio into Sub-Bass (20-80Hz), Warm Mid (200-800Hz), and Air (4-12kHz) bands synced to a 19-second 4-7-8 breath envelope.",
+  "parent_path": "/project1",
+  "fps": 60,
+  "ports": {
+    "webserver_http": 9980,
+    "osc_in": 9000,
+    "osc_out": 9001
+  },
+  "operators": [
+    {
+      "name": "audio_in",
+      "op_type": "audiodeviceinCHOP",
+      "nodeX": 0,
+      "nodeY": 260,
+      "params": {},
+      "comment": "Live Microphone / DAW Input"
+    },
+    {
+      "name": "audio_spectrum",
+      "op_type": "audiospectrumCHOP",
+      "nodeX": 230,
+      "nodeY": 260,
+      "params": {
+        "fftsize": 4096
+      },
+      "comment": "4096-Bin FFT Spectrum"
+    },
+    {
+      "name": "band_subbass",
+      "op_type": "analyzeCHOP",
+      "nodeX": 470,
+      "nodeY": 340,
+      "params": {
+        "function": "rms"
+      },
+      "comment": "Sub-Bass Energy (20-80Hz)"
+    },
+    {
+      "name": "band_mid",
+      "op_type": "analyzeCHOP",
+      "nodeX": 470,
+      "nodeY": 200,
+      "params": {
+        "function": "rms"
+      },
+      "comment": "Warm Mid Energy (200-800Hz)"
+    },
+    {
+      "name": "breath_478_lfo",
+      "op_type": "lfoCHOP",
+      "nodeX": 230,
+      "nodeY": 40,
+      "params": {
+        "frequency": 0.05263,
+        "type": "sin"
+      },
+      "comment": "19s 4-7-8 Respiratory Cycle (0.0526Hz)"
+    },
+    {
+      "name": "merge_telemetry",
+      "op_type": "mergeCHOP",
+      "nodeX": 720,
+      "nodeY": 200,
+      "params": {},
+      "comment": "Unified Audio + Breath Telemetry"
+    },
+    {
+      "name": "osc_metasound",
+      "op_type": "oscoutCHOP",
+      "nodeX": 960,
+      "nodeY": 200,
+      "params": {
+        "address": "127.0.0.1",
+        "port": 7000
+      },
+      "comment": "Drive UE 5.8 MetaSounds & vvvv"
+    }
+  ],
+  "connections": [
+    {
+      "src": "audio_in",
+      "dst": "audio_spectrum",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "audio_spectrum",
+      "dst": "band_subbass",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "audio_spectrum",
+      "dst": "band_mid",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "band_subbass",
+      "dst": "merge_telemetry",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "band_mid",
+      "dst": "merge_telemetry",
+      "output_index": 0,
+      "input_index": 1
+    },
+    {
+      "src": "breath_478_lfo",
+      "dst": "merge_telemetry",
+      "output_index": 0,
+      "input_index": 2
+    },
+    {
+      "src": "merge_telemetry",
+      "dst": "osc_metasound",
+      "output_index": 0,
+      "input_index": 0
+    }
+  ]
+}

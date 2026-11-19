@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns:p="property" xmlns:r="reflection" Id="v761xByYDQ6qCK751mS3e0" LanguageVersion="2024.6.7" Version="0.128">
+  <!-- Course 01 vvvv gamma Domemaster Preview & OSC Sync — Receives 4096x4096 Spout/NDI Domemaster & syncs Market Hall Dome horizon orientation via OSC. -->
+  <NugetDependency Id="BUCXOSSanBR0bhXpc0J7gg" Location="VL.CoreLib" Version="2024.6.7" />
+  <NugetDependency Id="TMq2955BYoxjJTMLIMWwR9" Location="VL.Stride" Version="2024.6.7" />
+  <NugetDependency Id="RmMrDzVwgURhkSo358VF62" Location="VL.IO.OSC" Version="2.0.0" />
+  <Patch Id="DMzrOojT223n3rKQxQF3Ic" Name="Course01_Fulldome_Domemaster">
+    <Canvas Id="eiS6qPr6v0ptk3iqw1xxz0" Name="Main" Position="0,0">
+      <Pad Id="TkfYWX9Qm2YK85Mq6O8KMg" Comment="OSC_Port" Bounds="80,80,55,15" ShowValueBox="true" isIOBox="true" Value="8000">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Integer32" Id="HQ7COMLeuW0QZLSIcJxTV1" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="Pyn6Y2PkesQVxvla84CRQF" Name="Value" Kind="OutputPin" Bounds="80,80" />
+      </Pad>
+      <Pad Id="PYhqsTifBe2xMpdLFisAmT" Comment="Dome_FOV_Deg" Bounds="260,80,55,15" ShowValueBox="true" isIOBox="true" Value="180">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="zLZ1Cjo2WJDH6rGIFJa9Di" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="kqBRXLBNmsM7AyXbah0rmC" Name="Value" Kind="OutputPin" Bounds="260,80" />
+      </Pad>
+      <Node Id="smPrasX32A16eRYO50iDNJ" Bounds="80,160,115,19" Kind="NodeFlag" Name="OSCServer">
+        <p:NodeReference LastCategoryFullName="IO.OSC">
+          <Choice Kind="NodeFlag" Name="OSCServer" Category="IO.OSC" />
+        </p:NodeReference>
+        <Pin Id="pgqR4ndhn0UPT03GyMOa1M" Name="Port" Kind="InputPin" DefaultValue="8000" />
+        <Pin Id="gGTlWfjcg9Y1qifoHuyW5m" Name="Enabled" Kind="InputPin" DefaultValue="true" />
+        <Pin Id="t3NeFZGcfBuhTyLLYmSF2A" Name="Data" Kind="OutputPin" />
+        <Pin Id="VBCAnFiInJNeE2ME9gMoFu" Name="Is Open" Kind="OutputPin" />
+      </Node>
+      <Node Id="u1FOVehm49eQpYNd6BjB0l" Bounds="260,160,110,19" Kind="NodeFlag" Name="Sphere">
+        <p:NodeReference LastCategoryFullName="Stride.Models">
+          <Choice Kind="NodeFlag" Name="Sphere" Category="Stride.Models" />
+        </p:NodeReference>
+        <Pin Id="DCT2yJWT6N3RRLlVINFcWY" Name="Radius" Kind="InputPin" DefaultValue="7.5" />
+        <Pin Id="4VGSx97bIZPv23CaPboT0K" Name="Tessellation" Kind="InputPin" DefaultValue="64" />
+        <Pin Id="vsw0UevK1ki3scoyWBwsP8" Name="Entity" Kind="OutputPin" />
+      </Node>
+      <Node Id="2lu6O6toQB6H2UBA7eAkuh" Bounds="260,260,115,19" Kind="NodeFlag" Name="RootScene">
+        <p:NodeReference LastCategoryFullName="Stride">
+          <Choice Kind="NodeFlag" Name="RootScene" Category="Stride" />
+        </p:NodeReference>
+        <Pin Id="8dlO3o8tkUqeL9o8CcL7DW" Name="Children" Kind="InputPin" />
+        <Pin Id="jYj6RaS9MCzuAjk55u3i1R" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="P6Vs5EcIy5zWFR9UjXELrN" Bounds="260,340,120,19" Kind="NodeFlag" Name="SceneWindow">
+        <p:NodeReference LastCategoryFullName="Stride">
+          <Choice Kind="NodeFlag" Name="SceneWindow" Category="Stride" />
+        </p:NodeReference>
+        <Pin Id="39XINI5G5FBqpUMuiRqWgA" Name="Scene" Kind="InputPin" />
+        <Pin Id="9dQ2kHbOrGV56wIjlbiRb7" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Link Id="UTzWAVN8yDcDh27tU0i7TR" Ids="Pyn6Y2PkesQVxvla84CRQF,pgqR4ndhn0UPT03GyMOa1M" />
+      <Link Id="yX11KuVvhB623LYmbbrfC6" Ids="vsw0UevK1ki3scoyWBwsP8,8dlO3o8tkUqeL9o8CcL7DW" />
+      <Link Id="s1Bdj3RToa61bJ1k7PRWsJ" Ids="jYj6RaS9MCzuAjk55u3i1R,39XINI5G5FBqpUMuiRqWgA" />
+    </Canvas>
+  </Patch>
+</Document>

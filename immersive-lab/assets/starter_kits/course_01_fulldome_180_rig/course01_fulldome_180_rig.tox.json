@@ -1,0 +1,159 @@
+{
+  "schema": "mo360.td.tox_manifest.v1",
+  "project_name": "course01_fulldome_180_rig",
+  "title": "Course 01: Market Hall Dome 180-deg Equidistant Domemaster Rig",
+  "description": "4096x4096 CubeMap to 180-deg Equidistant Fisheye pipeline + Spout2/NDI & OSC bridge.",
+  "parent_path": "/project1",
+  "fps": 60,
+  "ports": {
+    "webserver_http": 9980,
+    "osc_in": 9000,
+    "osc_out": 9001
+  },
+  "operators": [
+    {
+      "name": "geo_dome_world",
+      "op_type": "geometryCOMP",
+      "nodeX": 0,
+      "nodeY": 220,
+      "params": {
+        "tx": 0,
+        "ty": 0,
+        "tz": 0
+      },
+      "comment": "3D Scene Geometry"
+    },
+    {
+      "name": "cam_zenith",
+      "op_type": "cameraCOMP",
+      "nodeX": 0,
+      "nodeY": 60,
+      "params": {
+        "rx": 90,
+        "fov": 90
+      },
+      "comment": "Zenith Rig Camera"
+    },
+    {
+      "name": "light_key",
+      "op_type": "lightCOMP",
+      "nodeX": 0,
+      "nodeY": -90,
+      "params": {
+        "dimmer": 1.4
+      },
+      "comment": "Warm Sanctuary Key Light"
+    },
+    {
+      "name": "render_cubemap",
+      "op_type": "renderTOP",
+      "nodeX": 260,
+      "nodeY": 220,
+      "params": {
+        "resolutionw": 2048,
+        "resolutionh": 2048,
+        "rendermode": "cubemap"
+      },
+      "comment": "CubeMap 6-Face Render"
+    },
+    {
+      "name": "proj_equidistant",
+      "op_type": "projectionTOP",
+      "nodeX": 520,
+      "nodeY": 220,
+      "params": {
+        "input": "cubemap",
+        "output": "fisheye",
+        "fisheyefov": 180,
+        "resolutionw": 4096,
+        "resolutionh": 4096
+      },
+      "comment": "180-deg Equidistant Fisheye"
+    },
+    {
+      "name": "dome_circle_mask",
+      "op_type": "circleTOP",
+      "nodeX": 520,
+      "nodeY": 40,
+      "params": {
+        "radiusx": 0.5,
+        "radiusy": 0.5,
+        "resolutionw": 4096,
+        "resolutionh": 4096
+      },
+      "comment": "Springline Mask"
+    },
+    {
+      "name": "comp_domemaster",
+      "op_type": "compositeTOP",
+      "nodeX": 780,
+      "nodeY": 220,
+      "params": {
+        "operand": "multiply"
+      },
+      "comment": "Clean Circular Domemaster"
+    },
+    {
+      "name": "spout_domemaster",
+      "op_type": "spoutOutTOP",
+      "nodeX": 1040,
+      "nodeY": 280,
+      "params": {
+        "sendername": "MO360_DOMEMASTER_4K"
+      },
+      "comment": "Spout2 4K Dome Output"
+    },
+    {
+      "name": "ndi_domemaster",
+      "op_type": "ndiOutTOP",
+      "nodeX": 1040,
+      "nodeY": 120,
+      "params": {
+        "name": "MO360_DOMEMASTER_NDI"
+      },
+      "comment": "NDI 4K Dome Output"
+    },
+    {
+      "name": "osc_in_ue",
+      "op_type": "oscinCHOP",
+      "nodeX": 260,
+      "nodeY": -140,
+      "params": {
+        "port": 9000
+      },
+      "comment": "OSC Telemetry from UE 5.8"
+    }
+  ],
+  "connections": [
+    {
+      "src": "render_cubemap",
+      "dst": "proj_equidistant",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "proj_equidistant",
+      "dst": "comp_domemaster",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "dome_circle_mask",
+      "dst": "comp_domemaster",
+      "output_index": 0,
+      "input_index": 1
+    },
+    {
+      "src": "comp_domemaster",
+      "dst": "spout_domemaster",
+      "output_index": 0,
+      "input_index": 0
+    },
+    {
+      "src": "comp_domemaster",
+      "dst": "ndi_domemaster",
+      "output_index": 0,
+      "input_index": 0
+    }
+  ]
+}

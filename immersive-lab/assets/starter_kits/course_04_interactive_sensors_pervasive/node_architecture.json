@@ -1,0 +1,54 @@
+{
+  "course_id": "04",
+  "title": "Interactive Sensors, Body Tracking & Pervasive Media",
+  "nodes": [
+    {
+      "id": "td_cam",
+      "engine": "TD",
+      "type": "TOP",
+      "label": "Video/Depth + BlobTrack TOP"
+    },
+    {
+      "id": "td_lag",
+      "engine": "TD",
+      "type": "CHOP",
+      "label": "Filter CHOP + Lag CHOP Hysteresis"
+    },
+    {
+      "id": "td_osc",
+      "engine": "TD",
+      "type": "CHOP",
+      "label": "OSC Out CHOP (UE:7000 / vvvv:8000)"
+    },
+    {
+      "id": "ue_mpc",
+      "engine": "UE5.8",
+      "type": "MPC",
+      "label": "MPC_SensorTracking + TargetPoint"
+    },
+    {
+      "id": "vv_sm",
+      "engine": "vvvv",
+      "type": "Skia",
+      "label": "Damper + Presence State Machine"
+    }
+  ],
+  "edges": [
+    [
+      "td_cam",
+      "td_lag"
+    ],
+    [
+      "td_lag",
+      "td_osc"
+    ],
+    [
+      "td_osc",
+      "ue_mpc"
+    ],
+    [
+      "td_osc",
+      "vv_sm"
+    ]
+  ]
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns:p="property" xmlns:r="reflection" Id="Rfl5v630oSRF46llr1s0Sv" LanguageVersion="2024.6.7" Version="0.128">
+  <!-- Course 02 vvvv gamma Point Cloud Projector Mapper — Ingests 3D architectural point coordinates and renders calibrated projector viewports with VL.Stride. -->
+  <NugetDependency Id="ATBjLFfWYLP2TTdJ54KfaD" Location="VL.CoreLib" Version="2024.6.7" />
+  <NugetDependency Id="v0bHwHXahPcOhjKpKDY3z2" Location="VL.Stride" Version="2024.6.7" />
+  <NugetDependency Id="uEHCBkvR7roRWCCAAUze5S" Location="VL.Skia" Version="2024.6.7" />
+  <NugetDependency Id="btjKJ1q2JDkgts8Yd2Md1u" Location="VL.IO.OSC" Version="2.0.0" />
+  <Patch Id="5eLpMvw6ZtZSdilVg8NvdS" Name="Course02_PointCloud_Projector">
+    <Canvas Id="95l2D1z4NYhSH52OTUVvfh" Name="Main" Position="0,0">
+      <Pad Id="PCpxmreXZetjoMZwD9l9zP" Comment="Point_Scale" Bounds="80,90,55,15" ShowValueBox="true" isIOBox="true" Value="0.025">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="Iqy0S6e5ZSaETOFQgibsBC" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="Ufn7uc2AZrOrDjNlsAohb5" Name="Value" Kind="OutputPin" Bounds="80,90" />
+      </Pad>
+      <Pad Id="AhcIciD5l3kMfFNcUHO0ln" Comment="Projector_FOV" Bounds="260,90,55,15" ShowValueBox="true" isIOBox="true" Value="42.0">
+        <p:TypeAnnotation LastCategoryFullName="Primitive">
+          <Choice Kind="TypeFlag" Name="Float32" Id="C5k4lqgog0VpCIHTs2vsel" />
+        </p:TypeAnnotation>
+        <p:ValueBoxSettings p:ShowSlider="false" />
+        <Pin Id="zj9Rqe6NAgarvfVdkTu5xd" Name="Value" Kind="OutputPin" Bounds="260,90" />
+      </Pad>
+      <Node Id="ewurPDCv4PN7XcJZNA0WzM" Bounds="80,180,120,19" Kind="NodeFlag" Name="PointBuffer">
+        <p:NodeReference LastCategoryFullName="Stride.Buffers">
+          <Choice Kind="NodeFlag" Name="PointBuffer" Category="Stride.Buffers" />
+        </p:NodeReference>
+        <Pin Id="vBmnsOE5ebgEURXNDxcZrY" Name="Element Count" Kind="InputPin" DefaultValue="65536" />
+        <Pin Id="O1eMIYuLAOEMSrIb7mu2eF" Name="Buffer" Kind="OutputPin" />
+      </Node>
+      <Node Id="IJBLewKPBUhLXEO6s8B9D0" Bounds="260,180,130,19" Kind="NodeFlag" Name="MeshRenderer">
+        <p:NodeReference LastCategoryFullName="Stride.Rendering">
+          <Choice Kind="NodeFlag" Name="MeshRenderer" Category="Stride.Rendering" />
+        </p:NodeReference>
+        <Pin Id="fUGJU4Lnbb0GxBKoKqudIs" Name="Point Size" Kind="InputPin" DefaultValue="0.025" />
+        <Pin Id="TSEbaA4lo0LIPwl2UNRscc" Name="Renderer" Kind="OutputPin" />
+      </Node>
+      <Node Id="38OLnBMHoHdDpHwMKxE28i" Bounds="440,180,110,19" Kind="NodeFlag" Name="Camera">
+        <p:NodeReference LastCategoryFullName="Stride.Cameras">
+          <Choice Kind="NodeFlag" Name="Camera" Category="Stride.Cameras" />
+        </p:NodeReference>
+        <Pin Id="PO77uWlNeH0CXzvJa72Xnt" Name="FOV" Kind="InputPin" DefaultValue="42.0" />
+        <Pin Id="T9a6klWQ0SmLVL8HrwvL6z" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Node Id="WZQ38nEoKeGb4ZGscjUgVe" Bounds="260,300,125,19" Kind="NodeFlag" Name="RenderWindow">
+        <p:NodeReference LastCategoryFullName="Stride">
+          <Choice Kind="NodeFlag" Name="RenderWindow" Category="Stride" />
+        </p:NodeReference>
+        <Pin Id="wYUzONtwPIcb7Vq30auQ2J" Name="Renderer" Kind="InputPin" />
+        <Pin Id="oyz89Nc07bGCuQwRVUDHgn" Name="Output" Kind="OutputPin" />
+      </Node>
+      <Link Id="JXPp4C18MlI5Ln9P3Ibyk4" Ids="Ufn7uc2AZrOrDjNlsAohb5,fUGJU4Lnbb0GxBKoKqudIs" />
+      <Link Id="WGBNyjFzO3wJvSHZYELx6R" Ids="zj9Rqe6NAgarvfVdkTu5xd,PO77uWlNeH0CXzvJa72Xnt" />
+      <Link Id="l5fISQsSF1Od3RR6YYM7ey" Ids="TSEbaA4lo0LIPwl2UNRscc,wYUzONtwPIcb7Vq30auQ2J" />
+    </Canvas>
+  </Patch>
+</Document>
