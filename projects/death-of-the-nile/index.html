@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Death of the Nile: Fulldome UK Cinema Work · Mo360 Immersive Studio</title>
+  <meta name="description" content="Description, concept, MRes research, and complete start to finish production process for Death of the Nile exhibited at Fulldome UK." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/mo360-unified-theme.css" />
+  <style>
+
+    :root {
+      --bg: #08090c;
+      --surface: #15181f;
+      --surface-2: #222630;
+      --ochre: #F59E0B;
+      --ochre-dark: #d97706;
+      --white: #ffffff;
+      --muted: #b4bac6;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    .proj-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 104px 24px 80px;
+    }
+    .proj-kicker {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--ochre);
+      color: #08090c;
+      padding: 6px 12px;
+      margin-bottom: 16px;
+    }
+    .proj-kicker-dark {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--surface-2);
+      color: var(--ochre);
+      padding: 6px 12px;
+      margin-bottom: 16px;
+      margin-left: 8px;
+    }
+    .proj-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      line-height: 0.96;
+      letter-spacing: 0.03em;
+      margin: 0 0 18px;
+      color: var(--white);
+    }
+    .proj-lead {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0 0 28px;
+    }
+    .proj-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .proj-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ochre);
+      color: #08090c;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 22px;
+      border: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .proj-btn-primary:hover { background: var(--ochre-dark); transform: translateY(-1px); }
+    .proj-btn-sec {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 22px;
+      border: none;
+      transition: background 0.2s ease;
+    }
+    .proj-btn-sec:hover { background: #2d3340; }
+    .proj-hero-media {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--surface);
+      overflow: hidden;
+      margin-bottom: 56px;
+      position: relative;
+    }
+    .proj-hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .proj-hero-caption {
+      position: absolute;
+      left: 0; bottom: 0;
+      background: rgba(8, 9, 12, 0.88);
+      color: var(--ochre);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+    }
+    .proj-section {
+      margin-bottom: 64px;
+    }
+    .proj-sec-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 8px;
+    }
+    .proj-h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.02;
+      letter-spacing: 0.03em;
+      margin: 0 0 24px;
+      color: var(--white);
+    }
+    .proj-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .proj-card {
+      background: var(--surface);
+      padding: 28px;
+      border: none;
+    }
+    .proj-card-accent {
+      background: var(--surface-2);
+      padding: 28px;
+      border: none;
+      border-left: 4px solid var(--ochre);
+    }
+    .proj-card h3, .proj-card-accent h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.04em;
+      margin: 0 0 12px;
+      color: var(--white);
+    }
+    .proj-card p, .proj-card-accent p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .proj-card p:last-child, .proj-card-accent p:last-child { margin-bottom: 0; }
+    .proj-research-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .proj-stat-card {
+      background: var(--surface);
+      padding: 22px;
+      border: none;
+    }
+    .proj-stat-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ochre);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .proj-stat-card h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 8px;
+      color: var(--white);
+    }
+    .proj-stat-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .stage-row {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .stage-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .stage-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .stage-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--ochre);
+      color: #08090c;
+      padding: 4px 10px;
+    }
+    .stage-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--surface-2);
+      color: var(--white);
+      padding: 4px 10px;
+    }
+    .stage-body h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.85rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 10px;
+      color: var(--white);
+    }
+    .stage-body p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+    .stage-outcome {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--ochre);
+      background: var(--surface-2);
+      padding: 10px 14px;
+      margin-top: 4px;
+    }
+    .stage-media {
+      background: var(--surface-2);
+      min-height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .stage-media iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      border: none;
+      display: block;
+    }
+    .proj-next-bar {
+      background: var(--surface-2);
+      padding: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .proj-next-bar h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      margin: 4px 0 0;
+      color: var(--white);
+    }
+    .proj-footer {
+      border-top: 1px solid #222630;
+      padding: 28px 24px 48px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    @media (max-width: 900px) {
+      .proj-two-col, .proj-research-grid, .stage-row {
+        grid-template-columns: 1fr;
+      }
+      .stage-media { min-height: 210px; aspect-ratio: 16 / 10; }
+    }
+    @media (max-width: 600px) {
+      .proj-wrap { padding: 88px 16px 56px; }
+      .proj-card, .proj-card-accent, .stage-body, .proj-next-bar { padding: 20px; }
+      .proj-kicker-dark { margin-left: 0; margin-top: 6px; }
+      .proj-actions a { width: 100%; justify-content: center; }
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
+  <a href="../../index.html" class="mo360-nav-brand">
+    <img src="../../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Official Emblem" />
+    <span class="mo360-brand-stack">
+      <span class="mo360-brand-row">
+        <span class="mo360-brand-main">MO360</span>
+        <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+      </span>
+      <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+    </span>
+  </a>
+  <ul class="mo360-nav-links">
+    <li><a href="../../index.html#latest-works" class="active">Projects</a></li>
+    <li><a href="../../immersive-lab/">Media Lab</a></li>
+    <li><a href="../../creative-coding-plymouth/">Creative Coding</a></li>
+    <li><a href="../../tours/">Immersive Tours</a></li>
+    <li><a href="../../index.html#contact" class="cta">Book / Contact</a></li>
+  </ul>
+  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mo360-drawer" id="mo360Drawer">
+  <a href="../../index.html">Mo360 Immersive Studio Home</a>
+  <a href="../../projects/plymouth-chronicles/">01 · Plymouth Chronicles 3D</a>
+  <a href="../../projects/tavistock-heritage-vr/">02 · Tavistock Heritage VR</a>
+  <a href="../../projects/tawaf-sanctuary/">03 · TAWAF Healing Sanctuary</a>
+  <a href="../../projects/death-of-the-nile/">04 · Death of the Nile (Fulldome)</a>
+  <a href="../../immersive-lab/">Mo360 Immersive Media Lab</a>
+  <a href="../../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../../tours/">Mo360 Immersive Tours</a>
+  <a href="../../index.html#contact" style="background:#F59E0B;color:#08090c;">Book a Project or Commission</a>
+</div>
+
+  <main class="proj-wrap">
+    <div>
+      <span class="proj-kicker">COMPLETED PROJECT · EXHIBITED WORK</span>
+      <span class="proj-kicker-dark">FULLDOME UK FESTIVAL · MRES DIGITAL ARTS</span>
+    </div>
+    <h1 class="proj-h1">Death of the Nile: Fulldome UK Cinema Work</h1>
+    <p class="proj-lead">An exhibited 180 degree fulldome cinema work translating Nile Basin climate change and water scarcity into an enveloping spatial experience built in Unreal Engine.</p>
+    <div class="proj-actions">
+      <a href="#process-timeline" class="proj-btn-primary">Watch Fulldome Preview Below</a>
+<a href="../../lab/" class="proj-btn-sec">Explore Fulldome R&D Dossier</a>
+<a href="../../index.html#latest-works" class="proj-btn-sec">Back to All Projects</a>
+    </div>
+
+    <div class="proj-hero-media">
+      <img src="../../assets/death_of_the_nile_dome_preview.jpg" alt="Death of the Nile 180 degree fulldome cinema projection frame" />
+      <div class="proj-hero-caption">DEATH OF THE NILE (2022) · EXHIBITED AT FULLDOME UK FESTIVAL</div>
+    </div>
+
+    <section class="proj-section" id="description-concept">
+      <div class="proj-sec-label">01 · OVERVIEW &amp; ARTISTIC DIRECTION</div>
+      <h2 class="proj-h2">DESCRIPTION &amp; CONCEPT</h2>
+      <div class="proj-two-col">
+        <div class="proj-card">
+          <h3>Project Description</h3>
+          <p>Death of the Nile (2022) is a completed 180 degree fulldome film and interactive spatial work created as my MRes Digital Arts thesis with i-DAT at the University of Plymouth and exhibited at the Fulldome UK Festival.</p>
+<p>Placing the audience directly inside the shifting landscape of the Nile River, the work transforms hydrological climate data, rising heat, and diminishing water levels into a physical, surround visual and acoustic experience.</p>
+        </div>
+        <div class="proj-card-accent">
+          <h3>Artistic Concept</h3>
+          <p>Growing up connected to the Nile shapes how you understand a river. It is not background scenery; it is living memory, agriculture, architecture, and daily survival for millions of people.</p>
+<p>The artistic concept was to move climate crisis storytelling out of flat charts and distant news reports into a shared dome cinema where viewers feel the river rising, drying, and fracturing overhead.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proj-section" id="research-foundation">
+      <div class="proj-sec-label">02 · PRACTICE LED INQUIRY</div>
+      <h2 class="proj-h2">RESEARCH FOUNDATION</h2>
+      <p class="proj-lead" style="margin-bottom:20px;">Developed through formal MRes Digital Arts academic research with i-DAT in Plymouth, combining hydrological environmental data with real time 180 degree spherical dome cinema production.</p>
+      <div class="proj-research-grid">
+        <div class="proj-stat-card">
+          <div class="proj-stat-num">01 · CLIMATE & RIVER DATA</div>
+          <h4>Nile Basin Water Scarcity</h4>
+          <p>Examined hydrological flow shifts, upstream infrastructure pressure, evaporation rates, and ecological vulnerability across the Nile corridor.</p>
+        </div>
+<div class="proj-stat-card">
+          <div class="proj-stat-num">02 · FULLDOME CINEMA GRAMMAR</div>
+          <h4>180° Spherical Framing</h4>
+          <p>Researched how horizon placement, zenith tension, and camera velocity behave inside a hemispherical theatre without causing audience disorientation.</p>
+        </div>
+<div class="proj-stat-card">
+          <div class="proj-stat-num">03 · REAL TIME ENGINE PIPELINE</div>
+          <h4>Unreal Engine Domemaster</h4>
+          <p>Built a complete real time Unreal Engine rendering workflow capable of outputting crisp 180 degree equidistant fisheye masters for festival projection.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proj-section" id="process-timeline">
+      <div class="proj-sec-label">03 · PROCESS FROM START TO FINISH</div>
+      <h2 class="proj-h2">COMPLETE PRODUCTION JOURNEY (START TO EXHIBITION)</h2>
+      <div class="stage-list">
+        
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STEP 01</span>
+              <span class="stage-status">START · RESEARCH</span>
+            </div>
+            <h3>MRes Thesis Framing & Environmental Data Collection</h3>
+            <p>Established the academic and artistic thesis with i-DAT at the University of Plymouth, gathering Nile Basin climate projections, historic river imagery, and acoustic references to anchor the narrative in real ecological urgency.</p>
+            <div class="stage-outcome">MILESTONE: Approved MRes research framework and spatial storyboard for 180 degree dome narration.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../assets/death_of_the_nile_dome_preview.jpg" alt="Death of the Nile conceptual dome framing" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STEP 02</span>
+              <span class="stage-status">PRODUCTION · 3D WORLD</span>
+            </div>
+            <h3>Real Time Unreal Engine Landscape & Water Simulation</h3>
+            <p>Constructed the river basin topography, fractured dry earth shaders, shifting atmospheric haze, and reactive water systems inside Unreal Engine so climate transitions unfolded continuously in three dimensions.</p>
+            <div class="stage-outcome">MILESTONE: Complete real time Unreal Engine environment reacting dynamically to drought and flow states.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/renders_v2/02_shabaka_vault_cinematic.png" alt="Spatial geometry and lighting calibration study" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STEP 03</span>
+              <span class="stage-status">MASTERING · 180° FISHEYE</span>
+            </div>
+            <h3>Equidistant Fisheye Domemaster Calibration & Spatial Sound</h3>
+            <p>Configured the 180 degree spherical camera rig, colour graded specifically for curved dome projection surfaces, and aligned surround sound design so water currents and dry wind travelled physically around the audience.</p>
+            <div class="stage-outcome">MILESTONE: Festival ready 4K equidistant fisheye domemaster and synchronised surround audio mix.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/renders_v2/tawaf_domemaster_preview.jpg" alt="Circular 180 degree domemaster calibration layout" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STEP 04</span>
+              <span class="stage-status">FINISH · EXHIBITED</span>
+            </div>
+            <h3>Public Exhibition at Fulldome UK Festival</h3>
+            <p>Delivered and screened the completed film at the Fulldome UK Festival in Plymouth, sharing the Nile climate narrative with international fulldome artists, curators, and public audiences inside a 15 metre dome theatre.</p>
+            <div class="stage-outcome">MILESTONE: Officially exhibited at Fulldome UK Festival and published as completed MRes Digital Arts work.</div>
+          </div>
+          <div class="stage-media">
+            <a href="https://www.youtube.com/watch?v=oCx7i4Hb3H0" target="_blank" rel="noopener" style="display:block;position:relative;width:100%;height:100%;text-decoration:none;"><img src="../../assets/death_of_the_nile_dome_preview.jpg" alt="Watch Death of the Nile Fulldome UK Film" loading="eager" /><span style="position:absolute;left:16px;bottom:16px;background:#F59E0B;color:#08090c;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:10px 16px;">&#9654; Watch Fulldome UK Film on YouTube</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="proj-next-bar">
+      <div>
+        <div class="proj-sec-label" style="margin-bottom:2px;">RETURN TO FIRST FLAGSHIP PROJECT</div>
+        <h3>Plymouth Chronicles: 14 Royal Navy Figureheads in 3D</h3>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="../plymouth-chronicles/" class="proj-btn-primary">Open Project Dossier &rarr;</a>
+        <a href="../../index.html#latest-works" class="proj-btn-sec">All Projects</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="proj-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED HOSSAM ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM
+  </footer>
+
+<script>
+  (function(){
+    var btn = document.getElementById('mo360MenuBtn');
+    var drawer = document.getElementById('mo360Drawer');
+    if (btn && drawer) {
+      btn.addEventListener('click', function(){
+        var open = drawer.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

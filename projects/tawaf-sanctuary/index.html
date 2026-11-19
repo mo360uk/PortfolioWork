@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAWAF: 15m Dome Sensory Healing Sanctuary · Mo360 Immersive Studio</title>
+  <meta name="description" content="Description, concept, neurodivergent sensory research, and four stages of R&D for TAWAF by Mohamed Hossam Elwakil at Mo360 Immersive Studio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/mo360-unified-theme.css" />
+  <style>
+
+    :root {
+      --bg: #08090c;
+      --surface: #15181f;
+      --surface-2: #222630;
+      --ochre: #F59E0B;
+      --ochre-dark: #d97706;
+      --white: #ffffff;
+      --muted: #b4bac6;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    .proj-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 104px 24px 80px;
+    }
+    .proj-kicker {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--ochre);
+      color: #08090c;
+      padding: 6px 12px;
+      margin-bottom: 16px;
+    }
+    .proj-kicker-dark {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--surface-2);
+      color: var(--ochre);
+      padding: 6px 12px;
+      margin-bottom: 16px;
+      margin-left: 8px;
+    }
+    .proj-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      line-height: 0.96;
+      letter-spacing: 0.03em;
+      margin: 0 0 18px;
+      color: var(--white);
+    }
+    .proj-lead {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0 0 28px;
+    }
+    .proj-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .proj-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ochre);
+      color: #08090c;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 22px;
+      border: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .proj-btn-primary:hover { background: var(--ochre-dark); transform: translateY(-1px); }
+    .proj-btn-sec {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 22px;
+      border: none;
+      transition: background 0.2s ease;
+    }
+    .proj-btn-sec:hover { background: #2d3340; }
+    .proj-hero-media {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--surface);
+      overflow: hidden;
+      margin-bottom: 56px;
+      position: relative;
+    }
+    .proj-hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .proj-hero-caption {
+      position: absolute;
+      left: 0; bottom: 0;
+      background: rgba(8, 9, 12, 0.88);
+      color: var(--ochre);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+    }
+    .proj-section {
+      margin-bottom: 64px;
+    }
+    .proj-sec-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 8px;
+    }
+    .proj-h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.02;
+      letter-spacing: 0.03em;
+      margin: 0 0 24px;
+      color: var(--white);
+    }
+    .proj-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .proj-card {
+      background: var(--surface);
+      padding: 28px;
+      border: none;
+    }
+    .proj-card-accent {
+      background: var(--surface-2);
+      padding: 28px;
+      border: none;
+      border-left: 4px solid var(--ochre);
+    }
+    .proj-card h3, .proj-card-accent h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.04em;
+      margin: 0 0 12px;
+      color: var(--white);
+    }
+    .proj-card p, .proj-card-accent p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .proj-card p:last-child, .proj-card-accent p:last-child { margin-bottom: 0; }
+    .proj-research-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .proj-stat-card {
+      background: var(--surface);
+      padding: 22px;
+      border: none;
+    }
+    .proj-stat-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ochre);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .proj-stat-card h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 8px;
+      color: var(--white);
+    }
+    .proj-stat-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .stage-row {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .stage-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .stage-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .stage-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--ochre);
+      color: #08090c;
+      padding: 4px 10px;
+    }
+    .stage-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--surface-2);
+      color: var(--white);
+      padding: 4px 10px;
+    }
+    .stage-body h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.85rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 10px;
+      color: var(--white);
+    }
+    .stage-body p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+    .stage-outcome {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--ochre);
+      background: var(--surface-2);
+      padding: 10px 14px;
+      margin-top: 4px;
+    }
+    .stage-media {
+      background: var(--surface-2);
+      min-height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .stage-media iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      border: none;
+      display: block;
+    }
+    .proj-next-bar {
+      background: var(--surface-2);
+      padding: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .proj-next-bar h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      margin: 4px 0 0;
+      color: var(--white);
+    }
+    .proj-footer {
+      border-top: 1px solid #222630;
+      padding: 28px 24px 48px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    @media (max-width: 900px) {
+      .proj-two-col, .proj-research-grid, .stage-row {
+        grid-template-columns: 1fr;
+      }
+      .stage-media { min-height: 210px; aspect-ratio: 16 / 10; }
+    }
+    @media (max-width: 600px) {
+      .proj-wrap { padding: 88px 16px 56px; }
+      .proj-card, .proj-card-accent, .stage-body, .proj-next-bar { padding: 20px; }
+      .proj-kicker-dark { margin-left: 0; margin-top: 6px; }
+      .proj-actions a { width: 100%; justify-content: center; }
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
+  <a href="../../index.html" class="mo360-nav-brand">
+    <img src="../../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Official Emblem" />
+    <span class="mo360-brand-stack">
+      <span class="mo360-brand-row">
+        <span class="mo360-brand-main">MO360</span>
+        <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+      </span>
+      <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+    </span>
+  </a>
+  <ul class="mo360-nav-links">
+    <li><a href="../../index.html#latest-works" class="active">Projects</a></li>
+    <li><a href="../../immersive-lab/">Media Lab</a></li>
+    <li><a href="../../creative-coding-plymouth/">Creative Coding</a></li>
+    <li><a href="../../tours/">Immersive Tours</a></li>
+    <li><a href="../../index.html#contact" class="cta">Book / Contact</a></li>
+  </ul>
+  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mo360-drawer" id="mo360Drawer">
+  <a href="../../index.html">Mo360 Immersive Studio Home</a>
+  <a href="../../projects/plymouth-chronicles/">01 · Plymouth Chronicles 3D</a>
+  <a href="../../projects/tavistock-heritage-vr/">02 · Tavistock Heritage VR</a>
+  <a href="../../projects/tawaf-sanctuary/">03 · TAWAF Healing Sanctuary</a>
+  <a href="../../projects/death-of-the-nile/">04 · Death of the Nile (Fulldome)</a>
+  <a href="../../immersive-lab/">Mo360 Immersive Media Lab</a>
+  <a href="../../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../../tours/">Mo360 Immersive Tours</a>
+  <a href="../../index.html#contact" style="background:#F59E0B;color:#08090c;">Book a Project or Commission</a>
+</div>
+
+  <main class="proj-wrap">
+    <div>
+      <span class="proj-kicker">PRESENT PROJECT · ACTIVE R&D</span>
+      <span class="proj-kicker-dark">FULLDOME SPATIAL R&D · PLYMOUTH UK</span>
+    </div>
+    <h1 class="proj-h1">TAWAF: 15m Dome Sensory Healing Sanctuary</h1>
+    <p class="proj-lead">A zero demand spatial sanctuary engineered for 15 metre fulldomes, combining sacred geometric architecture, 4 7 8 breath paced light, and enveloping spatial audio for nervous system regulation.</p>
+    <div class="proj-actions">
+      <a href="../../immersive-lab/tawaf-domemaster-live.html" class="proj-btn-primary">Open 4K Domemaster Live</a>
+<a href="../../immersive-lab/tawaf-live-console.html" class="proj-btn-sec">Open Live Performance Console</a>
+<a href="../../index.html#latest-works" class="proj-btn-sec">Back to All Projects</a>
+    </div>
+
+    <div class="proj-hero-media">
+      <img src="../../immersive-lab/renders_v2/01_sanctuary_hero_cinematic.png" alt="TAWAF sanctuary interior architectural concept render" />
+      <div class="proj-hero-caption">TAWAF · 15M FULLDOME SENSORY HEALING SANCTUARY R&D</div>
+    </div>
+
+    <section class="proj-section" id="description-concept">
+      <div class="proj-sec-label">01 · OVERVIEW &amp; ARTISTIC DIRECTION</div>
+      <h2 class="proj-h2">DESCRIPTION &amp; CONCEPT</h2>
+      <div class="proj-two-col">
+        <div class="proj-card">
+          <h3>Project Description</h3>
+          <p>TAWAF is an ongoing spatial art and fulldome R&D project designed to transform a 15 metre dome into a calm, restorative sanctuary where neurodivergent and overwhelmed minds can settle without instructions, tasks, or visual noise.</p>
+<p>Audiences can recline, sit, or walk slowly beneath an orbital vault of warm geometric light patterns that expand and soften in rhythm with slow breathing, accompanied by grounded acoustic resonance.</p>
+        </div>
+        <div class="proj-card-accent">
+          <h3>Artistic Concept</h3>
+          <p>Living with ADHD shaped every creative decision in TAWAF. Most contemporary immersive media competes aggressively for attention with bright strobes, loud drops, and crowded visuals that leave neurodivergent visitors exhausted.</p>
+<p>TAWAF inverts that logic. Drawing inspiration from the meditative orbital rhythm of Tawaf alongside Moroccan Zellige and Azerbaijani Girih geometry, the dome becomes a quiet shelter where geometry moves at the speed of a calm breath.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proj-section" id="research-foundation">
+      <div class="proj-sec-label">02 · PRACTICE LED INQUIRY</div>
+      <h2 class="proj-h2">RESEARCH FOUNDATION</h2>
+      <p class="proj-lead" style="margin-bottom:20px;">The research sits at the intersection of lived neurodivergent sensory regulation, historic Islamic architectural tessellation, psychoacoustics, and real time 180 degree fulldome rendering.</p>
+      <div class="proj-research-grid">
+        <div class="proj-stat-card">
+          <div class="proj-stat-num">01 · SENSORY REGULATION</div>
+          <h4>Zero Demand Space</h4>
+          <p>Established strict visual comfort rules: no harsh strobing, no sudden contrast spikes, and clear four zone spatial layouts so visitors choose their own distance and posture.</p>
+        </div>
+<div class="proj-stat-card">
+          <div class="proj-stat-num">02 · SACRED GEOMETRY</div>
+          <h4>Zellige & Girih Systems</h4>
+          <p>Studied rotational symmetry in Moroccan Zellige tilework and Azerbaijani Shabaka vaults to build procedural patterns that naturally guide peripheral vision into stillness.</p>
+        </div>
+<div class="proj-stat-card">
+          <div class="proj-stat-num">03 · BREATH & SOUND</div>
+          <h4>4 7 8 Pacing & 432Hz Stems</h4>
+          <p>Researched slow 19 second breathing cycles paired with warm low frequency crystal bowl and acoustic drone stems engineered for circular dome speaker arrays.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proj-section" id="process-timeline">
+      <div class="proj-sec-label">03 · STAGES OF RESEARCH EXPLORED SO FAR</div>
+      <h2 class="proj-h2">CURRENT R&D STAGES EXPLORED</h2>
+      <div class="stage-list">
+        
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 01</span>
+              <span class="stage-status">COMPLETED</span>
+            </div>
+            <h3>Lived ADHD Sensory Mapping & Four Zone Floorplan</h3>
+            <p>Translated personal neurodivergent sensory triggers and regulation needs into a physical four zone sanctuary layout offering reclined deep rest areas, seated contemplation rings, and low stimulus perimeter retreats.</p>
+            <div class="stage-outcome">OUTPUT: Four zone architectural sanctuary layout and strict sensory safety guidelines.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/renders_v2/03_four_zones_cinematic.png" alt="TAWAF four zone sensory floorplan cinematic render" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 02</span>
+              <span class="stage-status">COMPLETED</span>
+            </div>
+            <h3>Procedural Zellige & Shabaka Vault Architecture</h3>
+            <p>Modelled intricate circular Shabaka lattice vaults and radial geometric shells in Blender and Unreal Engine 5 so light filters organically across the entire 180 degree dome hemisphere without flat digital edges.</p>
+            <div class="stage-outcome">OUTPUT: High detail 3D Shabaka dome vault geometry and warm ochre teal light studies.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/renders_v2/02_shabaka_vault_cinematic.png" alt="TAWAF Shabaka sacred geometry dome vault render" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 03</span>
+              <span class="stage-status">COMPLETED</span>
+            </div>
+            <h3>4 7 8 Breath Paced Domemaster & Spatial Sound Stems</h3>
+            <p>Synchronised orbital geometric expansion to a calm 4 7 8 breath cycle and composed spatialised 432Hz crystal bowl and warm harmonic sound stems designed to soothe rather than stimulate.</p>
+            <div class="stage-outcome">OUTPUT: 4K equidistant fisheye domemaster previews and multi stem psychoacoustic audio.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/renders_v2/tawaf_domemaster_preview.jpg" alt="TAWAF 180 degree circular domemaster projection preview" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 04</span>
+              <span class="stage-status">IN PROGRESS</span>
+            </div>
+            <h3>Real Time Browser Synth & Live Dome Performance Console</h3>
+            <p>Built an interactive browser domemaster synthesiser and live performance control console allowing real time modulation of breath tempo, colour warmth, and geometric rotation for live healing sessions.</p>
+            <div class="stage-outcome">CURRENT FOCUS: Preparing full scale 15m dome technical test sessions and live acoustic integration.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/renders_v2/TAWAF_Step1_TealGold_Domemaster_4K.png" alt="TAWAF 4K teal and gold domemaster render" loading="eager" />
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="proj-next-bar">
+      <div>
+        <div class="proj-sec-label" style="margin-bottom:2px;">COMPLETED & EXHIBITED PROJECT</div>
+        <h3>Death of the Nile: Fulldome UK Cinema Work</h3>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="../death-of-the-nile/" class="proj-btn-primary">Open Project Dossier &rarr;</a>
+        <a href="../../index.html#latest-works" class="proj-btn-sec">All Projects</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="proj-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED HOSSAM ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM
+  </footer>
+
+<script>
+  (function(){
+    var btn = document.getElementById('mo360MenuBtn');
+    var drawer = document.getElementById('mo360Drawer');
+    if (btn && drawer) {
+      btn.addEventListener('click', function(){
+        var open = drawer.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

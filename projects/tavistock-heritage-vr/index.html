@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tavistock Heritage VR: 360° Living Archive · Mo360 Immersive Studio</title>
+  <meta name="description" content="Description, concept, dementia care research, and four stages of exploration for Tavistock Heritage VR by Mohamed Hossam Elwakil." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/mo360-unified-theme.css" />
+  <style>
+
+    :root {
+      --bg: #08090c;
+      --surface: #15181f;
+      --surface-2: #222630;
+      --ochre: #F59E0B;
+      --ochre-dark: #d97706;
+      --white: #ffffff;
+      --muted: #b4bac6;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    .proj-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 104px 24px 80px;
+    }
+    .proj-kicker {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--ochre);
+      color: #08090c;
+      padding: 6px 12px;
+      margin-bottom: 16px;
+    }
+    .proj-kicker-dark {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--surface-2);
+      color: var(--ochre);
+      padding: 6px 12px;
+      margin-bottom: 16px;
+      margin-left: 8px;
+    }
+    .proj-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      line-height: 0.96;
+      letter-spacing: 0.03em;
+      margin: 0 0 18px;
+      color: var(--white);
+    }
+    .proj-lead {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0 0 28px;
+    }
+    .proj-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .proj-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ochre);
+      color: #08090c;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 22px;
+      border: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .proj-btn-primary:hover { background: var(--ochre-dark); transform: translateY(-1px); }
+    .proj-btn-sec {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 22px;
+      border: none;
+      transition: background 0.2s ease;
+    }
+    .proj-btn-sec:hover { background: #2d3340; }
+    .proj-hero-media {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--surface);
+      overflow: hidden;
+      margin-bottom: 56px;
+      position: relative;
+    }
+    .proj-hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .proj-hero-caption {
+      position: absolute;
+      left: 0; bottom: 0;
+      background: rgba(8, 9, 12, 0.88);
+      color: var(--ochre);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+    }
+    .proj-section {
+      margin-bottom: 64px;
+    }
+    .proj-sec-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 8px;
+    }
+    .proj-h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.02;
+      letter-spacing: 0.03em;
+      margin: 0 0 24px;
+      color: var(--white);
+    }
+    .proj-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .proj-card {
+      background: var(--surface);
+      padding: 28px;
+      border: none;
+    }
+    .proj-card-accent {
+      background: var(--surface-2);
+      padding: 28px;
+      border: none;
+      border-left: 4px solid var(--ochre);
+    }
+    .proj-card h3, .proj-card-accent h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.04em;
+      margin: 0 0 12px;
+      color: var(--white);
+    }
+    .proj-card p, .proj-card-accent p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .proj-card p:last-child, .proj-card-accent p:last-child { margin-bottom: 0; }
+    .proj-research-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .proj-stat-card {
+      background: var(--surface);
+      padding: 22px;
+      border: none;
+    }
+    .proj-stat-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ochre);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .proj-stat-card h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 8px;
+      color: var(--white);
+    }
+    .proj-stat-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .stage-row {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .stage-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .stage-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .stage-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--ochre);
+      color: #08090c;
+      padding: 4px 10px;
+    }
+    .stage-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--surface-2);
+      color: var(--white);
+      padding: 4px 10px;
+    }
+    .stage-body h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.85rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 10px;
+      color: var(--white);
+    }
+    .stage-body p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+    .stage-outcome {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--ochre);
+      background: var(--surface-2);
+      padding: 10px 14px;
+      margin-top: 4px;
+    }
+    .stage-media {
+      background: var(--surface-2);
+      min-height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .stage-media iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      border: none;
+      display: block;
+    }
+    .proj-next-bar {
+      background: var(--surface-2);
+      padding: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .proj-next-bar h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      margin: 4px 0 0;
+      color: var(--white);
+    }
+    .proj-footer {
+      border-top: 1px solid #222630;
+      padding: 28px 24px 48px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    @media (max-width: 900px) {
+      .proj-two-col, .proj-research-grid, .stage-row {
+        grid-template-columns: 1fr;
+      }
+      .stage-media { min-height: 210px; aspect-ratio: 16 / 10; }
+    }
+    @media (max-width: 600px) {
+      .proj-wrap { padding: 88px 16px 56px; }
+      .proj-card, .proj-card-accent, .stage-body, .proj-next-bar { padding: 20px; }
+      .proj-kicker-dark { margin-left: 0; margin-top: 6px; }
+      .proj-actions a { width: 100%; justify-content: center; }
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
+  <a href="../../index.html" class="mo360-nav-brand">
+    <img src="../../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Official Emblem" />
+    <span class="mo360-brand-stack">
+      <span class="mo360-brand-row">
+        <span class="mo360-brand-main">MO360</span>
+        <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+      </span>
+      <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+    </span>
+  </a>
+  <ul class="mo360-nav-links">
+    <li><a href="../../index.html#latest-works" class="active">Projects</a></li>
+    <li><a href="../../immersive-lab/">Media Lab</a></li>
+    <li><a href="../../creative-coding-plymouth/">Creative Coding</a></li>
+    <li><a href="../../tours/">Immersive Tours</a></li>
+    <li><a href="../../index.html#contact" class="cta">Book / Contact</a></li>
+  </ul>
+  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mo360-drawer" id="mo360Drawer">
+  <a href="../../index.html">Mo360 Immersive Studio Home</a>
+  <a href="../../projects/plymouth-chronicles/">01 · Plymouth Chronicles 3D</a>
+  <a href="../../projects/tavistock-heritage-vr/">02 · Tavistock Heritage VR</a>
+  <a href="../../projects/tawaf-sanctuary/">03 · TAWAF Healing Sanctuary</a>
+  <a href="../../projects/death-of-the-nile/">04 · Death of the Nile (Fulldome)</a>
+  <a href="../../immersive-lab/">Mo360 Immersive Media Lab</a>
+  <a href="../../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../../tours/">Mo360 Immersive Tours</a>
+  <a href="../../index.html#contact" style="background:#F59E0B;color:#08090c;">Book a Project or Commission</a>
+</div>
+
+  <main class="proj-wrap">
+    <div>
+      <span class="proj-kicker">PRESENT PROJECT · ACTIVE R&D</span>
+      <span class="proj-kicker-dark">TAVISTOCK · WEST DEVON · CARE PRACTICE</span>
+    </div>
+    <h1 class="proj-h1">Tavistock Heritage VR: 360° Living Archive</h1>
+    <p class="proj-lead">Transforming historic 1824 to 1950 Devon photographs into gentle, seated 3D depth environments and spatial soundscapes designed with frontline dementia care insight.</p>
+    <div class="proj-actions">
+      <a href="../../immersive-lab/tavistock-heritage-vr.html" class="proj-btn-primary">Launch Tavistock VR Prototype</a>
+<a href="../../immersive-lab/tavistock-360-tour.html" class="proj-btn-sec">Open 3D Depth Tour</a>
+<a href="../../index.html#latest-works" class="proj-btn-sec">Back to All Projects</a>
+    </div>
+
+    <div class="proj-hero-media">
+      <img src="../../immersive-lab/assets/tavistock_archive/abbey_ruins_colour_hd.jpg" alt="Historic Tavistock Abbey ruins colour restored archival scene" />
+      <div class="proj-hero-caption">TAVISTOCK HERITAGE VR · 1824 TO 1950 LIVING ARCHIVE</div>
+    </div>
+
+    <section class="proj-section" id="description-concept">
+      <div class="proj-sec-label">01 · OVERVIEW &amp; ARTISTIC DIRECTION</div>
+      <h2 class="proj-h2">DESCRIPTION &amp; CONCEPT</h2>
+      <div class="proj-two-col">
+        <div class="proj-card">
+          <h3>Project Description</h3>
+          <p>Tavistock Heritage VR is a seated immersive reminiscence experience built for older adults, people living with dementia, their families, and care home teams across West Devon.</p>
+<p>By turning century old black and white photographs of Tavistock Abbey, Bedford Square, the Canal Wharf, and the River Tavy into slow moving 3D depth scenes with gentle local soundscapes, residents can revisit familiar places comfortably without leaving their chair.</p>
+        </div>
+        <div class="proj-card-accent">
+          <h3>Artistic Concept</h3>
+          <p>My work in frontline dementia care showed me that standard virtual reality is often built for gamers rather than older adults. Fast camera movement, heavy menus, and isolating headsets can trigger confusion instead of comfort.</p>
+<p>The concept behind Tavistock Heritage VR is calm co presence. Every scene is seated, slow, warm, and paired with an iPad or TV mirror so a family member or carer can sit beside the resident, see the exact same historic street, and share real conversation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proj-section" id="research-foundation">
+      <div class="proj-sec-label">02 · PRACTICE LED INQUIRY</div>
+      <h2 class="proj-h2">RESEARCH FOUNDATION</h2>
+      <p class="proj-lead" style="margin-bottom:20px;">This ongoing R&D draws directly from frontline care observation in Devon, archival photography preservation, and testing monocular depth reconstruction on historic glass plate and postcard scans.</p>
+      <div class="proj-research-grid">
+        <div class="proj-stat-card">
+          <div class="proj-stat-num">01 · CARE ERGONOMICS</div>
+          <h4>Seated Zero Sickness Design</h4>
+          <p>Eliminated artificial locomotion, sudden cuts, and dark voids in favour of gentle 3D parallax curves and natural daylight colour restoration.</p>
+        </div>
+<div class="proj-stat-card">
+          <div class="proj-stat-num">02 · LOCAL MEMORY ANCHORS</div>
+          <h4>1824 to 1950 West Devon</h4>
+          <p>Curated recognisable Tavistock landmarks including Abbey Mead, Bedford Square Guildhall, the Steam Railway, and Canal Wharf to spark personal stories.</p>
+        </div>
+<div class="proj-stat-card">
+          <div class="proj-stat-num">03 · CO VIEWING PROTOCOL</div>
+          <h4>Carer & Family Mirroring</h4>
+          <p>Designed browser based WebXR scenes that run without complex setup so carers can guide pacing, audio volume, and scene changes effortlessly.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="proj-section" id="process-timeline">
+      <div class="proj-sec-label">03 · STAGES OF RESEARCH EXPLORED SO FAR</div>
+      <h2 class="proj-h2">CURRENT R&D STAGES EXPLORED</h2>
+      <div class="stage-list">
+        
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 01</span>
+              <span class="stage-status">COMPLETED</span>
+            </div>
+            <h3>Frontline Care Observation & Comfort Boundaries</h3>
+            <p>Documented practical comfort requirements from everyday dementia care practice, including headset weight limits, seated eye height, warm lighting preferences, and the need for carers to stay visually connected to what the resident sees.</p>
+            <div class="stage-outcome">OUTPUT: Care first XR design rules prioritising seated comfort, slow transitions, and shared viewing.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../assets/15_tavistock_abbey_devon_real.jpg" alt="Tavistock Abbey Devon historic stone architecture" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 02</span>
+              <span class="stage-status">COMPLETED</span>
+            </div>
+            <h3>1824 to 1950 Tavistock Archival Curation & Restoration</h3>
+            <p>Gathered and restored historic photographs and lithographs of Tavistock landmarks, creating side by side archival monochrome, warm sepia, and natural colour restored high definition plates.</p>
+            <div class="stage-outcome">OUTPUT: Curated Tavistock historical archive covering Abbey Ruins, Abbey Mead, Canal Wharf, and Bedford Square.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/assets/tavistock_archive/abbey_ruins_bw_1890.jpg" alt="1890 archival photograph of Tavistock Abbey ruins" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 03</span>
+              <span class="stage-status">COMPLETED</span>
+            </div>
+            <h3>Depth Anything V2 Monocular Depth & Orbital Flythroughs</h3>
+            <p>Processed archival images through Depth Anything V2 to generate accurate 3D depth maps and smooth parallax flythroughs, allowing flat 19th century photographs to breathe with foreground trees, stonework, and river distance.</p>
+            <div class="stage-outcome">OUTPUT: True 3D depth maps and gentle orbital flythrough videos for historic Devon scenes.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/assets/tavistock_archive/abbey_ruins_depth.jpg" alt="Depth Anything V2 depth map generated from historic Tavistock Abbey photograph" loading="eager" />
+          </div>
+        </article>
+
+        <article class="stage-row">
+          <div class="stage-body">
+            <div class="stage-meta">
+              <span class="stage-num">STAGE 04</span>
+              <span class="stage-status">IN PROGRESS</span>
+            </div>
+            <h3>Seated WebXR Living Archive & Spatial Soundscapes</h3>
+            <p>Built the live browser WebXR viewer combining curved 3D depth cinema, gentle River Tavy ambient audio, and a companion carer interface for shared reminiscence sessions.</p>
+            <div class="stage-outcome">CURRENT FOCUS: Refining carer playback controls and preparing structured community care home feedback sessions.</div>
+          </div>
+          <div class="stage-media">
+            <img src="../../immersive-lab/assets/tavistock_archive/abbey_mead_colour_hd.jpg" alt="Restored historic view of Abbey Mead Tavistock" loading="eager" />
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="proj-next-bar">
+      <div>
+        <div class="proj-sec-label" style="margin-bottom:2px;">NEXT PRESENT PROJECT</div>
+        <h3>TAWAF: 15m Dome Sensory Healing Sanctuary</h3>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="../tawaf-sanctuary/" class="proj-btn-primary">Open Project Dossier &rarr;</a>
+        <a href="../../index.html#latest-works" class="proj-btn-sec">All Projects</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="proj-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED HOSSAM ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM
+  </footer>
+
+<script>
+  (function(){
+    var btn = document.getElementById('mo360MenuBtn');
+    var drawer = document.getElementById('mo360Drawer');
+    if (btn && drawer) {
+      btn.addEventListener('click', function(){
+        var open = drawer.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
