@@ -1262,17 +1262,23 @@
             return vec4(turboColormap(dRaw), 1.0);
           }
 
-          // Smooth planar 3D depth parallax for still photo modes (Colour, Sepia, B&W)
-          float zoom = 1.0 + 0.055 * dPlanar;
+          // Two-Step 3D Depth-Field Raymarching (Parallax Occlusion) + Living Water Cascade
+          float dolly = 0.065 + 0.055 * (0.5 - 0.5 * cos(uTime * 0.65));
+          float relD1 = dPlanar - 0.35;
+          float scale1 = 1.0 - dolly * (0.45 + 0.85 * dPlanar);
           vec2 uvCentered = baseUv - 0.5;
-          vec2 pUv = 0.5 + (uvCentered - uParallaxOffset * (0.25 + 0.75 * dPlanar) * 0.028) / zoom;
+          vec2 rayUv1 = 0.5 + uvCentered * scale1 - uParallaxOffset * relD1 * 0.042;
+          float dRefined = max(dPlanar, samplePlanarDepth(clamp(rayUv1, 0.01, 0.99)));
+          float relD2 = dRefined - 0.35;
+          float scale2 = 1.0 - dolly * (0.45 + 0.85 * dRefined);
+          vec2 pUv = 0.5 + uvCentered * scale2 - uParallaxOffset * relD2 * 0.045;
 
           if (uWaterLevel > 0.01 && (1.0 - baseUv.y) > (1.0 - uWaterLevel)) {
             float wf = smoothstep(1.0 - uWaterLevel, 1.0, 1.0 - baseUv.y);
-            pUv.x += sin(baseUv.y * 80.0 + uTime * 3.0) * 0.0018 * wf;
-            pUv.y += cos(baseUv.x * 50.0 + uTime * 2.2) * 0.0009 * wf;
+            pUv.x += (sin(baseUv.y * 78.0 - uTime * 3.4 + baseUv.x * 12.0) * 0.0024 + cos(baseUv.y * 120.0 - uTime * 4.5) * 0.0012) * wf;
+            pUv.y += sin(baseUv.x * 48.0 + baseUv.y * 60.0 - uTime * 3.2) * 0.0014 * wf;
           }
-          pUv = clamp(pUv, 0.002, 0.998);
+          pUv = clamp(pUv, 0.004, 0.996);
 
           if (mode < 0.5) return texture2D(uTexArchive, pUv);
           if (mode < 1.5) return texture2D(uTexSepia, pUv);
@@ -1401,10 +1407,10 @@
 
       if (!landmarkCache[lm.id]) {
         const [bw, sep, col, dep] = await Promise.all([
-          loadTex(`${lm.archive_bw}?v=nd2`, false),
-          loadTex(`${lm.sepia}?v=nd2`, false),
-          loadTex(`${lm.living_colour}?v=nd2`, false),
-          loadTex(`${lm.depth_map}?v=nd2`, true)
+          loadTex(`${lm.archive_bw}?v=nd3`, false),
+          loadTex(`${lm.sepia}?v=nd3`, false),
+          loadTex(`${lm.living_colour}?v=nd3`, false),
+          loadTex(`${lm.depth_map}?v=nd3`, true)
         ]);
         landmarkCache[lm.id] = { bw, sep: sep || bw, col: col || bw, dep };
       }
@@ -1420,7 +1426,7 @@
       // Load and play the 3D Neural-Depth Drone Fly-Around MP4 Video for this Historical Photograph
       videoEl.pause();
       screenMat.uniforms.uHasVideo.value = 0.0;
-      videoEl.src = `${lm.drone_mp4}?v=nd2`;
+      videoEl.src = `${lm.drone_mp4}?v=nd3`;
       videoEl.load();
       videoEl.play().then(() => {
         screenMat.uniforms.uHasVideo.value = 1.0;

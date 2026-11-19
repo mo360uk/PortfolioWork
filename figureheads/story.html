@@ -28,14 +28,14 @@
     :root {
       --abyss: #070f18;
       --ink: #0d1b2a;
-      --ink-glass: rgba(13, 27, 42, 0.78);
-      --ink-deep: rgba(7, 15, 24, 0.9);
+      --ink-glass: rgba(13, 27, 42, 0.84);
+      --ink-deep: rgba(7, 15, 24, 0.94);
       --paper: #f2ece1;
       --muted: #98a4b3;
       --gold: #b08d4a;
       --gold-bright: #e6af4b;
       --gold-soft: rgba(230, 175, 75, 0.18);
-      --gold-border: rgba(176, 141, 74, 0.36);
+      --gold-border: rgba(176, 141, 74, 0.42);
       --accent: #c8a45d;
       --font-serif: 'Cinzel', Georgia, 'Times New Roman', serif;
       --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -61,17 +61,23 @@
       font-family: var(--font-sans);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      selection-background-color: var(--gold);
+      user-select: none;
     }
 
-    /* 1. Fixed Full-Screen 3D WebGL Canvas (100vw x 100vh) */
+    /* 1. Fixed Full-Screen Interactive 3D WebGL Canvas (100vw x 100vh) */
     #webgl-container {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
       z-index: 1;
-      pointer-events: none;
+      pointer-events: auto;
+      cursor: grab;
+      touch-action: pan-y;
+    }
+
+    #webgl-container.is-dragging {
+      cursor: grabbing;
     }
 
     #webgl-container canvas {
@@ -91,14 +97,14 @@
       opacity: 0.42;
     }
 
-    /* 2. Cinematic Post-Process Vignette & Atmospheric Grain Overlay */
+    /* 2. Cinematic Post-Process Vignette Overlay */
     .cinematic-vignette {
       position: fixed;
       inset: 0;
       z-index: 2;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 50% 48%, transparent 48%, rgba(4, 9, 15, 0.78) 100%),
+        radial-gradient(ellipse at 50% 48%, transparent 52%, rgba(4, 9, 15, 0.76) 100%),
         linear-gradient(180deg, rgba(7, 15, 24, 0.65) 0%, transparent 14%, transparent 86%, rgba(7, 15, 24, 0.82) 100%);
     }
 
@@ -195,6 +201,7 @@
       padding: 14px 28px;
       background: linear-gradient(180deg, rgba(7, 15, 24, 0.92) 0%, rgba(7, 15, 24, 0.45) 75%, transparent 100%);
       backdrop-filter: blur(8px);
+      pointer-events: auto;
     }
 
     .brand-cluster {
@@ -240,7 +247,7 @@
       padding: 7px 14px;
       border-radius: 999px;
       border: 1px solid var(--gold-border);
-      background: rgba(13, 27, 42, 0.82);
+      background: rgba(13, 27, 42, 0.84);
       color: var(--paper);
       font-family: var(--font-sans);
       font-size: 0.76rem;
@@ -253,7 +260,7 @@
 
     .pill-btn:hover {
       border-color: var(--gold-bright);
-      background: rgba(25, 46, 68, 0.92);
+      background: rgba(25, 46, 68, 0.94);
       transform: translateY(-1px);
     }
 
@@ -280,19 +287,20 @@
     /* 5. Right-Side Interactive Chapter Progress Rail (01 - 14) */
     .chapter-rail {
       position: fixed;
-      right: 22px;
+      right: 18px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 25;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       padding: 12px 7px;
       border-radius: 999px;
-      background: rgba(7, 15, 24, 0.72);
-      border: 1px solid rgba(176, 141, 74, 0.25);
+      background: rgba(7, 15, 24, 0.78);
+      border: 1px solid rgba(176, 141, 74, 0.28);
       backdrop-filter: blur(12px);
+      pointer-events: auto;
     }
 
     .rail-dot {
@@ -331,7 +339,7 @@
       white-space: nowrap;
       padding: 4px 10px;
       border-radius: 6px;
-      background: rgba(7, 15, 24, 0.92);
+      background: rgba(7, 15, 24, 0.94);
       border: 1px solid var(--gold-border);
       color: var(--paper);
       font-size: 0.7rem;
@@ -357,40 +365,108 @@
       z-index: 40;
       background: linear-gradient(90deg, var(--gold), var(--gold-bright), #fff2c2);
       box-shadow: 0 0 10px rgba(230, 175, 75, 0.7);
+      pointer-events: none;
     }
 
-    /* 6. Scrollable Story Container & Chapter Sections */
+    /* 6. Interactive 3D Sculpture Manipulation Dock (Parks directly beneath active 3D Figurehead) */
+    .sculpture-controls-dock {
+      position: fixed;
+      bottom: 62px;
+      left: 72%;
+      transform: translateX(-50%);
+      z-index: 26;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(7, 15, 24, 0.88);
+      border: 1px solid var(--gold-border);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+      pointer-events: auto;
+      transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sculpture-controls-dock.side-left {
+      left: 28%;
+    }
+
+    .sculpture-controls-dock.side-right {
+      left: 72%;
+    }
+
+    .dock-hint {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #ebd5a7;
+      padding: 0 8px 0 4px;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dock-btn {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(176, 141, 74, 0.38);
+      background: rgba(18, 36, 56, 0.88);
+      color: var(--paper);
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+      background: rgba(26, 49, 74, 0.95);
+    }
+
+    /* 7. Scrollable Story Container & Strict Side-by-Side Split Layout */
     .story-main {
       position: relative;
       z-index: 10;
       width: 100%;
+      /* Let pointer drags pass directly through empty space to the 3D WebGL stage */
+      pointer-events: none;
     }
 
-    /* Hero Prologue Section */
+    /* Hero Prologue Section — Strictly Left-Aligned so Queen Victoria on the Right is NEVER covered */
     .hero-section {
-      min-height: 100vh;
+      min-height: 115vh;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 120px 24px 80px;
-      text-align: center;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 110px 5vw 90px 5vw;
+      text-align: left;
       position: relative;
     }
 
     .hero-card {
-      max-width: 720px;
-      padding: 32px 36px;
+      width: min(475px, 42vw);
+      padding: 30px 32px;
       border-radius: 24px;
-      background: linear-gradient(180deg, rgba(13, 27, 42, 0.78) 0%, rgba(7, 15, 24, 0.88) 100%);
-      border: 1px solid var(--gold-border);
-      backdrop-filter: blur(16px);
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+      background: linear-gradient(180deg, rgba(13, 27, 42, 0.84) 0%, rgba(7, 15, 24, 0.93) 100%);
+      border: 1px solid var(--gold-bright);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72), 0 0 28px rgba(230, 175, 75, 0.14);
+      pointer-events: auto;
+      user-select: text;
+      transition: border-color 0.3s ease;
     }
 
     .hero-eyebrow {
-      font-size: 0.74rem;
-      letter-spacing: 0.22em;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold-bright);
       font-weight: 700;
@@ -399,9 +475,9 @@
 
     .hero-title {
       font-family: var(--font-serif);
-      font-size: clamp(2rem, 4.5vw, 3.3rem);
+      font-size: clamp(1.75rem, 3.1vw, 2.55rem);
       font-weight: 700;
-      line-height: 1.12;
+      line-height: 1.14;
       color: var(--paper);
       margin-bottom: 14px;
     }
@@ -412,21 +488,34 @@
     }
 
     .hero-lede {
-      font-size: 1rem;
-      line-height: 1.65;
+      font-size: 0.94rem;
+      line-height: 1.64;
       color: #d4dce6;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
+    }
+
+    .hero-statue-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 13px;
+      border-radius: 12px;
+      background: rgba(230, 175, 75, 0.12);
+      border: 1px solid rgba(230, 175, 75, 0.36);
+      color: #ffe39e;
+      font-size: 0.76rem;
+      font-weight: 600;
+      margin-bottom: 18px;
     }
 
     .scroll-cue {
       display: inline-flex;
-      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       color: var(--gold-bright);
       font-size: 0.74rem;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
     }
 
@@ -438,6 +527,7 @@
       display: flex;
       justify-content: center;
       padding-top: 6px;
+      flex-shrink: 0;
     }
 
     .scroll-wheel {
@@ -453,13 +543,13 @@
       100% { opacity: 0; transform: translateY(12px); }
     }
 
-    /* Chapter Section (14 Figurehead Chapters) */
+    /* Chapter Section (14 Figurehead Chapters) — Generous vertical spacing so cards never collide */
     .chapter-section {
-      min-height: 125vh;
+      min-height: 145vh;
       width: 100%;
-      max-width: 1380px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 100px 64px 100px 36px;
+      padding: 130px 5vw;
       display: flex;
       align-items: center;
       position: relative;
@@ -471,24 +561,28 @@
 
     .chapter-section.align-right {
       justify-content: flex-end;
+      padding-right: calc(5vw + 32px);
     }
 
     .chapter-card {
-      width: min(510px, 100%);
-      padding: 28px 30px;
+      width: min(475px, 42vw);
+      padding: 26px 28px;
       border-radius: 22px;
-      background: linear-gradient(165deg, rgba(13, 27, 42, 0.84) 0%, rgba(7, 15, 24, 0.92) 100%);
+      background: linear-gradient(165deg, rgba(13, 27, 42, 0.86) 0%, rgba(7, 15, 24, 0.94) 100%);
       border: 1px solid var(--gold-border);
       backdrop-filter: blur(18px);
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.68);
       opacity: 0;
-      transform: translateY(48px);
+      transform: translateY(32px);
+      pointer-events: none;
+      user-select: text;
       transition: border-color 0.35s ease, box-shadow 0.35s ease;
     }
 
     .chapter-card.is-active {
       border-color: var(--gold-bright);
-      box-shadow: 0 24px 68px rgba(0, 0, 0, 0.75), 0 0 28px rgba(230, 175, 75, 0.16);
+      box-shadow: 0 24px 68px rgba(0, 0, 0, 0.78), 0 0 28px rgba(230, 175, 75, 0.16);
+      pointer-events: auto;
     }
 
     .chapter-meta-top {
@@ -519,7 +613,7 @@
 
     .chapter-title {
       font-family: var(--font-serif);
-      font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+      font-size: clamp(1.5rem, 2.4vw, 2.1rem);
       font-weight: 700;
       color: var(--paper);
       line-height: 1.15;
@@ -527,10 +621,10 @@
     }
 
     .chapter-lede {
-      font-size: 0.98rem;
-      line-height: 1.58;
+      font-size: 0.95rem;
+      line-height: 1.56;
       color: #e5dec9;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       font-family: Georgia, 'Times New Roman', serif;
     }
 
@@ -538,10 +632,10 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      padding: 12px 0;
+      padding: 11px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 14px;
+      margin-bottom: 13px;
     }
 
     .spec-item dt {
@@ -553,27 +647,27 @@
     }
 
     .spec-item dd {
-      font-size: 0.82rem;
+      font-size: 0.81rem;
       font-weight: 600;
       color: var(--paper);
     }
 
     .chapter-story {
-      font-size: 0.86rem;
-      line-height: 1.62;
+      font-size: 0.85rem;
+      line-height: 1.6;
       color: #c5d0dc;
       margin-bottom: 12px;
     }
 
     .chapter-bow-note {
-      font-size: 0.8rem;
-      line-height: 1.52;
+      font-size: 0.79rem;
+      line-height: 1.5;
       color: #dfd0b2;
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: 12px;
       background: rgba(176, 141, 74, 0.1);
       border-left: 3px solid var(--gold-bright);
-      margin-bottom: 14px;
+      margin-bottom: 13px;
     }
 
     .chapter-actions {
@@ -581,7 +675,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 13px;
     }
 
     .chapter-btn {
@@ -591,9 +685,9 @@
       padding: 7px 13px;
       border-radius: 99px;
       border: 1px solid var(--gold-border);
-      background: rgba(18, 36, 56, 0.85);
+      background: rgba(18, 36, 56, 0.88);
       color: var(--paper);
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
@@ -618,13 +712,13 @@
       gap: 12px;
       padding: 8px 10px;
       border-radius: 12px;
-      background: rgba(5, 12, 20, 0.72);
+      background: rgba(5, 12, 20, 0.74);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .archival-plate img {
-      width: 78px;
-      height: 56px;
+      width: 76px;
+      height: 54px;
       object-fit: cover;
       border-radius: 8px;
       border: 1px solid rgba(176, 141, 74, 0.35);
@@ -632,7 +726,7 @@
     }
 
     .archival-caption {
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       line-height: 1.4;
       color: var(--muted);
       display: -webkit-box;
@@ -644,7 +738,7 @@
     /* Bottom Floating HUD Bar (Active Figurehead + Depth Z Coordinate) */
     .bottom-hud {
       position: fixed;
-      bottom: 16px;
+      bottom: 14px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 25;
@@ -653,13 +747,14 @@
       gap: 14px;
       padding: 8px 18px;
       border-radius: 999px;
-      background: rgba(7, 15, 24, 0.84);
+      background: rgba(7, 15, 24, 0.86);
       border: 1px solid var(--gold-border);
       backdrop-filter: blur(12px);
       font-size: 0.76rem;
       color: var(--muted);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
       white-space: nowrap;
+      pointer-events: auto;
     }
 
     .bottom-hud strong {
@@ -670,29 +765,42 @@
 
     /* Epilogue Section */
     .epilogue-section {
-      min-height: 75vh;
+      min-height: 85vh;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 80px 24px 120px;
-      text-align: center;
+      justify-content: flex-start;
+      padding: 80px 5vw 130px 5vw;
+      text-align: left;
     }
 
-    @media (max-width: 900px) {
-      .chapter-section {
-        padding: 80px 20px;
+    @media (max-width: 960px) {
+      .hero-section,
+      .chapter-section,
+      .epilogue-section {
+        padding: 90px 20px;
         justify-content: center !important;
-        min-height: 115vh;
+        min-height: 125vh;
+      }
+      .hero-card,
+      .chapter-card {
+        width: min(520px, 92vw);
       }
       .chapter-rail {
         display: none;
+      }
+      .sculpture-controls-dock {
+        left: 50% !important;
+        bottom: 54px;
       }
       .story-header {
         padding: 10px 16px;
       }
       .bottom-hud {
-        font-size: 0.7rem;
-        padding: 6px 14px;
+        font-size: 0.68rem;
+        padding: 6px 12px;
       }
     }
   </style>
@@ -716,8 +824,8 @@
   <video id="viewfinder" playsinline autoplay muted hidden></video>
   <canvas id="viewfinder-canvas" hidden></canvas>
 
-  <!-- Fixed 100vw x 100vh Three.js WebGL Stage -->
-  <div id="webgl-container" aria-hidden="true"></div>
+  <!-- Fixed 100vw x 100vh Interactive Three.js WebGL Stage -->
+  <div id="webgl-container" title="Drag anywhere on the 3D sculpture to rotate 360°"></div>
   <div class="cinematic-vignette"></div>
 
   <!-- Fixed Top Header -->
@@ -743,7 +851,7 @@
         <span id="geminiBtnLabel">Live Gemini AR</span>
       </button>
 
-      <a href="index.html?v=150" class="pill-btn" title="Open classic 3D & WebXR AR Figurehead Stage">
+      <a href="index.html?v=155" class="pill-btn" title="Open classic 3D & WebXR AR Figurehead Stage">
         <span>🏛️ Interactive 3D Stage</span>
       </a>
     </div>
@@ -752,26 +860,39 @@
   <!-- Right-Hand Chapter Progress Rail (01 - 14) -->
   <nav class="chapter-rail" id="chapterRail" aria-label="Figurehead Chapters"></nav>
 
-  <!-- Bottom Telemetry & Active Chapter HUD -->
-  <div class="bottom-hud" id="bottomHud">
-    <span>ACTIVE CHAPTER: <strong id="hudActiveShip">Prologue · The Grand Atrium Flotilla</strong></span>
-    <span>·</span>
-    <span id="hudCameraZ">3D Corridor Z: +9.0m</span>
+  <!-- Interactive 3D Sculpture Control Bar (Automatically sits beneath the active 3D Figurehead side) -->
+  <div class="sculpture-controls-dock side-right" id="sculptureControlsDock">
+    <span class="dock-hint">🖱️ Drag 3D Model to Rotate 360°</span>
+    <button type="button" class="dock-btn" id="btnRotateLeft" title="Rotate 3D Sculpture Left">⟲ Left</button>
+    <button type="button" class="dock-btn" id="btnRotateRight" title="Rotate 3D Sculpture Right">⟳ Right</button>
+    <button type="button" class="dock-btn" id="btnZoomIn" title="Zoom Closer to 3D Sculpture">➕ Zoom</button>
+    <button type="button" class="dock-btn" id="btnZoomOut" title="Zoom Out from 3D Sculpture">➖ Zoom</button>
+    <button type="button" class="dock-btn" id="btnResetModel" title="Reset 3D Sculpture Angle & Zoom">🎯 Reset</button>
   </div>
 
-  <!-- Scroll-Driven Narrative Overlay -->
+  <!-- Bottom Telemetry & Active Chapter HUD -->
+  <div class="bottom-hud" id="bottomHud">
+    <span>ACTIVE CHAPTER: <strong id="hudActiveShip">Prologue · Queen Victoria (HMS Windsor Castle)</strong></span>
+    <span>·</span>
+    <span id="hudCameraZ">3D Corridor Z: +5.6m</span>
+  </div>
+
+  <!-- Scroll-Driven Narrative Overlay (Strict Left/Right Non-Overlapping Column Split) -->
   <main class="story-main" id="top">
-    <!-- Hero Prologue -->
+    <!-- Hero Prologue (Left Column Card + Queen Victoria Statue Unobstructed on Right Column) -->
     <section class="hero-section" id="prologueSection">
-      <div class="hero-card">
+      <div class="hero-card" id="prologueCard">
         <div class="hero-eyebrow">The Box, Plymouth · 14 Monumental Carved Ships' Figureheads</div>
         <h2 class="hero-title">Carved in Oak, Pine &amp; Teak.<br/><em>Sailing Through Time.</em></h2>
+        <div class="hero-statue-tag">
+          <span>👑 Featured Right: Queen Victoria · <em>HMS Windsor Castle</em> (1858)</span>
+        </div>
         <p class="hero-lede">
-          Scroll downward to push your 3D camera through the mist-shrouded maritime gallery of Plymouth. Experience all fourteen monumental Royal Navy figureheads — from the two-tonne oak portrait of King William IV to the Malabar teak prow of <em>HMS Calcutta</em> and the paddle sloop <em>HMS Sphinx</em> — in one unbroken 3D WebGL camera journey.
+          Scroll downward to push your 3D camera through the mist-shrouded maritime gallery of Plymouth. Drag any 3D figurehead directly with your mouse or finger to rotate it 360° while scrolling through all fourteen Royal Navy warships.
         </p>
         <div class="scroll-cue">
           <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
-          <span>Scroll to Fly Through the 14 Figureheads</span>
+          <span>Scroll Down · Drag Any 3D Statue to Rotate 360°</span>
         </div>
       </div>
     </section>
@@ -780,23 +901,23 @@
     <div id="chaptersContainer"></div>
 
     <!-- Epilogue -->
-    <section class="epilogue-section">
-      <div class="hero-card">
+    <section class="epilogue-section" id="epilogueSection">
+      <div class="hero-card" id="epilogueCard">
         <div class="hero-eyebrow">Mo360 Immersive Studio · The Box, Plymouth</div>
         <h2 class="hero-title">Fourteen Vessels. <em>One Maritime Legacy.</em></h2>
         <p class="hero-lede">
           Every figurehead in this 3D corridor has been reconstructed from conservation archives and archival ship draughts for WebGL, WebXR Augmented Reality, and live voice interaction.
         </p>
-        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:16px;">
+        <div style="display:flex; flex-wrap:wrap; justify-content:flex-start; gap:12px; margin-top:16px;">
           <button type="button" class="pill-btn active" id="backToTopBtn">↑ Fly Back to Chapter 01</button>
-          <a href="index.html?v=150#sphinx" class="pill-btn">🏛️ Open Interactive 3D &amp; AR Viewer</a>
+          <a href="index.html?v=155#sphinx" class="pill-btn">🏛️ Open Interactive 3D &amp; AR Viewer</a>
         </div>
       </div>
     </section>
   </main>
 
   <!-- Load Official Plymouth Chronicles Figurehead Catalogue -->
-  <script src="data.js?v=150"></script>
+  <script src="data.js?v=155"></script>
 
   <script type="module">
     import * as THREE from 'three';
@@ -809,13 +930,17 @@
 
     const COLLECTION = window.COLLECTION || [];
     const CHAPTER_SPACING_Z = 24.0; // 24 meters between each figurehead along the Z corridor
-    const FIGUREHEAD_X_OFFSET = 1.85; // Stagger left/right opposite the story card
+    const FIGUREHEAD_X_OFFSET = 1.75; // Exact left/right split so statue sits in the opposite half of the screen from the text card
+    const CAMERA_INSPECT_DIST = 5.2; // Distance in front of the active figurehead
 
     // DOM References
     const container = document.getElementById('webgl-container');
     const preloader = document.getElementById('preloader');
     const preloaderBar = document.getElementById('preloaderBar');
     const preloaderStatus = document.getElementById('preloaderStatus');
+    const prologueSection = document.getElementById('prologueSection');
+    const prologueCard = document.getElementById('prologueCard');
+    const epilogueSection = document.getElementById('epilogueSection');
     const chaptersContainer = document.getElementById('chaptersContainer');
     const chapterRail = document.getElementById('chapterRail');
     const scrollProgressBar = document.getElementById('scrollProgressBar');
@@ -824,12 +949,23 @@
     const shipBowModeBtn = document.getElementById('shipBowModeBtn');
     const autoNarrateBtn = document.getElementById('autoNarrateBtn');
     const backToTopBtn = document.getElementById('backToTopBtn');
+    const sculptureControlsDock = document.getElementById('sculptureControlsDock');
+    const btnRotateLeft = document.getElementById('btnRotateLeft');
+    const btnRotateRight = document.getElementById('btnRotateRight');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnResetModel = document.getElementById('btnResetModel');
 
     // -------------------------------------------------------------------------
     // 1. Build HTML Narrative Chapters & Right-Hand Progress Rail
     // -------------------------------------------------------------------------
+    const chapterSections = [];
+    const chapterCards = [];
+
     COLLECTION.forEach((item, idx) => {
       const chapNum = String(idx + 1).padStart(2, '0');
+      // Even chapters (01, 03, 05...): Card on Left, 3D Model on Right
+      // Odd chapters (02, 04, 06...): Card on Right, 3D Model on Left
       const alignClass = (idx % 2 === 0) ? 'align-left' : 'align-right';
       const audioFile = `audio/${item.id}.wav`;
 
@@ -862,7 +998,7 @@
             <button type="button" class="chapter-btn btn-spin-model" data-idx="${idx}">
               <span>🔄 360° Spin Sculpture</span>
             </button>
-            <a href="index.html?v=150#${item.id}" class="chapter-btn">
+            <a href="index.html?v=155#${item.id}" class="chapter-btn">
               <span>🏛️ Open in AR Stage</span>
             </a>
           </div>
@@ -873,6 +1009,8 @@
         </article>
       `;
       chaptersContainer.appendChild(sec);
+      chapterSections.push(sec);
+      chapterCards.push(sec.querySelector('.chapter-card'));
 
       const dot = document.createElement('button');
       dot.type = 'button';
@@ -883,17 +1021,19 @@
       chapterRail.appendChild(dot);
     });
 
+    const railDots = Array.from(document.querySelectorAll('.rail-dot'));
+
     // -------------------------------------------------------------------------
-    // 2. Initialize Lenis Smooth Scroll + GSAP ScrollTrigger
+    // 2. Initialize Lenis Smooth Scroll
     // -------------------------------------------------------------------------
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
-      duration: 1.25,
+      duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       wheelMultiplier: 0.95,
-      touchMultiplier: 1.5
+      touchMultiplier: 1.4
     });
 
     lenis.on('scroll', ScrollTrigger.update);
@@ -902,17 +1042,17 @@
     });
     gsap.ticker.lagSmoothing(0);
 
-    // Rail dot click -> smooth Lenis scroll to chapter
-    Array.from(document.querySelectorAll('.rail-dot')).forEach((dot) => {
+    // Rail dot click -> smooth Lenis scroll to exact center of chapter section
+    railDots.forEach((dot) => {
       dot.addEventListener('click', () => {
         const idx = parseInt(dot.dataset.idx, 10);
-        const targetEl = document.getElementById(`chapter-${COLLECTION[idx].id}`);
-        if (targetEl) lenis.scrollTo(targetEl, { offset: -40, duration: 1.5 });
+        const targetEl = chapterSections[idx];
+        if (targetEl) lenis.scrollTo(targetEl, { offset: 0, duration: 1.35 });
       });
     });
 
     backToTopBtn.addEventListener('click', () => {
-      lenis.scrollTo('#top', { duration: 1.8 });
+      lenis.scrollTo('#top', { duration: 1.6 });
     });
 
     // -------------------------------------------------------------------------
@@ -920,28 +1060,27 @@
     // -------------------------------------------------------------------------
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x070f18);
-    scene.fog = new THREE.FogExp2(0x070f18, 0.024);
+    scene.fog = new THREE.FogExp2(0x070f18, 0.025);
 
-    const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 140);
-    camera.position.set(0, 1.8, 9.0);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 140);
+    camera.position.set(0, 1.55, CAMERA_INSPECT_DIST + 0.5);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.18;
     container.appendChild(renderer.domElement);
 
-    // EffectComposer with UnrealBloomPass for Polished Filmic Finish
     const composer = new EffectComposer(renderer);
     const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
 
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.28, // strength
-      0.55, // radius
-      0.82  // threshold
+      0.24,
+      0.5,
+      0.85
     );
     composer.addPass(bloomPass);
 
@@ -949,31 +1088,31 @@
     composer.addPass(outputPass);
 
     // Cinematic Museum Lighting Setup
-    const ambientLight = new THREE.HemisphereLight(0xd9e8f5, 0x0a1520, 1.35);
+    const ambientLight = new THREE.HemisphereLight(0xd9e8f5, 0x0a1520, 1.45);
     scene.add(ambientLight);
 
-    const mainKeyLight = new THREE.DirectionalLight(0xfff1d6, 2.3);
+    const mainKeyLight = new THREE.DirectionalLight(0xfff1d6, 2.4);
     mainKeyLight.position.set(6, 12, 10);
     scene.add(mainKeyLight);
 
-    const navalFillLight = new THREE.DirectionalLight(0x4b7cb8, 1.15);
+    const navalFillLight = new THREE.DirectionalLight(0x4b7cb8, 1.25);
     navalFillLight.position.set(-8, 4, 6);
     scene.add(navalFillLight);
 
     // Dynamic Camera-Tracking Golden Rim & Chapter Spotlight
-    const activeSpotLight = new THREE.SpotLight(0xffe4b5, 18.0, 28.0, Math.PI * 0.24, 0.65, 1.2);
-    activeSpotLight.position.set(0, 6.5, 5.0);
+    const activeSpotLight = new THREE.SpotLight(0xffe4b5, 20.0, 28.0, Math.PI * 0.26, 0.65, 1.2);
+    activeSpotLight.position.set(0, 6.2, 5.0);
     scene.add(activeSpotLight);
     scene.add(activeSpotLight.target);
 
-    const rimPointLight = new THREE.PointLight(0xe6af4b, 8.5, 18.0, 1.4);
+    const rimPointLight = new THREE.PointLight(0xe6af4b, 9.0, 18.0, 1.4);
     scene.add(rimPointLight);
 
     // -------------------------------------------------------------------------
-    // 4. Floating 3D Sea Mist, Golden Dust Motes & Atrium Corridor Guides
+    // 4. Floating 3D Sea Mist & Golden Dust Motes
     // -------------------------------------------------------------------------
     const totalCorridorLength = COLLECTION.length * CHAPTER_SPACING_Z + 40;
-    const particleCount = 1500;
+    const particleCount = 1400;
     const pPositions = new Float32Array(particleCount * 3);
     const pColors = new Float32Array(particleCount * 3);
 
@@ -981,9 +1120,9 @@
     const mistCol = new THREE.Color(0x8ab4d8);
 
     for (let i = 0; i < particleCount; i++) {
-      pPositions[i * 3] = (Math.random() - 0.5) * 22.0;
-      pPositions[i * 3 + 1] = Math.random() * 9.0 - 2.0;
-      pPositions[i * 3 + 2] = 14.0 - Math.random() * totalCorridorLength;
+      pPositions[i * 3] = (Math.random() - 0.5) * 20.0;
+      pPositions[i * 3 + 1] = Math.random() * 8.5 - 2.0;
+      pPositions[i * 3 + 2] = 12.0 - Math.random() * totalCorridorLength;
 
       const c = Math.random() > 0.38 ? goldCol : mistCol;
       pColors[i * 3] = c.r;
@@ -996,10 +1135,10 @@
     particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
 
     const particleMat = new THREE.PointsMaterial({
-      size: 0.065,
+      size: 0.06,
       vertexColors: true,
       transparent: true,
-      opacity: 0.58,
+      opacity: 0.52,
       depthWrite: false
     });
     const ambientParticles = new THREE.Points(particleGeo, particleMat);
@@ -1019,13 +1158,13 @@
       const m = String(orbitStr).match(/([-\d.]+)deg/);
       if (!m) return 0;
       const deg = parseFloat(m[1]);
-      // Convert model-viewer azimuth degrees to Three.js Y rotation so front faces +Z camera
       return THREE.MathUtils.degToRad(90 - deg);
     }
 
     COLLECTION.forEach((item, idx) => {
       const zoneZ = -idx * CHAPTER_SPACING_Z;
-      // If card is on the left (even idx), place 3D figurehead on the right (+X), and vice versa
+      // Even idx (0, 2, 4...): Card is on Left -> 3D Figurehead is on Right (+X)
+      // Odd idx (1, 3, 5...): Card is on Right -> 3D Figurehead is on Left (-X)
       const zoneX = (idx % 2 === 0) ? FIGUREHEAD_X_OFFSET : -FIGUREHEAD_X_OFFSET;
 
       const chapterGroup = new THREE.Group();
@@ -1033,35 +1172,37 @@
       scene.add(chapterGroup);
 
       // Golden Museum Pedestal Halo Ring beneath each figurehead
-      const ringGeo = new THREE.RingGeometry(1.15, 1.24, 48);
+      const ringGeo = new THREE.RingGeometry(1.08, 1.18, 48);
       ringGeo.rotateX(-Math.PI / 2);
       const ringMat = new THREE.MeshBasicMaterial({
         color: 0xe6af4b,
         transparent: true,
-        opacity: 0.42,
+        opacity: 0.45,
         side: THREE.DoubleSide
       });
       const pedestalRing = new THREE.Mesh(ringGeo, ringMat);
-      pedestalRing.position.y = -0.35;
+      pedestalRing.position.y = -0.32;
       chapterGroup.add(pedestalRing);
 
       // Inner subtle glow disc
-      const discGeo = new THREE.CircleGeometry(1.15, 32);
+      const discGeo = new THREE.CircleGeometry(1.08, 32);
       discGeo.rotateX(-Math.PI / 2);
       const discMat = new THREE.MeshBasicMaterial({
         color: 0xb08d4a,
         transparent: true,
-        opacity: 0.08,
+        opacity: 0.1,
         side: THREE.DoubleSide
       });
       const discMesh = new THREE.Mesh(discGeo, discMat);
-      discMesh.position.y = -0.36;
+      discMesh.position.y = -0.33;
       chapterGroup.add(discMesh);
 
       const modelHolder = new THREE.Group();
       chapterGroup.add(modelHolder);
 
-      const baseYaw = parseFrontOrbitRadians(item.orbit);
+      // Slight inward yaw bias so the figurehead turns naturally toward the viewer & center stage
+      const inwardBias = (idx % 2 === 0) ? -0.32 : 0.32;
+      const baseYaw = parseFrontOrbitRadians(item.orbit) + inwardBias;
 
       chapterNodes.push({
         idx,
@@ -1071,8 +1212,14 @@
         chapterGroup,
         modelHolder,
         pedestalRing,
+        discMesh,
         baseYaw,
         extraSpin: 0,
+        userRotY: 0,
+        userRotX: 0,
+        velRotY: 0,
+        velRotX: 0,
+        userZoom: 0, // -1.6m (closer) to +1.4m (wider)
         figureheadScene: null,
         shipBowScene: null,
         loadedFigurehead: false,
@@ -1080,7 +1227,7 @@
       });
     });
 
-    function normalizeAndCenterModel(rootScene, targetHeight = 3.6) {
+    function normalizeAndCenterModel(rootScene, targetHeight = 3.35) {
       const box = new THREE.Box3().setFromObject(rootScene);
       const size = new THREE.Vector3();
       const center = new THREE.Vector3();
@@ -1091,13 +1238,12 @@
       const scale = targetHeight / maxDim;
       rootScene.scale.setScalar(scale);
 
-      // Recompute after scaling
       const box2 = new THREE.Box3().setFromObject(rootScene);
       const center2 = new THREE.Vector3();
       box2.getCenter(center2);
 
       rootScene.position.x -= center2.x;
-      rootScene.position.y -= center2.y - 1.55; // Center at camera eye height (~1.55m)
+      rootScene.position.y -= center2.y - 1.48; // Centered cleanly at camera eye level (1.48m)
       rootScene.position.z -= center2.z;
 
       rootScene.traverse((child) => {
@@ -1115,13 +1261,12 @@
       return wrapper;
     }
 
-    // Normalize lowercase glb url from data.js
     function getNormalizedGlbUrl(item, useShipBow = false) {
       if (useShipBow) {
-        return `ships3d/${item.id}.glb?v=150`;
+        return `ships3d/${item.id}.glb?v=155`;
       }
       const raw = item.glb.split('?')[0];
-      return `${raw.toLowerCase()}?v=150`;
+      return `${raw.toLowerCase()}?v=155`;
     }
 
     async function loadChapterModel(node, useShipBow = false) {
@@ -1141,7 +1286,7 @@
         gltfLoader.load(
           url,
           (gltf) => {
-            const normalized = normalizeAndCenterModel(gltf.scene, useShipBow ? 4.1 : 3.65);
+            const normalized = normalizeAndCenterModel(gltf.scene, useShipBow ? 3.85 : 3.38);
             if (useShipBow) {
               node.shipBowScene = normalized;
               node.loadedShipBow = true;
@@ -1164,7 +1309,6 @@
       });
     }
 
-    // Preload First 4 Hero Figureheads in Parallel for Instant 60fps Launch, then Stream Remaining 10
     async function bootPreloadModels() {
       const heroCount = Math.min(4, chapterNodes.length);
       let completedHero = 0;
@@ -1181,9 +1325,8 @@
       preloaderStatus.textContent = 'Entering The Box Plymouth 3D Atrium Corridor…';
       setTimeout(() => {
         preloader.classList.add('loaded');
-      }, 200);
+      }, 180);
 
-      // Stream remaining 10 figureheads concurrently in background groups of 4
       for (let i = heroCount; i < chapterNodes.length; i += 4) {
         const batch = chapterNodes.slice(i, i + 4).map((n) => loadChapterModel(n, false));
         await Promise.all(batch);
@@ -1192,7 +1335,6 @@
 
     bootPreloadModels();
 
-    // Toggle between Figurehead 3D Sculpture Mode and Mounted on 3D Ship Bow Mode
     shipBowModeBtn.addEventListener('click', async () => {
       isShipBowMode = !isShipBowMode;
       shipBowModeBtn.classList.toggle('active', isShipBowMode);
@@ -1200,7 +1342,6 @@
         ? '⛵ Showing 3D Ship Bows'
         : '⛵ 3D Ship Bow Mode';
 
-      // Load active & nearby chapters first, then rest
       for (const node of chapterNodes) {
         await loadChapterModel(node, isShipBowMode);
       }
@@ -1214,14 +1355,94 @@
         if (!node) return;
         gsap.to(node, {
           extraSpin: node.extraSpin + Math.PI * 2,
-          duration: 2.4,
+          duration: 2.2,
           ease: 'power2.inOut'
         });
       });
     });
 
     // -------------------------------------------------------------------------
-    // 6. Curator Audio Narration & Auto-Voice on Scroll
+    // 6. Direct 3D Model Pointer Drag Rotation (Rotate 360° & Tilt) + Zoom Dock
+    // -------------------------------------------------------------------------
+    let isDraggingModel = false;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+    let currentFocusedNodeIdx = 0;
+
+    function getActiveNode() {
+      const idx = Math.max(0, Math.min(chapterNodes.length - 1, currentFocusedNodeIdx));
+      return chapterNodes[idx];
+    }
+
+    container.addEventListener('pointerdown', (e) => {
+      isDraggingModel = true;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+      container.classList.add('is-dragging');
+      try { container.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    container.addEventListener('pointermove', (e) => {
+      if (!isDraggingModel) return;
+      const dx = e.clientX - lastPointerX;
+      const dy = e.clientY - lastPointerY;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+
+      const node = getActiveNode();
+      if (node) {
+        node.userRotY += dx * 0.011;
+        node.velRotY = dx * 0.004;
+        node.userRotX = THREE.MathUtils.clamp(node.userRotX + dy * 0.006, -0.45, 0.45);
+      }
+    });
+
+    function endModelDrag(e) {
+      if (!isDraggingModel) return;
+      isDraggingModel = false;
+      container.classList.remove('is-dragging');
+      try { container.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+
+    container.addEventListener('pointerup', endModelDrag);
+    container.addEventListener('pointercancel', endModelDrag);
+
+    // Interactive Sculpture Dock Buttons
+    btnRotateLeft.addEventListener('click', () => {
+      const node = getActiveNode();
+      if (node) gsap.to(node, { userRotY: node.userRotY - Math.PI * 0.45, duration: 0.55, ease: 'power2.out' });
+    });
+
+    btnRotateRight.addEventListener('click', () => {
+      const node = getActiveNode();
+      if (node) gsap.to(node, { userRotY: node.userRotY + Math.PI * 0.45, duration: 0.55, ease: 'power2.out' });
+    });
+
+    btnZoomIn.addEventListener('click', () => {
+      const node = getActiveNode();
+      if (node) {
+        const nextZoom = Math.max(-1.6, node.userZoom - 0.55);
+        gsap.to(node, { userZoom: nextZoom, duration: 0.45, ease: 'power2.out' });
+      }
+    });
+
+    btnZoomOut.addEventListener('click', () => {
+      const node = getActiveNode();
+      if (node) {
+        const nextZoom = Math.min(1.4, node.userZoom + 0.55);
+        gsap.to(node, { userZoom: nextZoom, duration: 0.45, ease: 'power2.out' });
+      }
+    });
+
+    btnResetModel.addEventListener('click', () => {
+      const node = getActiveNode();
+      if (node) {
+        gsap.to(node, { userRotY: 0, userRotX: 0, userZoom: 0, extraSpin: 0, duration: 0.65, ease: 'power2.out' });
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // 7. Curator Audio Narration & Auto-Voice on Scroll
     // -------------------------------------------------------------------------
     const curatorAudio = new Audio();
     curatorAudio.preload = 'auto';
@@ -1281,110 +1502,80 @@
     });
 
     // -------------------------------------------------------------------------
-    // 7. GSAP ScrollTrigger Choreography: Camera Z Path & Synchronized Text
+    // 8. Exact DOM-Locked Scroll Synchronization (Zero Card/Statue Desync)
     // -------------------------------------------------------------------------
-    const scrollState = {
-      progress: 0,
-      targetCamZ: 9.0,
-      targetCamX: 0.0,
-      targetLookX: 0.0,
-      targetLookZ: 0.0
-    };
-
     let activeChapterIndex = -1;
-    const railDots = Array.from(document.querySelectorAll('.rail-dot'));
-    const chapterCards = Array.from(document.querySelectorAll('.chapter-card'));
 
-    function setActiveChapter(idx) {
-      if (activeChapterIndex === idx) return;
-      activeChapterIndex = idx;
+    function updateHudAndRail(idx, isPrologue) {
+      currentFocusedNodeIdx = Math.max(0, idx);
+      const isRightSideModel = (currentFocusedNodeIdx % 2 === 0);
+      sculptureControlsDock.classList.toggle('side-right', isRightSideModel);
+      sculptureControlsDock.classList.toggle('side-left', !isRightSideModel);
+
+      const stateKey = isPrologue ? -1 : idx;
+      if (activeChapterIndex === stateKey) return;
+      activeChapterIndex = stateKey;
 
       railDots.forEach((d, i) => d.classList.toggle('active', i === idx));
-      chapterCards.forEach((c, i) => c.classList.toggle('is-active', i === idx));
 
-      if (idx >= 0 && COLLECTION[idx]) {
+      if (isPrologue) {
+        hudActiveShip.textContent = 'Prologue · Queen Victoria (HMS Windsor Castle, 1858)';
+      } else if (idx >= 0 && COLLECTION[idx]) {
         const chapNum = String(idx + 1).padStart(2, '0');
         hudActiveShip.textContent = `Chapter ${chapNum} · ${COLLECTION[idx].ship} (${COLLECTION[idx].launched})`;
         if (autoNarrateOnScroll) {
           playChapterAudio(idx);
         }
-      } else {
-        hudActiveShip.textContent = 'Prologue · The Grand Atrium Flotilla';
       }
     }
 
-    // Master ScrollTrigger mapping 0% -> 100% document scroll to continuous 3D Z-axis path
-    const maxCorridorZ = -(COLLECTION.length - 1) * CHAPTER_SPACING_Z + 4.8; // Stop 4.8m in front of Chapter 14
-    const startCorridorZ = 9.0;
+    // Compute exact fractional chapter index from live DOM section centers
+    function computeDOMScrollState() {
+      const vhCenter = window.innerHeight * 0.5;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const overallProgress = THREE.MathUtils.clamp(window.scrollY / docHeight, 0, 1);
+      scrollProgressBar.style.width = `${(overallProgress * 100).toFixed(1)}%`;
 
-    ScrollTrigger.create({
-      trigger: document.body,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.6,
-      onUpdate: (self) => {
-        scrollState.progress = self.progress;
-        scrollProgressBar.style.width = `${(self.progress * 100).toFixed(1)}%`;
+      const firstRect = chapterSections[0].getBoundingClientRect();
+      const firstCenter = firstRect.top + firstRect.height * 0.5;
 
-        // Map scroll progress cleanly along the Z corridor
-        scrollState.targetCamZ = THREE.MathUtils.lerp(startCorridorZ, maxCorridorZ, self.progress);
+      // 1. Are we above Chapter 01's center (in the Prologue transition)?
+      if (firstCenter >= vhCenter) {
+        const prologueRect = prologueSection.getBoundingClientRect();
+        const prologueCenter = prologueRect.top + prologueRect.height * 0.5;
+        const span = Math.max(1, firstCenter - prologueCenter);
+        const prologueRatio = THREE.MathUtils.clamp((vhCenter - prologueCenter) / span, 0, 1);
+        return {
+          chapterFloat: 0.0, // Keep Queen Victoria (Chapter 01) on stage!
+          prologueRatio
+        };
+      }
 
-        // Determine closest chapter along Z corridor
-        // Camera inspects each figurehead from +5.0m in front of its zoneZ
-        const effectiveSubjectZ = scrollState.targetCamZ - 5.0;
-        const rawIdx = Math.round(-effectiveSubjectZ / CHAPTER_SPACING_Z);
-        const clampedIdx = Math.max(0, Math.min(COLLECTION.length - 1, rawIdx));
+      // 2. Find which two chapter sections bracket the viewport center
+      for (let i = 0; i < chapterSections.length - 1; i++) {
+        const rA = chapterSections[i].getBoundingClientRect();
+        const rB = chapterSections[i + 1].getBoundingClientRect();
+        const cA = rA.top + rA.height * 0.5;
+        const cB = rB.top + rB.height * 0.5;
 
-        if (scrollState.targetCamZ > 5.5) {
-          setActiveChapter(-1);
-          scrollState.targetCamX = 0.0;
-          scrollState.targetLookX = 0.0;
-        } else {
-          setActiveChapter(clampedIdx);
-          const activeNode = chapterNodes[clampedIdx];
-          if (activeNode) {
-            // Gently shift camera horizontally to frame the active figurehead opposite its text card
-            scrollState.targetCamX = activeNode.zoneX * 0.42;
-            scrollState.targetLookX = activeNode.zoneX * 0.72;
-          }
+        if (cA <= vhCenter && vhCenter <= cB) {
+          const t = THREE.MathUtils.clamp((vhCenter - cA) / Math.max(1, cB - cA), 0, 1);
+          return {
+            chapterFloat: i + t,
+            prologueRatio: 1.0
+          };
         }
       }
-    });
 
-    // Individual GSAP ScrollTrigger Text Animations for Each Chapter Card
-    chapterCards.forEach((card, idx) => {
-      const section = card.parentElement;
-      gsap.fromTo(
-        card,
-        { opacity: 0, y: 65 },
-        {
-          opacity: 1,
-          y: 0,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 82%',
-            end: 'top 38%',
-            scrub: true
-          }
-        }
-      );
-
-      gsap.to(card, {
-        opacity: 0,
-        y: -55,
-        ease: 'power2.in',
-        scrollTrigger: {
-          trigger: section,
-          start: 'bottom 45%',
-          end: 'bottom 12%',
-          scrub: true
-        }
-      });
-    });
+      // 3. Past the last chapter section (into Epilogue)
+      return {
+        chapterFloat: chapterSections.length - 1,
+        prologueRatio: 1.0
+      };
+    }
 
     // -------------------------------------------------------------------------
-    // 8. Interactive Mouse Parallax & Main 60fps Render Loop
+    // 9. Interactive Mouse Parallax & Main 60fps Render Loop
     // -------------------------------------------------------------------------
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
 
@@ -1401,59 +1592,110 @@
     });
 
     const clock = new THREE.Clock();
-    let smoothCamX = 0;
-    let smoothCamY = 1.65;
-    let smoothCamZ = 9.0;
-    let smoothLookX = 0;
+    let smoothChapterFloat = 0.0;
+    let smoothPrologueRatio = 0.0;
+    let smoothCamX = 0.0;
+    let smoothCamY = 1.52;
+    let smoothCamZ = CAMERA_INSPECT_DIST + 0.5;
 
     function animate() {
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Lerp mouse parallax smoothly
+      // 1. Read exact DOM section alignment
+      const domState = computeDOMScrollState();
+      smoothChapterFloat += (domState.chapterFloat - smoothChapterFloat) * 0.22;
+      smoothPrologueRatio += (domState.prologueRatio - smoothPrologueRatio) * 0.22;
+
+      const nearestIdx = Math.max(0, Math.min(COLLECTION.length - 1, Math.round(smoothChapterFloat)));
+      const isPrologue = smoothPrologueRatio < 0.48;
+      updateHudAndRail(nearestIdx, isPrologue);
+
+      // 2. Strictly non-overlapping Card Opacity & Transform Choreography
+      // Prologue Banner fades out completely before Chapter 01 Card fades in
+      const prologueCardOpacity = THREE.MathUtils.clamp(1.0 - smoothPrologueRatio / 0.44, 0.0, 1.0);
+      prologueCard.style.opacity = prologueCardOpacity.toFixed(3);
+      prologueCard.style.transform = `translateY(${((1.0 - prologueCardOpacity) * -28).toFixed(1)}px)`;
+      prologueCard.style.pointerEvents = prologueCardOpacity > 0.15 ? 'auto' : 'none';
+
+      // Chapter Cards: Each card is visible ONLY when its 3D figurehead is the active focus
+      const chap0Gate = THREE.MathUtils.clamp((smoothPrologueRatio - 0.46) / 0.32, 0.0, 1.0);
+      for (let i = 0; i < chapterCards.length; i++) {
+        const card = chapterCards[i];
+        const distFromChapter = Math.abs(smoothChapterFloat - i);
+        let cardAlpha = THREE.MathUtils.clamp(1.0 - (distFromChapter - 0.24) / 0.22, 0.0, 1.0);
+        if (i === 0) {
+          cardAlpha *= chap0Gate;
+        }
+        const signedDelta = smoothChapterFloat - i;
+        const driftY = signedDelta * -38.0;
+        card.style.opacity = cardAlpha.toFixed(3);
+        card.style.transform = `translateY(${driftY.toFixed(1)}px)`;
+        card.classList.toggle('is-active', cardAlpha > 0.25);
+      }
+
+      // 3. Lerp subtle mouse parallax
       mouse.x += (mouse.targetX - mouse.x) * 0.06;
       mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-      // Smoothly interpolate camera along the scroll-linked 3D corridor path
-      smoothCamZ += (scrollState.targetCamZ - smoothCamZ) * 0.09;
-      smoothCamX += (scrollState.targetCamX + mouse.x * 0.55 - smoothCamX) * 0.08;
-      smoothCamY += (1.62 + mouse.y * 0.32 - smoothCamY) * 0.08;
-      smoothLookX += (scrollState.targetLookX + mouse.x * 0.25 - smoothLookX) * 0.08;
+      // 4. Camera Z path locked 1:1 to smoothChapterFloat + active node zoom
+      const activeNode = chapterNodes[nearestIdx];
+      const userZoomOffset = activeNode ? activeNode.userZoom : 0.0;
+      const prologueBackoff = (1.0 - smoothPrologueRatio) * 0.45;
+      const targetCamZ = -smoothChapterFloat * CHAPTER_SPACING_Z + CAMERA_INSPECT_DIST + prologueBackoff + userZoomOffset;
+
+      // Keep camera centered along X = 0 so Left (-1.75m) and Right (+1.75m) figureheads stay cleanly in their dedicated screen halves!
+      smoothCamZ += (targetCamZ - smoothCamZ) * 0.24;
+      smoothCamX += (mouse.x * 0.14 - smoothCamX) * 0.08;
+      smoothCamY += (1.50 + mouse.y * 0.12 - smoothCamY) * 0.08;
 
       camera.position.set(smoothCamX, smoothCamY, smoothCamZ);
-      camera.lookAt(smoothLookX, 1.52 + mouse.y * 0.18, smoothCamZ - 5.2);
+      camera.lookAt(smoothCamX * 0.35, 1.48 + mouse.y * 0.08, smoothCamZ - CAMERA_INSPECT_DIST);
 
       hudCameraZ.textContent = `3D Corridor Z: ${smoothCamZ >= 0 ? '+' : ''}${smoothCamZ.toFixed(1)}m`;
 
-      // Move dynamic chapter spotlight & golden rim light along with camera
-      activeSpotLight.position.set(smoothCamX - 2.2, 5.8, smoothCamZ + 2.5);
-      activeSpotLight.target.position.set(smoothLookX, 1.5, smoothCamZ - 5.0);
+      // 5. Move dynamic spotlight & golden rim light to illuminate the active figurehead side
+      const activeSideX = activeNode ? activeNode.zoneX : FIGUREHEAD_X_OFFSET;
+      activeSpotLight.position.set(activeSideX * 0.6, 5.6, smoothCamZ + 2.2);
+      activeSpotLight.target.position.set(activeSideX, 1.48, smoothCamZ - CAMERA_INSPECT_DIST);
       activeSpotLight.target.updateMatrixWorld();
 
-      rimPointLight.position.set(smoothLookX + 2.5, 2.8, smoothCamZ - 6.8);
+      rimPointLight.position.set(activeSideX * 1.35, 2.7, smoothCamZ - CAMERA_INSPECT_DIST - 1.8);
 
-      // Animate each figurehead in its 3D chapter zone (gentle heroic float & turntable sway)
+      // 6. Update each 3D Figurehead node: Single-Stage Isolation + Interactive 360 Rotation
       for (let i = 0; i < chapterNodes.length; i++) {
         const node = chapterNodes[i];
-        const distZ = Math.abs((smoothCamZ - 5.0) - node.zoneZ);
+        const chapterDist = Math.abs(smoothChapterFloat - i);
 
-        // Optimize GPU: hide chapters more than 55m away in dense fog
-        node.chapterGroup.visible = distZ < 58.0;
+        // Hide distant chapters so background statues NEVER photobomb behind the active story card
+        const visWeight = THREE.MathUtils.clamp(1.0 - (chapterDist - 0.38) / 0.44, 0.0, 1.0);
+        node.chapterGroup.visible = visWeight > 0.01;
         if (!node.chapterGroup.visible) continue;
 
-        // Subtle sculptural turntable sway + user mouse parallax + 360 spin
-        const sway = Math.sin(elapsed * 0.55 + i) * 0.22 + mouse.x * 0.28;
-        node.modelHolder.rotation.y = node.baseYaw + sway + node.extraSpin;
-        node.modelHolder.position.y = Math.sin(elapsed * 0.9 + i * 0.7) * 0.06;
+        // Smooth scale transition as chapter enters/exits focus
+        const stageScale = 0.82 + 0.18 * visWeight;
+        node.chapterGroup.scale.setScalar(stageScale);
 
-        // Pulse golden pedestal ring as camera approaches this chapter
-        const proximity = Math.max(0, 1.0 - distZ / 16.0);
-        node.pedestalRing.material.opacity = 0.22 + proximity * 0.58;
-        const ringScale = 1.0 + proximity * 0.12 + Math.sin(elapsed * 2.0 + i) * 0.02;
+        // Apply drag inertia when user releases pointer
+        if (!isDraggingModel || i !== nearestIdx) {
+          node.userRotY += node.velRotY;
+          node.velRotY *= 0.92;
+        }
+
+        // Gentle museum breathing sway + interactive user 360° drag rotation + 360 spin button
+        const idleSway = Math.sin(elapsed * 0.55 + i) * 0.12 + mouse.x * 0.14;
+        node.modelHolder.rotation.y = node.baseYaw + idleSway + node.userRotY + node.extraSpin;
+        node.modelHolder.rotation.x = node.userRotX;
+        node.modelHolder.position.y = Math.sin(elapsed * 0.9 + i * 0.7) * 0.04;
+
+        // Pedestal halo pulse
+        node.pedestalRing.material.opacity = (0.22 + visWeight * 0.55) * visWeight;
+        node.discMesh.material.opacity = (0.04 + visWeight * 0.1) * visWeight;
+        const ringScale = 1.0 + visWeight * 0.1 + Math.sin(elapsed * 2.0 + i) * 0.02;
         node.pedestalRing.scale.set(ringScale, ringScale, 1);
       }
 
-      // Gently drift ambient sea mist & golden dust motes
+      // 7. Gently drift ambient sea mist & golden dust motes
       ambientParticles.rotation.y = Math.sin(elapsed * 0.08) * 0.04;
       ambientParticles.position.y = Math.sin(elapsed * 0.25) * 0.18;
 
@@ -1463,7 +1705,7 @@
     animate();
 
     // -------------------------------------------------------------------------
-    // 9. Live Gemini 3.8 AR Voice & Camera Integration (Connected to Port 8086)
+    // 10. Live Gemini 3.8 AR Voice & Camera Integration (Connected to Port 8086)
     // -------------------------------------------------------------------------
     const geminiLiveBtn = document.getElementById('geminiLiveBtn');
     const geminiBtnLabel = document.getElementById('geminiBtnLabel');
@@ -1575,7 +1817,7 @@
         if (!geminiFrameTimer) geminiFrameTimer = setInterval(sendGeminiVisualFrame, 2200);
         try {
           if (!geminiWorkletLoaded) {
-            await geminiAudioCtx.audioWorklet.addModule('recorder-worklet.js?v=150');
+            await geminiAudioCtx.audioWorklet.addModule('recorder-worklet.js?v=155');
             geminiWorkletLoaded = true;
           }
           const micSource = geminiAudioCtx.createMediaStreamSource(geminiMicStream);
@@ -1599,7 +1841,7 @@
         try {
           const msg = JSON.parse(ev.data);
           if (msg.type === 'ready') {
-            const activeItem = COLLECTION[Math.max(0, activeChapterIndex)] || COLLECTION[0];
+            const activeItem = COLLECTION[Math.max(0, currentFocusedNodeIdx)] || COLLECTION[0];
             geminiWs.send(JSON.stringify({
               type: 'text',
               text: `[System Context: Visitor is exploring the 3D Scroll Story of Plymouth Chronicles and currently viewing ${activeItem.ship} (${activeItem.launched}). Greet them warmly in 1 brief sentence.]`

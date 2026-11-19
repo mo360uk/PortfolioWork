@@ -186,12 +186,13 @@ def render_clean_3d_depth_drone_video(
     dep_pil = Image.fromarray((depth_np * 255).astype(np.uint8)).resize((target_w, target_h), Image.Resampling.BICUBIC)
 
     base_rgb = np.array(img_pil, dtype=np.float32)
-    # Strong planar smoothing on the warp depth field guarantees 100% straight architectural lines (ZERO bumps/twists!)
+    # Smooth planar depth field from Depth-Anything-V2:
+    # Eliminates brick/window texture bumps AND eliminates the 2-layer horizontal grey seam!
     dep_raw = np.array(dep_pil, dtype=np.float32) / 255.0
-    dep_planar = gaussian_filter(dep_raw, sigma=18.0)
-
-    bg_plate, bg_depth_raw, fg_alpha = decompose_and_inpaint_depth_layers(base_rgb, dep_raw)
-    bg_depth = gaussian_filter(bg_depth_raw, sigma=22.0)
+    dep_smooth = gaussian_filter(dep_raw, sigma=14.0)
+    d_min, d_max = float(np.percentile(dep_smooth, 2)), float(np.percentile(dep_smooth, 98))
+    dep_smooth = np.clip((dep_smooth - d_min) / max(0.05, d_max - d_min), 0.0, 1.0)
+    gray = np.mean(base_rgb, axis=-1) / 255.0
 
     n_frames = int(fps * duration_sec)
     yy, xx = np.mgrid[0:target_h, 0:target_w].astype(np.float32)
@@ -203,17 +204,21 @@ def render_clean_3d_depth_drone_video(
     cy = oy * target_h
     water_y = cfg["water_y"]
 
-    # Sky mask from real Depth-Anything-V2 neural depth (far sky has depth < 0.14)
-    sky_mask = np.clip((0.16 - dep_raw) / 0.14, 0.0, 1.0) * np.clip((0.55 - yn) / 0.35, 0.0, 1.0)
-    sky_mask = gaussian_filter(sky_mask, sigma=6.0)
+    # Sky mask from real Depth-Anything-V2 neural depth (far sky has depth < 0.16)
+    sky_mask = np.clip((0.18 - dep_raw) / 0.15, 0.0, 1.0) * np.clip((0.52 - yn) / 0.35, 0.0, 1.0)
+    sky_mask = gaussian_filter(sky_mask, sigma=8.0)
 
-    # 3D Volumetric dust/mist motes floating in the 3D space of the photograph
-    rng = np.random.default_rng(77)
-    n_motes = 65
-    mx = rng.uniform(-0.55, 0.55, n_motes)
-    my = rng.uniform(-0.42, 0.42, n_motes)
-    mz = rng.uniform(0.18, 1.15, n_motes)
-    msize = rng.uniform(1.5, 3.4, n_motes)
+    # Foliage mask for gentle Devon breeze sway
+    gy_grad, gx_grad = np.gradient(gray)
+    tex_energy = np.clip(np.sqrt(gx_grad ** 2 + gy_grad ** 2) * 18.0, 0.0, 1.0)
+    foliage_mask = gaussian_filter(
+        tex_energy * np.clip((0.72 - yn) * 1.6, 0.0, 1.0) * np.clip((dep_raw - 0.22) * 1.8, 0.0, 1.0),
+        sigma=12.0
+    )
+
+    water_mask = np.zeros_like(dep_raw)
+    if water_y < 0.99:
+        water_mask = gaussian_filter(np.clip((yn - water_y) / (1.0 - water_y + 1e-5), 0.0, 1.0), sigma=14.0)
 
     writer = imageio.get_writer(
         str(out_mp4),
@@ -225,78 +230,54 @@ def render_clean_3d_depth_drone_video(
     )
 
     for f_idx in range(n_frames):
-        u = f_idx / max(n_frames - 1, 1)
-        # Smooth 3D Drone Camera Orbit + Forward Dolly into the photograph
-        s_forward = 0.5 - 0.5 * math.cos(u * math.pi)  # 0.0 -> 1.0 smooth dolly in
-        orbit_theta = u * math.pi * 2.0
+        theta = (f_idx / float(n_frames)) * 2.0 * math.pi
+        dolly_phase = 0.5 - 0.5 * math.cos(theta)
 
-        # Camera 3D position: gentle forward flight + orbital arc around the 3D depth center
-        dolly_z = 0.04 + s_forward * 0.16
-        orbit_x = math.sin(orbit_theta) * 24.0
-        orbit_y = -math.cos(orbit_theta) * 11.0
+        dolly_z = 0.085 + dolly_phase * 0.135
+        orbit_x = math.sin(theta) * 28.0
+        orbit_y = math.sin(theta * 2.0 - 0.4) * 11.5
+        bank_rad = math.cos(theta) * 0.011
 
-        # --- LAYER 1: Render Disocclusion-Inpainted Background + Midground ---
-        bg_factor = 0.35 + 0.75 * bg_depth
-        bg_zoom = 1.0 + dolly_z * bg_factor
-        bg_src_x = cx + (xx - cx - orbit_x * bg_factor) / bg_zoom
-        bg_src_y = cy + (yy - cy - orbit_y * bg_factor) / bg_zoom
+        dx0 = xx - cx
+        dy0 = yy - cy
+        cos_b = math.cos(bank_rad)
+        sin_b = math.sin(bank_rad)
+        dx_rot = dx0 * cos_b - dy0 * sin_b
+        dy_rot = dx0 * sin_b + dy0 * cos_b
 
-        # Gentle drifting cloud/atmosphere motion in far sky
-        bg_src_x -= (u * 14.0) * sky_mask
+        # Two-step iterative 3D depth-field raymarching (zero horizontal cutout seam!)
+        depth_factor1 = 0.35 + 0.85 * dep_smooth
+        zoom1 = 1.0 + dolly_z * depth_factor1
+        src_x1 = cx + (dx_rot - orbit_x * (dep_smooth - 0.32)) / zoom1
+        src_y1 = cy + (dy_rot - orbit_y * (dep_smooth - 0.32)) / zoom1
 
-        # Living water ripples on River Tavy / Canal leat
-        if water_y < 0.99:
-            w_mask = np.clip((yn - water_y) / (1.0 - water_y + 1e-5), 0.0, 1.0) * np.clip(dep_raw * 1.4, 0.2, 1.0)
-            bg_src_x += np.sin(yy * 0.24 + u * math.pi * 8.0) * 2.4 * w_mask
-            bg_src_y += np.cos(xx * 0.16 + u * math.pi * 6.0) * 1.0 * w_mask
+        coords1 = np.array([np.clip(src_y1, 0, target_h - 1), np.clip(src_x1, 0, target_w - 1)])
+        dep_step2 = map_coordinates(dep_smooth, coords1, order=1, mode="nearest")
+        dep_ray = np.maximum(dep_smooth * 0.4 + dep_step2 * 0.6, dep_step2)
 
-        bg_coords = np.array([np.clip(bg_src_y, 0, target_h - 1), np.clip(bg_src_x, 0, target_w - 1)])
-        frame_bg = np.empty_like(base_rgb)
-        for c in range(3):
-            frame_bg[..., c] = map_coordinates(bg_plate[..., c], bg_coords, order=1, mode="nearest")
+        depth_factor2 = 0.35 + 0.88 * dep_ray
+        zoom2 = 1.0 + dolly_z * depth_factor2
+        src_x = cx + (dx_rot - orbit_x * (dep_ray - 0.32) * 1.15) / zoom2
+        src_y = cy + (dy_rot - orbit_y * (dep_ray - 0.32) * 1.15) / zoom2
 
-        # --- LAYER 2: Render Near Foreground Layer with True 3D Parallax Over Inpainted Background ---
-        fg_factor = 0.45 + 0.95 * dep_planar
-        fg_zoom = 1.0 + dolly_z * fg_factor
-        fg_src_x = cx + (xx - cx - orbit_x * fg_factor) / fg_zoom
-        fg_src_y = cy + (yy - cy - orbit_y * fg_factor) / fg_zoom
+        src_x -= math.sin(theta * 0.5) * 11.0 * sky_mask
+        src_x += np.sin(xn * 18.0 + yn * 12.0 + theta * 2.0) * 1.8 * foliage_mask
+        src_y += np.cos(xn * 14.0 - yn * 16.0 + theta * 2.0) * 1.0 * foliage_mask
 
         if water_y < 0.99:
-            w_mask = np.clip((yn - water_y) / (1.0 - water_y + 1e-5), 0.0, 1.0)
-            fg_src_x += np.sin(yy * 0.24 + u * math.pi * 8.0) * 2.4 * w_mask
-            fg_src_y += np.cos(xx * 0.16 + u * math.pi * 6.0) * 1.0 * w_mask
+            src_x += np.sin(yn * 95.0 - theta * 3.0 + xn * 14.0) * 2.8 * water_mask
+            src_y += np.sin(xn * 42.0 + yn * 80.0 - theta * 3.0) * 1.1 * water_mask
 
-        fg_coords = np.array([np.clip(fg_src_y, 0, target_h - 1), np.clip(fg_src_x, 0, target_w - 1)])
-        frame_fg = np.empty_like(base_rgb)
+        final_coords = np.array([np.clip(src_y, 0, target_h - 1), np.clip(src_x, 0, target_w - 1)])
+        frame = np.empty_like(base_rgb)
         for c in range(3):
-            frame_fg[..., c] = map_coordinates(base_rgb[..., c], fg_coords, order=1, mode="nearest")
-        alpha_warped = map_coordinates(fg_alpha[..., 0], fg_coords, order=1, mode="nearest")[..., None]
+            frame[..., c] = map_coordinates(base_rgb[..., c], final_coords, order=1, mode="nearest")
 
-        # Composite Foreground cleanly over Disocclusion-Inpainted Background (Zero rubber-sheet stretching!)
-        frame = frame_bg * (1.0 - alpha_warped) + frame_fg * alpha_warped
-
-        # Warm Golden-Hour Sunbeam Sweep across the 3D Depth Space
-        ray_pos = (xn - 0.28) * 1.35 + (yn - 0.12) * 0.65 - s_forward * 0.22
-        god_ray = np.exp(-((ray_pos - 0.20) ** 2) / 0.05) * (1.0 - yn * 0.45) * (0.35 + 0.65 * dep_planar)
-        frame[..., 0] += god_ray * 18.0
-        frame[..., 1] += god_ray * 13.0
-        frame[..., 2] += god_ray * 5.0
-
-        # 3D Floating Dust/Mist Motes streaming past the flying drone camera
-        for m_i in range(n_motes):
-            z_c = (mz[m_i] - u * 0.48) % 1.0
-            if z_c < 0.10:
-                continue
-            px = int(target_w * 0.5 + (mx[m_i] / z_c) * target_w * 0.40)
-            py = int(target_h * 0.5 + (my[m_i] / z_c) * target_h * 0.40)
-            rad = max(1, int(msize[m_i] / (z_c + 0.25)))
-            if rad < px < target_w - rad and rad < py < target_h - rad:
-                a = min(0.45, (1.0 - z_c) * 0.55)
-                y0, y1 = py - rad, py + rad + 1
-                x0, x1 = px - rad, px + rad + 1
-                frame[y0:y1, x0:x1, 0] = frame[y0:y1, x0:x1, 0] * (1 - a) + 245 * a
-                frame[y0:y1, x0:x1, 1] = frame[y0:y1, x0:x1, 1] * (1 - a) + 225 * a
-                frame[y0:y1, x0:x1, 2] = frame[y0:y1, x0:x1, 2] * (1 - a) + 185 * a
+        ray_pos = (xn - 0.28 - 0.12 * math.sin(theta)) * 1.3 + (yn - 0.12) * 0.65
+        god_ray = np.exp(-((ray_pos - 0.18) ** 2) / 0.065) * (1.0 - yn * 0.45) * (0.35 + 0.65 * dep_ray)
+        frame[..., 0] += god_ray * 14.0
+        frame[..., 1] += god_ray * 10.5
+        frame[..., 2] += god_ray * 4.0
 
         writer.append_data(np.clip(frame, 0, 255).astype(np.uint8))
 
