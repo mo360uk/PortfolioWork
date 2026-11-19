@@ -6,9 +6,9 @@ body{font-family:Georgia,"Times New Roman",serif;background:var(--navy);color:va
 .top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .ai-controls{display:flex;align-items:center;gap:8px}
 
-.gemini-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border:1px solid rgba(147,197,253,0.4);border-radius:99px;color:#fff;font:600 .75rem system-ui;cursor:pointer;transition:all .2s ease;box-shadow:0 2px 10px rgba(59,130,246,0.3)}
-.gemini-pill:hover{box-shadow:0 0 14px rgba(59,130,246,0.6);transform:scale(1.02)}
-.gemini-pill.connected{background:linear-gradient(135deg,#065f46,#10b981);border-color:rgba(52,211,153,0.6);box-shadow:0 0 12px rgba(16,185,129,0.5)}
+.gemini-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(13,27,42,0.86);border:1px solid rgba(176,141,74,0.45);border-radius:99px;color:var(--paper);font:600 .75rem system-ui;cursor:pointer;transition:all .2s ease}
+.gemini-pill:hover{border-color:var(--gold);background:rgba(25,46,68,0.95);color:#ffd97d;transform:scale(1.02)}
+.gemini-pill.connected{background:linear-gradient(135deg,rgba(176,141,74,0.35),rgba(230,175,75,0.22));border-color:var(--gold);color:#ffd97d;box-shadow:0 0 14px rgba(230,175,75,0.32)}
 .gemini-sparkle{animation:sparklePulse 2s infinite ease-in-out}
 @keyframes sparklePulse{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.2) rotate(15deg)}}
 

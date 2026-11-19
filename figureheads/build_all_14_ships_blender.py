@@ -476,7 +476,8 @@ def import_and_normalize_figurehead(glb_path, spec):
 
     mins, maxs = world_bounds([fig_obj])
     raw_h = maxs.z - mins.z
-    scale = spec["fig_height_m"] / raw_h if raw_h > 1e-6 else 1.0
+    # Monumental Royal Navy figurehead scale so the sculpture commands the prow cleanly beneath the bowsprit
+    scale = (spec["fig_height_m"] * 1.24) / raw_h if raw_h > 1e-6 else 1.0
     cx = 0.5 * (mins.x + maxs.x)
     cy = 0.5 * (mins.y + maxs.y)
 
@@ -995,17 +996,18 @@ def build_ship_bow_assembly(spec):
         bmesh.ops.transform(bm2, matrix=Matrix.Translation(mid) @ rot, verts=res["verts"])
         tag_mat(res["verts"], mat_idx)
 
-    # Lofted curved cutwater / stem knee + figurehead bolster pedestal
-    stem_top_z = 1.45 * fs
-    stem_y_top = -3.15 * ls
+    # Lofted sweeping concave Royal Navy cutwater / stem knee + sculpted figurehead scroll bolster
+    # Positioned high on the upper bow and sweeping proudly forward (-Y) so the figurehead leans out over the waves directly beneath the bowsprit!
+    stem_top_z = z_max_h - 2.25 * fs
+    stem_y_top = -4.35 * ls
     stem_upper_mat = MAT_WHITE if livery == "troopship_white_blue" else MAT_BLACK
     stem_stations = [
-        (-1.45 * ls, -0.55 * ls, z_min_h,         0.13 * bs, MAT_COPPER),
-        (-1.75 * ls, -0.70 * ls, -2.85 * fs,      0.14 * bs, MAT_COPPER),
-        (-2.05 * ls, -0.95 * ls, wline_z,         0.15 * bs, MAT_COPPER),
-        (-2.45 * ls, -1.10 * ls, 0.28 * fs,       0.17 * bs, stem_upper_mat),
-        (-2.85 * ls, -1.15 * ls, 1.18 * fs,       0.21 * bs, MAT_OAK),
-        (stem_y_top, -1.75 * ls, stem_top_z,      0.27 * bs, MAT_OAK),
+        (-1.45 * ls, -0.55 * ls, z_min_h,                     0.13 * bs, MAT_COPPER),
+        (-1.85 * ls, -0.72 * ls, -2.75 * fs,                  0.14 * bs, MAT_COPPER),
+        (-2.35 * ls, -0.95 * ls, wline_z,                     0.15 * bs, MAT_COPPER),
+        (-3.05 * ls, -1.15 * ls, wline_z + (stem_top_z - wline_z) * 0.42, 0.18 * bs, stem_upper_mat),
+        (-3.75 * ls, -1.35 * ls, stem_top_z - 0.55 * fs,      0.22 * bs, MAT_OAK),
+        (stem_y_top, -2.10 * ls, stem_top_z,                  0.30 * bs, MAT_OAK),
     ]
     stem_rings = []
     for yf, yb, z, hw, _ in stem_stations:
@@ -1019,28 +1021,30 @@ def build_ship_bow_assembly(spec):
             bm2.faces.new([sr0[j], sr0[nj], sr1[nj], sr1[j]]).material_index = m_idx
     bm2.faces.new(list(reversed(stem_rings[0]))).material_index = MAT_COPPER
     bm2.faces.new(stem_rings[-1]).material_index = MAT_OAK
+    # Carved gilt scroll bolster directly under the figurehead's base
+    add_box(0.0, stem_y_top + 0.55 * ls, stem_top_z - 0.12, 0.72 * bs, 1.35 * ls, 0.24, rot_x=math.radians(18.0), mat_idx=MAT_GOLD)
 
     # Iron bow plating straps on HMS Tamar
     if livery == "troopship_white_blue":
         for iz in (-0.3 * fs, 0.6 * fs, 1.5 * fs):
-            add_box(0.0, -1.90 * ls, iz, 0.42 * bs, 0.65 * ls, 0.14, mat_idx=MAT_IRON)
+            add_box(0.0, -2.20 * ls, iz, 0.42 * bs, 0.65 * ls, 0.14, mat_idx=MAT_IRON)
 
-    # Curved gilt trailboards & cheek rails hugging bow flare
+    # Curved gilt trailboards & cheek rails tucking cleanly BEHIND/BENEATH the figurehead base (zero clipping through the statue!)
     rail_mat = MAT_BLUE if livery == "troopship_white_blue" else MAT_GOLD
     for side in (-1.0, 1.0):
         pts_u = [
-            (side * 0.24 * bs, -2.70 * ls, 1.32 * fs),
-            (side * (eval_hull_x(-0.2 * ls, 1.85 * fs) + 0.07), -0.20 * ls, 1.85 * fs),
-            (side * (eval_hull_x(1.4 * ls, 2.35 * fs) + 0.06),   1.40 * ls, 2.35 * fs),
+            (side * 0.28 * bs, stem_y_top + 0.68 * ls, stem_top_z - 0.14),
+            (side * (eval_hull_x(-0.6 * ls, stem_top_z + 0.35 * fs) + 0.08), -0.60 * ls, stem_top_z + 0.35 * fs),
+            (side * (eval_hull_x(1.3 * ls, stem_top_z + 0.85 * fs) + 0.06),   1.30 * ls, stem_top_z + 0.85 * fs),
         ]
         pts_l = [
-            (side * 0.21 * bs, -2.45 * ls, 0.65 * fs),
-            (side * (eval_hull_x(-0.2 * ls, 1.05 * fs) + 0.07), -0.20 * ls, 1.05 * fs),
-            (side * (eval_hull_x(1.4 * ls, 1.50 * fs) + 0.06),   1.40 * ls, 1.50 * fs),
+            (side * 0.24 * bs, stem_y_top + 1.05 * ls, stem_top_z - 0.78 * fs),
+            (side * (eval_hull_x(-0.6 * ls, stem_top_z - 0.35 * fs) + 0.08), -0.60 * ls, stem_top_z - 0.35 * fs),
+            (side * (eval_hull_x(1.3 * ls, stem_top_z + 0.10 * fs) + 0.06),   1.30 * ls, stem_top_z + 0.10 * fs),
         ]
         for seg_idx in range(len(pts_u) - 1):
-            add_cyl(pts_u[seg_idx], pts_u[seg_idx + 1], 0.10, 0.11, segs=10, mat_idx=rail_mat)
-            add_cyl(pts_l[seg_idx], pts_l[seg_idx + 1], 0.075, 0.085, segs=10, mat_idx=rail_mat)
+            add_cyl(pts_u[seg_idx], pts_u[seg_idx + 1], 0.11, 0.12, segs=10, mat_idx=rail_mat)
+            add_cyl(pts_l[seg_idx], pts_l[seg_idx + 1], 0.085, 0.095, segs=10, mat_idx=rail_mat)
 
     # Forecastle bulwark coaming, timberhead bollards & paired oak catheads
     bulwark_ys = [stations[i][0] for i in range(1, len(stations))]
@@ -1060,12 +1064,13 @@ def build_ship_bow_assembly(spec):
         add_cyl((side * chx_in, chy, z_max_h + 0.05), (side * chx_out, chy - 0.55 * ls, z_max_h + 0.35), 0.20, 0.18, segs=8, mat_idx=MAT_OAK)
         add_box(side * chx_out, chy - 0.55 * ls, z_max_h + 0.35, 0.28, 0.28, 0.28, mat_idx=MAT_GOLD)
 
-    # Steep Royal Navy Bowsprit + Jibboom + Dolphin Striker / Martingale Stays + Gammoning Hoops
-    fig_top_z = stem_top_z + spec["fig_height_m"]
-    bs_base_z = max(z_max_h - 0.45, fig_top_z - 0.85)
-    p_bs0 = Vector((0.0, 3.60 * ls, bs_base_z))
-    p_bs1 = Vector((0.0, -7.80 * ls, bs_base_z + 4.45))
-    p_jb1 = Vector((0.0, -12.80 * ls, bs_base_z + 6.45))
+    # Steep Royal Navy Bowsprit + Jibboom passing cleanly ABOVE the figurehead's crown!
+    fig_h_scaled = spec["fig_height_m"] * 1.24
+    fig_top_z = stem_top_z + fig_h_scaled * math.cos(math.radians(24.0))
+    bs_base_z = max(z_max_h - 0.15, fig_top_z - 1.35)
+    p_bs0 = Vector((0.0, 3.40 * ls, bs_base_z))
+    p_bs1 = Vector((0.0, -8.40 * ls, bs_base_z + 5.15))
+    p_jb1 = Vector((0.0, -13.20 * ls, bs_base_z + 7.25))
     spar_mat = MAT_BUFF if livery == "troopship_white_blue" else MAT_SPAR
     r_bs0, r_bs1 = 0.46 * bs, 0.32 * bs
     add_cyl(p_bs0, p_bs1, r_bs0, r_bs1, segs=22, mat_idx=spar_mat)
@@ -1220,7 +1225,8 @@ def build_ship_bow_assembly(spec):
         poly.use_smooth = False
 
     add_uv_box_project(hull_obj)
-    return hull_obj, (0.0, -2.75 * ls, stem_top_z - 0.04)
+    # Mount point sits proudly on the forward tip of the cutwater knee bolster
+    return hull_obj, (0.0, stem_y_top + 0.42 * ls, stem_top_z - 0.06)
 
 
 def export_raw_glb(objs, glb_path):
@@ -1260,7 +1266,7 @@ def optimize_glb(raw_glb, opt_glb):
 
 def render_ship_thumb(objs, png_path):
     scene = bpy.context.scene
-    scene.render.engine = "BLENDER_EEVEE_NEXT"
+    scene.render.engine = "BLENDER_EEVEE"
     scene.render.resolution_x = 640
     scene.render.resolution_y = 480
     scene.render.image_settings.file_format = "PNG"
@@ -1428,10 +1434,12 @@ def main():
 
             bow_obj, mount_pt = build_ship_bow_assembly(spec)
 
-            # Mount figurehead cleanly onto stem knee bolster facing straight forward (-Y)
+            # Mount figurehead cleanly onto the sweeping stem knee bolster facing straight forward (-Y)
+            # Positive +X pitch tilts the figurehead FORWARD (+24 deg) heroically out over the cutwater beneath the bowsprit!
+            forward_rake_deg = max(20.0, min(28.0, abs(spec["fig_pitch_deg"]) + 12.0))
             fig_obj.location = mount_pt
             fig_obj.rotation_euler = (
-                math.radians(spec["fig_pitch_deg"]),
+                math.radians(forward_rake_deg),
                 0.0,
                 math.radians(spec["fig_yaw_deg"]),
             )

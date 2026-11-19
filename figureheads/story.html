@@ -272,16 +272,23 @@
     }
 
     .gemini-pill {
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      border-color: rgba(147, 197, 253, 0.45);
-      color: #ffffff;
-      box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35);
+      background: rgba(13, 27, 42, 0.84);
+      border-color: var(--gold-border);
+      color: var(--paper);
+      box-shadow: none;
+    }
+
+    .gemini-pill:hover {
+      border-color: var(--gold-bright);
+      background: rgba(25, 46, 68, 0.94);
+      color: #ffd97d;
     }
 
     .gemini-pill.connected {
-      background: linear-gradient(135deg, #065f46, #10b981);
-      border-color: rgba(52, 211, 153, 0.65);
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+      background: linear-gradient(135deg, rgba(176, 141, 74, 0.35), rgba(230, 175, 75, 0.22));
+      border-color: var(--gold-bright);
+      color: #ffd97d;
+      box-shadow: 0 0 16px rgba(230, 175, 75, 0.32);
     }
 
     /* 5. Right-Side Interactive Chapter Progress Rail (01 - 14) */
@@ -1263,10 +1270,10 @@
 
     function getNormalizedGlbUrl(item, useShipBow = false) {
       if (useShipBow) {
-        return `ships3d/${item.id}.glb?v=155`;
+        return `ships3d/${item.id}.glb?v=158`;
       }
       const raw = item.glb.split('?')[0];
-      return `${raw.toLowerCase()}?v=155`;
+      return `${raw.toLowerCase()}?v=158`;
     }
 
     async function loadChapterModel(node, useShipBow = false) {
@@ -1683,8 +1690,11 @@
         }
 
         // Gentle museum breathing sway + interactive user 360° drag rotation + 360 spin button
-        const idleSway = Math.sin(elapsed * 0.55 + i) * 0.12 + mouse.x * 0.14;
-        node.modelHolder.rotation.y = node.baseYaw + idleSway + node.userRotY + node.extraSpin;
+        // In 3D Ship Bow Mode, all 14 ship bows point along +Z -> present at heroic 3/4 maritime bow angle!
+        const shipBowYaw = (i % 2 === 0) ? -0.62 : 0.62;
+        const activeBaseYaw = isShipBowMode ? shipBowYaw : node.baseYaw;
+        const idleSway = Math.sin(elapsed * 0.55 + i) * 0.10 + mouse.x * 0.14;
+        node.modelHolder.rotation.y = activeBaseYaw + idleSway + node.userRotY + node.extraSpin;
         node.modelHolder.rotation.x = node.userRotX;
         node.modelHolder.position.y = Math.sin(elapsed * 0.9 + i * 0.7) * 0.04;
 
