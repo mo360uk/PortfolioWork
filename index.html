@@ -372,9 +372,41 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
 .residency-strip{margin-top:2.2rem;padding:1.5rem 2rem;border-radius:16px;background:linear-gradient(135deg,rgba(212,147,69,0.1),rgba(14,107,168,0.1));border:1px solid rgba(212,147,69,0.32);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.2rem;}
 @media(max-width:900px){.flagship-grid{grid-template-columns:1fr;}.flagship-section{padding:3.8rem 1.25rem;}}
 
+
+/* BOLD STUDIO ONE-PAGE PROGRESS, LIVE 3D EMBED STAGE & ECOSYSTEM WRAP-UP */
+.studio-scroll-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#C87D28,#e6af4b,#38bdf8);z-index:999;box-shadow:0 0 10px rgba(212,147,69,0.65);pointer-events:none;}
+.metrics-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:2rem;padding:1.25rem 1.5rem;border-radius:16px;background:rgba(12,14,18,0.82);border:1px solid rgba(212,147,69,0.3);backdrop-filter:blur(12px);}
+.metric-cell{border-right:1px solid rgba(255,255,255,0.08);padding-right:10px;}
+.metric-cell:last-child{border-right:none;padding-right:0;}
+.metric-val{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:.04em;color:#D49345;line-height:1;}
+.metric-lbl{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:#cfccc4;margin-top:4px;line-height:1.35;}
+
+.live-embed-theater{margin-top:2.4rem;border-radius:20px;overflow:hidden;border:1px solid rgba(212,147,69,0.42);background:linear-gradient(165deg,#0d131c,#070a0f);box-shadow:0 28px 70px rgba(0,0,0,0.72);}
+.theater-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:1.1rem 1.5rem;background:rgba(14,20,30,0.94);border-bottom:1px solid rgba(212,147,69,0.24);}
+.theater-tabs{display:flex;flex-wrap:wrap;gap:8px;}
+.theater-tab{padding:8px 14px;border-radius:99px;border:1px solid rgba(212,147,69,0.35);background:rgba(20,28,40,0.8);color:#d7d3cb;font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;cursor:pointer;transition:all .2s ease;}
+.theater-tab:hover{border-color:#D49345;color:#fff;}
+.theater-tab.active{background:linear-gradient(135deg,#D49345,#C87D28);color:#0a0a0a;border-color:transparent;}
+.theater-frame-wrap{position:relative;width:100%;height:540px;background:#05080d;}
+.theater-frame-wrap iframe{width:100%;height:100%;border:none;display:block;}
+.theater-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:.9rem 1.5rem;background:rgba(10,14,20,0.96);border-top:1px solid rgba(255,255,255,0.06);font-size:.82rem;color:#c9c9c2;}
+
+.ecosystem-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem;margin-top:2rem;}
+.eco-card{border-radius:16px;overflow:hidden;border:1px solid rgba(212,147,69,0.25);background:rgba(16,18,22,0.95);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .25s ease,border-color .25s ease;}
+.eco-card:hover{transform:translateY(-4px);border-color:#D49345;}
+.eco-card img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;}
+.eco-card-body{padding:1.1rem 1.2rem 1.25rem;display:flex;flex-direction:column;gap:6px;}
+.eco-card-tag{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#D49345;}
+.eco-card-title{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.04em;color:#f5f5f0;}
+.eco-card-desc{font-size:.8rem;line-height:1.5;color:#a8a49c;}
+
+@media(max-width:1024px){.metrics-strip{grid-template-columns:repeat(2,minmax(0,1fr));}.ecosystem-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.theater-frame-wrap{height:440px;}}
+@media(max-width:640px){.metrics-strip{grid-template-columns:1fr;}.metric-cell{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px;}.metric-cell:last-child{border-bottom:none;}.ecosystem-grid{grid-template-columns:1fr;}.theater-frame-wrap{height:360px;}}
+
 </style>
 </head>
 <body>
+<div class="studio-scroll-bar" id="studioScrollBar"></div>
 
 <nav>
   <a href="#" class="nav-logo">
@@ -439,6 +471,13 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
       <a href="studio/" class="btn-o" style="border-color:rgba(212,147,69,0.45);color:#f5f5f0;">✦ Commercial 3D Studio</a>
       <a href="surveys/" class="btn-o" style="border-color:#00e5ff;color:#00e5ff;">⌖ Drone &amp; LiDAR Surveys</a>
       <a href="https://shop.mo360immersivestudio.co.uk" target="_blank" rel="noopener noreferrer" class="btn-o" style="border-color:#fbbf24;color:#fbbf24;">↗ Curated Store</a>
+    </div>
+    <div class="metrics-strip">
+      <div class="metric-cell"><div class="metric-val">14 SHIPS</div><div class="metric-lbl">Plymouth Chronicles 3D Figureheads &amp; Bows</div></div>
+      <div class="metric-cell"><div class="metric-val">15M DOME</div><div class="metric-lbl">Market Hall Fulldome &amp; TAWAF Sanctuary</div></div>
+      <div class="metric-cell"><div class="metric-val">360° VR</div><div class="metric-lbl">Tavistock Dementia Care &amp; Google Flow Tours</div></div>
+      <div class="metric-cell"><div class="metric-val">TOP 30</div><div class="metric-lbl">Ars Electronica Future Innovator Summit</div></div>
+      <div class="metric-cell"><div class="metric-val">5 COURSES</div><div class="metric-lbl">Mo360 Immersive Lab &amp; Creative Coding</div></div>
     </div>
   </div>
 </div>
@@ -574,6 +613,67 @@ footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--
         </div>
       </div>
     </article>
+  </div>
+
+
+  <!-- LIVE EMBEDDED 3D & VIRTUAL EXPERIENCE STAGE -->
+  <div class="live-embed-theater reveal" id="interactive-theater">
+    <div class="theater-header">
+      <div>
+        <div class="flagship-eyebrow" style="margin-bottom:2px;">Live Interactive Studio Stage · Test Directly Below</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:.04em;color:#fff;" id="theaterTitle">01 · Plymouth Chronicles 3D Scroll Storytelling</div>
+      </div>
+      <div class="theater-tabs">
+        <button type="button" class="theater-tab active" data-src="figureheads/story.html" data-title="01 · Plymouth Chronicles 3D Scroll Storytelling" data-link="figureheads/story.html">⚓ Plymouth Chronicles 3D</button>
+        <button type="button" class="theater-tab" data-src="immersive-lab/tavistock-360-tour.html" data-title="02 · Tavistock Abbey Bridge 360° Google Flow Tour" data-link="immersive-lab/tavistock-360-tour.html">🌐 Tavistock 360° Tour</button>
+        <button type="button" class="theater-tab" data-src="immersive-lab/tawaf-domemaster-live.html" data-title="03 · TAWAF 15m Market Hall 4K Domemaster (4-7-8 Bio Pacing)" data-link="immersive-lab/tawaf-domemaster-live.html">🕊️ TAWAF 4K Dome</button>
+        <button type="button" class="theater-tab" data-src="immersive-lab/tavistock-heritage-vr.html" data-title="04 · Tavistock Dementia Care 3D Neural Depth VR" data-link="immersive-lab/tavistock-heritage-vr.html">🚂 Tavistock VR Suite</button>
+        <button type="button" class="theater-tab" data-src="https://www.youtube.com/embed/oCx7i4Hb3H0?rel=0" data-title="05 · Death of the Nile · Fulldome UK (Market Hall Dome)" data-link="lab/">🌍 Death of the Nile</button>
+      </div>
+    </div>
+    <div class="theater-frame-wrap">
+      <iframe id="studioTheaterFrame" src="figureheads/story.html" title="Mo360 Live Interactive 3D Experience" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; camera; microphone" allowfullscreen></iframe>
+    </div>
+    <div class="theater-footer">
+      <span>Drag inside the 3D stage to inspect models, look 360° around Tavistock, or test TAWAF's 4-7-8 breathing cycle.</span>
+      <a href="figureheads/story.html" target="_blank" rel="noopener" id="theaterOpenFull" class="flagship-btn-primary">Open Fullscreen Experience ↗</a>
+    </div>
+  </div>
+
+  <!-- STUDIO ECOSYSTEM WRAP-UP (EDUCATION, TOURS, SURVEYS, BRAND MERCH) -->
+  <div class="ecosystem-grid reveal">
+    <a href="immersive-lab/" class="eco-card">
+      <img src="assets/mo360_immersive_lab_courses_board.png" alt="Mo360 Immersive Lab 5 Creative Coding Courses">
+      <div class="eco-card-body">
+        <span class="eco-card-tag">Creative Tech Education</span>
+        <div class="eco-card-title">Mo360 Immersive Lab</div>
+        <p class="eco-card-desc">5 beginner friendly courses in TouchDesigner, Unreal Engine 5.8, and vvvv gamma with British voice narration.</p>
+      </div>
+    </a>
+    <a href="creative-coding-plymouth/" class="eco-card">
+      <img src="assets/creative_coding_plymouth_brand_board.png" alt="Creative Coding Plymouth Community Hub">
+      <div class="eco-card-body">
+        <span class="eco-card-tag">Plymouth Community</span>
+        <div class="eco-card-title">Creative Coding Plymouth</div>
+        <p class="eco-card-desc">South West meetup &amp; workshop hub connecting artists, developers, and cultural spaces across Plymouth.</p>
+      </div>
+    </a>
+    <a href="tours/" class="eco-card">
+      <img src="assets/01_the_box_plymouth_real.jpg" alt="Plymouth & Exeter Guided Heritage Tours">
+      <div class="eco-card-body">
+        <span class="eco-card-tag">Curated Cultural Walks</span>
+        <div class="eco-card-title">Plymouth &amp; Exeter Tours</div>
+        <p class="eco-card-desc">Curator led heritage walking tours across The Box, Barbican, Plymouth Sound, Tavistock, and Exeter.</p>
+      </div>
+    </a>
+    <a href="https://mustsavethecat.co.uk/" target="_blank" rel="noopener" class="eco-card">
+      <img src="assets/15_tavistock_abbey_devon_real.jpg" alt="Devon Heritage & Mo360 Studio Ventures">
+      <div class="eco-card-body">
+        <span class="eco-card-tag">E-Commerce &amp; Drone Surveys</span>
+        <div class="eco-card-title">Surveys &amp; Must Save The Cat</div>
+        <p class="eco-card-desc">Commercial aerial photogrammetry (surveys/) alongside Mo360's original UK design brand mustsavethecat.co.uk.</p>
+      </div>
+    </a>
   </div>
 
   <div class="residency-strip reveal">
@@ -1327,6 +1427,27 @@ function closeVidBtn() {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeVidBtn();
 });
+
+window.addEventListener('scroll', function() {
+  var bar = document.getElementById('studioScrollBar');
+  if (!bar) return;
+  var docH = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  bar.style.width = ((window.scrollY / docH) * 100).toFixed(1) + '%';
+}, { passive: true });
+
+document.querySelectorAll('.theater-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.theater-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+    var frame = document.getElementById('studioTheaterFrame');
+    var title = document.getElementById('theaterTitle');
+    var link = document.getElementById('theaterOpenFull');
+    if (frame) frame.src = tab.dataset.src;
+    if (title) title.textContent = tab.dataset.title;
+    if (link) link.href = tab.dataset.link;
+  });
+});
+
 </script>
 
 <!-- VIDEO MODAL -->
