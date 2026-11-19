@@ -228,8 +228,8 @@
       `
     });
     const panoSphere = new THREE.Mesh(sphereGeo, sphereMat);
-    // Orient front (U=0.25) of 360° panorama toward initial camera look direction (-Z)
-    panoSphere.rotation.y = -Math.PI * 0.5;
+    // Orient exact center of original Google Flow frame (U=0.25) toward initial camera (-Z)
+    panoSphere.rotation.y = Math.PI;
     scene.add(panoSphere);
 
     // 3D Floor Navigation Hotspots (Matterport-style glowing rings on the river path)
