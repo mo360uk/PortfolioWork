@@ -251,13 +251,43 @@ article, .glass-card, .bento-card {
 }
 
 /* Clean eye-catching left Ochre accent on callout/banner pills instead of outline */
-.eyebrow, .hero-pill, .hero-badge, .status-pill {
+.eyebrow, .hero-pill, .hero-badge, .status-pill, .hero-kicker, .kicker {
   background: var(--mo-grey) !important;
   color: var(--mo-ochre) !important;
   border: none !important;
   border-left: 3px solid var(--mo-ochre) !important;
   border-radius: 2px !important;
   font-family: 'Space Mono', monospace !important;
+}
+
+/* Global strict kill of remaining green/blue/outline frames on subpage buttons, chips & panels */
+main a[class*="btn"], main button[class*="btn"], main a[class*="cta"], main button[class*="cta"],
+section a[class*="btn"], section button[class*="btn"], section a[class*="cta"], section button[class*="cta"],
+.cta-row a, .cta-row button, .hero-actions a, .hero-actions button, .btn-row a, .btn-row button {
+  border: none !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+.hero-actions a:not(:first-child), .cta-row a:not(:first-child), .btn-row a:not(:first-child),
+.hero-actions button:not(:first-child), .cta-row button:not(:first-child),
+a[class*="secondary"], a[class*="emerald"], a[class*="teal"], a[class*="blue"], a[class*="cyan"], a[class*="ghost"],
+.badge-row span, .meta-chips span, .hero-chips span, .hero-tags span, .tag-row span, .chip-row span {
+  background: var(--mo-grey-2) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 2px !important;
+}
+.hero-actions a:first-child, .cta-row a:first-child, .btn-row a:first-child {
+  background: var(--mo-ochre) !important;
+  color: var(--mo-black) !important;
+  border: none !important;
+}
+.hero-right, .sim-panel, .dome-panel, .welcome-card, .audio-panel, .board-frame,
+main > section > div, .hero-grid > div {
+  border-color: transparent !important;
+}
+main [style*="border:"] {
+  border-color: transparent !important;
 }
 
 /* Responsive images & media safety */
