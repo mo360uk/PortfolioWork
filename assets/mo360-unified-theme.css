@@ -303,7 +303,7 @@ button:not(.mo360-ham):not(.mo360-menu-btn):not(.sr-card):not(.vt-scene-btn) {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 3px !important;
+  border-radius: 0 !important;
 }
 .btn-sm-outline, .pill-link, .nav-pill, .btn-secondary, .btn-outline, .partner-chip, .stack-chip {
   background: #222630 !important;
@@ -316,4 +316,15 @@ button:not(.mo360-ham):not(.mo360-menu-btn):not(.sr-card):not(.vt-scene-btn) {
 .board-card, .still-card, .course-card, .hero-interactive-card {
   border: none !important;
   background: #15181f !important;
+}
+
+
+/* STRICT ZERO-ROUNDED SHARP ARCHITECTURAL CORNERS */
+button, .btn, .btn-p, .btn-s, .btn-primary, .btn-secondary, .btn-outline, .btn-sm-outline,
+.flagship-btn-primary, .flagship-btn-sec, .proj-btn-primary, .proj-btn-sec,
+.sr-filter-btn, .sr-stage-cta, .sr-btn-dark, .vt-btn, .tw-btn,
+.pill-link, .nav-pill, .partner-chip, .stack-chip, .course-jump-pill,
+.mo360-cta, .mo360-nav-links a.cta, .gyg-btn, .book-btn, .filter-pill, .tour-cta, a[class*="btn"], a[class*="pill"] {
+  border-radius: 0 !important;
+  border: none !important;
 }

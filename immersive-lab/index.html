@@ -803,7 +803,7 @@
     background: rgba(14, 107, 168, 0.08);
   }
 
-  /* Antigravity Live Bridge Panel */
+  /* Live Studio Bridge Panel */
   .bridge-panel {
     background: linear-gradient(145deg, #101725, #08090c);
     border: 2px solid var(--ochre-bright);
@@ -1054,7 +1054,7 @@
 <a class="btn-primary" href="#rnd-projects">⚡ Explore R&amp;D Software Projects (2 Tools)</a>
 <a class="btn-secondary" href="#course_01" style="background:#222630;">▶ Explore All 5 Beginner Courses</a>
 <a class="btn-secondary" href="./tawaf-domemaster-live.html" style="border-color:#24A186;background:#222630;">◎ Launch TAWAF Domemaster Live Synth</a>
-<a class="btn-secondary" href="#live-bridge">⚡ Antigravity Live Bridge (TD · UE 5.8 · 4V)</a>
+<a class="btn-secondary" href="#live-bridge">⚡ Live Studio Bridge (TD · UE 5.8 · 4V)</a>
 </div>
 </div>
 <div class="hero-interactive-card">
@@ -1104,20 +1104,20 @@
 <a class="btn-download-kit" href="./opensite-360/">▶ Launch OpenSite 360 Demo ↗</a>
 </div>
 </div>
-<div class="stack-chips-row"><span class="stack-chip">FastAPI and Vite</span><span class="stack-chip">Leaflet Blueprint Viewer</span><span class="stack-chip">Photo Sphere Viewer v5</span><span class="stack-chip">Gemini AI Inspection</span></div>
+<div class="stack-chips-row"><span class="stack-chip">FastAPI and Vite</span><span class="stack-chip">Leaflet Blueprint Viewer</span><span class="stack-chip">Photo Sphere Viewer v5</span><span class="stack-chip">Interactive Voice Inspection</span></div>
 </div>
 <div class="mod-grid" style="margin-bottom:0;">
 <div class="mod-ops-card">
 <h5>CORE ARCHITECTURE &amp; DELIVERABLES</h5>
 <ul class="ops-list">
-<li><code>Leaflet 2D blueprint viewer with normalised coordinate pin mapping</code></li><li><code>360 equirectangular inspection with Photo Sphere Viewer v5 and Ricoh Theta OSC v2.1 camera control</code></li><li><code>Gemini AI defect inspection pipeline with interactive snag register and CSV export</code></li>
+<li><code>Leaflet 2D blueprint viewer with normalised coordinate pin mapping</code></li><li><code>360 equirectangular inspection with Photo Sphere Viewer v5 and Ricoh Theta OSC v2.1 camera control</code></li><li><code>Interactive Voice defect inspection pipeline with interactive snag register and CSV export</code></li>
 </ul>
 </div>
 <div class="mod-steps-card">
 <h5>PROJECT BRIEF: CONCEPT &amp; RESEARCH</h5>
 <ol class="steps-list">
 <li><span class="step-idx">CONCEPT</span><span>The project delivers a unified environment for capturing, inspecting, and documenting spatial conditions through coordinated 2D plans and immersive 360 imagery.</span></li>
-<li><span class="step-idx">RESEARCH</span><span>The technical architecture combines a FastAPI backend and a Vite modular frontend with a Leaflet 2D blueprint viewer using normalised coordinate pin mapping, Photo Sphere Viewer v5 with MarkersPlugin for 360 equirectangular inspection, Ricoh Theta OSC v2.1 camera control, a Gemini AI defect inspection pipeline, and an interactive snag register with CSV export.</span></li>
+<li><span class="step-idx">RESEARCH</span><span>The technical architecture combines a FastAPI backend and a Vite modular frontend with a Leaflet 2D blueprint viewer using normalised coordinate pin mapping, Photo Sphere Viewer v5 with MarkersPlugin for 360 equirectangular inspection, Ricoh Theta OSC v2.1 camera control, a Interactive Voice defect inspection pipeline, and an interactive snag register with CSV export.</span></li>
 </ol>
 <div class="mod-checkpoint" style="margin-top:1rem;">
 <strong>✓ Status:</strong> Interactive browser prototype live inside Mo360 Immersive Media Lab for demonstration and evaluation.
@@ -2622,12 +2622,12 @@
 </table>
 </div>
 </div>
-<!-- ANTIGRAVITY <-> TOUCHDESIGNER + UNREAL 5.8 + VVVV LIVE BRIDGE PANEL -->
+<!-- Mo360 Studio <-> TOUCHDESIGNER + UNREAL 5.8 + VVVV LIVE BRIDGE PANEL -->
 <section class="bridge-panel" id="live-bridge">
 <div class="eyebrow" style="font-family:'Space Mono',monospace;font-size:0.78rem;color:#F59E0B;letter-spacing:0.18em;">LIVE MCP &amp; PROCEDURAL AUTOMATION TOOLKIT</div>
-<h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;margin:0.4rem 0;">ANTIGRAVITY ⇄ TOUCHDESIGNER + UNREAL 5.8 + VVVV (4V) LIVE BRIDGE</h2>
+<h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;margin:0.4rem 0;">Mo360 Studio ⇄ TOUCHDESIGNER + UNREAL 5.8 + VVVV (4V) LIVE BRIDGE</h2>
 <p style="color:rgba(250,247,242,0.84);max-width:880px;">
-      Antigravity controls TouchDesigner live over HTTP JSON·RPC (<code>WebServer DAT :9980</code>), raw TCP (<code>:9981</code>), and UDP OSC (<code>:9000</code>), executes headless and live scripts in Unreal Engine 5.8 (<code>Remote Control :30010</code> &amp; <code>OSC :7000</code>), and generates valid <code>vvvv gamma (4V)</code> <code>.vl</code> XML patches (<code>OSC :8000</code>). Click any preset below to inspect the live payload:
+      Mo360 Studio controls TouchDesigner live over HTTP JSON·RPC (<code>WebServer DAT :9980</code>), raw TCP (<code>:9981</code>), and UDP OSC (<code>:9000</code>), executes headless and live scripts in Unreal Engine 5.8 (<code>Remote Control :30010</code> &amp; <code>OSC :7000</code>), and generates valid <code>vvvv gamma (4V)</code> <code>.vl</code> XML patches (<code>OSC :8000</code>). Click any preset below to inspect the live payload:
     </p>
 <div class="bridge-grid">
 <div class="preset-btn-list">
@@ -2824,7 +2824,7 @@ Content·Type: application/json
     });
   }
 
-  // 5. Antigravity Live Bridge Presets
+  // 5. Live Studio Bridge Presets
   const bridgePresets = [
 `# Preset 01 · TouchDesigner WebServer DAT (:9980) JSON·RPC Payload
 POST http://127.0.0.1:9980/api/exec

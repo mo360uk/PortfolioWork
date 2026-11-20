@@ -86,7 +86,7 @@
       height: 100%;
     }
 
-    /* Live AR Camera Feed (behind 3D canvas when Gemini Live AR is active) */
+    /* Live AR Camera Feed (behind 3D canvas when Live Interactive AR is active) */
     #viewfinder {
       position: fixed;
       inset: 0;
@@ -903,7 +903,7 @@
     <p class="preloader-status" id="preloaderStatus">Initializing Three.js WebGL Corridor &amp; Meshopt 3D Models…</p>
   </div>
 
-  <!-- Live AR Camera Feed (Activated when Live Gemini AR is toggled) -->
+  <!-- Live AR Camera Feed (Activated when Live Interactive AR is toggled) -->
   <video id="viewfinder" playsinline autoplay muted hidden></video>
   <canvas id="viewfinder-canvas" hidden></canvas>
 
@@ -931,7 +931,7 @@
 
       <button type="button" class="pill-btn gemini-pill" id="geminiLiveBtn" title="Start bidirectional voice & camera chat with Google Gemini 3.8 Live">
         <span>✨</span>
-        <span id="geminiBtnLabel">Live Gemini AR</span>
+        <span id="geminiBtnLabel">Live Interactive AR</span>
       </button>
 
       <a href="atrium-splat.html" class="pill-btn" title="Explore real-world 444,110-splat 3D Gaussian Splat scan of The Box Atrium">
@@ -1896,7 +1896,7 @@
           try {
             geminiMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
           } catch (err) {
-            alert('Please allow microphone and camera access to use Live Gemini AR.');
+            alert('Please allow microphone and camera access to use Live Interactive AR.');
             stopGeminiLiveSession();
             return;
           }
@@ -1968,7 +1968,7 @@
       viewfinder.hidden = true;
       flushGeminiAudio();
       geminiLiveBtn.classList.remove('connected');
-      geminiBtnLabel.textContent = 'Live Gemini AR';
+      geminiBtnLabel.textContent = 'Live Interactive AR';
     }
 
     geminiLiveBtn.addEventListener('click', () => {
