@@ -1321,168 +1321,207 @@ nav{background:#0b0d11 !important;border-bottom:2px solid #1f242d !important;}
 <div class="divider"></div>
 
 <!-- VIDEO REELS -->
-<section id="reels" class="archive-panel-hidden">
-  <div class="reveal">
-    <p class="eyebrow">Video Work</p>
-    <h2>REELS &amp; SHORT FILM</h2>
-    <p class="sec-sub">Short-form content from Plymouth and the South West. Tap any to watch on YouTube.</p>
-  </div>
+<section id="reels" style="padding:72px 24px;background:#08090c;">
+  <style>
+  
+  .sr-wrap { max-width: 1180px; margin: 0 auto; }
+  .sr-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+  .sr-kicker { display: inline-block; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: #F59E0B; color: #08090c; padding: 6px 12px; margin-bottom: 12px; }
+  .sr-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 0.96; letter-spacing: 0.03em; margin: 0 0 10px; color: #ffffff; }
+  .sr-sub { color: #b4bac6; max-width: 680px; margin: 0; font-size: 1rem; line-height: 1.6; }
+  .sr-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .sr-filter-btn { background: #15181f; color: #ffffff; border: none; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 11px 16px; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+  .sr-filter-btn:hover { background: #222630; }
+  .sr-filter-btn.active { background: #F59E0B; color: #08090c; }
+  .sr-stage { background: #15181f; margin-bottom: 28px; overflow: hidden; }
+  .sr-stage-screen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #08090c; overflow: hidden; }
+  .sr-stage-screen video, .sr-stage-screen iframe, .sr-stage-screen img { width: 100%; height: 100%; object-fit: cover; display: block; border: none; }
+  .sr-stage-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; background: #15181f; }
+  .sr-stage-meta { font-family: 'Space Mono', monospace; font-size: 11px; color: #F59E0B; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+  .sr-stage-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 0.03em; color: #ffffff; margin: 0 0 4px; }
+  .sr-stage-note { color: #b4bac6; margin: 0; font-size: 0.95rem; max-width: 720px; }
+  .sr-stage-cta { display: inline-flex; align-items: center; gap: 8px; background: #F59E0B; color: #08090c; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; padding: 12px 18px; border: none; }
+  .sr-stage-cta:hover { background: #d97706; }
+  .sr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .sr-card { background: #15181f; border: none; cursor: pointer; text-align: left; padding: 0; display: flex; flex-direction: column; transition: transform 0.2s ease, background 0.2s ease; }
+  .sr-card:hover { background: #222630; transform: translateY(-2px); }
+  .sr-card.active { background: #222630; box-shadow: inset 0 -4px 0 #F59E0B; }
+  .sr-card-thumb { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #08090c; overflow: hidden; }
+  .sr-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sr-card-play { position: absolute; right: 12px; bottom: 12px; background: #F59E0B; color: #08090c; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 10px; }
+  .sr-card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+  .sr-card-tag { font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; color: #F59E0B; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+  .sr-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.45rem; letter-spacing: 0.03em; color: #ffffff; margin: 0 0 8px; line-height: 1.05; }
+  .sr-card-note { color: #b4bac6; font-size: 0.88rem; line-height: 1.5; margin: 0; }
+  .sr-footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 26px; padding: 20px 24px; background: #15181f; }
+  .sr-btn-dark { display: inline-flex; align-items: center; gap: 8px; background: #222630; color: #ffffff; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; padding: 12px 18px; border: none; }
+  .sr-btn-dark:hover { background: #2d3340; }
+  @media (max-width: 960px) { .sr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .sr-grid { grid-template-columns: 1fr; }
+    .sr-stage-bar, .sr-footer-row { padding: 16px; }
+    .sr-stage-cta, .sr-btn-dark { width: 100%; justify-content: center; }
+  }
 
-  <div class="vhero reveal">
-    <a href="https://youtube.com/shorts/8o2qsi2pGwg" target="_blank" class="vhero-link">
-      <div class="vhero-thumb">
-        <img src="https://img.youtube.com/vi/8o2qsi2pGwg/hqdefault.jpg" alt="Basketball — Hunger for Victory" loading="lazy">
-        <div class="vhero-play">▶</div>
-        <div class="vhero-overlay">
-          <span class="vcard-tag">Highlight Reel</span>
-          <p class="vhero-title">Basketball — Hunger for Victory</p>
+  </style>
+  
+  <div class="sr-wrap">
+    <div class="sr-header">
+      <div>
+        <div class="sr-kicker">CURATED CINEMA · FULLDOME &amp; 3D MOTION</div>
+        <h2 class="sr-title">MOVING IMAGE &amp; SCREENING ROOM</h2>
+        <p class="sr-sub">Selected fulldome cinema, 3D depth heritage flythroughs, and real time architectural motion studies presented in widescreen format with instant native playback.</p>
+      </div>
+      <a href="films/" class="sr-stage-cta">Open Full Screening Room &rarr;</a>
+    </div>
+
+    <div class="sr-filters" role="tablist" aria-label="Filter Films by Category">
+      <button type="button" class="sr-filter-btn active" onclick="mo360FilterFilms('all', this)">All Works (6)</button>
+      <button type="button" class="sr-filter-btn" onclick="mo360FilterFilms('fulldome', this)">Fulldome &amp; Spatial (4)</button>
+      <button type="button" class="sr-filter-btn" onclick="mo360FilterFilms('heritage', this)">Heritage 3D Motion (2)</button>
+    </div>
+
+    <div class="sr-stage">
+      <div class="sr-stage-screen" id="srStageScreen">
+        <video id="srMainVideo" controls playsinline preload="metadata" poster="immersive-lab/renders_v2/01_sanctuary_hero_cinematic.png">
+          <source src="immersive-lab/assets/tawaf/06_tawaf_architectural_orbit.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="sr-stage-bar">
+        <div>
+          <div class="sr-stage-meta" id="srStageMeta">FULLDOME & SPATIAL · 2026 · NATIVE 16:9 MP4 · UNREAL ENGINE 5</div>
+          <h3 class="sr-stage-title" id="srStageTitle">TAWAF: Architectural Dome Orbit</h3>
+          <p class="sr-stage-note" id="srStageNote">Real time 15m sanctuary camera orbit inside the warm geometric Shabaka vault designed for nervous system regulation.</p>
         </div>
+        <a href="projects/tawaf-sanctuary/" id="srStageDossier" class="sr-stage-cta">Read Concept &amp; Research &rarr;</a>
       </div>
-    </a>
+    </div>
+
+    <div class="sr-grid" id="srFilmGrid">
+      
+        <button type="button" class="sr-card active" data-cat="fulldome" data-type="mp4" data-src="immersive-lab/assets/tawaf/06_tawaf_architectural_orbit.mp4" data-poster="immersive-lab/renders_v2/01_sanctuary_hero_cinematic.png" data-title="TAWAF: Architectural Dome Orbit" data-meta="FULLDOME & SPATIAL · 2026 · NATIVE 16:9 MP4 · UNREAL ENGINE 5" data-note="Real time 15m sanctuary camera orbit inside the warm geometric Shabaka vault designed for nervous system regulation." data-dossier="projects/tawaf-sanctuary/" onclick="mo360SelectFilm(this)">
+          <div class="sr-card-thumb">
+            <img src="immersive-lab/renders_v2/01_sanctuary_hero_cinematic.png" alt="TAWAF: Architectural Dome Orbit" loading="eager" />
+            <span class="sr-card-play">&#9654; Screen</span>
+          </div>
+          <div class="sr-card-body">
+            <div class="sr-card-tag">FULLDOME & SPATIAL · 2026</div>
+            <h3 class="sr-card-title">TAWAF: Architectural Dome Orbit</h3>
+            <p class="sr-card-note">Real time 15m sanctuary camera orbit inside the warm geometric Shabaka vault designed for nervous system regulation.</p>
+          </div>
+        </button>
+
+        <button type="button" class="sr-card" data-cat="fulldome" data-type="youtube" data-src="oCx7i4Hb3H0" data-poster="assets/death_of_the_nile_dome_preview.jpg" data-title="Death of the Nile: Fulldome Cinema Work" data-meta="FULLDOME UK EXHIBITED · 2022 · 180° FULLDOME FILM · YOUTUBE HD" data-note="Exhibited at Fulldome UK Festival. MRes Digital Arts 180 degree cinema film translating Nile Basin climate and water scarcity." data-dossier="projects/death-of-the-nile/" onclick="mo360SelectFilm(this)">
+          <div class="sr-card-thumb">
+            <img src="assets/death_of_the_nile_dome_preview.jpg" alt="Death of the Nile: Fulldome Cinema Work" loading="eager" />
+            <span class="sr-card-play">&#9654; Screen</span>
+          </div>
+          <div class="sr-card-body">
+            <div class="sr-card-tag">FULLDOME UK EXHIBITED · 2022</div>
+            <h3 class="sr-card-title">Death of the Nile: Fulldome Cinema Work</h3>
+            <p class="sr-card-note">Exhibited at Fulldome UK Festival. MRes Digital Arts 180 degree cinema film translating Nile Basin climate and water scarcity.</p>
+          </div>
+        </button>
+
+        <button type="button" class="sr-card" data-cat="fulldome" data-type="mp4" data-src="immersive-lab/assets/tawaf/07_tawaf_478_breathing_domemaster.mp4" data-poster="immersive-lab/renders_v2/tawaf_domemaster_preview.jpg" data-title="TAWAF: 4 7 8 Breath Paced Domemaster" data-meta="FULLDOME DOMEMASTER · 2026 · NATIVE 180° DOMEMASTER MP4" data-note="Equidistant 180 degree fisheye projection calibrated to a calm 19 second breathing rhythm for circular dome theatres." data-dossier="projects/tawaf-sanctuary/" onclick="mo360SelectFilm(this)">
+          <div class="sr-card-thumb">
+            <img src="immersive-lab/renders_v2/tawaf_domemaster_preview.jpg" alt="TAWAF: 4 7 8 Breath Paced Domemaster" loading="eager" />
+            <span class="sr-card-play">&#9654; Screen</span>
+          </div>
+          <div class="sr-card-body">
+            <div class="sr-card-tag">FULLDOME DOMEMASTER · 2026</div>
+            <h3 class="sr-card-title">TAWAF: 4 7 8 Breath Paced Domemaster</h3>
+            <p class="sr-card-note">Equidistant 180 degree fisheye projection calibrated to a calm 19 second breathing rhythm for circular dome theatres.</p>
+          </div>
+        </button>
+
+        <button type="button" class="sr-card" data-cat="heritage" data-type="mp4" data-src="immersive-lab/assets/tavistock_archive/abbey_drone_orbit.mp4" data-poster="immersive-lab/assets/tavistock_archive/abbey_ruins_colour_hd.jpg" data-title="Tavistock Abbey (1890): 3D Depth Orbit" data-meta="HERITAGE 3D MOTION · 2026 · NATIVE 3D DEPTH MP4 · DEVON ARCHIVE" data-note="Single 19th century archival photograph reconstructed with monocular depth estimation into a calm seated VR flythrough." data-dossier="projects/tavistock-heritage-vr/" onclick="mo360SelectFilm(this)">
+          <div class="sr-card-thumb">
+            <img src="immersive-lab/assets/tavistock_archive/abbey_ruins_colour_hd.jpg" alt="Tavistock Abbey (1890): 3D Depth Orbit" loading="eager" />
+            <span class="sr-card-play">&#9654; Screen</span>
+          </div>
+          <div class="sr-card-body">
+            <div class="sr-card-tag">HERITAGE 3D MOTION · 2026</div>
+            <h3 class="sr-card-title">Tavistock Abbey (1890): 3D Depth Orbit</h3>
+            <p class="sr-card-note">Single 19th century archival photograph reconstructed with monocular depth estimation into a calm seated VR flythrough.</p>
+          </div>
+        </button>
+
+        <button type="button" class="sr-card" data-cat="fulldome" data-type="mp4" data-src="immersive-lab/renders_v2/04_tawaf_dynamic_fluid_orbit.mp4" data-poster="immersive-lab/renders_v2/02_shabaka_vault_cinematic.png" data-title="TAWAF: Sacred Geometry Fluid Study" data-meta="GENERATIVE MOTION · 2026 · NATIVE MP4 · PROCEDURAL GEOMETRY" data-note="Procedural Moroccan Zellige and Azerbaijani Girih light study moving at slow meditative cadence across the dome shell." data-dossier="projects/tawaf-sanctuary/" onclick="mo360SelectFilm(this)">
+          <div class="sr-card-thumb">
+            <img src="immersive-lab/renders_v2/02_shabaka_vault_cinematic.png" alt="TAWAF: Sacred Geometry Fluid Study" loading="eager" />
+            <span class="sr-card-play">&#9654; Screen</span>
+          </div>
+          <div class="sr-card-body">
+            <div class="sr-card-tag">GENERATIVE MOTION · 2026</div>
+            <h3 class="sr-card-title">TAWAF: Sacred Geometry Fluid Study</h3>
+            <p class="sr-card-note">Procedural Moroccan Zellige and Azerbaijani Girih light study moving at slow meditative cadence across the dome shell.</p>
+          </div>
+        </button>
+
+        <button type="button" class="sr-card" data-cat="heritage" data-type="mp4" data-src="immersive-lab/assets/tavistock_archive/steam_railway_drone_orbit.mp4" data-poster="immersive-lab/assets/tavistock_archive/06_tavistock_north_steam_railway.jpg" data-title="Tavistock Steam Railway: Living Archive" data-meta="HERITAGE 3D MOTION · 2026 · NATIVE 3D DEPTH MP4 · WEST DEVON" data-note="Historic West Devon railway plate brought into gentle three dimensional parallax motion for dementia reminiscence sessions." data-dossier="projects/tavistock-heritage-vr/" onclick="mo360SelectFilm(this)">
+          <div class="sr-card-thumb">
+            <img src="immersive-lab/assets/tavistock_archive/06_tavistock_north_steam_railway.jpg" alt="Tavistock Steam Railway: Living Archive" loading="eager" />
+            <span class="sr-card-play">&#9654; Screen</span>
+          </div>
+          <div class="sr-card-body">
+            <div class="sr-card-tag">HERITAGE 3D MOTION · 2026</div>
+            <h3 class="sr-card-title">Tavistock Steam Railway: Living Archive</h3>
+            <p class="sr-card-note">Historic West Devon railway plate brought into gentle three dimensional parallax motion for dementia reminiscence sessions.</p>
+          </div>
+        </button>
+    </div>
+
+    <div class="sr-footer-row">
+      <div style="color:#b4bac6;font-size:0.93rem;">Looking for additional behind the scenes clips or full length broadcasts?</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="https://youtube.com/@mo360uk" target="_blank" rel="noopener" class="sr-btn-dark">YouTube Archive @mo360uk &rarr;</a>
+        <a href="index.html#contact" class="sr-stage-cta">Commission Film or Dome Work</a>
+      </div>
+    </div>
   </div>
 
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:1.25rem 0 1.5rem;">
-    <a href="studio/" style="display:inline-flex;align-items:center;gap:8px;background:rgba(212,147,69,0.12);border:1px solid rgba(212,147,69,0.35);color:var(--gb);padding:0.6rem 1.3rem;border-radius:20px;text-decoration:none;font-size:0.78rem;font-weight:700;letter-spacing:0.05em;">✦ View Commercial Motion in Studio Portal ↗</a>
-    <button class="view-more-btn" id="btnReels" onclick="toggleGallery('moreReels', 'btnReels')" style="margin:0;width:auto;padding:0.6rem 1.4rem;border-radius:20px;font-size:0.78rem;letter-spacing:0.08em;font-weight:700;">✦ Explore All Video Reels &amp; Matchday Clips (13 Videos) ↓</button>
-  </div>
-  <div class="vgrid gcard-hidden" id="moreReels">
-    <a href="https://youtube.com/shorts/GTT6DnVtvTo" target="_blank" onclick="openVid(event, 'GTT6DnVtvTo')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/GTT6DnVtvTo/hqdefault.jpg" alt="Spherical World" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">360° · Tiny Planet</span>
-        <p class="vcard-title">Spherical World</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/EkF8dwq9iYM" target="_blank" onclick="openVid(event, 'EkF8dwq9iYM')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/EkF8dwq9iYM/hqdefault.jpg" alt="Coastal Tiny Planet" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">360° · Devon Cliffs</span>
-        <p class="vcard-title">Coastal Tiny Planet</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/y9aUmHZnFbs" target="_blank" onclick="openVid(event, 'y9aUmHZnFbs')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/y9aUmHZnFbs/hqdefault.jpg" alt="True Freedom" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">360° · Nature</span>
-        <p class="vcard-title">True Freedom</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/X9qVRxYLfDw" target="_blank" onclick="openVid(event, 'X9qVRxYLfDw')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/X9qVRxYLfDw/hqdefault.jpg" alt="Capturing Moments" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">360° · Life</span>
-        <p class="vcard-title">Capturing Moments</p>
-      </div>
-    </a>
-  </div>
+  
+<script>
+  function mo360SelectFilm(btn) {
+    var screen = document.getElementById('srStageScreen');
+    if (!screen) return;
+    var type = btn.getAttribute('data-type');
+    var src = btn.getAttribute('data-src');
+    var poster = btn.getAttribute('data-poster');
+    var title = btn.getAttribute('data-title');
+    var meta = btn.getAttribute('data-meta');
+    var note = btn.getAttribute('data-note');
+    var dossier = btn.getAttribute('data-dossier');
 
-  <div class="vgrid vgrid-hidden" id="moreReels">
-    <a href="https://youtube.com/shorts/ita3_sLjRuA" target="_blank" onclick="openVid(event, 'ita3_sLjRuA')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/ita3_sLjRuA/hqdefault.jpg" alt="Explore The World" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">Travel Edit</span>
-        <p class="vcard-title">Explore The World</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/gp0Xf0wDoTU" target="_blank" onclick="openVid(event, 'gp0Xf0wDoTU')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/gp0Xf0wDoTU/hqdefault.jpg" alt="Outdoor Photography" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">Devon & Cornwall</span>
-        <p class="vcard-title">Outdoor Photography</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/zWiM38BlemU" target="_blank" onclick="openVid(event, 'zWiM38BlemU')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/zWiM38BlemU/hqdefault.jpg" alt="Plymouth Hoe" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">360° Walk</span>
-        <p class="vcard-title">Plymouth Hoe</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/qIEJEeuqY-8" target="_blank" onclick="openVid(event, 'qIEJEeuqY-8')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/qIEJEeuqY-8/hqdefault.jpg" alt="Tiny Planet Edit" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">South West</span>
-        <p class="vcard-title">Tiny Planet Edit</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/_9QIwtXXSHc" target="_blank" onclick="openVid(event, '_9QIwtXXSHc')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/_9QIwtXXSHc/hqdefault.jpg" alt="Nature Walk" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">Dartmoor</span>
-        <p class="vcard-title">Nature Walk</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/9M9Pp8dmWIA" target="_blank" onclick="openVid(event, '9M9Pp8dmWIA')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/9M9Pp8dmWIA/hqdefault.jpg" alt="Immersive Landscapes" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">Devon</span>
-        <p class="vcard-title">Immersive Landscapes</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/R3exm2TuAdI" target="_blank" onclick="openVid(event, 'R3exm2TuAdI')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/R3exm2TuAdI/hqdefault.jpg" alt="Plymouth Waterfront" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">360° Tour</span>
-        <p class="vcard-title">Plymouth Waterfront</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/R5CKx_6GTxY" target="_blank" onclick="openVid(event, 'R5CKx_6GTxY')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/R5CKx_6GTxY/hqdefault.jpg" alt="Urban Exploration" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">Plymouth City</span>
-        <p class="vcard-title">Urban Exploration</p>
-      </div>
-    </a>
-    <a href="https://youtube.com/shorts/snZZWw7PDPU" target="_blank" onclick="openVid(event, 'snZZWw7PDPU')" class="vcard">
-      <div class="vcard-thumb">
-        <img src="https://img.youtube.com/vi/snZZWw7PDPU/hqdefault.jpg" alt="Coastal Discovery" loading="lazy">
-        <div class="vcard-play-btn">▶</div>
-      </div>
-      <div class="vcard-info">
-        <span class="vcard-tag">Cornwall</span>
-        <p class="vcard-title">Coastal Discovery</p>
-      </div>
-    </a>
-  </div>
+    if (type === 'youtube') {
+      screen.innerHTML = '<iframe src="https://www.youtube.com/embed/' + src + '?autoplay=1&rel=0" title="' + title + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    } else {
+      screen.innerHTML = '<video controls autoplay playsinline poster="' + poster + '"><source src="' + src + '" type="video/mp4" /></video>';
+    }
+    document.getElementById('srStageMeta').textContent = meta;
+    document.getElementById('srStageTitle').textContent = title;
+    document.getElementById('srStageNote').textContent = note;
+    document.getElementById('srStageDossier').setAttribute('href', dossier);
 
-  <button class="gallery-more-btn" id="btnReels" onclick="toggleGallery('moreReels', 'btnReels')">View More ↓</button>
-  <a href="https://youtube.com/@mo360uk" target="_blank" class="watch-all-btn">Watch All @mo360uk →</a>
+    document.querySelectorAll('.sr-card').forEach(function(c){ c.classList.remove('active'); });
+    btn.classList.add('active');
+    screen.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function mo360FilterFilms(cat, btn) {
+    document.querySelectorAll('.sr-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.sr-card').forEach(function(card){
+      if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+
 </section>
 
 <section id="design" class="archive-panel-hidden">
