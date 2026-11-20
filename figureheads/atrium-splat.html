@@ -20,7 +20,7 @@
   <style>
     :root { --bg: #070f18; --gold: #e6af4b; --paper: #f2ece1; --muted: #98a4b3; --border: rgba(176, 141, 74, 0.38); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--paper); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--paper); font-family: 'DM Sans', system-ui, sans-serif; }
     #splatStage { position: fixed; inset: 0; width: 100vw; height: 100vh; cursor: grab; }
     #splatStage:active { cursor: grabbing; }
 
@@ -58,6 +58,42 @@
     }
     .loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
   </style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<!-- MO360_SITE_STYLE_OVERRIDE -->
+<style id="mo360-style-sync">
+  :root {
+    --mo-black: #08090c;
+    --mo-grey: #15181f;
+    --mo-grey-2: #222630;
+    --mo-ochre: #F59E0B;
+    --bg: #08090c; --bg-void: #08090c; --canvas: #08090c; --obsidian: #08090c;
+    --surface: #15181f; --surface-1: #15181f; --surface-2: #222630; --panel: #15181f;
+    --bg-dark-1: #15181f; --bg-dark-2: #15181f; --bg-dark-3: #222630;
+    --navy: #08090c; --slate: #15181f; --cream: #08090c; --paper: #ffffff;
+    --ochre: #F59E0B; --ochre-bright: #F59E0B; --gold: #F59E0B; --gold-bright: #F59E0B;
+    --ink: #ffffff; --text-main: #ffffff; --text-primary: #ffffff;
+  }
+  html, body {
+    background-color: #08090c !important;
+    color: #ffffff !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  }
+  h1, h2, .hero-title, .ship-heading, .slide h1 {
+    font-family: 'Bebas Neue', sans-serif !important;
+    letter-spacing: 0.03em !important;
+    color: #ffffff !important;
+  }
+  .eyebrow, .kicker, .badge, .pill, .tag, button, .btn, .filter-btn, .camera-pill {
+    font-family: 'Space Mono', monospace !important;
+    border-radius: 2px !important;
+  }
+  .glass-card, .card, .hero-stage, .panel, .slide, .deck, .link-card, .top-bar {
+    border-radius: 2px !important;
+  }
+</style>
+<!-- /MO360_SITE_STYLE_OVERRIDE -->
+
 </head>
 <body>
   <div class="loader" id="loader">

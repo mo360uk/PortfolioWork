@@ -23,8 +23,8 @@
           extend: {
             fontFamily: {
               serif: ['Cinzel', 'serif'],
-              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-              mono: ['"JetBrains Mono"', 'monospace'],
+              sans: [''DM Sans'', 'sans-serif'],
+              mono: [''Space Mono'', 'monospace'],
             },
             colors: {
               gold: {
@@ -40,7 +40,7 @@
                 card: '#131e33',
                 border: '#233554',
                 cyan: '#38bdf8',
-                teal: '#14b8a6',
+                teal: '#F59E0B',
               }
             },
             keyframes: {
@@ -64,10 +64,46 @@
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>body{color:#f1f5f9;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none;background-color:#070b14;font-family:Plus Jakarta Sans,sans-serif}.font-cinzel{font-family:Cinzel,serif}.leaflet-container{background:#0b1120!important;font-family:Plus Jakarta Sans,sans-serif!important}.leaflet-popup-content-wrapper{color:#f8fafc!important;background:#0f172a!important;border:1px solid #c9a8514d!important;border-radius:12px!important;box-shadow:0 20px 25px -5px #00000080!important}.leaflet-popup-tip{background:#0f172a!important}.time-warp-sepia{filter:sepia(75%)contrast(1.15)brightness(.9)hue-rotate(-15deg)}.time-warp-celtic{filter:contrast(1.25)saturate(1.3)hue-rotate(170deg)}.time-warp-devonian{filter:contrast(1.3)hue-rotate(140deg)brightness(.85)}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}</style>
+    <style>body{color:#f1f5f9;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none;background-color:#070b14;font-family:'DM Sans',sans-serif}.font-cinzel{font-family:Cinzel,serif}.leaflet-container{background:#0b1120!important;font-family:'DM Sans',sans-serif!important}.leaflet-popup-content-wrapper{color:#f8fafc!important;background:#0f172a!important;border:1px solid #c9a8514d!important;border-radius:12px!important;box-shadow:0 20px 25px -5px #00000080!important}.leaflet-popup-tip{background:#0f172a!important}.time-warp-sepia{filter:sepia(75%)contrast(1.15)brightness(.9)hue-rotate(-15deg)}.time-warp-celtic{filter:contrast(1.25)saturate(1.3)hue-rotate(170deg)}.time-warp-devonian{filter:contrast(1.3)hue-rotate(140deg)brightness(.85)}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}</style>
     <script type="module" crossorigin src="./assets/index-_Yc4ODRq.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-nqMpL4T3.css">
-  </head>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<!-- MO360_SITE_STYLE_OVERRIDE -->
+<style id="mo360-style-sync">
+  :root {
+    --mo-black: #08090c;
+    --mo-grey: #15181f;
+    --mo-grey-2: #222630;
+    --mo-ochre: #F59E0B;
+    --bg: #08090c; --bg-void: #08090c; --canvas: #08090c; --obsidian: #08090c;
+    --surface: #15181f; --surface-1: #15181f; --surface-2: #222630; --panel: #15181f;
+    --bg-dark-1: #15181f; --bg-dark-2: #15181f; --bg-dark-3: #222630;
+    --navy: #08090c; --slate: #15181f; --cream: #08090c; --paper: #ffffff;
+    --ochre: #F59E0B; --ochre-bright: #F59E0B; --gold: #F59E0B; --gold-bright: #F59E0B;
+    --ink: #ffffff; --text-main: #ffffff; --text-primary: #ffffff;
+  }
+  html, body {
+    background-color: #08090c !important;
+    color: #ffffff !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  }
+  h1, h2, .hero-title, .ship-heading, .slide h1 {
+    font-family: 'Bebas Neue', sans-serif !important;
+    letter-spacing: 0.03em !important;
+    color: #ffffff !important;
+  }
+  .eyebrow, .kicker, .badge, .pill, .tag, button, .btn, .filter-btn, .camera-pill {
+    font-family: 'Space Mono', monospace !important;
+    border-radius: 2px !important;
+  }
+  .glass-card, .card, .hero-stage, .panel, .slide, .deck, .link-card, .top-bar {
+    border-radius: 2px !important;
+  }
+</style>
+<!-- /MO360_SITE_STYLE_OVERRIDE -->
+
+</head>
   <body class="bg-celtic-dark text-slate-100 antialiased selection:bg-gold-500 selection:text-black">
     <div id="root"></div>
   </body>
