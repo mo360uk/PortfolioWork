@@ -620,6 +620,52 @@
       font-size: 0.98rem;
     }
 
+    /* FULLDOME & SPATIAL RESEARCH PILLARS */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .pillar-card {
+      background: var(--surface);
+      padding: 1.65rem;
+      border-top: 2px solid var(--ochre);
+    }
+
+    .pillar-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: var(--white);
+    }
+
+    .pillar-card p {
+      font-size: 0.94rem;
+      color: var(--muted);
+    }
+
+    .manifesto-box {
+      background: var(--surface);
+      padding: 2.25rem 2.5rem;
+      border-left: 4px solid var(--ochre);
+    }
+
+    .manifesto-quote {
+      font-size: clamp(1.18rem, 2.2vw, 1.5rem);
+      font-weight: 500;
+      line-height: 1.45;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .manifesto-copy {
+      max-width: 70ch;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
     /* FOOTER */
     .site-footer {
       padding: 2.75rem 0;
@@ -681,6 +727,10 @@
         grid-template-columns: 1fr;
       }
 
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+
       .course-card {
         grid-template-columns: 1fr;
       }
@@ -737,10 +787,10 @@
       <li><a href="../index.html">Home</a></li>
       <li><a href="../studio/">Studio</a></li>
       <li><a class="active" href="../immersive-lab/">Media Lab</a></li>
+      <li><a href="../academy/">Academy</a></li>
       <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
       <li><a href="../tours/">Immersive Tours</a></li>
       <li><a href="../surveys/">Surveys</a></li>
-      <li><a href="../lab/">Lab</a></li>
       <li><a class="cta" href="../index.html#contact">Contact</a></li>
     </ul>
 
@@ -756,10 +806,10 @@
       <li><a href="../index.html">Home</a></li>
       <li><a href="../studio/">Studio</a></li>
       <li><a class="active" href="../immersive-lab/">Media Lab</a></li>
+      <li><a href="../academy/">Academy</a></li>
       <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
       <li><a href="../tours/">Immersive Tours</a></li>
       <li><a href="../surveys/">Surveys</a></li>
-      <li><a href="../lab/">Lab</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
   </div>
@@ -768,13 +818,13 @@
     <header class="hero">
       <div class="container">
         <span class="eyebrow">Mo360 Immersive Media Lab</span>
-        <h1>Spatial Research Tools &amp; Creative Media Courses</h1>
+        <h1>Spatial Research, Fulldome Lab &amp; Studio Tools</h1>
         <p>
-          Mo360 Immersive Media Lab is the research and teaching arm of Mo360 Immersive Studio. We build practical spatial tools for real world site work and teach focused, studio led courses in fulldome cinema, projection mapping, generative art, interactive installations, and spatial sound.
+          Mo360 Immersive Media Lab brings all of our research and development together in one place, from fulldome cinema and sensory spatial sound to in house 360 survey and aerial mapping software. Looking for structured courses? Visit Mo360 Immersive Academy.
         </p>
         <div class="hero-actions">
-          <a class="btn-primary" href="#courses">Explore Courses</a>
-          <a class="btn-secondary" href="#research-tools">Research &amp; Development</a>
+          <a class="btn-primary" href="#research-tools">Explore Lab Tools</a>
+          <a class="btn-secondary" href="../academy/">Visit Mo360 Academy</a>
         </div>
       </div>
     </header>
@@ -809,8 +859,8 @@
                 <li>Record site observations, snag notes, and shareable client summaries</li>
               </ul>
               <div class="rd-footer">
-                <span class="status-note">Active studio prototype available for private demonstrations.</span>
-                <a class="btn-secondary" href="../index.html#contact">Request Demo</a>
+                <span class="status-note">Interactive browser web app and native Android Ricoh Theta capture studio ready to open.</span>
+                <a class="btn-primary" href="virtual-tours-studio/">Open Web App</a>
               </div>
             </div>
           </article>
@@ -843,321 +893,50 @@
       </div>
     </section>
 
-    <section class="section" id="courses">
+    <section class="section" id="fulldome-research">
       <div class="container">
         <div class="section-head">
-          <span class="eyebrow">Teaching &amp; Workshops</span>
-          <h2>Structured Creative Media Courses</h2>
+          <span class="eyebrow">Fulldome &amp; Artistic Research</span>
+          <h2>Collective Immersion &amp; Spatial Practice</h2>
           <p>
-            Five practical six week programmes led by Mohamed Elwakil, available for independent learners, visiting university workshops, and bespoke group training. Open any course curriculum below to inspect the weekly structure.
+            All studio research, fulldome cinema experiments, spatial audio studies, and spatial software tools live together here under Mo360 Immersive Media Lab.
           </p>
         </div>
 
-        <div class="courses-stack">
-          <!-- COURSE 01 -->
-          <article class="course-card">
-            <div class="course-image">
-              <img alt="Fulldome cinema visual environment" src="renders_v2/01_sanctuary_hero_cinematic.png" loading="lazy" />
-            </div>
-            <div class="course-content">
-              <div>
-                <div class="course-meta">
-                  <span class="course-tag">Course 01</span>
-                  <span class="course-duration">6 Weeks · 6 Modules</span>
-                </div>
-                <h3>Fulldome Cinema &amp; Real Time Immersive Worlds</h3>
-                <p class="course-overview">
-                  Learn how to compose, light, and direct visual stories made specifically for 180 degree dome screens. Designed for artists, filmmakers, and creative technologists moving from flat frames into surrounding architectural cinema.
-                </p>
-                <div class="outcomes-title">What You Will Achieve</div>
-                <ul class="outcomes-list">
-                  <li>Understand spherical framing, horizon comfort, and audience sightlines inside a dome</li>
-                  <li>Build responsive 3D scenes in TouchDesigner and Unreal Engine suited to wide curved projection</li>
-                  <li>Deliver a finished high resolution dome master film ready for festival or venue screening</li>
-                </ul>
-              </div>
-
-              <details class="curriculum-accordion">
-                <summary>View 6 Week Curriculum</summary>
-                <ul class="module-list">
-                  <li class="module-item">
-                    <span class="module-week">Week 1</span>
-                    <span class="module-title">Foundations of Real Time 3D Composition</span>
-                    <span class="module-desc">Navigating real time scene workspaces, framing for overhead spaces, and building your first architectural form.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 2</span>
-                    <span class="module-title">Spherical Lighting &amp; Atmosphere</span>
-                    <span class="module-desc">Shaping mood, depth, and colour across a full hemisphere without jarring seams or eye strain.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 3</span>
-                    <span class="module-title">180 Degree Fulldome Projection Framing</span>
-                    <span class="module-desc">Converting 3D worlds into clean circular dome masters while keeping motion smooth and comfortable.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 4</span>
-                    <span class="module-title">Real Time Environments in Unreal Engine</span>
-                    <span class="module-desc">Designing richly lit virtual worlds, particles, and natural camera movement for dome playback.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 5</span>
-                    <span class="module-title">Live Visual Control &amp; Performance</span>
-                    <span class="module-desc">Connecting live video feeds and external controllers so visuals respond in real time during screenings.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 6</span>
-                    <span class="module-title">Mastering &amp; Screening Delivery</span>
-                    <span class="module-desc">Final colour checks, high resolution rendering, and preparing exhibition files for dome venues.</span>
-                  </li>
-                </ul>
-              </details>
-            </div>
+        <div class="pillars-grid">
+          <article class="pillar-card">
+            <span class="card-kicker">Research Focus 01</span>
+            <h3>Fulldome &amp; Shared Cinema</h3>
+            <p>
+              Investigating 180 degree dome framing, curved projection optics, and communal storytelling where audiences experience immersive worlds together rather than isolated inside individual headsets.
+            </p>
           </article>
 
-          <!-- COURSE 02 -->
-          <article class="course-card">
-            <div class="course-image">
-              <img alt="Architectural projection mapping installation" src="../assets/artist_archive/archive_11_revive_projection_mapping_project.jpg" loading="lazy" />
-            </div>
-            <div class="course-content">
-              <div>
-                <div class="course-meta">
-                  <span class="course-tag">Course 02</span>
-                  <span class="course-duration">6 Weeks · 6 Modules</span>
-                </div>
-                <h3>Architectural Projection Mapping &amp; 3D Heritage Scanning</h3>
-                <p class="course-overview">
-                  Turn real buildings, sculptures, and historic interiors into living canvases. This course bridges 3D scanning and site specific projection so you can map light accurately onto physical surfaces.
-                </p>
-                <div class="outcomes-title">What You Will Achieve</div>
-                <ul class="outcomes-list">
-                  <li>Capture clean 3D scans of facades, arches, and heritage objects using accessible camera and LiDAR tools</li>
-                  <li>Align projected light precisely onto physical architecture for indoor galleries or outdoor facades</li>
-                  <li>Plan projector placement, brightness, and site rehearsals with confidence</li>
-                </ul>
-              </div>
-
-              <details class="curriculum-accordion">
-                <summary>View 6 Week Curriculum</summary>
-                <ul class="module-list">
-                  <li class="module-item">
-                    <span class="module-week">Week 1</span>
-                    <span class="module-title">Capturing Real Spaces in 3D</span>
-                    <span class="module-desc">Planning photographic and LiDAR scans in natural light to produce tidy, usable architectural models.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 2</span>
-                    <span class="module-title">Point Clouds &amp; Visual Textures</span>
-                    <span class="module-desc">Transforming raw heritage scans into poetic point clouds and stylised surface layers.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 3</span>
-                    <span class="module-title">2D Surface Masking &amp; Alignment</span>
-                    <span class="module-desc">Isolating windows, columns, and relief details so animations sit naturally inside architectural lines.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 4</span>
-                    <span class="module-title">3D Projector Calibration</span>
-                    <span class="module-desc">Matching your virtual camera to a real projector lens for depth accurate mapping across complex geometry.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 5</span>
-                    <span class="module-title">Multi Surface Storytelling</span>
-                    <span class="module-desc">Choreographing pacing, shadows, and transitions across rooms or multi projector installations.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 6</span>
-                    <span class="module-title">On Site Technical Setup &amp; Showcase</span>
-                    <span class="module-desc">Preparing reliable show playlists, backup plans, and live testing workflows for public events.</span>
-                  </li>
-                </ul>
-              </details>
-            </div>
+          <article class="pillar-card">
+            <span class="card-kicker">Research Focus 02</span>
+            <h3>Spatial Sound &amp; Sensory Comfort</h3>
+            <p>
+              Designing surrounding acoustic fields and slow visual pacing rooted in neurodivergent accessibility, calm nervous system regulation, and inclusive cultural spaces.
+            </p>
           </article>
 
-          <!-- COURSE 03 -->
-          <article class="course-card">
-            <div class="course-image">
-              <img alt="Generative sacred geometry visual vault" src="renders_v2/02_shabaka_vault_cinematic.png" loading="lazy" />
-            </div>
-            <div class="course-content">
-              <div>
-                <div class="course-meta">
-                  <span class="course-tag">Course 03</span>
-                  <span class="course-duration">6 Weeks · 6 Modules</span>
-                </div>
-                <h3>Generative Sacred Geometry &amp; Real Time Visual Art</h3>
-                <p class="course-overview">
-                  Explore the timeless mathematical harmony of Islamic and natural geometric traditions and bring those patterns to life as fluid, real time 3D artwork.
-                </p>
-                <div class="outcomes-title">What You Will Achieve</div>
-                <ul class="outcomes-list">
-                  <li>Construct symmetrical 8, 10, and 12 fold geometric star patterns and architectural lattices</li>
-                  <li>Animate thousands of repeating forms smoothly in real time using visual programming tools</li>
-                  <li>Package finished generative pieces for galleries, live stages, or standalone display screens</li>
-                </ul>
-              </div>
-
-              <details class="curriculum-accordion">
-                <summary>View 6 Week Curriculum</summary>
-                <ul class="module-list">
-                  <li class="module-item">
-                    <span class="module-week">Week 1</span>
-                    <span class="module-title">Geometric Proportions &amp; Radial Symmetry</span>
-                    <span class="module-desc">Translating classical compass and grid proportions into clean, editable 3D star rosettes.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 2</span>
-                    <span class="module-title">Sculpting Organic Surfaces &amp; Shaders</span>
-                    <span class="module-desc">Working with procedural light, brass and stone finishes, and continuous mathematical form.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 3</span>
-                    <span class="module-title">Visual Programming Foundations</span>
-                    <span class="module-desc">Building modular real time visual systems in TouchDesigner and vvvv without writing heavy code.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 4</span>
-                    <span class="module-title">Fluid Particle &amp; Pattern Motion</span>
-                    <span class="module-desc">Creating calm, meditative movement and breathing rhythms across complex geometric fields.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 5</span>
-                    <span class="module-title">Building Clean Artist Controls</span>
-                    <span class="module-desc">Designing simple sliders and presets so you can improvise live during performances or exhibitions.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 6</span>
-                    <span class="module-title">Standalone Exhibition Export</span>
-                    <span class="module-desc">Optimising frame rates and exporting self contained artworks ready for gallery playback.</span>
-                  </li>
-                </ul>
-              </details>
-            </div>
+          <article class="pillar-card">
+            <span class="card-kicker">Research Focus 03</span>
+            <h3>Heritage Archiving &amp; Generative Art</h3>
+            <p>
+              Uniting 3D digital conservation, sacred geometric traditions, and real time graphics to keep fragile cultural heritage open, living, and accessible to future generations.
+            </p>
           </article>
+        </div>
 
-          <!-- COURSE 04 -->
-          <article class="course-card">
-            <div class="course-image">
-              <img alt="Interactive kinetic light installation" src="../assets/artist_archive/archive_13_machine_of_hope_2015_interactive_kin.jpg" loading="lazy" />
-            </div>
-            <div class="course-content">
-              <div>
-                <div class="course-meta">
-                  <span class="course-tag">Course 04</span>
-                  <span class="course-duration">6 Weeks · 6 Modules</span>
-                </div>
-                <h3>Interactive Sensors, Movement &amp; Responsive Installations</h3>
-                <p class="course-overview">
-                  Create artworks that notice and respond gracefully to human presence. Starting with nothing more than a standard laptop webcam, you will progress to depth sensing and physical room interaction.
-                </p>
-                <div class="outcomes-title">What You Will Achieve</div>
-                <ul class="outcomes-list">
-                  <li>Track hand gestures and body movement smoothly using accessible camera based tools</li>
-                  <li>Turn raw sensor readings into calm, natural visual responses rather than jittery motion</li>
-                  <li>Design reliable interactive installations built to run unattended in public spaces</li>
-                </ul>
-              </div>
-
-              <details class="curriculum-accordion">
-                <summary>View 6 Week Curriculum</summary>
-                <ul class="module-list">
-                  <li class="module-item">
-                    <span class="module-week">Week 1</span>
-                    <span class="module-title">Zero Hardware Hand &amp; Body Tracking</span>
-                    <span class="module-desc">Using a standard webcam to detect expressive hand gestures and posture in real time.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 2</span>
-                    <span class="module-title">Smoothing Motion &amp; Expressive Feel</span>
-                    <span class="module-desc">Refining movement data so on screen light and particles feel fluid, weighty, and intentional.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 3</span>
-                    <span class="module-title">Depth Sensors &amp; Physical Triggers</span>
-                    <span class="module-desc">Exploring room scale presence zones with depth cameras and simple physical microcontrollers.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 4</span>
-                    <span class="module-title">Connecting Movement to 3D Worlds</span>
-                    <span class="module-desc">Linking live audience gestures to dynamic particle systems, lighting cues, and sound.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 5</span>
-                    <span class="module-title">Designing Public Interaction States</span>
-                    <span class="module-desc">Creating welcoming idle states, smooth visitor transitions, and uncluttered crowd interactions.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 6</span>
-                    <span class="module-title">Gallery Reliability &amp; Live Testing</span>
-                    <span class="module-desc">Stress testing your installation for varying lighting conditions and full day public exhibitions.</span>
-                  </li>
-                </ul>
-              </details>
-            </div>
-          </article>
-
-          <!-- COURSE 05 -->
-          <article class="course-card">
-            <div class="course-image">
-              <img alt="Sensory audiovisual sanctuary installation" src="../assets/artist_archive/archive_14_free_flow_2016.jpg" />
-            </div>
-            <div class="course-content">
-              <div>
-                <div class="course-meta">
-                  <span class="course-tag">Course 05</span>
-                  <span class="course-duration">6 Weeks · 6 Modules</span>
-                </div>
-                <h3>Spatial Audio &amp; Sensory Friendly Audiovisual Performance</h3>
-                <p class="course-overview">
-                  Combine surrounding soundscapes with gentle, reactive visuals designed with neurodivergent comfort and wellbeing at heart. Ideal for sound artists, musicians, and visual designers creating restorative spaces.
-                </p>
-                <div class="outcomes-title">What You Will Achieve</div>
-                <ul class="outcomes-list">
-                  <li>Drive subtle visual motion directly from live acoustic instruments, voice, and ambient recordings</li>
-                  <li>Position sound in three dimensional space for both headphones and multi speaker rooms</li>
-                  <li>Design paced, sensory aware audiovisual performances free from harsh strobe or audio fatigue</li>
-                </ul>
-              </div>
-
-              <details class="curriculum-accordion">
-                <summary>View 6 Week Curriculum</summary>
-                <ul class="module-list">
-                  <li class="module-item">
-                    <span class="module-week">Week 1</span>
-                    <span class="module-title">Listening to Frequency &amp; Musical Phrasing</span>
-                    <span class="module-desc">Separating warm bass, melody, and gentle texture so visuals breathe naturally with live music.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 2</span>
-                    <span class="module-title">Pacing &amp; Sensory Comfort Design</span>
-                    <span class="module-desc">Using slow breathing rhythms, warm colour palettes, and gentle contrast for neurodivergent accessibility.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 3</span>
-                    <span class="module-title">3D Soundscapes for Headphones &amp; Rooms</span>
-                    <span class="module-desc">Placing acoustic elements smoothly around the listener using binaural and surround techniques.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 4</span>
-                    <span class="module-title">Synchronising Live Music &amp; Visuals</span>
-                    <span class="module-desc">Linking live audio sessions and performance controllers so sound and image stay tightly aligned.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 5</span>
-                    <span class="module-title">Interactive &amp; Generative Sound Environments</span>
-                    <span class="module-desc">Building evolving ambient sound worlds that respond softly to movement or audience energy.</span>
-                  </li>
-                  <li class="module-item">
-                    <span class="module-week">Week 6</span>
-                    <span class="module-title">Staging a Calm Live Performance</span>
-                    <span class="module-desc">Rehearsing transitions, sound checks, and audience welcome practices for live sensory sessions.</span>
-                  </li>
-                </ul>
-              </details>
-            </div>
-          </article>
+        <div class="manifesto-box">
+          <span class="card-kicker">Statement of Practice</span>
+          <blockquote class="manifesto-quote">
+            "True immersion is not the isolation of people inside sealed headsets; it is the shared transformation of physical space into a living, responsive architectural canvas."
+          </blockquote>
+          <p class="manifesto-copy">
+            Working across Plymouth, Devon, and London, Mo360 Immersive Media Lab bridges real time graphics, spatial sound, and digital heritage conservation for cultural commissions, university teaching, and research residencies.
+          </p>
         </div>
       </div>
     </section>
@@ -1166,12 +945,15 @@
       <div class="container">
         <div class="enquiry-band">
           <div>
-            <h2>Book a Workshop or Bespoke Studio Session</h2>
+            <h2>Looking for Structured Courses or Lab Commissions?</h2>
             <p>
-              Courses and practical masterclasses can be delivered online, in person across Devon and London, or tailored as visiting university lectures and evening short courses.
+              Explore our five six week studio courses at Mo360 Immersive Academy, join our monthly Creative Coding Plymouth community meetup, or get in touch for spatial research collaborations.
             </p>
           </div>
-          <a class="btn-primary" href="mailto:info@mo360immersivestudio.co.uk?subject=Immersive%20Media%20Lab%20Enquiry">Get in Touch</a>
+          <div style="display:flex;flex-wrap:wrap;gap:0.85rem;">
+            <a class="btn-primary" href="../academy/">Mo360 Immersive Academy</a>
+            <a class="btn-secondary" href="mailto:info@mo360immersivestudio.co.uk?subject=Mo360%20Media%20Lab%20Enquiry">Commission Research</a>
+          </div>
         </div>
       </div>
     </section>
@@ -1189,8 +971,9 @@
         <div><a href="tel:+447568668918">+44 7568 668918</a></div>
         <div class="footer-links">
           <a href="../index.html">Mo360 Studio</a>
-          <a href="../tours/">Immersive Tours</a>
+          <a href="../academy/">Academy</a>
           <a href="../creative-coding-plymouth/">Creative Coding</a>
+          <a href="../tours/">Immersive Tours</a>
         </div>
       </div>
     </div>

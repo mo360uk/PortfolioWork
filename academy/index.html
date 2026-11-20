@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mo360 Immersive Academy | Creative Media Courses &amp; Workshops</title>
+  <meta name="description" content="Mo360 Immersive Academy offers structured six week courses and visiting workshops in fulldome cinema, architectural projection mapping, generative geometry, interactive installations, and spatial sound." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #08090c;
+      --surface: #15181f;
+      --surface-alt: #1d212b;
+      --ochre: #F59E0B;
+      --ochre-hover: #d97706;
+      --white: #ffffff;
+      --muted: #b4b9c4;
+      --subtle: #828998;
+      --hairline: rgba(255, 255, 255, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* NAVIGATION */
+    .mo360-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 0.9rem 2rem;
+      background: rgba(8, 9, 12, 0.96);
+      border-bottom: 1px solid var(--hairline);
+      backdrop-filter: blur(12px);
+    }
+    .mo360-nav-brand { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+    .mo360-nav-brand img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
+    .mo360-brand-stack { display: flex; flex-direction: column; line-height: 1.1; }
+    .mo360-brand-row { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+    .mo360-brand-main { font-size: 0.98rem; font-weight: 700; letter-spacing: 0.14em; color: var(--white); }
+    .mo360-brand-badge {
+      background: var(--ochre);
+      color: var(--bg);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 0.18rem 0.45rem;
+      text-transform: uppercase;
+    }
+    .mo360-brand-sub {
+      margin-top: 0.2rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--subtle);
+    }
+    .mo360-nav-links { display: flex; align-items: center; gap: 1.35rem; list-style: none; }
+    .mo360-nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+    .mo360-nav-links a:hover,
+    .mo360-nav-links a.active { color: var(--ochre); }
+    .mo360-nav-links a.cta {
+      background: var(--ochre);
+      color: var(--bg);
+      padding: 0.5rem 0.95rem;
+      font-weight: 700;
+    }
+    .mo360-nav-links a.cta:hover { background: var(--ochre-hover); color: var(--bg); }
+
+    .mo360-ham {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 42px;
+      height: 42px;
+      padding: 0 9px;
+      background: var(--surface);
+      border: 0;
+      cursor: pointer;
+    }
+    .mo360-ham span { display: block; height: 2px; width: 100%; background: var(--ochre); }
+    .mo360-drawer {
+      display: none;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      z-index: 190;
+      background: var(--surface);
+      border-bottom: 2px solid var(--ochre);
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+    .mo360-drawer.open { display: block; }
+    .mo360-drawer ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .mo360-drawer a {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      padding: 0.35rem 0;
+    }
+    .mo360-drawer a.active { color: var(--ochre); }
+
+    /* HERO */
+    .hero { padding: 5rem 0 3.75rem; border-bottom: 1px solid var(--hairline); }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6.2vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: 0.03em;
+      color: var(--white);
+      max-width: 18ch;
+      margin-bottom: 1.25rem;
+    }
+    .hero p { max-width: 62ch; font-size: 1.08rem; color: var(--muted); margin-bottom: 2rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .btn-primary { background: var(--ochre); color: var(--bg); }
+    .btn-primary:hover { background: var(--ochre-hover); }
+    .btn-secondary { background: var(--surface); color: var(--white); }
+    .btn-secondary:hover { background: var(--surface-alt); color: var(--ochre); }
+
+    /* SECTIONS & COURSES */
+    .section { padding: 4.5rem 0; border-bottom: 1px solid var(--hairline); }
+    .section-head { margin-bottom: 2.5rem; }
+    .section-head h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.1rem, 4vw, 3.2rem);
+      letter-spacing: 0.04em;
+      line-height: 1.04;
+      color: var(--white);
+      margin-bottom: 0.65rem;
+    }
+    .section-head p { max-width: 64ch; color: var(--muted); font-size: 1rem; }
+
+    .courses-stack { display: flex; flex-direction: column; gap: 2rem; }
+    .course-card {
+      background: var(--surface);
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+    }
+    .course-image { background: #0d0f14; min-height: 260px; overflow: hidden; }
+    .course-image img { width: 100%; height: 100%; object-fit: cover; }
+    .course-content {
+      padding: 1.85rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .course-meta { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .course-tag {
+      background: var(--ochre);
+      color: var(--bg);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+    }
+    .course-duration {
+      font-size: 0.8rem;
+      color: var(--subtle);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .course-content h3 { font-size: 1.55rem; font-weight: 700; line-height: 1.22; color: var(--white); margin-bottom: 0.75rem; }
+    .course-overview { color: var(--muted); font-size: 0.97rem; margin-bottom: 1.15rem; }
+    .outcomes-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 0.55rem;
+    }
+    .outcomes-list { list-style: none; display: flex; flex-direction: column; gap: 0.42rem; margin-bottom: 1.4rem; }
+    .outcomes-list li { position: relative; padding-left: 1rem; font-size: 0.93rem; color: var(--white); }
+    .outcomes-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.62rem;
+      width: 5px;
+      height: 5px;
+      background: var(--ochre);
+    }
+
+    .curriculum-accordion { background: var(--bg); border-left: 3px solid var(--ochre); }
+    .curriculum-accordion summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.95rem 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white);
+      user-select: none;
+    }
+    .curriculum-accordion summary::-webkit-details-marker { display: none; }
+    .curriculum-accordion summary::after { content: '+'; color: var(--ochre); font-size: 1.2rem; line-height: 1; font-weight: 700; }
+    .curriculum-accordion[open] summary::after { content: '\2212'; }
+    .curriculum-accordion summary:hover { color: var(--ochre); }
+    .module-list { list-style: none; border-top: 1px solid var(--hairline); padding: 0.5rem 1.2rem 1.15rem; }
+    .module-item { padding: 0.85rem 0; border-bottom: 1px solid var(--hairline); }
+    .module-item:last-child { border-bottom: 0; padding-bottom: 0.2rem; }
+    .module-week {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 0.2rem;
+    }
+    .module-title { display: block; font-size: 0.98rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
+    .module-desc { font-size: 0.9rem; color: var(--muted); }
+
+    .enquiry-band {
+      background: var(--surface);
+      padding: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      border-left: 4px solid var(--ochre);
+    }
+    .enquiry-band h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.04em; margin-bottom: 0.35rem; }
+    .enquiry-band p { color: var(--muted); max-width: 56ch; font-size: 0.98rem; }
+
+    .site-footer { padding: 2.75rem 0; background: var(--bg); font-size: 0.86rem; color: var(--subtle); }
+    .footer-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-brand { color: var(--white); font-weight: 700; margin-bottom: 0.3rem; }
+    .footer-contact { text-align: right; }
+    .footer-contact a { color: var(--ochre); font-weight: 700; }
+    .footer-links { margin-top: 0.45rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap; }
+    .footer-links a { color: var(--white); font-weight: 500; }
+    .footer-links a:hover { color: var(--ochre); }
+
+    @media (max-width: 980px) {
+      .mo360-nav-links { display: none; }
+      .mo360-ham { display: flex; }
+      .course-card { grid-template-columns: 1fr; }
+      .course-image { aspect-ratio: 16 / 9; min-height: 0; }
+    }
+    @media (max-width: 640px) {
+      .mo360-nav { padding: 0.85rem 1.15rem; }
+      .hero { padding: 3.5rem 0 2.75rem; }
+      .section { padding: 3.25rem 0; }
+      .course-content, .enquiry-band { padding: 1.4rem; }
+      .footer-contact { text-align: left; }
+      .footer-links { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav aria-label="Mo360 Immersive Studio Navigation" class="mo360-nav">
+    <a class="mo360-nav-brand" href="../index.html">
+      <img alt="Mo360 Immersive Studio Emblem" src="../assets/brand_logos/mo360_emblem_official_clean.png" />
+      <span class="mo360-brand-stack">
+        <span class="mo360-brand-row">
+          <span class="mo360-brand-main">MO360 IMMERSIVE</span>
+          <span class="mo360-brand-badge">ACADEMY</span>
+        </span>
+        <span class="mo360-brand-sub">Immersive Studio · Plymouth UK</span>
+      </span>
+    </a>
+
+    <ul class="mo360-nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../studio/">Studio</a></li>
+      <li><a href="../immersive-lab/">Media Lab</a></li>
+      <li><a class="active" href="../academy/">Academy</a></li>
+      <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
+      <li><a href="../tours/">Immersive Tours</a></li>
+      <li><a href="../surveys/">Surveys</a></li>
+      <li><a class="cta" href="../index.html#contact">Contact</a></li>
+    </ul>
+
+    <button aria-label="Toggle Menu" class="mo360-ham" onclick="document.getElementById('mo360Drawer').classList.toggle('open')" type="button">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mo360-drawer" id="mo360Drawer">
+    <ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../studio/">Studio</a></li>
+      <li><a href="../immersive-lab/">Media Lab</a></li>
+      <li><a class="active" href="../academy/">Academy</a></li>
+      <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
+      <li><a href="../tours/">Immersive Tours</a></li>
+      <li><a href="../surveys/">Surveys</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <header class="hero">
+      <div class="container">
+        <span class="eyebrow">Mo360 Immersive Academy</span>
+        <h1>Structured Creative Media Courses &amp; Visiting Workshops</h1>
+        <p>
+          Mo360 Immersive Academy is the dedicated teaching arm of Mo360 Immersive Studio. Led by Mohamed Elwakil, our practical six week courses and visiting masterclasses guide artists, learners, and university cohorts through fulldome cinema, projection mapping, sacred geometry, interactive installations, and spatial audio.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#courses">Browse All 5 Courses</a>
+          <a class="btn-secondary" href="../creative-coding-plymouth/">Creative Coding Community</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="courses">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Curriculum</span>
+          <h2>Five Practical Six Week Programmes</h2>
+          <p>
+            Available as evening short courses, weekend intensives, live online classes, or visiting university workshops. Expand any course dropdown below to view the weekly breakdown.
+          </p>
+        </div>
+
+        <div class="courses-stack">
+          <article class="course-card">
+            <div class="course-image">
+              <img alt="Fulldome cinema visual environment" src="../immersive-lab/renders_v2/01_sanctuary_hero_cinematic.png" />
+            </div>
+            <div class="course-content">
+              <div>
+                <div class="course-meta">
+                  <span class="course-tag">Course 01</span>
+                  <span class="course-duration">6 Weeks · 6 Modules</span>
+                </div>
+                <h3>Fulldome Cinema &amp; Real Time Immersive Worlds</h3>
+                <p class="course-overview">
+                  Learn how to compose, light, and direct visual stories made specifically for 180 degree dome screens. Designed for artists, filmmakers, and creative technologists moving from flat frames into surrounding architectural cinema.
+                </p>
+                <div class="outcomes-title">What You Will Achieve</div>
+                <ul class="outcomes-list">
+                  <li>Understand spherical framing, horizon comfort, and audience sightlines inside a dome</li>
+                  <li>Build responsive 3D scenes in TouchDesigner and Unreal Engine suited to wide curved projection</li>
+                  <li>Deliver a finished high resolution dome master film ready for festival or venue screening</li>
+                </ul>
+              </div>
+              <details class="curriculum-accordion">
+                <summary>View 6 Week Curriculum</summary>
+                <ul class="module-list">
+                  <li class="module-item"><span class="module-week">Week 1</span><span class="module-title">Foundations of Real Time 3D Composition</span><span class="module-desc">Navigating real time scene workspaces, framing for overhead spaces, and building your first architectural form.</span></li>
+                  <li class="module-item"><span class="module-week">Week 2</span><span class="module-title">Spherical Lighting &amp; Atmosphere</span><span class="module-desc">Shaping mood, depth, and colour across a full hemisphere without jarring seams or eye strain.</span></li>
+                  <li class="module-item"><span class="module-week">Week 3</span><span class="module-title">180 Degree Fulldome Projection Framing</span><span class="module-desc">Converting 3D worlds into clean circular dome masters while keeping motion smooth and comfortable.</span></li>
+                  <li class="module-item"><span class="module-week">Week 4</span><span class="module-title">Real Time Environments in Unreal Engine</span><span class="module-desc">Designing richly lit virtual worlds, particles, and natural camera movement for dome playback.</span></li>
+                  <li class="module-item"><span class="module-week">Week 5</span><span class="module-title">Live Visual Control &amp; Performance</span><span class="module-desc">Connecting live video feeds and external controllers so visuals respond in real time during screenings.</span></li>
+                  <li class="module-item"><span class="module-week">Week 6</span><span class="module-title">Mastering &amp; Screening Delivery</span><span class="module-desc">Final colour checks, high resolution rendering, and preparing exhibition files for dome venues.</span></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <article class="course-card">
+            <div class="course-image">
+              <img alt="Architectural projection mapping installation" src="../assets/artist_archive/archive_11_revive_projection_mapping_project.jpg" />
+            </div>
+            <div class="course-content">
+              <div>
+                <div class="course-meta">
+                  <span class="course-tag">Course 02</span>
+                  <span class="course-duration">6 Weeks · 6 Modules</span>
+                </div>
+                <h3>Architectural Projection Mapping &amp; 3D Heritage Scanning</h3>
+                <p class="course-overview">
+                  Turn real buildings, sculptures, and historic interiors into living canvases. This course bridges 3D scanning and site specific projection so you can map light accurately onto physical surfaces.
+                </p>
+                <div class="outcomes-title">What You Will Achieve</div>
+                <ul class="outcomes-list">
+                  <li>Capture clean 3D scans of facades, arches, and heritage objects using accessible camera and LiDAR tools</li>
+                  <li>Align projected light precisely onto physical architecture for indoor galleries or outdoor facades</li>
+                  <li>Plan projector placement, brightness, and site rehearsals with confidence</li>
+                </ul>
+              </div>
+              <details class="curriculum-accordion">
+                <summary>View 6 Week Curriculum</summary>
+                <ul class="module-list">
+                  <li class="module-item"><span class="module-week">Week 1</span><span class="module-title">Capturing Real Spaces in 3D</span><span class="module-desc">Planning photographic and LiDAR scans in natural light to produce tidy, usable architectural models.</span></li>
+                  <li class="module-item"><span class="module-week">Week 2</span><span class="module-title">Point Clouds &amp; Visual Textures</span><span class="module-desc">Transforming raw heritage scans into poetic point clouds and stylised surface layers.</span></li>
+                  <li class="module-item"><span class="module-week">Week 3</span><span class="module-title">2D Surface Masking &amp; Alignment</span><span class="module-desc">Isolating windows, columns, and relief details so animations sit naturally inside architectural lines.</span></li>
+                  <li class="module-item"><span class="module-week">Week 4</span><span class="module-title">3D Projector Calibration</span><span class="module-desc">Matching your virtual camera to a real projector lens for depth accurate mapping across complex geometry.</span></li>
+                  <li class="module-item"><span class="module-week">Week 5</span><span class="module-title">Multi Surface Storytelling</span><span class="module-desc">Choreographing pacing, shadows, and transitions across rooms or multi projector installations.</span></li>
+                  <li class="module-item"><span class="module-week">Week 6</span><span class="module-title">On Site Technical Setup &amp; Showcase</span><span class="module-desc">Preparing reliable show playlists, backup plans, and live testing workflows for public events.</span></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <article class="course-card">
+            <div class="course-image">
+              <img alt="Generative sacred geometry visual vault" src="../immersive-lab/renders_v2/02_shabaka_vault_cinematic.png" />
+            </div>
+            <div class="course-content">
+              <div>
+                <div class="course-meta">
+                  <span class="course-tag">Course 03</span>
+                  <span class="course-duration">6 Weeks · 6 Modules</span>
+                </div>
+                <h3>Generative Sacred Geometry &amp; Real Time Visual Art</h3>
+                <p class="course-overview">
+                  Explore the timeless mathematical harmony of Islamic and natural geometric traditions and bring those patterns to life as fluid, real time 3D artwork.
+                </p>
+                <div class="outcomes-title">What You Will Achieve</div>
+                <ul class="outcomes-list">
+                  <li>Construct symmetrical 8, 10, and 12 fold geometric star patterns and architectural lattices</li>
+                  <li>Animate thousands of repeating forms smoothly in real time using visual programming tools</li>
+                  <li>Package finished generative pieces for galleries, live stages, or standalone display screens</li>
+                </ul>
+              </div>
+              <details class="curriculum-accordion">
+                <summary>View 6 Week Curriculum</summary>
+                <ul class="module-list">
+                  <li class="module-item"><span class="module-week">Week 1</span><span class="module-title">Geometric Proportions &amp; Radial Symmetry</span><span class="module-desc">Translating classical compass and grid proportions into clean, editable 3D star rosettes.</span></li>
+                  <li class="module-item"><span class="module-week">Week 2</span><span class="module-title">Sculpting Organic Surfaces &amp; Shaders</span><span class="module-desc">Working with procedural light, brass and stone finishes, and continuous mathematical form.</span></li>
+                  <li class="module-item"><span class="module-week">Week 3</span><span class="module-title">Visual Programming Foundations</span><span class="module-desc">Building modular real time visual systems in TouchDesigner and vvvv without writing heavy code.</span></li>
+                  <li class="module-item"><span class="module-week">Week 4</span><span class="module-title">Fluid Particle &amp; Pattern Motion</span><span class="module-desc">Creating calm, meditative movement and breathing rhythms across complex geometric fields.</span></li>
+                  <li class="module-item"><span class="module-week">Week 5</span><span class="module-title">Building Clean Artist Controls</span><span class="module-desc">Designing simple sliders and presets so you can improvise live during performances or exhibitions.</span></li>
+                  <li class="module-item"><span class="module-week">Week 6</span><span class="module-title">Standalone Exhibition Export</span><span class="module-desc">Optimising frame rates and exporting self contained artworks ready for gallery playback.</span></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <article class="course-card">
+            <div class="course-image">
+              <img alt="Interactive kinetic light installation" src="../assets/artist_archive/archive_13_machine_of_hope_2015_interactive_kin.jpg" />
+            </div>
+            <div class="course-content">
+              <div>
+                <div class="course-meta">
+                  <span class="course-tag">Course 04</span>
+                  <span class="course-duration">6 Weeks · 6 Modules</span>
+                </div>
+                <h3>Interactive Sensors, Movement &amp; Responsive Installations</h3>
+                <p class="course-overview">
+                  Create artworks that notice and respond gracefully to human presence. Starting with nothing more than a standard laptop webcam, you will progress to depth sensing and physical room interaction.
+                </p>
+                <div class="outcomes-title">What You Will Achieve</div>
+                <ul class="outcomes-list">
+                  <li>Track hand gestures and body movement smoothly using accessible camera based tools</li>
+                  <li>Turn raw sensor readings into calm, natural visual responses rather than jittery motion</li>
+                  <li>Design reliable interactive installations built to run unattended in public spaces</li>
+                </ul>
+              </div>
+              <details class="curriculum-accordion">
+                <summary>View 6 Week Curriculum</summary>
+                <ul class="module-list">
+                  <li class="module-item"><span class="module-week">Week 1</span><span class="module-title">Zero Hardware Hand &amp; Body Tracking</span><span class="module-desc">Using a standard webcam to detect expressive hand gestures and posture in real time.</span></li>
+                  <li class="module-item"><span class="module-week">Week 2</span><span class="module-title">Smoothing Motion &amp; Expressive Feel</span><span class="module-desc">Refining movement data so on screen light and particles feel fluid, weighty, and intentional.</span></li>
+                  <li class="module-item"><span class="module-week">Week 3</span><span class="module-title">Depth Sensors &amp; Physical Triggers</span><span class="module-desc">Exploring room scale presence zones with depth cameras and simple physical microcontrollers.</span></li>
+                  <li class="module-item"><span class="module-week">Week 4</span><span class="module-title">Connecting Movement to 3D Worlds</span><span class="module-desc">Linking live audience gestures to dynamic particle systems, lighting cues, and sound.</span></li>
+                  <li class="module-item"><span class="module-week">Week 5</span><span class="module-title">Designing Public Interaction States</span><span class="module-desc">Creating welcoming idle states, smooth visitor transitions, and uncluttered crowd interactions.</span></li>
+                  <li class="module-item"><span class="module-week">Week 6</span><span class="module-title">Gallery Reliability &amp; Live Testing</span><span class="module-desc">Stress testing your installation for varying lighting conditions and full day public exhibitions.</span></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+
+          <article class="course-card">
+            <div class="course-image">
+              <img alt="Sensory audiovisual sanctuary installation" src="../assets/artist_archive/archive_14_free_flow_2016.jpg" />
+            </div>
+            <div class="course-content">
+              <div>
+                <div class="course-meta">
+                  <span class="course-tag">Course 05</span>
+                  <span class="course-duration">6 Weeks · 6 Modules</span>
+                </div>
+                <h3>Spatial Audio &amp; Sensory Friendly Audiovisual Performance</h3>
+                <p class="course-overview">
+                  Combine surrounding soundscapes with gentle, reactive visuals designed with neurodivergent comfort and wellbeing at heart. Ideal for sound artists, musicians, and visual designers creating restorative spaces.
+                </p>
+                <div class="outcomes-title">What You Will Achieve</div>
+                <ul class="outcomes-list">
+                  <li>Drive subtle visual motion directly from live acoustic instruments, voice, and ambient recordings</li>
+                  <li>Position sound in three dimensional space for both headphones and multi speaker rooms</li>
+                  <li>Design paced, sensory aware audiovisual performances free from harsh strobe or audio fatigue</li>
+                </ul>
+              </div>
+              <details class="curriculum-accordion">
+                <summary>View 6 Week Curriculum</summary>
+                <ul class="module-list">
+                  <li class="module-item"><span class="module-week">Week 1</span><span class="module-title">Listening to Frequency &amp; Musical Phrasing</span><span class="module-desc">Separating warm bass, melody, and gentle texture so visuals breathe naturally with live music.</span></li>
+                  <li class="module-item"><span class="module-week">Week 2</span><span class="module-title">Pacing &amp; Sensory Comfort Design</span><span class="module-desc">Using slow breathing rhythms, warm colour palettes, and gentle contrast for neurodivergent accessibility.</span></li>
+                  <li class="module-item"><span class="module-week">Week 3</span><span class="module-title">3D Soundscapes for Headphones &amp; Rooms</span><span class="module-desc">Placing acoustic elements smoothly around the listener using binaural and surround techniques.</span></li>
+                  <li class="module-item"><span class="module-week">Week 4</span><span class="module-title">Synchronising Live Music &amp; Visuals</span><span class="module-desc">Linking live audio sessions and performance controllers so sound and image stay tightly aligned.</span></li>
+                  <li class="module-item"><span class="module-week">Week 5</span><span class="module-title">Interactive &amp; Generative Sound Environments</span><span class="module-desc">Building evolving ambient sound worlds that respond softly to movement or audience energy.</span></li>
+                  <li class="module-item"><span class="module-week">Week 6</span><span class="module-title">Staging a Calm Live Performance</span><span class="module-desc">Rehearsing transitions, sound checks, and audience welcome practices for live sensory sessions.</span></li>
+                </ul>
+              </details>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="enquiry-band">
+          <div>
+            <h2>Enquire About Courses or Visiting Lectures</h2>
+            <p>
+              Available for individual learners, adult evening courses, university visiting workshops, and bespoke team training across Plymouth, Devon, London, and online.
+            </p>
+          </div>
+          <a class="btn-primary" href="mailto:info@mo360immersivestudio.co.uk?subject=Mo360%20Immersive%20Academy%20Enquiry">Enquire Now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-brand">Mo360 Immersive Academy · Mo360 Immersive Studio</div>
+        <div>Plymouth, Devon, United Kingdom</div>
+        <div>Led by Mohamed Elwakil, Visual Artist, Art Educator, and Creative Director.</div>
+      </div>
+      <div class="footer-contact">
+        <div><a href="mailto:info@mo360immersivestudio.co.uk">info@mo360immersivestudio.co.uk</a></div>
+        <div><a href="tel:+447568668918">+44 7568 668918</a></div>
+        <div class="footer-links">
+          <a href="../index.html">Mo360 Studio</a>
+          <a href="../immersive-lab/">Media Lab</a>
+          <a href="../creative-coding-plymouth/">Creative Coding</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

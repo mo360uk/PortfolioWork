@@ -389,9 +389,25 @@
       padding-top: 16px;
       border-top: 1px solid #222630;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tour-foot-top {
+      display: flex;
+      align-items: baseline;
       justify-content: space-between;
       gap: 12px;
+    }
+    .tour-foot-actions {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 8px;
+    }
+    .tour-foot-actions .btn-ochre,
+    .tour-foot-actions .btn-slate {
+      padding: 11px 12px;
+      font-size: 0.68rem;
+      width: 100%;
     }
     .tour-price-lbl {
       font-family: 'Space Mono', monospace;
@@ -612,12 +628,11 @@
   <ul class="mo360-nav-links">
     <li><a href="../index.html">Home</a></li>
     <li><a href="../studio/">Studio</a></li>
-    <li><a href="../immersive-lab/">Immersive Lab</a></li>
+    <li><a href="../immersive-lab/">Media Lab</a></li>
+    <li><a href="../academy/">Academy</a></li>
     <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
     <li><a href="../tours/" class="active">Immersive Tours</a></li>
-    <li><a href="../getyourguide/">GetYourGuide</a></li>
     <li><a href="../surveys/">Surveys</a></li>
-    <li><a href="../lab/">Lab</a></li>
     <li><a href="#booking" class="cta">Reserve</a></li>
   </ul>
   <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
@@ -627,12 +642,11 @@
 <div class="mo360-drawer" id="mo360Drawer">
   <a href="../index.html">Mo360 Immersive Studio Home</a>
   <a href="../studio/">Commercial Studio</a>
-  <a href="../immersive-lab/">Mo360 Immersive Media Lab</a>
-  <a href="../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../immersive-lab/">Media Lab</a>
+  <a href="../academy/">Mo360 Immersive Academy</a>
+  <a href="../creative-coding-plymouth/">Creative Coding Community</a>
   <a href="../tours/" class="active">Mo360 Immersive Tours</a>
-  <a href="../getyourguide/">Official GetYourGuide Portal (810525)</a>
   <a href="../surveys/">Drone &amp; LiDAR Surveys</a>
-  <a href="../lab/">R&amp;D Fulldome Lab</a>
   <a href="#booking" style="background:#F59E0B;color:#08090c;">Book a Devon or Cornwall Tour</a>
 </div>
 <!-- MO360_UNIFIED_NAV_END -->
@@ -642,47 +656,46 @@
   <!-- HERO SECTION -->
   <section class="hero-block">
     <div class="hero-kicker-tag">
-      PLYMOUTH, DEVON &amp; CORNWALL · OFFICIAL GETYOURGUIDE SUPPLIER ID 810525 · GOOGLE MAPS LEVEL 5 LOCAL GUIDE
+      PLYMOUTH, DEVON &amp; CORNWALL · GETYOURGUIDE SUPPLIER 810525
     </div>
 
     <h1 class="hero-h1">
-      CURATED ARCHITECTURE, MUSEUM &amp; <span>DEVON HERITAGE</span> WALKING TOURS.
+      GUIDED HERITAGE, MUSEUM &amp; <span>DEVON NATURE</span> TOURS.
     </h1>
 
     <div class="hero-subline">
-      LED BY MOHAMED ELWAKIL · VISUAL ARTIST, CREATIVE TECHNOLOGIST, CURATOR &amp; CREATIVE DIRECTOR
+      LED BY MOHAMED ELWAKIL · MO360 IMMERSIVE STUDIO
     </div>
 
-    <p class="hero-lead">
-      Led by <strong>Mohamed (Mo)</strong>, a Devon based <span class="acc">Visual Artist, Creative Technologist, Curator, and Creative Director</span>, founder of <strong>Mo360 Studio</strong>, and <strong>Google Maps Level 5 Local Guide</strong> with over <strong>305,000 photo views</strong>. Drawing on his past experience working, volunteering, and guiding visitors at <span class="acc">The Box Museum</span>, leading gallery tours at <span class="acc">KARST</span>, <span class="acc">MIRROR</span>, <span class="acc">Ars Electronica</span>, and the <span class="acc">Egyptian Museum in Cairo</span>, and guiding walking tours across <span class="acc">Plymouth</span> and <span class="acc">Exeter</span>, Mohamed pairs deep local heritage storytelling with interactive digital archives and 360° spatial keepsakes.
+    <p class="hero-lead" style="max-width:680px;color:#b8bec9;font-size:1.05rem;line-height:1.68;font-weight:400;">
+      Small group cultural, maritime, and landscape tours across Plymouth, Dartmoor, South Devon, and Cornwall. Each walk pairs local curatorial storytelling with Mo360 interactive 360° visual companions, bookable directly or through GetYourGuide.
     </p>
 
     <div class="trust-grid">
       <div class="trust-card">
-        <div class="trust-kicker">01 · Guide Pedigree</div>
-        <div class="trust-val">The Box · KARST · MIRROR</div>
-        <div class="trust-sub">Ars Electronica &amp; Cairo Museum</div>
+        <div class="trust-kicker">01 · Guide Background</div>
+        <div class="trust-val">Curator &amp; Visual Artist</div>
+        <div class="trust-sub">Former Box Museum, KARST &amp; MIRROR Guide</div>
       </div>
       <div class="trust-card">
         <div class="trust-kicker">02 · Local Authority</div>
-        <div class="trust-val">Level 5 Local Guide</div>
-        <div class="trust-sub">353 Contributions · 305,000+ Views</div>
+        <div class="trust-val">Google Local Guide L5</div>
+        <div class="trust-sub">305,000+ Verified Devon Photo Views</div>
       </div>
       <div class="trust-card">
-        <div class="trust-kicker">03 · Interactive Arts</div>
-        <div class="trust-val">Mo360 Studio Apps &amp; 360°</div>
-        <div class="trust-sub">Spatial Memories &amp; Archival Overlays</div>
+        <div class="trust-kicker">03 · Digital Companion</div>
+        <div class="trust-val">Mo360 360° Keepsakes</div>
+        <div class="trust-sub">Interactive Archives &amp; Spatial Views</div>
       </div>
       <div class="trust-card">
-        <div class="trust-kicker">04 · Direct Booking</div>
-        <div class="trust-val">+44 7568 668918</div>
-        <div class="trust-sub">GetYourGuide Supplier 810525</div>
+        <div class="trust-kicker">04 · Verified Partner</div>
+        <div class="trust-val">GetYourGuide 810525</div>
+        <div class="trust-sub">24 Hour Free Cancellation</div>
       </div>
     </div>
 
     <div class="action-bar">
       <a href="#programme" class="btn-ochre">Explore All 7 Tours</a>
-      <a href="../getyourguide/" class="btn-slate">GetYourGuide Showcase (810525)</a>
       <a href="https://wa.me/447568668918?text=Hi%20Mohamed,%20I%20would%20like%20to%20enquire%20about%20Mo360%20Immersive%20Tours" target="_blank" rel="noopener noreferrer" class="btn-slate">WhatsApp +44 7568 668918</a>
       <a href="https://www.instagram.com/mo360.ixstudio/" target="_blank" rel="noopener noreferrer" class="btn-slate">@mo360.ixstudio</a>
     </div>
@@ -753,8 +766,8 @@
         </div>
       </div>
       <div class="tapp-cta-row">
-        <a href="../index.html#work360" class="tapp-btn-p">Try Live 360° Tour Viewer &rarr;</a>
-        <a href="../index.html#services" class="tapp-btn-s">UI/UX Digital Products</a>
+        <a href="../immersive-lab/virtual-tours-studio/" class="tapp-btn-p">Open Virtual Tours Web App &rarr;</a>
+        <a href="../immersive-lab/" class="tapp-btn-s">Explore Media Lab</a>
       </div>
     </div>
 
@@ -806,243 +819,285 @@
 
 <section id="programme">
     <div class="sec-head">
-      <div class="sec-eyebrow">COMPLETE 7 TOUR PROGRAMME · PLYMOUTH, DEVON &amp; CORNWALL</div>
-      <h2 class="sec-h2">AUTHENTIC UK HERITAGE, ARCHITECTURE &amp; NATURE WALKS</h2>
+      <div class="sec-eyebrow">COMPLETE 7 TOUR PROGRAMME · SYNCED WITH GETYOURGUIDE SUPPLIER 810525</div>
+      <h2 class="sec-h2">PLYMOUTH, DEVON &amp; CORNWALL GUIDED TOURS</h2>
       <p class="sec-copy">
-        Every tour card features original Mo360 Studio graphic poster art designed over verified UK location photography in our exact website editorial style, adhering to UK Health and Safety Executive standards and the Equality Act 2010.
+        Every experience below matches its live GetYourGuide itinerary, duration, and pricing. Book straight through GetYourGuide or reserve directly with Mo360 Studio.
       </p>
     </div>
 
     <div class="filter-tabs" role="tablist" aria-label="Tour Categories">
       <button type="button" onclick="filterCategory('all', this)" class="filter-btn active">All 7 Tours</button>
-      <button type="button" onclick="filterCategory('city_museum', this)" class="filter-btn">01 &amp; 02 · Plymouth City &amp; The Box Museum</button>
-      <button type="button" onclick="filterCategory('maritime_bridges', this)" class="filter-btn">03 &amp; 04 · Plymouth Sound Boats &amp; Tamar</button>
-      <button type="button" onclick="filterCategory('dartmoor_exeter', this)" class="filter-btn">05 &amp; 06 · Dartmoor, Tavistock &amp; Exeter</button>
-      <button type="button" onclick="filterCategory('cornwall_day_trips', this)" class="filter-btn">07 · Eden Project &amp; Charlestown</button>
+      <button type="button" onclick="filterCategory('plymouth_city', this)" class="filter-btn">01 &amp; 02 · Plymouth City &amp; The Box</button>
+      <button type="button" onclick="filterCategory('plymouth_sound', this)" class="filter-btn">03 · Plymouth Sound Boats</button>
+      <button type="button" onclick="filterCategory('cornwall', this)" class="filter-btn">04 · Eden Project &amp; Charlestown</button>
+      <button type="button" onclick="filterCategory('devon_dartmoor', this)" class="filter-btn">05, 06 &amp; 07 · Totnes, Tavistock &amp; Dartmoor</button>
     </div>
 
     <div class="tours-grid">
 
-      <!-- TOUR 01 -->
-      <article class="tour-card" data-category="city_museum">
-        <a href="#booking" onclick="preselectTour('tour_01_plymouth_walk')" class="tour-media">
-          <img src="assets/tour_posters/tour_01_plymouth_architecture_poster.jpg" alt="Mo360 Tour 01 Editorial Poster: Plymouth Cultural Architecture and Historic Waterfront Walk featuring Smeaton's Tower">
+      <!-- TOUR 01: GYG 1495589 | MO360-IMM-01 -->
+      <article class="tour-card" data-category="plymouth_city">
+        <a href="https://www.getyourguide.com/plymouth-uk-l101100/plymouth-cultural-architecture-and-historic-waterfront-walking-tour-t1495589/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_01_plymouth_architecture_poster.jpg" alt="Mo360 Tour 01 Editorial Poster: Plymouth Cultural Architecture and Historic Waterfront Walking Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 01 · GYG ID 1495589</span>
-              <span class="tour-chip-dark">2 Hours · Max 12 Guests</span>
+              <span class="tour-chip-ochre">Tour 01 · GYG 1495589</span>
+              <span class="tour-chip-dark">2 Hours · MO360-IMM-01</span>
             </div>
-            <h3 class="tour-title">Plymouth Cultural Architecture &amp; Historic Waterfront Walk</h3>
+            <h3 class="tour-title">Plymouth: Cultural Architecture &amp; Historic Waterfront Walking Tour</h3>
             <p class="tour-desc">
-              Explore Plymouth's architectural evolution from Elizabethan merchant lanes to postwar modernist landmarks, enhanced by Mohamed's visual arts curation and interactive archival comparisons.
+              Explore Plymouth's architectural story from Elizabethan merchant lanes and the Mayflower Steps to postwar modernist civic squares, paired with interactive archival overlays.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Landmarks</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Meeting Point</div>
               <div class="tour-route-text">
-                The Box Piazza (PL4 8AX) · Charles Church Blitz Memorial · Civic Square &amp; Guildhall · Elizabethan New Street · The Barbican · Mayflower Steps (PL1 2LR) · Smeaton's Tower on Plymouth Hoe
+                The Box Piazza (PL4 8AX) · St Luke's Gallery · Charles Church Blitz Memorial · Civic Square &amp; Guildhall · Elizabethan New Street · Barbican &amp; Sutton Harbour · Mayflower Steps &amp; Plymouth Hoe
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">2 Hour Guided Walk</div>
-              <div class="tour-price-val">£30 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">2 Hour Guided Walk</div>
+                <div class="tour-price-val">£32 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">Free 24h Cancel</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_01_plymouth_walk')" class="btn-ochre">Reserve Tour 01</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/plymouth-uk-l101100/plymouth-cultural-architecture-and-historic-waterfront-walking-tour-t1495589/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_01_plymouth_walk')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- TOUR 02 -->
-      <article class="tour-card" data-category="city_museum">
-        <a href="#booking" onclick="preselectTour('tour_02_the_box')" class="tour-media">
-          <img src="assets/tour_posters/tour_02_inside_the_box_poster.jpg" alt="Mo360 Tour 02 Editorial Poster: Inside The Box Plymouth Museum, Art Gallery and Archive Tour">
+      <!-- TOUR 02: GYG 1560532 | MO360-PLY-BOX-02 -->
+      <article class="tour-card" data-category="plymouth_city">
+        <a href="https://www.getyourguide.com/plymouth-uk-l101100/plymouth-inside-the-box-museum-art-gallery-and-archive-guided-tour-t1560532/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_02_inside_the_box_poster.jpg" alt="Mo360 Tour 02 Editorial Poster: Plymouth Inside The Box Museum, Art Gallery and Archive Guided Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 02 · GYG ID 1560532</span>
-              <span class="tour-chip-dark">1.5 to 2 Hours · Indoor</span>
+              <span class="tour-chip-ochre">Tour 02 · GYG 1560532</span>
+              <span class="tour-chip-dark">2 Hours · MO360-PLY-BOX-02</span>
             </div>
-            <h3 class="tour-title">Inside The Box Plymouth: Guided Museum, Art Gallery &amp; Archive Tour</h3>
+            <h3 class="tour-title">Plymouth: Inside The Box Museum, Art Gallery &amp; Archive Guided Tour</h3>
             <p class="tour-desc">
-              Step inside Plymouth's flagship museum alongside someone who has worked and volunteered inside The Box, uncovering curatorial stories behind the collections on a step free indoor route.
+              Step inside Plymouth's flagship museum with a former Box team member and curator, exploring the collections along a step free indoor route with digital archive context.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Galleries</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Galleries</div>
               <div class="tour-route-text">
-                Tavistock Place Piazza &amp; St Luke's Gallery · 14 Royal Naval Figureheads Atrium · Mammoth &amp; Ice Age Devon · Port of Plymouth Maritime · Cottonian Fine Art · Active Memory Box Archive
+                Tavistock Place Piazza &amp; St Luke's Church · 14 Royal Navy Ship Figureheads Atrium · Woolly Mammoth &amp; Ice Age Devon · Port of Plymouth Maritime · Cottonian Fine Art · Active Archive
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">Indoor Curatorial Tour</div>
-              <div class="tour-price-val">£25 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">2 Hour Indoor Curatorial Tour</div>
+                <div class="tour-price-val">£32 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">Step Free Indoor</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_02_the_box')" class="btn-ochre">Reserve Tour 02</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/plymouth-uk-l101100/plymouth-inside-the-box-museum-art-gallery-and-archive-guided-tour-t1560532/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_02_the_box')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- TOUR 03 -->
-      <article class="tour-card" data-category="maritime_bridges">
-        <a href="#booking" onclick="preselectTour('tour_03_plymouth_sound_boats')" class="tour-media">
-          <img src="assets/tour_posters/tour_03_plymouth_sound_boats_poster.jpg" alt="Mo360 Tour 03 Editorial Poster: Plymouth Sound Maritime History and Boat Crossing Tour">
+      <!-- TOUR 03: GYG 1560599 | MO360-PLY-SND-03 -->
+      <article class="tour-card" data-category="plymouth_sound">
+        <a href="https://www.getyourguide.com/plymouth-uk-l101100/plymouth-plymouth-sound-heritage-boat-crossing-tour-t1560599/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_03_plymouth_sound_boats_poster.jpg" alt="Mo360 Tour 03 Editorial Poster: Plymouth Sound Heritage and Boat Crossing Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 03 · Land &amp; Sea</span>
-              <span class="tour-chip-dark">3.5 Hours · Boat Crossings</span>
+              <span class="tour-chip-ochre">Tour 03 · GYG 1560599</span>
+              <span class="tour-chip-dark">3 Hours · MO360-PLY-SND-03</span>
             </div>
-            <h3 class="tour-title">Plymouth Sound Maritime History &amp; Boat Crossing Tour</h3>
+            <h3 class="tour-title">Plymouth: Plymouth Sound Heritage &amp; Boat Crossing Tour</h3>
             <p class="tour-desc">
-              Experience Britain's Ocean City from both land and water, combining historic passenger ferry crossings across Plymouth Sound with guided walks through naval fortifications and coastal estates.
+              Experience the UK's first National Marine Park from land and water, pairing scenic passenger boat crossings across Plymouth Sound with naval fortifications and coastal estates.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Crossings</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Crossings</div>
               <div class="tour-route-text">
-                Plymouth Barbican Landing Stage · Boat Crossing to Mount Batten Peninsula &amp; Tower · Royal William Yard Victualling Yard · Mount Wise Admiralty House · Cremyll Ferry to Mount Edgcumbe
+                Barbican Landing Stage · Scenic Boat Crossing across Plymouth Sound · 1657 Mount Batten Artillery Tower · Grade I Listed Royal William Yard · Cremyll Ferry to Mount Edgcumbe Country Park
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">3.5 Hour Maritime Tour</div>
-              <div class="tour-price-val">£45 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">3 Hour Land &amp; Water Tour</div>
+                <div class="tour-price-val">£41 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">Boat Crossings</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_03_plymouth_sound_boats')" class="btn-ochre">Reserve Tour 03</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/plymouth-uk-l101100/plymouth-plymouth-sound-heritage-boat-crossing-tour-t1560599/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_03_plymouth_sound_boats')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- TOUR 04 -->
-      <article class="tour-card" data-category="maritime_bridges">
-        <a href="#booking" onclick="preselectTour('tour_04_tamar_brunel_bridges')" class="tour-media">
-          <img src="assets/tour_posters/tour_04_tamar_brunel_bridges_poster.jpg" alt="Mo360 Tour 04 Editorial Poster: Tamar Bridge and Brunel's Royal Albert Bridge Heritage Walk">
+      <!-- TOUR 04: GYG 1565027 | MO360-STA-EDEN-04 -->
+      <article class="tour-card" data-category="cornwall">
+        <a href="https://www.getyourguide.com/charlestown-cornwall-l220429/from-plymouth-eden-project-charlestown-harbour-tour-t1565027/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_04_eden_project_charlestown_poster.jpg" alt="Mo360 Tour 04 Editorial Poster: From Plymouth Eden Project and Charlestown Harbour Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 04 · Engineering Heritage</span>
-              <span class="tour-chip-dark">2 Hours · Step Free Bridge</span>
+              <span class="tour-chip-ochre">Tour 04 · GYG 1565027</span>
+              <span class="tour-chip-dark">8 Hours · MO360-STA-EDEN-04</span>
             </div>
-            <h3 class="tour-title">Tamar Bridge &amp; Brunel's Royal Albert Bridge Heritage Walk</h3>
+            <h3 class="tour-title">From Plymouth: Eden Project &amp; Charlestown Harbour Tour</h3>
             <p class="tour-desc">
-              Walk high above the River Tamar separating Devon and Cornwall while examining two centuries of British civil engineering, Victorian railway heritage, and panoramic estuary viewpoints.
+              Travel from Plymouth across the River Tamar into Cornwall for a full day exploring the geodesic rainforest biomes of the Eden Project and the historic tall ships port of Charlestown.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Landmarks</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Departure</div>
               <div class="tour-route-text">
-                Saltash Passage &amp; Devonport Foreshore · Cantilevered Pedestrian Walkway on Tamar Bridge · Close Up Structural View of Brunel's 1859 Royal Albert Bridge · Saltash Waterside &amp; Jubilee Green
+                Plymouth Railway Station (PL4 6AB) · Tamar Crossing into Cornwall · Eden Project Rainforest &amp; Mediterranean Biomes · St Austell China Clay Country · Charlestown Georgian Tall Ships Harbour
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">2 Hour Bridge Walk</div>
-              <div class="tour-price-val">£28 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">8 Hour Cornwall Day Trip</div>
+                <div class="tour-price-val">£75 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">From Plymouth</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_04_tamar_brunel_bridges')" class="btn-ochre">Reserve Tour 04</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/charlestown-cornwall-l220429/from-plymouth-eden-project-charlestown-harbour-tour-t1565027/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_04_eden_charlestown')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- TOUR 05 -->
-      <article class="tour-card" data-category="dartmoor_exeter">
-        <a href="#booking" onclick="preselectTour('tour_05_dartmoor_tavistock')" class="tour-media">
-          <img src="assets/tour_posters/tour_05_dartmoor_tavistock_poster.jpg" alt="Mo360 Tour 05 Editorial Poster: Dartmoor National Park and Historic Tavistock Heritage Walk">
+      <!-- TOUR 05: GYG 1565083 | MO360-TOT-DART-05 -->
+      <article class="tour-card" data-category="devon_dartmoor">
+        <a href="https://www.getyourguide.com/totnes-l101358/from-plymouth-historic-totnes-eastgate-river-dart-tour-t1565083/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_05_totnes_river_dart_poster.jpg" alt="Mo360 Tour 05 Editorial Poster: From Plymouth Historic Totnes, Eastgate and River Dart Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 05 · Moorland &amp; Abbey</span>
-              <span class="tour-chip-dark">4 Hours · UNESCO Town</span>
+              <span class="tour-chip-ochre">Tour 05 · GYG 1565083</span>
+              <span class="tour-chip-dark">6 Hours · MO360-TOT-DART-05</span>
             </div>
-            <h3 class="tour-title">Dartmoor National Park &amp; Historic Tavistock Nature &amp; Heritage Walk</h3>
+            <h3 class="tour-title">From Plymouth: Historic Totnes, Eastgate &amp; River Dart Tour</h3>
             <p class="tour-desc">
-              Share Mohamed's love for outdoor nature walks and ancient landscapes across Dartmoor's dramatic moorland and historic Tavistock, aligned with the UK Countryside Code.
+              Journey through South Devon to historic Totnes, walking cobbled Tudor streets beneath Eastgate Arch, tracing Saxon ramparts, visiting Norman Totnes Castle, and exploring the River Dart valley.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Landmarks</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Departure</div>
               <div class="tour-route-text">
-                UNESCO World Heritage Stannary Town of Tavistock (Abbey Ruins, Pannier Market &amp; River Tavy) · Dartmoor National Park Granite Tors, Ancient Oak Woodlands, Stone Rows &amp; Streams
+                Plymouth Railway Station (PL4 6AB) · Legendary Brutus Stone · 16th Century Eastgate Arch · Norman Motte &amp; Bailey Totnes Castle Views · Elizabethan Artisan Market &amp; River Dart Quayside
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">4 Hour Heritage Walk</div>
-              <div class="tour-price-val">£55 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">6 Hour South Devon Excursion</div>
+                <div class="tour-price-val">£48 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">Round Trip</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_05_dartmoor_tavistock')" class="btn-ochre">Reserve Tour 05</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/totnes-l101358/from-plymouth-historic-totnes-eastgate-river-dart-tour-t1565083/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_05_totnes_dart')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- TOUR 06 -->
-      <article class="tour-card" data-category="dartmoor_exeter">
-        <a href="#booking" onclick="preselectTour('tour_06_exeter_cathedral_quay')" class="tour-media">
-          <img src="assets/tour_posters/tour_06_exeter_cathedral_quay_poster.jpg" alt="Mo360 Tour 06 Editorial Poster: Historic Exeter Cathedral Quarter, Roman Wall and Quayside Walk">
+      <!-- TOUR 06: GYG 1565140 | MO360-TAV-DRK-06 -->
+      <article class="tour-card" data-category="devon_dartmoor">
+        <a href="https://www.getyourguide.com/tavistock-england-l1683/from-plymouth-historic-tavistock-unesco-drake-tour-t1565140/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_06_tavistock_unesco_drake_poster.jpg" alt="Mo360 Tour 06 Editorial Poster: From Plymouth Historic Tavistock, UNESCO and Drake Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 06 · Historic Devon Capital</span>
-              <span class="tour-chip-dark">2 Hours · Paved Walk</span>
+              <span class="tour-chip-ochre">Tour 06 · GYG 1565140</span>
+              <span class="tour-chip-dark">5 Hours · MO360-TAV-DRK-06</span>
             </div>
-            <h3 class="tour-title">Historic Exeter Cathedral Quarter, Roman Wall &amp; Quayside Walking Tour</h3>
+            <h3 class="tour-title">From Plymouth: Historic Tavistock, UNESCO &amp; Drake Tour</h3>
             <p class="tour-desc">
-              Building on Mohamed's experience leading guided walking tours in Exeter, discover two millennia of Devon's county capital from Roman fortress to medieval wool port along paved city routes.
+              Discover Devon's UNESCO World Heritage stannary town along the edge of Dartmoor, from medieval abbey ruins and the 1860s Pannier Market to Boehm's original Sir Francis Drake statue.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Landmarks</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Departure</div>
               <div class="tour-route-text">
-                Exeter Cathedral Green · 2,000 Year Old Roman City Wall · Historic Guildhall &amp; Parliament Street · St Nicholas Priory · Exeter Historic Quayside &amp; Custom House on the River Exe
+                Plymouth Railway Station (PL4 6AB) · Tavistock Abbey Ruins · Duke of Bedford Victorian Civic Quarter · Historic 1860s Pannier Market · 1883 Sir Francis Drake Bronze Monument · River Tavy Meadows
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">2 Hour Exeter City Walk</div>
-              <div class="tour-price-val">£30 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">5 Hour UNESCO Town Tour</div>
+                <div class="tour-price-val">£42 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">Round Trip</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_06_exeter_cathedral_quay')" class="btn-ochre">Reserve Tour 06</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/tavistock-england-l1683/from-plymouth-historic-tavistock-unesco-drake-tour-t1565140/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_06_tavistock_drake')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
 
-      <!-- TOUR 07 -->
-      <article class="tour-card" data-category="cornwall_day_trips">
-        <a href="#booking" onclick="preselectTour('tour_07_eden_charlestown')" class="tour-media">
-          <img src="assets/tour_posters/tour_07_eden_project_charlestown_poster.jpg" alt="Mo360 Tour 07 Editorial Poster: St Austell, Eden Project and Charlestown Historic Harbour Day Trip">
+      <!-- TOUR 07: GYG 1565208 | MO360-DAR-SAF-07 -->
+      <article class="tour-card" data-category="devon_dartmoor">
+        <a href="https://www.getyourguide.com/plymouth-uk-l101100/from-plymouth-wild-dartmoor-granite-tors-pony-tour-t1565208/" target="_blank" rel="noopener noreferrer" class="tour-media">
+          <img src="assets/tour_posters/tour_07_wild_dartmoor_safari_poster.jpg" alt="Mo360 Tour 07 Editorial Poster: From Plymouth Wild Dartmoor, Granite Tors and Pony Tour">
         </a>
         <div class="tour-body">
           <div>
             <div class="tour-top-meta">
-              <span class="tour-chip-ochre">Tour 07 · Cornwall Day Trip</span>
-              <span class="tour-chip-dark">8 Hours · Biomes &amp; Harbour</span>
+              <span class="tour-chip-ochre">Tour 07 · GYG 1565208</span>
+              <span class="tour-chip-dark">6.5 Hours · MO360-DAR-SAF-07</span>
             </div>
-            <h3 class="tour-title">St Austell, Eden Project &amp; Charlestown Historic Harbour Day Trip</h3>
+            <h3 class="tour-title">From Plymouth: Wild Dartmoor, Granite Tors &amp; Pony Tour</h3>
             <p class="tour-desc">
-              Leave Plymouth behind and cross the River Tamar into Cornwall for an unforgettable full day discovery of world celebrated botanical biomes, Cornish mining heritage, and tall ships harbour.
+              Venture out of Plymouth into Dartmoor National Park to climb Haytor and Hound Tor, spot wild grazing ponies, explore Bronze Age stone hut circles, and cross the medieval clapper bridge at Postbridge.
             </p>
             <div class="tour-route-box">
-              <div class="tour-route-label">Verified Route &amp; Landmarks</div>
+              <div class="tour-route-label">GetYourGuide Itinerary &amp; Departure</div>
               <div class="tour-route-text">
-                Plymouth Station Forecourt (PL4 6AB) · Tamar Bridge Crossing · The Eden Project Geodesic Biomes · St Austell China Clay Country · Charlestown Georgian Harbour &amp; Tall Ships Basin
+                Plymouth Railway Station (PL4 6AB) · Haytor &amp; Hound Tor Granite Heights · Abandoned Bronze Age Stone Village · Wild Dartmoor Pony Valleys · Medieval Postbridge Clapper Bridge · Spatial 360° Keepsakes
               </div>
             </div>
           </div>
           <div class="tour-foot">
-            <div>
-              <div class="tour-price-lbl">8 Hour Cornish Day Trip</div>
-              <div class="tour-price-val">£75 <span>/ person</span></div>
+            <div class="tour-foot-top">
+              <div>
+                <div class="tour-price-lbl">6.5 Hour National Park Tour</div>
+                <div class="tour-price-val">£58 <span>/ person</span></div>
+              </div>
+              <span class="tour-chip-dark">Round Trip</span>
             </div>
-            <a href="#booking" onclick="preselectTour('tour_07_eden_charlestown')" class="btn-ochre">Reserve Tour 07</a>
+            <div class="tour-foot-actions">
+              <a href="https://www.getyourguide.com/plymouth-uk-l101100/from-plymouth-wild-dartmoor-granite-tors-pony-tour-t1565208/" target="_blank" rel="noopener noreferrer" class="btn-ochre">Book on GetYourGuide ↗</a>
+              <a href="#booking" onclick="preselectTour('tour_07_wild_dartmoor')" class="btn-slate">Direct</a>
+            </div>
           </div>
         </div>
       </article>
@@ -1054,9 +1109,9 @@
 
   <!-- VERIFIED REAL PLYMOUTH & DEVON LANDMARK GALLERY -->
   <section>
-    <div class="sec-head">
+      <div class="sec-head">
       <div class="sec-eyebrow">100% AUTHENTIC UK LOCATION PHOTOGRAPHY</div>
-      <h2 class="sec-h2">REAL LANDMARKS ACROSS PLYMOUTH, TAVISTOCK, DARTMOOR &amp; EXETER</h2>
+      <h2 class="sec-h2">REAL LANDMARKS ACROSS PLYMOUTH, TOTNES, TAVISTOCK &amp; DARTMOOR</h2>
     </div>
     <div class="landmark-grid">
       <div class="landmark-tile">
@@ -1099,13 +1154,13 @@
           VISUAL ARTIST, CREATIVE TECHNOLOGIST, CURATOR &amp; CREATIVE DIRECTOR
         </h2>
         <p style="color:#e5e7eb;font-size:0.96rem;margin-bottom:14px;">
-          I am a <strong>Visual Artist, Creative Technologist, Curator, and Creative Director</strong> based in Devon, and founder of <strong style="color:#F59E0B;">Mo360 Studio</strong>, creating interactive and immersive arts experiences across the South West.
+          Mohamed Elwakil is a Devon based visual artist, creative technologist, and curator, and founder of Mo360 Immersive Studio in Plymouth.
         </p>
-        <p style="color:#d1d5db;font-size:0.92rem;margin-bottom:14px;">
-          Long before launching Mo360 Immersive Tours, I spent years giving guided tours inside major museums, galleries, and international festivals. My experience includes working and volunteering at <strong>The Box Museum</strong> in Plymouth, leading gallery tours at <strong>KARST</strong> and <strong>MIRROR</strong>, guiding visitors at <strong>Ars Electronica</strong>, and giving artistic and historical tours across the <strong>Egyptian Museum in Cairo</strong> alongside walking tours through <strong>Plymouth</strong> and <strong>Exeter</strong>.
+        <p style="color:#b8bec9;font-size:0.92rem;margin-bottom:14px;">
+          Before launching Mo360 Immersive Tours, Mohamed worked and volunteered at The Box Museum in Plymouth, led gallery tours at KARST and MIRROR, guided international audiences at Ars Electronica, and led historical tours across the Egyptian Museum in Cairo as well as walking tours across Plymouth and Exeter.
         </p>
-        <p style="color:#d1d5db;font-size:0.92rem;">
-          Living in Devon deepened my appreciation for South West coastal architecture, moorland prehistory, and maritime heritage. Integrating custom spatial apps, archival comparisons, and complimentary 360° photography makes every walk vivid and lasting.
+        <p style="color:#b8bec9;font-size:0.92rem;">
+          Every experience pairs local architectural and maritime storytelling with custom Mo360 digital archives and complimentary 360° photography.
         </p>
       </div>
 
@@ -1172,13 +1227,13 @@
           <div>
             <label class="field-lbl" for="tour-select">Select Tour Experience *</label>
             <select id="tour-select" required class="field-input">
-              <option value="tour_01_plymouth_walk">Tour 01 · Plymouth Cultural Architecture &amp; Waterfront Walk (£30)</option>
-              <option value="tour_02_the_box">Tour 02 · Inside The Box Plymouth Museum &amp; Archive Tour (£25)</option>
-              <option value="tour_03_plymouth_sound_boats">Tour 03 · Plymouth Sound Maritime &amp; Boat Crossing (£45)</option>
-              <option value="tour_04_tamar_brunel_bridges">Tour 04 · Tamar Bridge &amp; Brunel's Royal Albert Bridge (£28)</option>
-              <option value="tour_05_dartmoor_tavistock">Tour 05 · Dartmoor National Park &amp; Tavistock Walk (£55)</option>
-              <option value="tour_06_exeter_cathedral_quay">Tour 06 · Historic Exeter Cathedral &amp; Quayside Walk (£30)</option>
-              <option value="tour_07_eden_charlestown">Tour 07 · St Austell, Eden Project &amp; Charlestown Harbour (£75)</option>
+              <option value="tour_01_plymouth_walk">Tour 01 · Plymouth Cultural Architecture &amp; Waterfront Walk (£32 · GYG 1495589)</option>
+              <option value="tour_02_the_box">Tour 02 · Inside The Box Museum, Art Gallery &amp; Archive Tour (£32 · GYG 1560532)</option>
+              <option value="tour_03_plymouth_sound_boats">Tour 03 · Plymouth Sound Heritage &amp; Boat Crossing Tour (£41 · GYG 1560599)</option>
+              <option value="tour_04_eden_charlestown">Tour 04 · Eden Project &amp; Charlestown Harbour Tour (£75 · GYG 1565027)</option>
+              <option value="tour_05_totnes_dart">Tour 05 · Historic Totnes, Eastgate &amp; River Dart Tour (£48 · GYG 1565083)</option>
+              <option value="tour_06_tavistock_drake">Tour 06 · Historic Tavistock, UNESCO &amp; Drake Tour (£42 · GYG 1565140)</option>
+              <option value="tour_07_wild_dartmoor">Tour 07 · Wild Dartmoor, Granite Tors &amp; Pony Tour (£58 · GYG 1565208)</option>
             </select>
           </div>
           <div>
@@ -1204,7 +1259,6 @@
               <option value="the_box_piazza">The Box Plymouth Piazza (Tavistock Place, PL4 8AX)</option>
               <option value="barbican_mayflower">Plymouth Barbican Landing Stage &amp; Mayflower Steps (PL1 2LR)</option>
               <option value="plymouth_station">Plymouth Railway Station Main Concourse (PL4 6AB)</option>
-              <option value="exeter_cathedral">Exeter Cathedral Green (For Tour 06)</option>
             </select>
           </div>
         </div>
@@ -1242,9 +1296,10 @@
     </div>
     <div class="footer-links">
       <a href="../index.html">Main Studio</a>
-      <a href="../getyourguide/">GetYourGuide Showcase</a>
+      <a href="../immersive-lab/">Media Lab</a>
+      <a href="../academy/">Academy</a>
+      <a href="../creative-coding-plymouth/">Creative Coding</a>
       <a href="#programme">7 Tour Programme</a>
-      <a href="#guide-bio">Guide Bio</a>
       <a href="tel:+447568668918" style="color:#F59E0B;">+44 7568 668918</a>
       <a href="https://www.instagram.com/mo360.ixstudio/" target="_blank" rel="noopener noreferrer">@mo360.ixstudio</a>
     </div>
