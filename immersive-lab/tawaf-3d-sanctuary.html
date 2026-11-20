@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAWAF 3D WebGL Sanctuary · Mo360 Immersive Studio</title>
+  <meta name="description" content="Interactive 3D WebGL 15m fulldome sensory healing sanctuary by Mohamed Hossam Elwakil featuring floating golden sacred geometry mandalas, Four Zones, and Emerald Zellige." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/mo360-unified-theme.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #08090c; color: #ffffff; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+    .tw-wrap { max-width: 1200px; margin: 0 auto; padding: 96px 24px 72px; }
+    .tw-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .tw-kicker { display: inline-block; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: #F59E0B; color: #08090c; padding: 6px 12px; margin-bottom: 10px; }
+    .tw-h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 0.96; margin: 0 0 8px; letter-spacing: 0.03em; }
+    .tw-sub { color: #b4bac6; margin: 0; max-width: 700px; font-size: 0.98rem; line-height: 1.6; }
+    .tw-stage-card { background: #15181f; overflow: hidden; margin-bottom: 28px; }
+    #tawafCanvasWrap { position: relative; width: 100%; height: 560px; background: #08090c; cursor: grab; overflow: hidden; }
+    #tawafCanvasWrap:active { cursor: grabbing; }
+    #tawafCanvasWrap canvas { display: block; width: 100%; height: 100%; }
+    .tw-hud-top { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 4; }
+    .tw-pill { background: rgba(8, 9, 12, 0.84); color: #F59E0B; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 12px; }
+    .tw-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; background: #15181f; }
+    .tw-modes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tw-btn { background: #222630; color: #ffffff; border: none; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 11px 16px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s ease; }
+    .tw-btn:hover { background: #2d3340; }
+    .tw-btn.active, .tw-btn-ochre { background: #F59E0B; color: #08090c; }
+    .tw-btn-ochre:hover { background: #d97706; }
+    .tw-ref-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.03em; margin: 0 0 14px; }
+    .tw-refs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+    .tw-ref-card { background: #15181f; overflow: hidden; }
+    .tw-ref-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+    .tw-ref-body { padding: 16px; }
+    .tw-ref-tag { font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; color: #F59E0B; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+    .tw-ref-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; margin: 0 0 6px; letter-spacing: 0.03em; }
+    .tw-ref-desc { color: #b4bac6; font-size: 0.88rem; margin: 0; line-height: 1.5; }
+    .tw-footer { border-top: 1px solid #222630; padding: 26px 24px 44px; text-align: center; font-family: 'Space Mono', monospace; font-size: 11px; color: #b4bac6; letter-spacing: 0.08em; }
+    @media (max-width: 900px) { .tw-refs { grid-template-columns: 1fr; } #tawafCanvasWrap { height: 440px; } }
+    @media (max-width: 600px) {
+      .tw-wrap { padding: 86px 16px 56px; }
+      #tawafCanvasWrap { height: 370px; }
+      .tw-modes, .tw-modes .tw-btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="mo360-nav" aria-label="TAWAF 3D Sanctuary Navigation">
+    <a href="../index.html" class="mo360-nav-brand">
+      <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Official Emblem" />
+      <span class="mo360-brand-stack">
+        <span class="mo360-brand-row">
+          <span class="mo360-brand-main">MO360</span>
+          <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+        </span>
+        <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+      </span>
+    </a>
+    <ul class="mo360-nav-links">
+      <li><a href="../index.html#latest-works">Projects</a></li>
+      <li><a href="../projects/tawaf-sanctuary/" class="active">TAWAF Dossier</a></li>
+      <li><a href="../films/">Screening Room</a></li>
+      <li><a href="../immersive-lab/">Media Lab</a></li>
+      <li><a href="../index.html#contact" class="cta">Book / Contact</a></li>
+    </ul>
+    <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mo360-drawer" id="mo360Drawer">
+    <a href="../index.html">Mo360 Immersive Studio Home</a>
+    <a href="../projects/tawaf-sanctuary/">TAWAF Concept &amp; Research</a>
+    <a href="../immersive-lab/tawaf-3d-sanctuary.html" class="active">TAWAF 3D WebGL Sanctuary</a>
+    <a href="../films/">Moving Image &amp; Screening Room</a>
+    <a href="../immersive-lab/">Mo360 Immersive Media Lab</a>
+    <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Commission or Exhibit TAWAF</a>
+  </div>
+
+  <main class="tw-wrap">
+    <div class="tw-head">
+      <div>
+        <div class="tw-kicker">REAL TIME 3D WEBGL · 15M FULLDOME SANCTUARY</div>
+        <h1 class="tw-h1">TAWAF: INTERACTIVE 3D SANCTUARY</h1>
+        <p class="tw-sub">Drag or swipe inside the 3D dome to explore the circular sanctuary architecture, floating golden sacred geometry mandalas, luminous particle ribbons, and 4 7 8 breath paced lighting.</p>
+      </div>
+      <a href="../projects/tawaf-sanctuary/" class="tw-btn tw-btn-ochre">Read TAWAF Concept &amp; Research &rarr;</a>
+    </div>
+
+    <div class="tw-stage-card">
+      <div id="tawafCanvasWrap">
+        <div class="tw-hud-top">
+          <span class="tw-pill" id="twModePill">MODE 01 · GOLDEN SACRED MANDALAS</span>
+          <span class="tw-pill" id="twBreathPill">BREATH CADENCE · INHALE 4S</span>
+        </div>
+      </div>
+      <div class="tw-controls">
+        <div class="tw-modes">
+          <button type="button" class="tw-btn active" onclick="setTawafMode('gold', this)">01 · Golden Mandalas</button>
+          <button type="button" class="tw-btn" onclick="setTawafMode('zones', this)">02 · Four Zones</button>
+          <button type="button" class="tw-btn" onclick="setTawafMode('emerald', this)">03 · Emerald Zellige</button>
+        </div>
+        <button type="button" class="tw-btn" id="twOrbitBtn" onclick="toggleTawafOrbit()">Pause Orbit</button>
+      </div>
+    </div>
+
+    <h2 class="tw-ref-title">OFFICIAL ARTISTIC REFERENCE PLATES</h2>
+    <div class="tw-refs">
+      <article class="tw-ref-card">
+        <img src="assets/tawaf_official/tawaf_ref_01_golden_mandalas.jpg" alt="TAWAF Warm Amber Floating Golden Mandalas Reference" loading="eager" />
+        <div class="tw-ref-body">
+          <div class="tw-ref-tag">REFERENCE 01 · WARM AMBER SANCTUARY</div>
+          <h3 class="tw-ref-name">Floating Golden Sacred Geometry</h3>
+          <p class="tw-ref-desc">Warm illuminated architectural dome with floating golden mandalas, luminous orbital dust ribbons, and concentric floor rings.</p>
+        </div>
+      </article>
+      <article class="tw-ref-card">
+        <img src="assets/tawaf_official/tawaf_ref_02_four_zones_sanctuary.jpg" alt="TAWAF Four Zones Sensory Sanctuary Reference" loading="eager" />
+        <div class="tw-ref-body">
+          <div class="tw-ref-tag">REFERENCE 02 · FOUR SENSORY ZONES</div>
+          <h3 class="tw-ref-name">Grounding, Compassion, Clarity &amp; Integration</h3>
+          <p class="tw-ref-desc">Four atmospheric dome quadrants harmonising deep terracotta, botanical sage, serene teal Zellige, and radiant gold.</p>
+        </div>
+      </article>
+      <article class="tw-ref-card">
+        <img src="assets/tawaf_official/tawaf_ref_03_emerald_zellige_dome.jpg" alt="TAWAF Emerald and Gold Zellige Dome Projection Reference" loading="eager" />
+        <div class="tw-ref-body">
+          <div class="tw-ref-tag">REFERENCE 03 · EMERALD &amp; GOLD ZELLIGE</div>
+          <h3 class="tw-ref-name">Enveloping Islamic Geometry Dome</h3>
+          <p class="tw-ref-desc">Deep nocturnal architectural dome projection with emerald teal and antique gold Zellige arches encircling seated participants.</p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="tw-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED HOSSAM ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+    (function() {
+      const wrap = document.getElementById('tawafCanvasWrap');
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0b0907);
+      scene.fog = new THREE.FogExp2(0x16110b, 0.022);
+
+      const camera = new THREE.PerspectiveCamera(62, wrap.clientWidth / wrap.clientHeight, 0.1, 120);
+      let yaw = 0, pitch = 0.16, autoOrbit = true;
+      const radius = 14.5;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.18;
+      wrap.appendChild(renderer.domElement);
+
+      // Procedural canvas textures for the 3 reference dome moods
+      function makeDomeTexture(mode) {
+        const c = document.createElement('canvas');
+        c.width = 2048; c.height = 1024;
+        const ctx = c.getContext('2d');
+        if (mode === 'gold') {
+          const g = ctx.createLinearGradient(0, 0, 0, 1024);
+          g.addColorStop(0.0, '#d8a556');
+          g.addColorStop(0.45, '#e8c27a');
+          g.addColorStop(0.75, '#b6833c');
+          g.addColorStop(1.0, '#1d1610');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, 2048, 1024);
+          // Subtle golden architectural ribs & sacred filigree
+          ctx.strokeStyle = 'rgba(70,45,18,0.38)';
+          ctx.lineWidth = 6;
+          for (let i = 0; i < 12; i++) {
+            const x = (i / 12) * 2048;
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1024); ctx.stroke();
+          }
+          ctx.strokeStyle = 'rgba(255,235,185,0.22)';
+          ctx.lineWidth = 2;
+          for (let y = 140; y < 860; y += 140) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(2048, y); ctx.stroke();
+          }
+        } else if (mode === 'zones') {
+          const zones = [
+            ['#6c2818', '#b85a2d', '#3b150c'], // Terracotta Grounding
+            ['#1f4d35', '#4f8f66', '#10291c'], // Sage Compassion
+            ['#13485c', '#338fa6', '#0a2430'], // Teal Clarity
+            ['#5c3c16', '#d8a136', '#2e1a3d']  // Gold & Amethyst Integration
+          ];
+          zones.forEach((cols, idx) => {
+            const x0 = idx * 512;
+            const g = ctx.createLinearGradient(x0, 0, x0, 1024);
+            g.addColorStop(0, cols[0]); g.addColorStop(0.5, cols[1]); g.addColorStop(1, cols[2]);
+            ctx.fillStyle = g;
+            ctx.fillRect(x0, 0, 512, 1024);
+            // Geometric rose/zellige linework inside each quadrant
+            ctx.strokeStyle = 'rgba(255,238,200,0.22)';
+            ctx.lineWidth = 2;
+            for (let r = 40; r < 240; r += 36) {
+              ctx.beginPath();
+              ctx.arc(x0 + 256, 460, r, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          });
+        } else {
+          // Emerald & Gold Zellige
+          const g = ctx.createLinearGradient(0, 0, 0, 1024);
+          g.addColorStop(0.0, '#0f3d38');
+          g.addColorStop(0.4, '#1b665c');
+          g.addColorStop(0.75, '#113a36');
+          g.addColorStop(1.0, '#071413');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, 2048, 1024);
+          // Golden Zellige arches & lattice
+          ctx.strokeStyle = 'rgba(232,184,96,0.45)';
+          ctx.lineWidth = 3;
+          for (let i = 0; i < 16; i++) {
+            const cx = i * 128 + 64;
+            ctx.beginPath();
+            ctx.arc(cx, 540, 62, Math.PI, 0);
+            ctx.lineTo(cx + 62, 900);
+            ctx.moveTo(cx - 62, 540);
+            ctx.lineTo(cx - 62, 900);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(cx, 300, 48, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+        const tex = new THREE.CanvasTexture(c);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        return tex;
+      }
+
+      const domeTextures = {
+        gold: makeDomeTexture('gold'),
+        zones: makeDomeTexture('zones'),
+        emerald: makeDomeTexture('emerald')
+      };
+
+      // 15m Architectural Dome Shell
+      const domeGeo = new THREE.SphereGeometry(radius, 64, 32, 0, Math.PI * 2, 0, Math.PI * 0.58);
+      const domeMat = new THREE.MeshStandardMaterial({
+        map: domeTextures.gold,
+        side: THREE.BackSide,
+        roughness: 0.72,
+        metalness: 0.1,
+        emissive: new THREE.Color(0x5a3b14),
+        emissiveIntensity: 0.42
+      });
+      const domeMesh = new THREE.Mesh(domeGeo, domeMat);
+      domeMesh.position.y = -1.2;
+      scene.add(domeMesh);
+
+      // Structural dark bronze zenith oculus ring & vertical ribs
+      const ribMat = new THREE.MeshStandardMaterial({ color: 0x2a2118, roughness: 0.45, metalness: 0.65 });
+      const oculusRing = new THREE.Mesh(new THREE.TorusGeometry(4.2, 0.24, 16, 64), ribMat);
+      oculusRing.rotation.x = Math.PI / 2;
+      oculusRing.position.y = 11.4;
+      scene.add(oculusRing);
+
+      const lowerRing = new THREE.Mesh(new THREE.TorusGeometry(radius * 0.96, 0.28, 16, 72), ribMat);
+      lowerRing.rotation.x = Math.PI / 2;
+      lowerRing.position.y = 2.6;
+      scene.add(lowerRing);
+
+      // Floor with glowing concentric sanctuary rings (matches references)
+      const floorCanvas = document.createElement('canvas');
+      floorCanvas.width = 1024; floorCanvas.height = 1024;
+      const fctx = floorCanvas.getContext('2d');
+      fctx.fillStyle = '#15120f';
+      fctx.fillRect(0, 0, 1024, 1024);
+      [90, 170, 260, 355, 445].forEach((r, i) => {
+        fctx.strokeStyle = i === 0 ? 'rgba(245,180,70,0.85)' : 'rgba(232,184,104,0.42)';
+        fctx.lineWidth = i === 0 ? 5 : 3;
+        fctx.beginPath(); fctx.arc(512, 512, r, 0, Math.PI * 2); fctx.stroke();
+      });
+      const floorTex = new THREE.CanvasTexture(floorCanvas);
+      floorTex.colorSpace = THREE.SRGBColorSpace;
+      const floor = new THREE.Mesh(
+        new THREE.CircleGeometry(radius * 0.98, 64),
+        new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.55, metalness: 0.2 })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -2.2;
+      scene.add(floor);
+
+      // Floating Golden Sacred Geometry Mandalas & Polyhedra (Reference 1!)
+      const goldMat = new THREE.MeshStandardMaterial({
+        color: 0xf6c358,
+        emissive: 0xd98a1c,
+        emissiveIntensity: 0.65,
+        roughness: 0.25,
+        metalness: 0.85,
+        wireframe: true
+      });
+      const mandalas = [];
+      function createMandala(scale) {
+        const g = new THREE.Group();
+        const oct = new THREE.Mesh(new THREE.OctahedronGeometry(scale, 0), goldMat);
+        const ico = new THREE.Mesh(new THREE.IcosahedronGeometry(scale * 1.25, 0), goldMat);
+        const ring1 = new THREE.Mesh(new THREE.TorusGeometry(scale * 1.45, 0.035, 8, 8), goldMat);
+        const ring2 = new THREE.Mesh(new THREE.TorusGeometry(scale * 1.45, 0.035, 8, 8), goldMat);
+        ring2.rotation.z = Math.PI / 8;
+        g.add(oct, ico, ring1, ring2);
+        return g;
+      }
+
+      const positions = [
+        [0, 3.6, -7.2, 1.35],
+        [-5.4, 2.8, -5.6, 1.05],
+        [5.2, 3.3, -5.4, 1.1],
+        [-7.8, 2.2, 0.6, 0.95],
+        [7.6, 2.6, 1.2, 1.0],
+        [-3.4, 3.9, 6.8, 1.15],
+        [4.1, 3.1, 6.4, 0.95]
+      ];
+      positions.forEach(([x, y, z, s], i) => {
+        const m = createMandala(s);
+        m.position.set(x, y, z);
+        m.userData = { baseY: y, phase: i * 1.1, speed: 0.18 + (i % 3) * 0.06 };
+        scene.add(m);
+        mandalas.push(m);
+      });
+
+      // Luminous Orbital Golden Particle Ribbons
+      const pCount = 750;
+      const pGeo = new THREE.BufferGeometry();
+      const pPos = new Float32Array(pCount * 3);
+      for (let i = 0; i < pCount; i++) {
+        const a = (i / pCount) * Math.PI * 12;
+        const r = 3.5 + (i % 50) * 0.16;
+        pPos[i * 3] = Math.cos(a) * r;
+        pPos[i * 3 + 1] = -1.5 + (i / pCount) * 9.5;
+        pPos[i * 3 + 2] = Math.sin(a) * r;
+      }
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+      const pMat = new THREE.PointsMaterial({ color: 0xffd77a, size: 0.09, transparent: true, opacity: 0.78 });
+      const particles = new THREE.Points(pGeo, pMat);
+      scene.add(particles);
+
+      // Warm Sanctuary Lighting
+      const amb = new THREE.AmbientLight(0xffdca8, 0.85);
+      scene.add(amb);
+      const zenithLight = new THREE.PointLight(0xffc966, 2.6, 36);
+      zenithLight.position.set(0, 10.2, 0);
+      scene.add(zenithLight);
+
+      // Drag / Touch Look Controls
+      let dragging = false, lastX = 0, lastY = 0;
+      wrap.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+      window.addEventListener('pointerup', () => { dragging = false; });
+      window.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        yaw -= (e.clientX - lastX) * 0.0045;
+        pitch = Math.max(-0.22, Math.min(0.88, pitch + (e.clientY - lastY) * 0.0035));
+        lastX = e.clientX; lastY = e.clientY;
+      });
+
+      window.setTawafMode = function(mode, btn) {
+        domeMat.map = domeTextures[mode];
+        domeMat.needsUpdate = true;
+        if (mode === 'gold') {
+          domeMat.emissive.setHex(0x5a3b14);
+          zenithLight.color.setHex(0xffc966);
+          pMat.color.setHex(0xffd77a);
+          document.getElementById('twModePill').textContent = 'MODE 01 · GOLDEN SACRED MANDALAS';
+        } else if (mode === 'zones') {
+          domeMat.emissive.setHex(0x281e2c);
+          zenithLight.color.setHex(0xffd6a5);
+          pMat.color.setHex(0xf5c87a);
+          document.getElementById('twModePill').textContent = 'MODE 02 · FOUR SENSORY ZONES';
+        } else {
+          domeMat.emissive.setHex(0x0b3630);
+          zenithLight.color.setHex(0x7be0c8);
+          pMat.color.setHex(0xe8be64);
+          document.getElementById('twModePill').textContent = 'MODE 03 · EMERALD & GOLD ZELLIGE';
+        }
+        document.querySelectorAll('.tw-modes .tw-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+      };
+
+      window.toggleTawafOrbit = function() {
+        autoOrbit = !autoOrbit;
+        document.getElementById('twOrbitBtn').textContent = autoOrbit ? 'Pause Orbit' : 'Resume Orbit';
+      };
+
+      window.addEventListener('resize', () => {
+        camera.aspect = wrap.clientWidth / wrap.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+      });
+
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+        if (autoOrbit && !dragging) yaw += 0.0018;
+
+        // 4-7-8 breath cycle (19s total)
+        const cyc = t % 19;
+        let breath = 0.5, label = 'BREATH CADENCE · INHALE 4S';
+        if (cyc < 4) { breath = cyc / 4; label = 'BREATH CADENCE · INHALE 4S'; }
+        else if (cyc < 11) { breath = 1.0; label = 'BREATH CADENCE · HOLD 7S'; }
+        else { breath = 1 - (cyc - 11) / 8; label = 'BREATH CADENCE · EXHALE 8S'; }
+        document.getElementById('twBreathPill').textContent = label;
+
+        zenithLight.intensity = 2.0 + breath * 1.1;
+        domeMat.emissiveIntensity = 0.34 + breath * 0.22;
+        domeMesh.rotation.y = t * 0.015;
+        particles.rotation.y = -t * 0.04;
+
+        mandalas.forEach(m => {
+          m.rotation.y = t * m.userData.speed;
+          m.rotation.x = Math.sin(t * 0.3 + m.userData.phase) * 0.22;
+          m.position.y = m.userData.baseY + Math.sin(t * 0.55 + m.userData.phase) * 0.35;
+          const sc = 0.94 + breath * 0.1;
+          m.scale.setScalar(sc);
+        });
+
+        camera.position.set(0, 0.8, 0);
+        const lookX = Math.sin(yaw) * Math.cos(pitch) * 10;
+        const lookY = 0.8 + Math.sin(pitch) * 10;
+        const lookZ = -Math.cos(yaw) * Math.cos(pitch) * 10;
+        camera.lookAt(lookX, lookY, lookZ);
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+  </script>
+</body>
+</html>
