@@ -733,7 +733,7 @@
         <button class="pill-play" id="btnMasterPlay">&#9654; Play Stems</button>
         <div class="seg-toggle" role="group" aria-label="Mix Crossfade Mode">
           <button class="seg-btn active" id="modeStemsBtn">4-Stem Live</button>
-          <button class="seg-btn" id="modeBrainFmBtn">Brain.fm Master</button>
+          <button class="seg-btn" id="modeBrainFmBtn">Spatial Acoustic Master</button>
         </div>
         <div class="master-vol-pill">
           <span>Master</span>
@@ -1130,7 +1130,7 @@
         state.isPlaying = true;
         els.btnMasterPlay.innerHTML = '&#10074;&#10074; Pause Live';
         els.btnMasterPlay.classList.add('is-playing');
-        els.audioStatusLabel.textContent = state.mixMode === 'stems' ? 'Playing · 4 Stems' : 'Playing · Brain.fm';
+        els.audioStatusLabel.textContent = state.mixMode === 'stems' ? 'Playing · 4 Stems' : 'Playing · Spatial Acoustic';
         logCue('/tawaf/transport/play', `{mode:"${state.mixMode}"}`, 'Active');
       }
 
@@ -1147,7 +1147,7 @@
           state.brainFmGain.gain.linearRampToValueAtTime(mode === 'brainfm' ? 1.0 : 0.0, now + 1.2);
         }
         if (state.isPlaying) {
-          els.audioStatusLabel.textContent = mode === 'stems' ? 'Playing · 4 Stems' : 'Playing · Brain.fm';
+          els.audioStatusLabel.textContent = mode === 'stems' ? 'Playing · 4 Stems' : 'Playing · Spatial Acoustic';
         }
         dispatchScreenberryCue('/screenberry/audio/bus', { bus: mode });
       }
