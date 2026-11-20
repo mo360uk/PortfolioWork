@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selected Artist Archive (2014–2024) · Mo360 Immersive Studio</title>
+  <meta name="description" content="Ten year selected visual arts archive by Mohamed Hossam Elwakil: light installations, kinetic sculptures, Mamluk projection mapping, generative audio visual works, and 3D sculpture." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/mo360-unified-theme.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #08090c; color: #ffffff; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+    .ar-wrap { max-width: 1180px; margin: 0 auto; padding: 104px 24px 80px; }
+    .ar-kicker { display: inline-block; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: #F59E0B; color: #08090c; padding: 6px 12px; margin-bottom: 14px; }
+    .ar-h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 0.96; letter-spacing: 0.03em; margin: 0 0 14px; color: #ffffff; }
+    .ar-lead { color: #b4bac6; max-width: 780px; font-size: 1.04rem; line-height: 1.65; margin: 0 0 28px; }
+    .ar-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+    .ar-fbtn { background: #15181f; color: #ffffff; border: none; border-radius: 0; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 11px 16px; cursor: pointer; }
+    .ar-fbtn:hover { background: #222630; }
+    .ar-fbtn.active { background: #F59E0B; color: #08090c; }
+    .ar-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .ar-card { background: #15181f; display: flex; flex-direction: column; overflow: hidden; }
+    .ar-media { position: relative; aspect-ratio: 16 / 10; background: #08090c; overflow: hidden; }
+    .ar-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ar-year { position: absolute; top: 10px; right: 10px; background: #08090c; color: #F59E0B; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 8px; letter-spacing: 0.1em; }
+    .ar-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .ar-cat { font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; color: #F59E0B; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+    .ar-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.55rem; letter-spacing: 0.03em; line-height: 1.05; color: #ffffff; margin: 0 0 10px; }
+    .ar-desc { color: #b4bac6; font-size: 0.9rem; line-height: 1.55; margin: 0 0 14px; flex: 1; }
+    .ar-vid-btn { display: inline-flex; align-items: center; justify-content: center; background: #222630; color: #ffffff; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; padding: 10px 14px; border: none; border-radius: 0; align-self: flex-start; }
+    .ar-vid-btn:hover { background: #F59E0B; color: #08090c; }
+    .ar-footer { border-top: 1px solid #222630; padding: 28px 24px 48px; text-align: center; font-family: 'Space Mono', monospace; font-size: 11px; color: #b4bac6; letter-spacing: 0.08em; }
+    @media (max-width: 960px) { .ar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 600px) { .ar-wrap { padding: 88px 16px 56px; } .ar-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="mo360-nav" aria-label="Artist Archive Navigation">
+    <a href="../index.html" class="mo360-nav-brand">
+      <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Official Emblem" />
+      <span class="mo360-brand-stack">
+        <span class="mo360-brand-row">
+          <span class="mo360-brand-main">MO360</span>
+          <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+        </span>
+        <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+      </span>
+    </a>
+    <ul class="mo360-nav-links">
+      <li><a href="../index.html#latest-works">2026 Works</a></li>
+      <li><a href="../films/">Screening Room</a></li>
+      <li><a href="../archive/" class="active">Artist Archive</a></li>
+      <li><a href="../immersive-lab/">Media Lab</a></li>
+      <li><a href="../index.html#contact" class="cta">Contact</a></li>
+    </ul>
+    <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mo360-drawer" id="mo360Drawer">
+    <a href="../index.html">Mo360 Immersive Studio Home</a>
+    <a href="../archive/" class="active">Selected Artist Archive (2014–2024)</a>
+    <a href="../films/">Moving Image &amp; Screening Room</a>
+    <a href="../immersive-lab/">Mo360 Immersive Media Lab</a>
+    <a href="../tours/">Mo360 Immersive Tours</a>
+    <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Commission or Curate</a>
+  </div>
+
+  <main class="ar-wrap">
+    <div class="ar-kicker">MOHAMED HOSSAM ELWAKIL · 10 YEAR PRACTICE ARCHIVE</div>
+    <h1 class="ar-h1">SELECTED ARTIST ARCHIVE (2014 TO 2024)</h1>
+    <p class="ar-lead">
+      A curated retrospective of interactive light installations, kinetic sculptures, Mamluk Islamic architectural projection mapping, real time generative visuals, and 3D digital sculpture created prior to and alongside Mo360 Immersive Studio.
+    </p>
+
+    <div class="ar-filters" role="tablist" aria-label="Filter Archive by Medium">
+      <button type="button" class="ar-fbtn active" onclick="mo360FilterArchive('all', this)">All Works (17)</button>
+      <button type="button" class="ar-fbtn" onclick="mo360FilterArchive('light', this)">Light &amp; Kinetic (4)</button>
+      <button type="button" class="ar-fbtn" onclick="mo360FilterArchive('projection', this)">Projection &amp; Fulldome (4)</button>
+      <button type="button" class="ar-fbtn" onclick="mo360FilterArchive('generative', this)">Generative AV (4)</button>
+      <button type="button" class="ar-fbtn" onclick="mo360FilterArchive('sculpture', this)">3D Sculpture &amp; Photo (5)</button>
+    </div>
+
+    <div class="ar-grid" id="arGrid">
+      
+    <article class="ar-card" data-cat="projection">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_01_name_cairo_immersive_virtual_tour_ex.png" alt="Name: Cairo Immersive &amp; Virtual Tour Experience" loading="eager" />
+        <span class="ar-year">2024</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">PROJECTION & FULLDOME</div>
+        <h3 class="ar-title">Name: Cairo Immersive &amp; Virtual Tour Experience</h3>
+        <p class="ar-desc">Description: Contributed to the creation of an awe-inspiring 3D model of Cairo city and the Nile River with subsequent projection mapping in a dynamic dome setting, I brought a wealth of experience and passion for seamlessly blending technology, art, and cultural narratives. My Role: Utilize advanced 3D modeling...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="light">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_02_heritage_virtual_tour.png" alt="Heritage Virtual Tour" loading="eager" />
+        <span class="ar-year">2024</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">LIGHT & KINETIC INSTALLATION</div>
+        <h3 class="ar-title">Heritage Virtual Tour</h3>
+        <p class="ar-desc">bringing heritage sites to life through immersive digital experience Integrate interactive features into the virtual tour to enhance user engagement including clickable hotspots, historical photos, videos, and informative pop-ups that provide additional context and details.</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="light">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_03_alt.jpg" alt="ALT" loading="eager" />
+        <span class="ar-year">2024</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">LIGHT & KINETIC INSTALLATION</div>
+        <h3 class="ar-title">ALT</h3>
+        <p class="ar-desc">Name : GOALD (Generating Older Active Lives Digitally) Description : The GOALD project uses intergenerational groups to examine how to design and deliver digital resources to provide and engage older people in structured activity programs with the aim of improving their health and well-being. My role as a research...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="projection">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_04_the_death_of_the_nile.jpg" alt="The death of the Nile" loading="eager" />
+        <span class="ar-year">2022</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">PROJECTION & FULLDOME</div>
+        <h3 class="ar-title">The death of the Nile</h3>
+        <p class="ar-desc">Interactive immersive experience -2022 Masters research project, University of Plymouth,i-dat.</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="generative">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_05_untitled_03_2020.jpg" alt="Untitled 03 - 2020" loading="eager" />
+        <span class="ar-year">2020</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">GENERATIVE & REALTIME AV</div>
+        <h3 class="ar-title">Untitled 03 - 2020</h3>
+        <p class="ar-desc">Realtime Experimental Motion Graphics Generative Realtime Motion Graphics studying and simulating different random systems in nature.</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="generative">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_06_untitled_02_2020.jpg" alt="Untitled 02 - 2020" loading="eager" />
+        <span class="ar-year">2020</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">GENERATIVE & REALTIME AV</div>
+        <h3 class="ar-title">Untitled 02 - 2020</h3>
+        <p class="ar-desc">Realtime Audio Visual Experimentation Experimental Project Video Link : https://drive.google.com/open?id=1gLH6Dnqb8S0SinOtLDae80wvz_mUER7T</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="generative">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_07_untitled_01_2020.jpg" alt="Untitled 01 - 2020" loading="eager" />
+        <span class="ar-year">2020</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">GENERATIVE & REALTIME AV</div>
+        <h3 class="ar-title">Untitled 01 - 2020</h3>
+        <p class="ar-desc">Interactive Media Experimentation Experimental Project Video Link : https://drive.google.com/open?id=196lvBQeQIpUxBZsJ4FBLGusNxBYVz91a</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="sculpture">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_08_alter_kinetic_light_sculpture_work_i.jpg" alt="Alter - Kinetic Light Sculpture ( work in progress )" loading="eager" />
+        <span class="ar-year">2020</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">3D SCULPTURE & PHOTOGRAPHY</div>
+        <h3 class="ar-title">Alter - Kinetic Light Sculpture ( work in progress )</h3>
+        <p class="ar-desc">I am interested in exploring the relationship between Geographical and urban Landscapes and the mobility of People across theses landscapes using smart transportation . I wanted to draw a map for the different mobility activities for people navigating using smart transportation across cities . This map will be in...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="sculpture">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" alt="The WBS- Transforma" loading="eager" />
+        <span class="ar-year">2014</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">3D SCULPTURE & PHOTOGRAPHY</div>
+        <h3 class="ar-title">The WBS- Transforma</h3>
+        <p class="ar-desc">Digital Sculpture -2014 This Project was part of PHD Research at The University Cardiff - Wales UK to push the boundaries of the Museums Collections and Pieces . The WBS-Transforma was Exhibited at The Museum of Wales As an Art Work inspired from the Ancient Egyptian Figure “Ushabti &quot;It expresses the roll of the...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="sculpture">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_10_evolution_light_installation.jpg" alt="Evolution - Light Installation" loading="eager" />
+        <span class="ar-year">2018</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">3D SCULPTURE & PHOTOGRAPHY</div>
+        <h3 class="ar-title">Evolution - Light Installation</h3>
+        <p class="ar-desc">The ongoing relationship between humans and machines has evolved rapidly in recent years, and the human-machine bond in the future will be even stronger. Mohamed Hossam’s Robots Evolution light sculpture is a creative project that questions the rapid evolution of humans and machines through figures from light and...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="projection">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_11_revive_projection_mapping_project.jpg" alt="Revive - Projection Mapping Project" loading="eager" />
+        <span class="ar-year">2018</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">PROJECTION & FULLDOME</div>
+        <h3 class="ar-title">Revive - Projection Mapping Project</h3>
+        <p class="ar-desc">The Mamluk Sultanate was an era where the islamic architecture was very well developed . Specially during Sultans Qaitbey reign whose is best remembered as a great patron of architecture.Indigenous architectural style islamic patterns , techniques and styles that had developed in Mamluk Cairo reached its apex of...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="projection">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_12_immersion_2016.jpg" alt="Immersion - 2016" loading="eager" />
+        <span class="ar-year">2016</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">PROJECTION & FULLDOME</div>
+        <h3 class="ar-title">Immersion - 2016</h3>
+        <p class="ar-desc">Video Mapping Light InstallationGetting excess thinking and immersion into deep thoughts in mind is a negative state and a social phenomenon around us . Fractal is an endless self-similar pattern of objects across different scales that’s created by repeating a certain process over and over again in a certain loop...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="generative">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_13_machine_of_hope_2015_interactive_kin.jpg" alt="Machine of Hope - 2015 Interactive Kinetic Light Installation Empathy is the ability to understand and share someone else’s feelings . This human emotion that has been always an essential characteristic for human beings . Can machines with self learning - AI capabilities gain such human emotion and share it with us - Humans ? Can machines be empathetic ? The overflow of the feelings and emotions between humans and machines will change the perception of human / machine relationship … [ The Machine of Hope ] project is an Interactive kinetic light installation about machines and emotions and whether they can share feelings like humans do . How AI machine’s relationship with humans could look like while having emotions like empathy . I had a motive to create a piece of installation to express and questions this “ relationship and connection “ with machine and Ai as machines became part of our life . I wanted to create relationship string of light ! , this string is created when the audience enter the room , face the light circles and start to connect and experience the installation , creating an interactive Audio Visual Experience in Space ." loading="eager" />
+        <span class="ar-year">2015</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">GENERATIVE & REALTIME AV</div>
+        <h3 class="ar-title">Machine of Hope - 2015 Interactive Kinetic Light Installation Empathy is the ability to understand and share someone else’s feelings . This human emotion that has been always an essential characteristic for human beings . Can machines with self learning - AI capabilities gain such human emotion and share it with us - Humans ? Can machines be empathetic ? The overflow of the feelings and emotions between humans and machines will change the perception of human / machine relationship … [ The Machine of Hope ] project is an Interactive kinetic light installation about machines and emotions and whether they can share feelings like humans do . How AI machine’s relationship with humans could look like while having emotions like empathy . I had a motive to create a piece of installation to express and questions this “ relationship and connection “ with machine and Ai as machines became part of our life . I wanted to create relationship string of light ! , this string is created when the audience enter the room , face the light circles and start to connect and experience the installation , creating an interactive Audio Visual Experience in Space .</h3>
+        <p class="ar-desc">The installation consists of two circles with group of laser beams opposite to each other and rotating in different directions and accompanied with sound . The two opposite light circles while rotating creates this light strings and spectrum between both circles as a virtual connection and conversation between...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="light">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_14_free_flow_2016.jpg" alt="Free Flow - 2016" loading="eager" />
+        <span class="ar-year">2016</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">LIGHT & KINETIC INSTALLATION</div>
+        <h3 class="ar-title">Free Flow - 2016</h3>
+        <p class="ar-desc">Interactive Light Installation - Goethe Grand Opening The” Free Flow ” project is an interactive light installation which reflects openness , accessibility and connections of the Goethe Institute to everyone .The installation is a vertical light structure fixed on a stage and extending to the ceiling . The vertical...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="sculpture">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_15_shift_2016.jpg" alt="Shift - 2016" loading="eager" />
+        <span class="ar-year">2016</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">3D SCULPTURE & PHOTOGRAPHY</div>
+        <h3 class="ar-title">Shift - 2016</h3>
+        <p class="ar-desc">Light Installation Change is always what open up new frontiers for us and makes us more accessible , opened and connected to new cultures , communities and expand our horizons in the future . The “ Shift ”project expresses the concept of change and transformation from one place to another .How change open up the...</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="light">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_16_impulse_2015.jpg" alt="Impulse - 2015" loading="eager" />
+        <span class="ar-year">2015</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">LIGHT & KINETIC INSTALLATION</div>
+        <h3 class="ar-title">Impulse - 2015</h3>
+        <p class="ar-desc">Interactive Light Installation “ Connection” become an essential topic in our daily life . We connect and network with people around us every day everywhere face to face and online . When we connect we connect as minds and thoughts . We connect in different ways as individuals and in different networks and groups ....</p>
+        
+      </div>
+    </article>
+    <article class="ar-card" data-cat="sculpture">
+      <div class="ar-media">
+        <img src="../assets/artist_archive/archive_17_landscape_photography_2016.png" alt="Landscape Photography - 2016" loading="eager" />
+        <span class="ar-year">2016</span>
+      </div>
+      <div class="ar-body">
+        <div class="ar-cat">3D SCULPTURE & PHOTOGRAPHY</div>
+        <h3 class="ar-title">Landscape Photography - 2016</h3>
+        <p class="ar-desc">A Collection of panoramic landscape photography</p>
+        
+      </div>
+    </article>
+    </div>
+  </main>
+
+  <footer class="ar-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED HOSSAM ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM · INFO@MO360IMMERSIVESTUDIO.CO.UK
+  </footer>
+
+  <script>
+    function mo360FilterArchive(cat, btn) {
+      document.querySelectorAll('.ar-fbtn').forEach(function(b){ b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.ar-card').forEach(function(c){
+        c.style.display = (cat === 'all' || c.getAttribute('data-cat') === cat) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
