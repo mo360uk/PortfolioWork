@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<script>
+(function() {
+  var seedNodes = [
+    {
+      id: 'node-001',
+      floorplan_id: 'floorplan-ground',
+      x: 0.28,
+      y: 0.35,
+      panorama_url: './assets/sample_node_1.jpg',
+      created_at: new Date().toISOString(),
+      snags: [
+        {
+          id: 'snag-001',
+          discipline: 'HEALTH_AND_SAFETY',
+          title: 'Exposed Floor Edge Without Perimeter Barrier',
+          description: 'Slab edge on north west elevation lacks double guardrail and 150mm toe board.',
+          severity: 'CRITICAL',
+          status: 'OPEN',
+          yaw: -1.25,
+          pitch: -0.35,
+          remediation: 'Erect certified modular edge protection with mesh infill.'
+        },
+        {
+          id: 'snag-002',
+          discipline: 'MEP',
+          title: 'Unenclosed Temporary Power Junction',
+          description: 'Electrical cabling protruding from conduit box without IP65 faceplate.',
+          severity: 'HIGH',
+          status: 'OPEN',
+          yaw: 0.45,
+          pitch: 0.20,
+          remediation: 'Isolate circuit, fit IP65 enclosure, and verify continuity.'
+        },
+        {
+          id: 'snag-003',
+          discipline: 'STRUCTURAL',
+          title: 'Aggregate Compaction Void at Column Base',
+          description: 'Visible surface honeycombing approx 300x150mm with partially exposed reinforcement.',
+          severity: 'HIGH',
+          status: 'OPEN',
+          yaw: -2.30,
+          pitch: -0.55,
+          remediation: 'Perform non destructive test and patch with structural polymer grout.'
+        }
+      ]
+    },
+    {
+      id: 'node-002',
+      floorplan_id: 'floorplan-ground',
+      x: 0.62,
+      y: 0.25,
+      panorama_url: './assets/sample_node_2.jpg',
+      created_at: new Date().toISOString(),
+      snags: [
+        {
+          id: 'snag-004',
+          discipline: 'ARCHITECTURAL',
+          title: 'Cable Tray Breach Through Fire Partition',
+          description: 'Data cable bundle passes through partition without intumescent firestop seal.',
+          severity: 'MEDIUM',
+          status: 'OPEN',
+          yaw: 1.85,
+          pitch: 0.50,
+          remediation: 'Install certified intumescent firestop pillows and acoustic sealant.'
+        },
+        {
+          id: 'snag-005',
+          discipline: 'ARCHITECTURAL',
+          title: 'Ceiling Tile Deflection & Moisture Mark',
+          description: 'Minor water staining adjacent to ductwork access hatch.',
+          severity: 'LOW',
+          status: 'OPEN',
+          yaw: 2.95,
+          pitch: 0.75,
+          remediation: 'Inspect overhead condensate tray and replace affected ceiling tile.'
+        }
+      ]
+    }
+  ];
+
+  var origFetch = window.fetch.bind(window);
+  window.fetch = function(input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (url.indexOf('/api/health') !== -1) {
+      var snagTotal = seedNodes.reduce(function(a, n) { return a + (n.snags ? n.snags.length : 0); }, 0);
+      return Promise.resolve(new Response(JSON.stringify({
+        status: 'healthy',
+        camera_connected: false,
+        ai_mode: 'interactive demo',
+        active_nodes_count: seedNodes.length,
+        active_snags_count: snagTotal
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    }
+    if (url.indexOf('/api/nodes/capture') !== -1 && init && init.method === 'POST') {
+      var idNum = seedNodes.length + 1;
+      var newNode = {
+        id: 'node-00' + idNum,
+        floorplan_id: 'floorplan-ground',
+        x: 0.48,
+        y: 0.58,
+        panorama_url: './assets/sample_node_3.jpg',
+        created_at: new Date().toISOString(),
+        snags: [{
+          id: 'snag-00' + (idNum + 4),
+          discipline: 'ARCHITECTURAL',
+          title: 'Simulated AI Surface Tolerance Check',
+          description: 'Static R&D showcase node created locally in browser session.',
+          severity: 'LOW',
+          status: 'OPEN',
+          yaw: 0.6,
+          pitch: 0.1,
+          remediation: 'Connect FastAPI + Gemini backend for live Ricoh Theta OSC capture.'
+        }]
+      };
+      seedNodes.push(newNode);
+      return Promise.resolve(new Response(JSON.stringify(newNode), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    }
+    if (url.indexOf('/api/nodes') !== -1) {
+      return Promise.resolve(new Response(JSON.stringify(seedNodes), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    }
+    return origFetch(input, init);
+  };
+
+  document.addEventListener('click', function(ev) {
+    var btn = ev.target && ev.target.closest ? ev.target.closest('#btn-export-csv') : null;
+    if (btn) {
+      ev.stopImmediatePropagation();
+      var rows = ['id,node_id,discipline,title,severity,status,yaw,pitch,remediation,description'];
+      seedNodes.forEach(function(n) {
+        (n.snags || []).forEach(function(s) {
+          rows.push([
+            s.id, n.id, s.discipline,
+            '"' + String(s.title || '').replace(/"/g, '""') + '"',
+            s.severity, s.status || 'OPEN', s.yaw, s.pitch,
+            '"' + String(s.remediation || '').replace(/"/g, '""') + '"',
+            '"' + String(s.description || '').replace(/"/g, '""') + '"'
+          ].join(','));
+        });
+      });
+      var blob = new Blob([rows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'opensite360_demo_snags.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }, true);
+})();
+</script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenSite 360 | Autonomous Construction Survey & 360° Inspection</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/sample_floorplan.svg" />
+    <script type="module" crossorigin src="./assets/index-CXWOZsQt.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BrMhdhbW.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Top Application Navigation & Telemetry Bar -->
+      <header class="app-header">
+        <div class="brand-section">
+          <a href="../index.html#rnd-projects" style="color:#f59e0b;text-decoration:none;font-size:0.78rem;font-weight:700;padding:4px 10px;border:1px solid rgba(245,158,11,0.45);border-radius:4px;white-space:nowrap;">&larr; Mo360 Lab</a>
+          <span class="brand-logo-icon">🌐</span>
+          <h1 class="brand-title">OpenSite <span>360</span></h1>
+          <span class="brand-version-badge">M1.2</span>
+        </div>
+
+        <div class="header-status-cluster">
+          <!-- Backend API Status -->
+          <div id="status-backend-pill" class="status-pill status-online">
+            <span class="indicator-dot"></span>
+            <span id="backend-status-text">Backend Online</span>
+          </div>
+
+          <!-- Ricoh Theta Hardware Status -->
+          <div id="status-camera-pill" class="status-pill">
+            <span class="indicator-dot"></span>
+            <span id="camera-status-text">Theta Offline (Fallback Active)</span>
+          </div>
+
+          <!-- Telemetry Counters -->
+          <div class="status-counter-chip">
+            <span class="chip-label">Nodes:</span>
+            <span id="counter-nodes">0</span>
+          </div>
+
+          <div class="status-counter-chip">
+            <span class="chip-label">Snags:</span>
+            <span id="counter-snags">0</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Workspace -->
+      <main class="main-layout">
+        <!-- Split View: 2D Blueprint vs 360° Sphere -->
+        <div class="split-view-container">
+          <!-- Left: 2D Floorplan Canvas -->
+          <div class="panel-container">
+            <div class="panel-header-badge">
+              <span class="badge-icon">📐</span>
+              <span>Level 01 CAD Blueprint</span>
+            </div>
+            <div id="floorplan-map"></div>
+          </div>
+
+          <!-- Right: 360° Matterport-Style Viewer -->
+          <div class="panel-container">
+            <div class="panel-header-badge">
+              <span class="badge-icon">🌐</span>
+              <span>360° Spherical Walkthrough</span>
+            </div>
+            <div id="sphere-viewer"></div>
+          </div>
+        </div>
+
+        <!-- Bottom: Snag Register Table -->
+        <section id="panel-snag-register" class="snag-panel-wrapper"></section>
+      </main>
+    </div>
+
+    <!-- Application Entry Point -->
+  </body>
+</html>

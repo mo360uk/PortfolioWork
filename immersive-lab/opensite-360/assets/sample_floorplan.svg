@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <!-- Grid Pattern -->
+    <pattern id="gridMinor" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1E293B" stroke-width="0.75" />
+    </pattern>
+    <pattern id="gridMajor" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="url(#gridMinor)" />
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#334155" stroke-width="1.5" />
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#0B132B" />
+  <rect width="1200" height="800" fill="url(#gridMajor)" />
+
+  <!-- Outer Structural Border -->
+  <rect x="80" y="60" width="1040" height="680" fill="none" stroke="#00B4D8" stroke-width="6" />
+
+  <!-- Structural Columns (Footings) -->
+  <g fill="#0077B6" stroke="#90E0EF" stroke-width="2">
+    <rect x="70" y="50" width="20" height="20" />
+    <rect x="330" y="50" width="20" height="20" />
+    <rect x="590" y="50" width="20" height="20" />
+    <rect x="850" y="50" width="20" height="20" />
+    <rect x="1110" y="50" width="20" height="20" />
+
+    <rect x="70" y="390" width="20" height="20" />
+    <rect x="330" y="390" width="20" height="20" />
+    <rect x="590" y="390" width="20" height="20" />
+    <rect x="850" y="390" width="20" height="20" />
+    <rect x="1110" y="390" width="20" height="20" />
+
+    <rect x="70" y="730" width="20" height="20" />
+    <rect x="330" y="730" width="20" height="20" />
+    <rect x="590" y="730" width="20" height="20" />
+    <rect x="850" y="730" width="20" height="20" />
+    <rect x="1110" y="730" width="20" height="20" />
+  </g>
+
+  <!-- Main Internal Partition Walls -->
+  <!-- Zone 1 / 2 Divider -->
+  <line x1="600" y1="60" x2="600" y2="400" stroke="#00B4D8" stroke-width="4" />
+  <!-- Zone Horizontal Corridor Wall -->
+  <line x1="80" y1="400" x2="1120" y2="400" stroke="#00B4D8" stroke-width="4" />
+  <!-- Zone 3 / 4 Divider -->
+  <line x1="500" y1="400" x2="500" y2="740" stroke="#00B4D8" stroke-width="4" />
+
+  <!-- Secondary Interior Partitions -->
+  <line x1="280" y1="60" x2="280" y2="250" stroke="#48CAE4" stroke-width="2.5" stroke-dasharray="8,4" />
+  <line x1="880" y1="60" x2="880" y2="280" stroke="#48CAE4" stroke-width="2.5" />
+  <line x1="880" y1="280" x2="1120" y2="280" stroke="#48CAE4" stroke-width="2.5" />
+
+  <!-- Door Swings (Arc & Leaf) -->
+  <g stroke="#90E0EF" stroke-width="1.5" fill="none">
+    <!-- Atrium Main Entrance -->
+    <path d="M 540 400 A 60 60 0 0 1 600 460" stroke-dasharray="3,3" />
+    <line x1="540" y1="400" x2="600" y2="400" stroke="#FFFFFF" stroke-width="2" />
+
+    <!-- Plant Room Door -->
+    <path d="M 660 400 A 60 60 0 0 0 600 460" stroke-dasharray="3,3" />
+    <line x1="660" y1="400" x2="600" y2="400" stroke="#FFFFFF" stroke-width="2" />
+  </g>
+
+  <!-- Room Zone Labels & Coordinates -->
+  <g font-family="monospace, 'Courier New', sans-serif">
+    <!-- Zone 01 -->
+    <text x="330" y="240" fill="#CAF0F8" font-size="20" font-weight="bold" text-anchor="middle">ZONE 01: MAIN ATRIUM</text>
+    <text x="330" y="265" fill="#90E0EF" font-size="13" text-anchor="middle">CAPTURE NODE 1 (X: 0.28, Y: 0.35)</text>
+    <text x="330" y="285" fill="#48CAE4" font-size="11" text-anchor="middle">Finish Floor Level: +0.000 FFL</text>
+
+    <!-- Zone 02 -->
+    <text x="850" y="190" fill="#CAF0F8" font-size="20" font-weight="bold" text-anchor="middle">ZONE 02: MEP PLANT ROOM</text>
+    <text x="850" y="215" fill="#90E0EF" font-size="13" text-anchor="middle">CAPTURE NODE 2 (X: 0.62, Y: 0.25)</text>
+    <text x="850" y="235" fill="#48CAE4" font-size="11" text-anchor="middle">HVAC Chillers &amp; Distribution</text>
+
+    <!-- Zone 03 -->
+    <text x="810" y="560" fill="#CAF0F8" font-size="20" font-weight="bold" text-anchor="middle">ZONE 03: OPEN OFFICE CORE</text>
+    <text x="810" y="585" fill="#90E0EF" font-size="13" text-anchor="middle">PLANNED NODE 3 (X: 0.75, Y: 0.65)</text>
+
+    <!-- Zone 04 -->
+    <text x="290" y="560" fill="#CAF0F8" font-size="20" font-weight="bold" text-anchor="middle">ZONE 04: EGRESS STAIRWELL</text>
+    <text x="290" y="585" fill="#90E0EF" font-size="13" text-anchor="middle">FIRE COMPARTMENT B (X: 0.26, Y: 0.70)</text>
+  </g>
+
+  <!-- Architectural Title Block (Bottom Right) -->
+  <g transform="translate(860, 640)">
+    <rect width="250" height="90" fill="#0A1128" stroke="#00B4D8" stroke-width="2" />
+    <text x="15" y="25" fill="#90E0EF" font-size="10" font-family="sans-serif" font-weight="bold">PROJECT: OPENSITE 360 PILOT</text>
+    <text x="15" y="45" fill="#FFFFFF" font-size="13" font-family="sans-serif" font-weight="bold">LEVEL 01 ARCHITECTURAL PLAN</text>
+    <text x="15" y="65" fill="#48CAE4" font-size="10" font-family="sans-serif">SCALE 1:100 | REV: 1.1 | BCF COMPLIANT</text>
+    <text x="15" y="80" fill="#64748B" font-size="9" font-family="sans-serif">AUTONOMOUS 360° AI SURVEY</text>
+  </g>
+
+  <!-- Compass Rose (Top Left) -->
+  <g transform="translate(130, 110)">
+    <circle cx="0" cy="0" r="28" fill="#0B132B" stroke="#00B4D8" stroke-width="1.5" />
+    <polygon points="0,-24 7,-5 0,-8 -7,-5" fill="#EF4444" />
+    <polygon points="0,24 7,5 0,8 -7,5" fill="#64748B" />
+    <text x="0" y="-28" fill="#EF4444" font-size="12" font-family="sans-serif" font-weight="bold" text-anchor="middle">N</text>
+  </g>
+</svg>

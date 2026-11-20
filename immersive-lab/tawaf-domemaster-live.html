@@ -580,27 +580,174 @@
     font-size: 0.78rem;
     color: var(--text);
   }
+  /* Strict 3-Colour Architectural Alignment (#08090c + #15181f/#222630 + #F59E0B) */
+  :root {
+    --bg: #08090c;
+    --panel: #15181f;
+    --panel-2: #222630;
+    --border: rgba(245, 158, 11, 0.25);
+    --ochre: #F59E0B;
+    --gold: #F59E0B;
+    --text: #ffffff;
+    --muted: #b4bac6;
+    --accent: #F59E0B;
+  }
+  html, body { background: #08090c !important; background-image: none !important; }
+  .tawaf-subbar {
+    max-width: 1520px;
+    margin: 0 auto;
+    padding: 18px 24px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .tawaf-title-wrap h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: #ffffff;
+  }
+  .tawaf-title-wrap p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #F59E0B;
+    margin-top: 6px;
+  }
+  .tawaf-proto-notice {
+    max-width: 1520px;
+    margin: 4px auto 10px;
+    padding: 0 24px;
+  }
+  .tawaf-proto-inner {
+    background: #15181f;
+    border-left: 4px solid #F59E0B;
+    border-radius: 2px;
+    padding: 14px 18px;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: #d1d5db;
+  }
+  .tawaf-proto-inner strong { color: #F59E0B; }
+  .stage-card, .module, .reel-card, .media-card, .audio-card, .still-card,
+  .ctrl-btn, .chakra-btn, .stat-box, .dome-frame, .reel-video, .media-card video,
+  canvas#scopeCanvas, .osc-box {
+    background: #15181f !important;
+    border: none !important;
+    border-radius: 2px !important;
+    box-shadow: none !important;
+  }
+  .ctrl-btn, .chakra-btn, .stat-box { background: #222630 !important; }
+  .ctrl-btn.active, .chakra-btn.active {
+    background: #F59E0B !important;
+    color: #08090c !important;
+  }
+  .ctrl-btn.active strong, .ctrl-btn.active span,
+  .chakra-btn.active .c-name, .chakra-btn.active .c-hz {
+    color: #08090c !important;
+  }
+  .pill-link, .btn-top, .spec-badge {
+    border: none !important;
+    border-radius: 2px !important;
+    box-shadow: none !important;
+    background: #222630 !important;
+    color: #ffffff !important;
+    font-family: 'Space Mono', monospace !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+  }
+  .pill-link:hover, .btn-top:hover {
+    background: #F59E0B !important;
+    color: #08090c !important;
+  }
+  .btn-export, .btn-audio.active, .cinema-hdr > a.pill-link,
+  .reel-meta .media-actions a.btn-export {
+    background: #F59E0B !important;
+    color: #08090c !important;
+    font-weight: 800 !important;
+  }
+  .spec-badge {
+    color: #F59E0B !important;
+    background: #222630 !important;
+  }
+  .studio-about-btn, .media-actions .pill-link {
+    background: #222630 !important;
+    color: #ffffff !important;
+  }
+  .media-actions .pill-link:first-child {
+    background: #F59E0B !important;
+    color: #08090c !important;
+  }
+  @media (max-width: 700px) {
+    main { grid-template-columns: 1fr !important; padding: 14px 16px 28px !important; }
+    .cinema-wrap { padding: 8px 16px 48px !important; }
+    .tawaf-subbar { padding: 16px 16px 8px !important; }
+    .tawaf-proto-notice { padding: 0 16px !important; }
+    .reel-card { grid-template-columns: 1fr !important; padding: 14px !important; }
+    .slider-row { grid-template-columns: 1fr !important; gap: 4px !important; }
+    .slider-row output { text-align: left !important; }
+  }
 </style>
+<link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col" />
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="brand-mark">180°</div>
-    <div>
-      <h1>TAWAF MASTER DOME LIVE SYNTHESIZER</h1>
-      <p>1:1 Equidistant Fulldome · Moroccan Zellige · Azerbaijani Shabaka · Brain.fm Neural AM</p>
-    </div>
+<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
+  <a href="../index.html" class="mo360-nav-brand">
+    <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Immersive Studio Logo">
+    <span class="mo360-brand-stack">
+      <span class="mo360-brand-row">
+        <span class="mo360-brand-main">MO360</span>
+        <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+      </span>
+      <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+    </span>
+  </a>
+  <ul class="mo360-nav-links">
+    <li><a href="../index.html#latest-works">Projects</a></li>
+    <li><a href="../immersive-lab/" class="active">Media Lab</a></li>
+    <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
+    <li><a href="../tours/">Immersive Tours</a></li>
+    <li><a href="../surveys/">Surveys</a></li>
+    <li><a href="../index.html#contact" class="cta">Contact</a></li>
+  </ul>
+  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mo360-drawer" id="mo360Drawer">
+  <a href="../index.html">Mo360 Immersive Studio Home</a>
+  <a href="../projects/tawaf-sanctuary/">TAWAF Project Dossier</a>
+  <a href="../immersive-lab/" class="active">Mo360 Immersive Media Lab</a>
+  <a href="../creative-coding-plymouth/">Creative Coding Plymouth</a>
+  <a href="../tours/">Mo360 Immersive Tours</a>
+  <a href="../surveys/">Drone &amp; LiDAR Surveys</a>
+  <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Contact Studio</a>
+</div>
+
+<div class="tawaf-subbar">
+  <div class="tawaf-title-wrap">
+    <h1>TAWAF MASTER DOME LIVE SYNTHESIZER</h1>
+    <p>Ongoing Art Research Simulation Prototype · Preparing Live Audiovisual Performance for Real Ideas Market Hall 15m Dome</p>
   </div>
   <nav class="nav-actions">
-    <a class="pill-link" href="./index.html">Immersive Lab</a>
-    <a class="pill-link" href="../creative-coding-plymouth/index.html">Creative Coding Plymouth</a>
-    <a class="pill-link" href="#residency-cinema">Residency Reel &amp; Renders</a>
+    <a class="pill-link" href="../projects/tawaf-sanctuary/">TAWAF Process &amp; Dossier</a>
+    <a class="pill-link" href="#residency-cinema">Residency Reel &amp; Videos</a>
     <button id="audioToggleBtn" class="btn-top btn-audio">Start Chamber Audio</button>
     <button id="bowlStrikeBtn" class="btn-top">Strike Bowl</button>
     <button id="export2kBtn" class="btn-top btn-export">Export 2048px PNG</button>
     <button id="export4kBtn" class="btn-top btn-export">Export 4096px PNG</button>
   </nav>
-</header>
+</div>
+
+<div class="tawaf-proto-notice">
+  <div class="tawaf-proto-inner">
+    <strong>ONGOING ART RESEARCH &amp; SIMULATION PROTOTYPE:</strong> This interactive synthesiser and the rendered cinema cuts below are working R&amp;D simulations built to demonstrate concept, sacred geometry pacing, and spatial audio direction ahead of developing the full live audiovisual performance for TAWAF inside the <strong>Real Ideas Market Hall 15m Dome</strong>.
+  </div>
+</div>
 
 <main>
   <!-- Left Column: Standalone 1:1 Square-with-Circle Master Dome Canvas -->

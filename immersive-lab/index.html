@@ -954,6 +954,44 @@
 <!-- MO360_UNIFIED_THEME_HEAD -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col">
+<style>
+/* Strict 3-Colour Solid Architectural Alignment (#08090c + #15181f/#222630 + #F59E0B) */
+.course-showcase-card, .benchmark-card, .bridge-panel, .hero-interactive-card, .board-card {
+  background: #15181f !important;
+  border: none !important;
+  border-left: 4px solid #F59E0B !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+.mod-ops-card, .mod-steps-card, .narrator-studio-box, .node-visualizer-box, .welcome-audio-card, .module-accordion {
+  background: #0d1016 !important;
+  border: none !important;
+  border-radius: 2px !important;
+}
+.course-index-badge, .btn-download-kit, .preset-cmd-btn.active {
+  background: #F59E0B !important;
+  color: #08090c !important;
+  border: none !important;
+  border-radius: 2px !important;
+  font-weight: 800 !important;
+}
+.course-tailored-badge, .course-level-badge, .course-jump-pill, .stack-chip, .partner-chip,
+.btn-play-narrator, .btn-secondary, .preset-cmd-btn, .eyebrow-badge {
+  background: #222630 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 2px !important;
+}
+.eyebrow-badge, .stack-chip, .course-jump-pill span, .preset-cmd-btn span {
+  color: #F59E0B !important;
+}
+.preset-cmd-btn.active span { color: #08090c !important; }
+.course-jump-pill:hover, .btn-play-narrator:hover, .btn-secondary:hover, .preset-cmd-btn:hover {
+  background: #F59E0B !important;
+  color: #08090c !important;
+}
+.course-jump-pill:hover span, .preset-cmd-btn:hover span { color: #08090c !important; }
+</style>
 <!-- /MO360_UNIFIED_THEME_HEAD -->
 </head>
 <body>
@@ -1013,7 +1051,8 @@
           <span class="partner-chip">⚡ Live Interactive Media &amp; Sensors</span>
         </div>
         <div class="hero-cta-row">
-          <a href="#course_01" class="btn-primary">▶ Explore All 5 Beginner Courses</a>
+          <a href="#rnd-projects" class="btn-primary">⚡ Explore R&amp;D Software Projects (2 Tools)</a>
+          <a href="#course_01" class="btn-secondary" style="background:#222630;">▶ Explore All 5 Beginner Courses</a>
           <a href="./tawaf-domemaster-live.html" class="btn-secondary" style="border-color:#24A186;background:#222630;">◎ Launch TAWAF Domemaster Live Synth</a>
           <a href="#live-bridge" class="btn-secondary">⚡ Antigravity Live Bridge (TD · UE 5.8 · 4V)</a>
         </div>
@@ -1040,7 +1079,7 @@
     </div>
 
     <div class="course-jump-bar">
-      <strong style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#D4882A;">JUMP TO COURSE:</strong>
+      <strong style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#D4882A;">JUMP TO R&amp;D OR COURSE:</strong><a href="#rnd-opensite360" class="course-jump-pill" style="border-color:#24A186;"><span>R&amp;D 01</span> OpenSite 360 Virtual Tours</a><a href="#rnd-drone-studio" class="course-jump-pill" style="border-color:#24A186;"><span>R&amp;D 02</span> DJI SDK Drone Photogrammetry</a>
       <a href="#course_01" class="course-jump-pill"><span>COURSE 01</span> Fulldome 360° &amp; 180° Fisheye Cinema</a><a href="#course_02" class="course-jump-pill"><span>COURSE 02</span> Architectural Projection Mapping, 3D Scanning &amp; LiDAR Workflows</a><a href="#course_03" class="course-jump-pill"><span>COURSE 03</span> Generative 3D Sacred Geometry, Realtime Shaders &amp; vvvv gamma (4V) Patching</a><a href="#course_04" class="course-jump-pill"><span>COURSE 04</span> Interactive Sensors, Body Tracking &amp; Interactive Media Performance</a><a href="#course_05" class="course-jump-pill"><span>COURSE 05</span> Sonic Arts, 3D Spatial Audio &amp; Neuro Sensory Audiovisual Performance</a>
     </div>
   </section>
@@ -1060,6 +1099,94 @@
       </div>
     </div>
   </div>
+
+  
+  <!-- MO360 IMMERSIVE MEDIA LAB — R&D SOFTWARE PROJECTS -->
+  <section class="section-header" id="rnd-projects">
+    <div class="eyebrow">CUSTOM SPATIAL TOOLS &amp; PRACTICE LED ENGINEERING · R&amp;D DOSSIER</div>
+    <h2>MO360 IMMERSIVE MEDIA LAB · R&amp;D PROJECTS</h2>
+    <p>Original software instruments researched and prototyped inside Mo360 Immersive Media Lab in Plymouth, Devon: 360° virtual tour spatial auditing and DJI SDK autonomous photogrammetry flight planning.</p>
+  </section>
+  
+    <article class="course-showcase-card" id="rnd-opensite360" style="--course-accent: #D4882A;">
+      <div class="course-top-banner">
+        <div class="course-meta-row">
+          <span class="course-index-badge">R&D PROJECT 01</span>
+          <span class="course-tailored-badge">SPATIAL AUDIT · MO360 IMMERSIVE MEDIA LAB</span>
+          <span class="course-level-badge">R&D Prototype · R&amp;D BRIEF &amp; INTERACTIVE DEMO</span>
+        </div>
+        <div class="course-title-row">
+          <div>
+            <h3>OpenSite 360</h3>
+            <p class="course-subtitle">OpenSite 360 was developed by Mo360 Immersive Studio as an alternative to Matterport and PlanRadar for commercial construction quality surveying, heritage documentation, and 360 virtual tours. It addresses the need for an integrated spatial auditing workflow that unites blueprint mapping, immersive inspection, camera control, and defect management in one platform.</p>
+          </div>
+          <div class="course-cta-group">
+            <a href="./opensite-360/" class="btn-download-kit">▶ Launch OpenSite 360 Demo ↗</a>
+            
+          </div>
+        </div>
+        <div class="stack-chips-row"><span class="stack-chip">FastAPI and Vite</span><span class="stack-chip">Leaflet Blueprint Viewer</span><span class="stack-chip">Photo Sphere Viewer v5</span><span class="stack-chip">Gemini AI Inspection</span></div>
+      </div>
+
+      <div class="mod-grid" style="margin-bottom:0;">
+        <div class="mod-ops-card">
+          <h5>CORE ARCHITECTURE &amp; DELIVERABLES</h5>
+          <ul class="ops-list">
+            <li><code>Leaflet 2D blueprint viewer with normalised coordinate pin mapping</code></li><li><code>360 equirectangular inspection with Photo Sphere Viewer v5 and Ricoh Theta OSC v2.1 camera control</code></li><li><code>Gemini AI defect inspection pipeline with interactive snag register and CSV export</code></li>
+          </ul>
+        </div>
+        <div class="mod-steps-card">
+          <h5>PROJECT BRIEF: CONCEPT &amp; RESEARCH</h5>
+          <ol class="steps-list">
+            <li><span class="step-idx">CONCEPT</span><span>The project delivers a unified environment for capturing, inspecting, and documenting spatial conditions through coordinated 2D plans and immersive 360 imagery.</span></li>
+            <li><span class="step-idx">RESEARCH</span><span>The technical architecture combines a FastAPI backend and a Vite modular frontend with a Leaflet 2D blueprint viewer using normalised coordinate pin mapping, Photo Sphere Viewer v5 with MarkersPlugin for 360 equirectangular inspection, Ricoh Theta OSC v2.1 camera control, a Gemini AI defect inspection pipeline, and an interactive snag register with CSV export.</span></li>
+          </ol>
+          <div class="mod-checkpoint" style="margin-top:1rem;">
+            <strong>✓ Status:</strong> Interactive browser prototype live inside Mo360 Immersive Media Lab for demonstration and evaluation.
+          </div>
+        </div>
+      </div>
+    </article>
+  
+    <article class="course-showcase-card" id="rnd-drone-studio" style="--course-accent: #D4882A;">
+      <div class="course-top-banner">
+        <div class="course-meta-row">
+          <span class="course-index-badge">R&D PROJECT 02</span>
+          <span class="course-tailored-badge">FLIGHT AUTOMATION · MO360 IMMERSIVE MEDIA LAB</span>
+          <span class="course-level-badge">R&D Prototype · R&amp;D BRIEF &amp; INTERACTIVE DEMO</span>
+        </div>
+        <div class="course-title-row">
+          <div>
+            <h3>Mo360 Autonomous Drone Mission Studio</h3>
+            <p class="course-subtitle">Mo360 Autonomous Drone Mission Studio was built to streamline mission planning and photogrammetry flight automation for DJI Mini 2 and DJI Mobile SDK (MSDK v4) workflows across Plymouth and Devon. It addresses the need for accurate, compliant, and repeatable aerial survey preparation within an accessible browser based planning environment.</p>
+          </div>
+          <div class="course-cta-group">
+            <a href="./drone-mission-studio.html" class="btn-download-kit">▶ Launch Drone Mission Studio ↗</a>
+            <a href="../surveys/" class="btn-play-narrator" style="text-decoration:none;display:inline-flex;align-items:center;">📐 Commercial Drone Surveys</a>
+          </div>
+        </div>
+        <div class="stack-chips-row"><span class="stack-chip">Leaflet Satellite Planner</span><span class="stack-chip">DJI FC7303 Calculator</span><span class="stack-chip">UK CAA Airspace Guard</span><span class="stack-chip">Litchi and Rainbow Export</span></div>
+      </div>
+
+      <div class="mod-grid" style="margin-bottom:0;">
+        <div class="mod-ops-card">
+          <h5>CORE ARCHITECTURE &amp; DELIVERABLES</h5>
+          <ul class="ops-list">
+            <li><code>High resolution satellite mission planner with Plymouth site presets and adjustable survey bounding boxes</code></li><li><code>Boustrophedon flight grid generation with real time camera, duration, interval, and battery calculations</code></li><li><code>Airspace aware mission preparation below 120 metres AGL with direct Litchi CSV and Rainbow KML waypoint export</code></li>
+          </ul>
+        </div>
+        <div class="mod-steps-card">
+          <h5>PROJECT BRIEF: CONCEPT &amp; RESEARCH</h5>
+          <ol class="steps-list">
+            <li><span class="step-idx">CONCEPT</span><span>The project provides a browser based environment for defining survey areas, generating optimised flight paths, and exporting mission ready waypoint files for aerial data capture.</span></li>
+            <li><span class="step-idx">RESEARCH</span><span>The technical architecture combines a Leaflet high resolution satellite planner with Plymouth heritage and roofing site presets, adjustable survey bounding boxes, a boustrophedon lawnmower flight grid generator, a real time DJI FC7303 camera model calculator for ground sampling distance, flight duration, photo interval, and battery estimates, UK CAA airspace guarding below 120 metres AGL, and direct export to Litchi CSV and Rainbow KML formats.</span></li>
+          </ol>
+          <div class="mod-checkpoint" style="margin-top:1rem;">
+            <strong>✓ Status:</strong> Interactive browser prototype live inside Mo360 Immersive Media Lab for demonstration and evaluation.
+          </div>
+        </div>
+      </div>
+    </article>
 
   <!-- TOP 5 BEGINNER COURSES SHOWCASE -->
   <section class="section-header" id="courses">
