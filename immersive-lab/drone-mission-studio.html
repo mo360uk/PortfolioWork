@@ -332,6 +332,100 @@
       word-break: break-word;
     }
 
+    .search-row {
+      display: flex;
+      gap: 0.45rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .coord-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.45rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .studio-input {
+      width: 100%;
+      min-width: 0;
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      color: var(--white);
+      padding: 0.62rem 0.7rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .studio-input:focus {
+      border-color: var(--ochre);
+    }
+
+    .studio-input::placeholder {
+      color: var(--subtle);
+    }
+
+    .btn-inline {
+      background: var(--ochre);
+      color: var(--bg);
+      border: 0;
+      padding: 0 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-inline:hover {
+      background: var(--ochre-hover);
+    }
+
+    .btn-inline-dark {
+      background: var(--surface-alt);
+      color: var(--white);
+      border: 0;
+      padding: 0.55rem 0.75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-inline-dark:hover {
+      color: var(--ochre);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--hairline);
+      font-size: 0.82rem;
+      color: var(--white);
+    }
+
+    .toggle-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--ochre);
+      cursor: pointer;
+    }
+
+    .search-msg {
+      font-size: 0.76rem;
+      color: var(--ochre);
+      margin-bottom: 0.45rem;
+      min-height: 1rem;
+    }
+
     .control-group {
       background: var(--bg);
       padding: 1rem;
@@ -597,6 +691,21 @@
       </div>
 
       <div>
+        <div class="section-title">Site Address or Coordinates</div>
+        <div class="search-row">
+          <input type="text" id="input-address" class="studio-input" placeholder="Search UK postcode or address (e.g. PL1 2AA)" onkeydown="if(event.key==='Enter') searchAddress()" />
+          <button type="button" class="btn-inline" onclick="searchAddress()">Find</button>
+        </div>
+        <div class="coord-row">
+          <input type="number" step="0.00001" id="input-lat" class="studio-input" value="50.38450" placeholder="Latitude" />
+          <input type="number" step="0.00001" id="input-lon" class="studio-input" value="-4.14550" placeholder="Longitude" />
+          <button type="button" class="btn-inline" onclick="applyManualCoords()">Set</button>
+        </div>
+        <button type="button" class="btn-inline-dark" onclick="locateUserGPS()">Use My Phone / Browser GPS</button>
+        <div class="search-msg" id="search-msg"></div>
+      </div>
+
+      <div>
         <div class="section-title">Plymouth Survey Presets</div>
         <div class="preset-btns">
           <button type="button" class="btn-preset active" data-preset="central_park" onclick="setPreset('central_park', this)">Central Park</button>
@@ -615,7 +724,7 @@
             <span>Flight Altitude</span>
             <span class="slider-val" id="val-alt">20 m</span>
           </div>
-          <input type="range" id="input-alt" min="15" max="45" value="20" step="1" oninput="updateMission()" onchange="updateMission()" />
+          <input type="range" id="input-alt" min="15" max="115" value="20" step="1" oninput="updateMission()" onchange="updateMission()" />
         </div>
 
         <div class="slider-row">
@@ -623,7 +732,7 @@
             <span>Survey Width</span>
             <span class="slider-val" id="val-width">40 m</span>
           </div>
-          <input type="range" id="input-width" min="20" max="80" value="40" step="5" oninput="updateMission()" onchange="updateMission()" />
+          <input type="range" id="input-width" min="20" max="160" value="40" step="5" oninput="updateMission()" onchange="updateMission()" />
         </div>
 
         <div class="slider-row">
@@ -631,7 +740,15 @@
             <span>Survey Length</span>
             <span class="slider-val" id="val-length">40 m</span>
           </div>
-          <input type="range" id="input-length" min="20" max="80" value="40" step="5" oninput="updateMission()" onchange="updateMission()" />
+          <input type="range" id="input-length" min="20" max="160" value="40" step="5" oninput="updateMission()" onchange="updateMission()" />
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Grid Rotation Angle</span>
+            <span class="slider-val" id="val-angle">0°</span>
+          </div>
+          <input type="range" id="input-angle" min="0" max="180" value="0" step="5" oninput="updateMission()" onchange="updateMission()" />
         </div>
 
         <div class="slider-row">
@@ -641,6 +758,27 @@
           </div>
           <input type="range" id="input-overlap" min="60" max="85" value="75" step="5" oninput="updateMission()" onchange="updateMission()" />
         </div>
+
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Cruise Speed</span>
+            <span class="slider-val" id="val-speed">2.5 m/s</span>
+          </div>
+          <input type="range" id="input-speed" min="1.5" max="6.0" value="2.5" step="0.5" oninput="updateMission()" onchange="updateMission()" />
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Camera Gimbal Angle</span>
+            <span class="slider-val" id="val-gimbal">-90° (Top Down)</span>
+          </div>
+          <input type="range" id="input-gimbal" min="-90" max="-45" value="-90" step="5" oninput="updateMission()" onchange="updateMission()" />
+        </div>
+
+        <label class="toggle-row">
+          <span>3D Crosshatch Double Grid</span>
+          <input type="checkbox" id="input-doublegrid" onchange="updateMission()" />
+        </label>
       </div>
 
       <div>
@@ -671,6 +809,9 @@
         </button>
         <button type="button" class="btn-export btn-secondary-export" onclick="downloadRainbowKML()">
           Export Rainbow Route (.KML)
+        </button>
+        <button type="button" class="btn-export btn-secondary-export" onclick="downloadMissionJSON()">
+          Export Studio Mission (.JSON)
         </button>
       </div>
     </aside>
@@ -775,16 +916,106 @@
       updateMission();
     }
 
+    function syncCoordInputs() {
+      const latEl = document.getElementById('input-lat');
+      const lonEl = document.getElementById('input-lon');
+      if (latEl) latEl.value = currentCenter.lat.toFixed(5);
+      if (lonEl) lonEl.value = currentCenter.lon.toFixed(5);
+    }
+
+    function setSearchMsg(msg) {
+      const el = document.getElementById('search-msg');
+      if (el) el.textContent = msg;
+    }
+
+    async function searchAddress() {
+      const input = document.getElementById('input-address');
+      const q = (input && input.value ? input.value : '').trim();
+      if (!q) {
+        setSearchMsg('Enter a UK postcode, street, or landmark first.');
+        return;
+      }
+      setSearchMsg('Searching location...');
+      try {
+        const res = await fetch(
+          'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb&q=' + encodeURIComponent(q),
+          { headers: { Accept: 'application/json' } }
+        );
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          setSearchMsg('Location not found. Try a UK postcode or exact latitude/longitude.');
+          return;
+        }
+        const hit = data[0];
+        const lat = parseFloat(hit.lat);
+        const lon = parseFloat(hit.lon);
+        const shortName = (hit.display_name || q).split(',').slice(0, 2).join(', ');
+        currentCenter = { lat, lon, name: shortName };
+        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+        if (map) map.setView([lat, lon], 18);
+        setSearchMsg('Moved survey to: ' + shortName);
+        updateMission();
+      } catch {
+        setSearchMsg('Address search unavailable offline. Enter exact coordinates below.');
+      }
+    }
+
+    function applyManualCoords() {
+      const lat = parseFloat(document.getElementById('input-lat').value);
+      const lon = parseFloat(document.getElementById('input-lon').value);
+      if (Number.isNaN(lat) || Number.isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        setSearchMsg('Enter valid decimal coordinates (e.g. 50.36550, -4.14200).');
+        return;
+      }
+      currentCenter = { lat, lon, name: 'Manual Coordinates' };
+      document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+      if (map) map.setView([lat, lon], 18);
+      setSearchMsg('Coordinates locked.');
+      updateMission();
+    }
+
+    function locateUserGPS() {
+      if (!navigator.geolocation) {
+        setSearchMsg('GPS geolocation is not supported in this browser.');
+        return;
+      }
+      setSearchMsg('Reading GPS location...');
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          currentCenter = { lat, lon, name: 'My GPS Location' };
+          document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+          if (map) map.setView([lat, lon], 18);
+          setSearchMsg('Centred on your current GPS location.');
+          updateMission();
+        },
+        () => {
+          setSearchMsg('Location permission denied. Type a postcode or coordinates instead.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
     function updateMission() {
       const alt = parseFloat(document.getElementById('input-alt').value);
       const widthM = parseFloat(document.getElementById('input-width').value);
       const lengthM = parseFloat(document.getElementById('input-length').value);
+      const angleDeg = parseFloat(document.getElementById('input-angle').value);
       const overlap = parseFloat(document.getElementById('input-overlap').value) / 100.0;
+      const cruiseSpeed = parseFloat(document.getElementById('input-speed').value);
+      const gimbalPitch = parseFloat(document.getElementById('input-gimbal').value);
+      const doubleGrid = Boolean(document.getElementById('input-doublegrid').checked);
 
       document.getElementById('val-alt').textContent = alt + ' m';
       document.getElementById('val-width').textContent = widthM + ' m';
       document.getElementById('val-length').textContent = lengthM + ' m';
+      document.getElementById('val-angle').textContent = angleDeg + '°';
       document.getElementById('val-overlap').textContent = Math.round(overlap * 100) + '%';
+      document.getElementById('val-speed').textContent = cruiseSpeed.toFixed(1) + ' m/s';
+      document.getElementById('val-gimbal').textContent = gimbalPitch + '°' + (gimbalPitch === -90 ? ' (Top Down)' : ' (3D Oblique)');
+
+      syncCoordInputs();
 
       const siteReadout = document.getElementById('site-readout');
       if (siteReadout) {
@@ -808,21 +1039,32 @@
       const latDegPerM = 1.0 / 111320.0;
       const lonDegPerM = 1.0 / (111320.0 * Math.cos(currentCenter.lat * Math.PI / 180.0));
 
-      const halfW = (widthM / 2.0) * lonDegPerM;
-      const halfL = (lengthM / 2.0) * latDegPerM;
+      const rad = (angleDeg * Math.PI) / 180.0;
+      const cosA = Math.cos(rad);
+      const sinA = Math.sin(rad);
 
-      const minLat = currentCenter.lat - halfL;
-      const maxLat = currentCenter.lat + halfL;
-      const minLon = currentCenter.lon - halfW;
-      const maxLon = currentCenter.lon + halfW;
+      // Convert local rotated meter offset (x east, y north) to lat/lon
+      function localToLatLon(xM, yM) {
+        const rx = xM * cosA - yM * sinA;
+        const ry = xM * sinA + yM * cosA;
+        return [currentCenter.lat + ry * latDegPerM, currentCenter.lon + rx * lonDegPerM];
+      }
 
       if (surveyBoxLayer) surveyBoxLayer.clearLayers();
       if (flightPathLayer) flightPathLayer.clearLayers();
       if (centerMarkerLayer) centerMarkerLayer.clearLayers();
       if (waypointMarkersLayer) waypointMarkersLayer.clearLayers();
 
-      // Survey boundary in crisp White & Studio Ochre
-      const bounds = [[minLat, minLon], [maxLat, minLon], [maxLat, maxLon], [minLat, maxLon], [minLat, minLon]];
+      const hw = widthM / 2.0;
+      const hl = lengthM / 2.0;
+      const bounds = [
+        localToLatLon(-hw, -hl),
+        localToLatLon(-hw, hl),
+        localToLatLon(hw, hl),
+        localToLatLon(hw, -hl),
+        localToLatLon(-hw, -hl)
+      ];
+
       if (surveyBoxLayer) {
         L.polygon(bounds, {
           color: '#ffffff',
@@ -834,43 +1076,53 @@
         }).addTo(surveyBoxLayer);
       }
 
-      const numIntervals = Math.max(1, Math.ceil(widthM / lineSpacing));
-      const numLines = numIntervals + 1;
-      const actualLineSpacingM = widthM / numIntervals;
-      const actualLineSpacingLon = actualLineSpacingM * lonDegPerM;
-
       currentWaypoints = [];
       let pathCoords = [];
+      let totalLines = 0;
 
-      for (let i = 0; i < numLines; i++) {
-        const curLon = minLon + (i * actualLineSpacingLon);
-        const isEven = (i % 2 === 0);
-        const startLat = isEven ? minLat : maxLat;
-        const endLat = isEven ? maxLat : minLat;
-        const heading = isEven ? 0 : 180;
+      function addGridPass(wSpan, lSpan, swapAxes) {
+        const intervals = Math.max(1, Math.ceil(wSpan / lineSpacing));
+        const lines = intervals + 1;
+        totalLines += lines;
+        const step = wSpan / intervals;
+        for (let i = 0; i < lines; i++) {
+          const offset = -wSpan / 2.0 + i * step;
+          const isEven = (i % 2 === 0);
+          const s = isEven ? -lSpan / 2.0 : lSpan / 2.0;
+          const e = isEven ? lSpan / 2.0 : -lSpan / 2.0;
+          const p1 = swapAxes ? localToLatLon(s, offset) : localToLatLon(offset, s);
+          const p2 = swapAxes ? localToLatLon(e, offset) : localToLatLon(offset, e);
+          const baseHeading = swapAxes ? (isEven ? 90 : 270) : (isEven ? 0 : 180);
+          const heading = (baseHeading + angleDeg) % 360;
 
-        currentWaypoints.push({
-          lat: startLat,
-          lon: curLon,
-          alt: alt,
-          heading: heading,
-          gimbalPitch: -90,
-          photoDist: photoTriggerInterval
-        });
-        pathCoords.push([startLat, curLon]);
+          currentWaypoints.push({
+            lat: p1[0],
+            lon: p1[1],
+            alt: alt,
+            heading: heading,
+            gimbalPitch: gimbalPitch,
+            photoDist: photoTriggerInterval
+          });
+          pathCoords.push(p1);
 
-        currentWaypoints.push({
-          lat: endLat,
-          lon: curLon,
-          alt: alt,
-          heading: heading,
-          gimbalPitch: -90,
-          photoDist: photoTriggerInterval
-        });
-        pathCoords.push([endLat, curLon]);
+          currentWaypoints.push({
+            lat: p2[0],
+            lon: p2[1],
+            alt: alt,
+            heading: heading,
+            gimbalPitch: gimbalPitch,
+            photoDist: photoTriggerInterval
+          });
+          pathCoords.push(p2);
+        }
+        return wSpan / intervals;
       }
 
-      // Studio Ochre flight lines
+      const primarySpacingM = addGridPass(widthM, lengthM, false);
+      if (doubleGrid) {
+        addGridPass(lengthM, widthM, true);
+      }
+
       if (flightPathLayer) {
         L.polyline(pathCoords, {
           color: '#F59E0B',
@@ -912,15 +1164,21 @@
             <strong>Waypoint ${idx + 1}</strong><br />
             Altitude: ${wp.alt} m AGL<br />
             Heading: ${wp.heading}&deg;<br />
-            Camera Angle: Straight Down (-90&deg;)<br />
+            Camera Angle: ${wp.gimbalPitch}&deg;<br />
             Photo Spacing: Every ${wp.photoDist.toFixed(1)} m
           `);
         });
       }
 
-      const totalLengthM = (numLines * lengthM) + widthM;
-      const cruiseSpeed = 2.5;
-      const totalSecs = Math.round(totalLengthM / cruiseSpeed) + (numLines * 4);
+      // Compute exact total path length in meters
+      let totalLengthM = 0;
+      for (let i = 1; i < currentWaypoints.length; i++) {
+        const dLat = (currentWaypoints[i].lat - currentWaypoints[i - 1].lat) / latDegPerM;
+        const dLon = (currentWaypoints[i].lon - currentWaypoints[i - 1].lon) / lonDegPerM;
+        totalLengthM += Math.hypot(dLat, dLon);
+      }
+
+      const totalSecs = Math.round(totalLengthM / cruiseSpeed) + (totalLines * 3);
       const mins = Math.floor(totalSecs / 60);
       const secs = totalSecs % 60;
       document.getElementById('metric-time').textContent = `${mins}m ${secs}s`;
@@ -936,15 +1194,19 @@
         siteName: currentCenter.name,
         widthM: widthM,
         lengthM: lengthM,
+        rotationDeg: angleDeg,
+        doubleGrid: doubleGrid,
         overlapPct: Math.round(overlap * 100),
-        numLines: numLines,
-        lineSpacingM: actualLineSpacingM,
+        cruiseSpeedMs: cruiseSpeed,
+        gimbalPitchDeg: gimbalPitch,
+        numLines: totalLines,
+        lineSpacingM: primarySpacingM,
         waypoints: currentWaypoints,
         altitude: alt,
-        totalDistance: totalLengthM,
+        totalDistance: Math.round(totalLengthM),
         durationSecs: totalSecs,
-        photoInterval: photoTriggerInterval,
-        gsd: gsdCm
+        photoInterval: Number(photoTriggerInterval.toFixed(2)),
+        gsd: Number(gsdCm.toFixed(2))
       };
     }
 
@@ -955,15 +1217,25 @@
 
       const emptyActions = Array.from({ length: 15 }, () => '-1,0').join(',');
       const maxSafeCurve = Number(Math.min(1.5, (missionPlan.lineSpacingM || 1.5) * 0.4).toFixed(2));
+      const spd = (missionPlan.cruiseSpeedMs || 2.5).toFixed(1);
 
       currentWaypoints.forEach((wp, i) => {
         const isStart = i === 0;
         const isEnd = i === currentWaypoints.length - 1;
         const curve = (isStart || isEnd) ? 0 : maxSafeCurve;
-        csv += `${wp.lat.toFixed(7)},${wp.lon.toFixed(7)},${wp.alt.toFixed(1)},${wp.heading.toFixed(1)},${curve},0,2,-90,${emptyActions},0,2.5,0,0,0,0,-1,${wp.photoDist.toFixed(2)}\n`;
+        csv += `${wp.lat.toFixed(7)},${wp.lon.toFixed(7)},${wp.alt.toFixed(1)},${wp.heading.toFixed(1)},${curve},0,2,${wp.gimbalPitch},${emptyActions},0,${spd},0,0,0,0,-1,${wp.photoDist.toFixed(2)}\n`;
       });
 
       triggerDownload(`Mo360_Mission_Litchi_${Date.now()}.csv`, csv, 'text/csv;charset=utf-8;');
+    }
+
+    function downloadMissionJSON() {
+      if (!missionPlan || !missionPlan.waypoints) return;
+      triggerDownload(
+        `Mo360_Mission_${Date.now()}.json`,
+        JSON.stringify(missionPlan, null, 2),
+        'application/json;charset=utf-8;'
+      );
     }
 
     function downloadRainbowKML() {
