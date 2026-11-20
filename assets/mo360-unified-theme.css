@@ -294,3 +294,26 @@ main [style*="border:"] {
 img, video, canvas, iframe {
   max-width: 100% !important;
 }
+
+
+/* STRICT GLOBAL ZERO-WIREFRAME & 3-COLOUR SOLID BUTTON LOCKDOWN */
+.btn-sm-outline, .btn-secondary, .btn-outline, .pill-link, .nav-pill, .download-btn,
+.course-jump-pill, .partner-chip, .stack-chip, .preset-cmd-btn, .view-more-btn,
+button:not(.mo360-ham):not(.mo360-menu-btn):not(.sr-card):not(.vt-scene-btn) {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 3px !important;
+}
+.btn-sm-outline, .pill-link, .nav-pill, .btn-secondary, .btn-outline, .partner-chip, .stack-chip {
+  background: #222630 !important;
+  color: #ffffff !important;
+}
+.btn-sm-outline:hover, .pill-link:hover, .nav-pill:hover, .btn-secondary:hover {
+  background: #F59E0B !important;
+  color: #08090c !important;
+}
+.board-card, .still-card, .course-card, .hero-interactive-card {
+  border: none !important;
+  background: #15181f !important;
+}
