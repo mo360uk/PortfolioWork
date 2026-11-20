@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en-GB">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>TAWAF Master Dome Live Synthesizer · Mo360 Immersive Lab</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --bg: #07090d;
@@ -692,380 +693,345 @@
     .slider-row output { text-align: left !important; }
   }
 </style>
-<link rel="stylesheet" href="../assets/mo360-unified-theme.css?v=solid3col" />
+<link href="../assets/mo360-unified-theme.css?v=solid3col" rel="stylesheet"/>
 </head>
 <body>
-<nav class="mo360-nav" aria-label="Mo360 Immersive Studio Navigation">
-  <a href="../index.html" class="mo360-nav-brand">
-    <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Immersive Studio Logo">
-    <span class="mo360-brand-stack">
-      <span class="mo360-brand-row">
-        <span class="mo360-brand-main">MO360</span>
-        <span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
-      </span>
-      <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
-    </span>
-  </a>
-  <ul class="mo360-nav-links">
-    <li><a href="../index.html#latest-works">Projects</a></li>
-    <li><a href="../immersive-lab/" class="active">Media Lab</a></li>
-    <li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
-    <li><a href="../tours/">Immersive Tours</a></li>
-    <li><a href="../surveys/">Surveys</a></li>
-    <li><a href="../index.html#contact" class="cta">Contact</a></li>
-  </ul>
-  <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
-    <span></span><span></span><span></span>
-  </button>
+<nav aria-label="Mo360 Immersive Studio Navigation" class="mo360-nav">
+<a class="mo360-nav-brand" href="../index.html">
+<img alt="Mo360 Immersive Studio Logo" src="../assets/brand_logos/mo360_emblem_official_clean.png"/>
+<span class="mo360-brand-stack">
+<span class="mo360-brand-row">
+<span class="mo360-brand-main">MO360</span>
+<span class="mo360-brand-badge">IMMERSIVE STUDIO</span>
+</span>
+<span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+</span>
+</a>
+<ul class="mo360-nav-links">
+<li><a href="../index.html#latest-works">Projects</a></li>
+<li><a class="active" href="../immersive-lab/">Media Lab</a></li>
+<li><a href="../creative-coding-plymouth/">Creative Coding</a></li>
+<li><a href="../tours/">Immersive Tours</a></li>
+<li><a href="../surveys/">Surveys</a></li>
+<li><a class="cta" href="../index.html#contact">Contact</a></li>
+</ul>
+<button aria-label="Toggle Menu" class="mo360-ham" onclick="document.getElementById('mo360Drawer').classList.toggle('open')" type="button">
+<span></span><span></span><span></span>
+</button>
 </nav>
 <div class="mo360-drawer" id="mo360Drawer">
-  <a href="../index.html">Mo360 Immersive Studio Home</a>
-  <a href="../projects/tawaf-sanctuary/">TAWAF Project Dossier</a>
-  <a href="../immersive-lab/" class="active">Mo360 Immersive Media Lab</a>
-  <a href="../creative-coding-plymouth/">Creative Coding Plymouth</a>
-  <a href="../tours/">Mo360 Immersive Tours</a>
-  <a href="../surveys/">Drone &amp; LiDAR Surveys</a>
-  <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Contact Studio</a>
+<a href="../index.html">Mo360 Immersive Studio Home</a>
+<a href="../projects/tawaf-sanctuary/">TAWAF Project Dossier</a>
+<a class="active" href="../immersive-lab/">Mo360 Immersive Media Lab</a>
+<a href="../creative-coding-plymouth/">Creative Coding Plymouth</a>
+<a href="../tours/">Mo360 Immersive Tours</a>
+<a href="../surveys/">Drone &amp; LiDAR Surveys</a>
+<a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Contact Studio</a>
 </div>
-
 <div class="tawaf-subbar">
-  <div class="tawaf-title-wrap">
-    <h1>TAWAF MASTER DOME LIVE SYNTHESIZER</h1>
-    <p>Ongoing Art Research Simulation Prototype · Preparing Live Audiovisual Performance for Real Ideas Market Hall 15m Dome</p>
-  </div>
-  <nav class="nav-actions">
-    <a class="pill-link" href="../projects/tawaf-sanctuary/">TAWAF Process &amp; Dossier</a>
-    <a class="pill-link" href="#residency-cinema">Residency Reel &amp; Videos</a>
-    <button id="audioToggleBtn" class="btn-top btn-audio">Start Chamber Audio</button>
-    <button id="bowlStrikeBtn" class="btn-top">Strike Bowl</button>
-    <button id="export2kBtn" class="btn-top btn-export">Export 2048px PNG</button>
-    <button id="export4kBtn" class="btn-top btn-export">Export 4096px PNG</button>
-  </nav>
+<div class="tawaf-title-wrap">
+<h1>TAWAF MASTER DOME LIVE SYNTHESIZER</h1>
+<p>Ongoing Art Research Simulation Prototype · Preparing Live Audiovisual Performance for Real Ideas 15m Fulldome Spatial R&D</p>
 </div>
-
+<nav class="nav-actions">
+<a class="pill-link" href="../projects/tawaf-sanctuary/">TAWAF Process &amp; Dossier</a>
+<a class="pill-link" href="#residency-cinema">Residency Reel &amp; Videos</a>
+<button class="btn-top btn-audio" id="audioToggleBtn">Start Chamber Audio</button>
+<button class="btn-top" id="bowlStrikeBtn">Strike Bowl</button>
+<button class="btn-top btn-export" id="export2kBtn">Export 2048px PNG</button>
+<button class="btn-top btn-export" id="export4kBtn">Export 4096px PNG</button>
+</nav>
+</div>
 <div class="tawaf-proto-notice">
-  <div class="tawaf-proto-inner">
-    <strong>ONGOING ART RESEARCH &amp; SIMULATION PROTOTYPE:</strong> This interactive synthesiser and the rendered cinema cuts below are working R&amp;D simulations built to demonstrate concept, sacred geometry pacing, and spatial audio direction ahead of developing the full live audiovisual performance for TAWAF inside the <strong>Real Ideas Market Hall 15m Dome</strong>.
+<div class="tawaf-proto-inner">
+<strong>ONGOING ART RESEARCH &amp; SIMULATION PROTOTYPE:</strong> This interactive synthesiser and the rendered cinema cuts below are working R&amp;D simulations built to demonstrate concept, sacred geometry pacing, and spatial audio direction ahead of developing the full live audiovisual performance for TAWAF inside the <strong>Real Ideas 15m Fulldome Spatial R&D</strong>.
   </div>
 </div>
-
 <main>
-  <!-- Left Column: Standalone 1:1 Square-with-Circle Master Dome Canvas -->
-  <section class="stage-card">
-    <div class="stage-top">
-      <span class="stage-label">DOMEMASTER 180° EQUIDISTANT · COUNTER-CLOCKWISE TAWAF</span>
-      <span id="stageMetrics" class="stage-metrics">WebGL2 · 60 fps · 0° Zenith Center</span>
-    </div>
-    <div class="dome-frame">
-      <canvas id="domeCanvas" width="1024" height="1024"></canvas>
-      <canvas id="overlayCanvas" width="1024" height="1024"></canvas>
-    </div>
-    <div class="stage-footer">
-      <label class="toggle-inline">
-        <input id="gridToggle" type="checkbox" />
-        Market Hall 15m Calibration Grid (excluded on PNG export)
+<!-- Left Column: Standalone 1:1 Square-with-Circle Master Dome Canvas -->
+<section class="stage-card">
+<div class="stage-top">
+<span class="stage-label">DOMEMASTER 180° EQUIDISTANT · COUNTER-CLOCKWISE TAWAF</span>
+<span class="stage-metrics" id="stageMetrics">WebGL2 · 60 fps · 0° Zenith Center</span>
+</div>
+<div class="dome-frame">
+<canvas height="1024" id="domeCanvas" width="1024"></canvas>
+<canvas height="1024" id="overlayCanvas" width="1024"></canvas>
+</div>
+<div class="stage-footer">
+<label class="toggle-inline">
+<input id="gridToggle" type="checkbox"/>
+        15m Fulldome 15m Calibration Grid (excluded on PNG export)
       </label>
-      <span id="breathReadout" class="stage-metrics">CCW Tawaf · Zero Strobe Clinical Safety</span>
-    </div>
-  </section>
-
-  <!-- Right Column: Real-Time Performance, Chakra, Brain.fm & Bridge Controls -->
-  <section class="rack">
-    <!-- 1. Sacred Geometry Architecture -->
-    <div class="module">
-      <div class="module-hdr">
-        <span class="module-title">01 · Sacred Geometry Engine</span>
-        <span class="module-sub">Procedural 3D Relief Shader + Water Cymatics</span>
-      </div>
-      <div class="btn-grid-3" id="geomButtons">
-        <button class="ctrl-btn active" data-geom="0">
-          <strong>Moroccan Zellige</strong>
-          <span>8/16-Fold Fez Starlace</span>
-        </button>
-        <button class="ctrl-btn" data-geom="1">
-          <strong>Azerbaijani Shabaka</strong>
-          <span>10/12-Fold Sheki Lattice</span>
-        </button>
-        <button class="ctrl-btn" data-geom="2">
-          <strong>Muqarnas + Cymatics</strong>
-          <span>Faraday Hybrid Dome</span>
-        </button>
-      </div>
-      <div class="slider-row">
-        <label for="rpmSlider">CCW Tawaf Rotation</label>
-        <input id="rpmSlider" type="range" min="0" max="1.8" step="0.05" value="0.65" />
-        <output id="rpmOut">0.65 RPM</output>
-      </div>
-      <div class="slider-row">
-        <label for="cymaticSlider">Water Cymatic Ripple</label>
-        <input id="cymaticSlider" type="range" min="0" max="1.0" step="0.02" value="0.48" />
-        <output id="cymaticOut">48%</output>
-      </div>
-    </div>
-
-    <!-- 2. Chakra & ND-Safe Alternative Colour + Frequency Matrix -->
-    <div class="module">
-      <div class="module-hdr">
-        <span class="module-title">02 · Chakra &amp; ND-Safe Alternative Matrix</span>
-        <button id="paletteModeBtn" class="btn-top">Mode: Primary Colour &amp; Hz</button>
-      </div>
-      <div class="chakra-list" id="chakraList"></div>
-    </div>
-
-    <!-- 3. Brain.fm Neural Phase-Locking & 4-7-8 Vagal Breath -->
-    <div class="module">
-      <div class="module-hdr">
-        <span class="module-title">03 · Brain.fm Neural Phase-Locking &amp; Breath</span>
-        <span class="module-sub">Raised-Cosine 22% AM · Zero Startle</span>
-      </div>
-      <div class="btn-grid-4" id="neuralButtons">
-        <button class="ctrl-btn active" data-neural="smr">
-          <strong>ADHD Focus</strong>
-          <span>14.0 Hz SMR Beta</span>
-        </button>
-        <button class="ctrl-btn" data-neural="alpha">
-          <strong>Present Moment</strong>
-          <span>8.5 Hz Alpha Calm</span>
-        </button>
-        <button class="ctrl-btn" data-neural="theta">
-          <strong>Deep Sanctuary</strong>
-          <span>6.0 Hz Theta Clearing</span>
-        </button>
-        <button class="ctrl-btn" data-neural="breath">
-          <strong>4-7-8 Vagal Breath</strong>
-          <span>19.0 s Cycle Swell</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 4. Western Chamber WebAudio Telemetry & FFT Scope -->
-    <div class="module">
-      <div class="module-hdr">
-        <span class="module-title">04 · Western Chamber + Bowl Telemetry</span>
-        <span id="voicingLabel" class="module-sub">Cello + Felt Piano + Harp + Suede Bowl</span>
-      </div>
-      <div class="telemetry-grid">
-        <div class="stat-box">
-          <div class="k">Active Pitch</div>
-          <div class="v" id="statHz">136.10 Hz</div>
-        </div>
-        <div class="stat-box">
-          <div class="k">Phase-Lock</div>
-          <div class="v" id="statNeural">8.5 Hz AM</div>
-        </div>
-        <div class="stat-box">
-          <div class="k">AM Depth</div>
-          <div class="v" id="statDepth">22% Smooth</div>
-        </div>
-      </div>
-      <canvas id="scopeCanvas" width="720" height="76"></canvas>
-    </div>
-
-    <!-- 5. TouchDesigner / Unreal Engine 5.8 Live Bridge -->
-    <div class="module">
-      <div class="module-hdr">
-        <span class="module-title">05 · TouchDesigner &amp; Unreal 5.8 Bridge</span>
-        <span class="module-sub">TD :9980 HTTP / :9000 OSC · UE5.8 :30010</span>
-      </div>
-      <div id="oscPayload" class="osc-box"></div>
-      <div class="bridge-actions">
-        <button id="copyOscBtn" class="btn-top">Copy Bridge JSON</button>
-        <button id="pushTdBtn" class="btn-top">Push to TD (:9980)</button>
-        <button id="pushUeBtn" class="btn-top">Push to UE5.8 (:30010)</button>
-        <span id="bridgeStatus" class="status-pill">Bridge ready (local endpoints optional)</span>
-      </div>
-    </div>
-  </section>
-</main>
-
-<section id="residency-cinema" class="cinema-wrap">
-  <div class="cinema-hdr">
-    <div>
-      <h2>Residency Showcase Reel &amp; Rendered Fulldome Cinema</h2>
-      <p>Pre-rendered 2K/4K 180° equidistant domemasters, Blender architectural walkthroughs, and 48 kHz spatial audio stems ready for the Real Ideas Market Hall 15m Dome residency presentation and website embed.</p>
-    </div>
-    <a class="pill-link" href="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" download>Download Full Residency Reel (MP4)</a>
-  </div>
-
-  <!-- Featured 16:9 Residency Showcase Reel -->
-  <div class="reel-card">
-    <video class="reel-video" controls playsinline preload="metadata" poster="assets/tawaf/01_sanctuary_hero_wide.png">
-      <source src="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" type="video/mp4" />
-    </video>
-    <div class="reel-meta">
-      <h3>TAWAF Residency Showcase Reel (1080p · 48 kHz Stereo)</h3>
-      <p>Complete presentation cut combining the 15m Market Hall Sanctuary architectural walkthrough, Moroccan Zellige 180° domemaster, Azerbaijani Shabaka Girih domemaster, Cymatic Chakra journey, and orbital cutaway.</p>
-      <div class="badge-row">
-        <span class="spec-badge">1920×1080 · 30 fps</span>
-        <span class="spec-badge">H.264 + AAC 48 kHz</span>
-        <span class="spec-badge">FastStart Web Stream</span>
-      </div>
-      <div class="media-actions">
-        <a class="btn-top btn-export" href="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" download>Download 1080p MP4</a>
-        <button id="copyReelEmbedBtn" class="btn-top" type="button">Copy &lt;video&gt; Embed</button>
-        <span id="reelCopyStatus" class="status-pill"></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6 Individual Rendered MP4 Animations -->
-  <div class="video-grid">
-    <article class="media-card">
-      <video controls playsinline loop preload="metadata" poster="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_KeyFrame.png">
-        <source src="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_TealGold.mp4" type="video/mp4" />
-      </video>
-      <h4>01 · Moroccan Zellige Teal &amp; Gold Domemaster</h4>
-      <div class="sub">2048×2048 · 30 fps · 10.0s · 48 kHz AAC</div>
-      <div class="media-actions">
-        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_TealGold.mp4" download>Download 2K MP4</a>
-      </div>
-    </article>
-
-    <article class="media-card">
-      <video controls playsinline loop preload="metadata" poster="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_KeyFrame.png">
-        <source src="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_Girih.mp4" type="video/mp4" />
-      </video>
-      <h4>02 · Azerbaijani Shabaka Girih Domemaster</h4>
-      <div class="sub">2048×2048 · 30 fps · 10.0s · 48 kHz AAC</div>
-      <div class="media-actions">
-        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_Girih.mp4" download>Download 2K MP4</a>
-      </div>
-    </article>
-
-    <article class="media-card">
-      <video controls playsinline loop preload="metadata" poster="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_KeyFrame.png">
-        <source src="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_Journey_Full.mp4" type="video/mp4" />
-      </video>
-      <h4>03 · Cymatic Chakra Journey Domemaster</h4>
-      <div class="sub">2048×2048 · 30 fps · 15.0s · 48 kHz AAC</div>
-      <div class="media-actions">
-        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_Journey_Full.mp4" download>Download 2K MP4</a>
-      </div>
-    </article>
-
-    <article class="media-card">
-      <video controls playsinline loop preload="metadata" poster="assets/tawaf/05_domemaster_180_fisheye.png">
-        <source src="assets/tawaf/07_tawaf_478_breathing_domemaster.mp4" type="video/mp4" />
-      </video>
-      <h4>04 · 4-7-8 Vagal Breathing Domemaster</h4>
-      <div class="sub">768×768 · 24 fps · 19.0s · 48 kHz AAC</div>
-      <div class="media-actions">
-        <a class="pill-link" href="assets/tawaf/07_tawaf_478_breathing_domemaster.mp4" download>Download MP4</a>
-      </div>
-    </article>
-
-    <article class="media-card wide">
-      <video controls playsinline loop preload="metadata" poster="assets/tawaf/01_sanctuary_hero_wide.png">
-        <source src="assets/tawaf/09_tawaf_immersive_walkthrough_with_audio.mp4" type="video/mp4" />
-      </video>
-      <h4>05 · Market Hall Sanctuary Walkthrough</h4>
-      <div class="sub">1920×1080 · 24 fps · 24.0s · 48 kHz AAC</div>
-      <div class="media-actions">
-        <a class="pill-link" href="assets/tawaf/09_tawaf_immersive_walkthrough_with_audio.mp4" download>Download 1080p MP4</a>
-      </div>
-    </article>
-
-    <article class="media-card wide">
-      <video controls playsinline loop preload="metadata" poster="assets/tawaf/03_architectural_cutaway_isometric.png">
-        <source src="assets/tawaf/06_tawaf_architectural_orbit.mp4" type="video/mp4" />
-      </video>
-      <h4>06 · Architectural Orbit Cutaway</h4>
-      <div class="sub">1280×720 · 24 fps · 6.0s · 48 kHz AAC</div>
-      <div class="media-actions">
-        <a class="pill-link" href="assets/tawaf/06_tawaf_architectural_orbit.mp4" download>Download 720p MP4</a>
-      </div>
-    </article>
-  </div>
-
-  <!-- 48 kHz Spatial Audio Stems -->
-  <div class="audio-grid">
-    <div class="audio-card">
-      <h4>Neuro-Chamber Sound Bath (Brain.fm Phase-Locked · 48 kHz)</h4>
-      <audio controls preload="metadata" src="assets/tawaf/TAWAF_BrainFM_Neuro_Chamber_SoundBath_48kHz.wav"></audio>
-    </div>
-    <div class="audio-card">
-      <h4>TAWAF Therapeutic Soundscape Master (48 kHz)</h4>
-      <audio controls preload="metadata" src="assets/tawaf/tawaf_therapeutic_soundscape.wav"></audio>
-    </div>
-  </div>
-
-  <!-- 4K Keyframes, Architectural Blueprints & Sensory Boards -->
-  <div class="still-grid">
-    <div class="still-card">
-      <a href="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" alt="4K Teal Gold Domemaster" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">4K Teal &amp; Gold Domemaster (4096²)</span>
-        <a class="pill-link" href="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" download>4K PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" alt="Domemaster Suite Overview Board" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">Domemaster Suite Overview Board</span>
-        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" download>PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/02_four_zones_dome_view.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/02_four_zones_dome_view.png" alt="Four Therapeutic Zones Dome View" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">Four Therapeutic Zones (15m Dome)</span>
-        <a class="pill-link" href="assets/tawaf/02_four_zones_dome_view.png" download>PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/08_tawaf_sensory_system_board.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/08_tawaf_sensory_system_board.png" alt="TAWAF Sensory System Board" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">Sensory &amp; Haptic System Board</span>
-        <a class="pill-link" href="assets/tawaf/08_tawaf_sensory_system_board.png" download>PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/04_floorplan_orthographic_blueprint.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/04_floorplan_orthographic_blueprint.png" alt="Market Hall Floorplan Blueprint" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">Orthographic Floorplan Blueprint</span>
-        <a class="pill-link" href="assets/tawaf/04_floorplan_orthographic_blueprint.png" download>PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/05_domemaster_180_fisheye.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/05_domemaster_180_fisheye.png" alt="180 Fisheye Domemaster Render" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">180° Fisheye Sanctuary Render</span>
-        <a class="pill-link" href="assets/tawaf/05_domemaster_180_fisheye.png" download>PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/10_walkthrough_storyboard_sheet.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/10_walkthrough_storyboard_sheet.png" alt="Walkthrough Storyboard Sheet" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">Walkthrough Storyboard Sheet</span>
-        <a class="pill-link" href="assets/tawaf/10_walkthrough_storyboard_sheet.png" download>PNG</a>
-      </div>
-    </div>
-    <div class="still-card">
-      <a href="assets/tawaf/TAWAF_Domemaster_00_MarketHall_Template_4K.png" target="_blank" rel="noopener">
-        <img src="assets/tawaf/TAWAF_Domemaster_00_MarketHall_Template_4K.png" alt="Market Hall 4K Calibration Template" loading="lazy" />
-      </a>
-      <div class="still-body">
-        <span class="still-title">Market Hall 4K Calibration Grid</span>
-        <a class="pill-link" href="assets/tawaf/TAWAF_Domemaster_00_MarketHall_Template_4K.png" download>4K PNG</a>
-      </div>
-    </div>
-  </div>
+<span class="stage-metrics" id="breathReadout">CCW Tawaf · Zero Strobe Clinical Safety</span>
+</div>
 </section>
+<!-- Right Column: Real-Time Performance, Chakra, Brain.fm & Bridge Controls -->
+<section class="rack">
+<!-- 1. Sacred Geometry Architecture -->
+<div class="module">
+<div class="module-hdr">
+<span class="module-title">01 · Sacred Geometry Engine</span>
+<span class="module-sub">Procedural 3D Relief Shader + Water Cymatics</span>
+</div>
+<div class="btn-grid-3" id="geomButtons">
+<button class="ctrl-btn active" data-geom="0">
+<strong>Moroccan Zellige</strong>
+<span>8/16-Fold Fez Starlace</span>
+</button>
+<button class="ctrl-btn" data-geom="1">
+<strong>Azerbaijani Shabaka</strong>
+<span>10/12-Fold Sheki Lattice</span>
+</button>
+<button class="ctrl-btn" data-geom="2">
+<strong>Muqarnas + Cymatics</strong>
+<span>Faraday Hybrid Dome</span>
+</button>
+</div>
+<div class="slider-row">
+<label for="rpmSlider">CCW Tawaf Rotation</label>
+<input id="rpmSlider" max="1.8" min="0" step="0.05" type="range" value="0.65"/>
+<output id="rpmOut">0.65 RPM</output>
+</div>
+<div class="slider-row">
+<label for="cymaticSlider">Water Cymatic Ripple</label>
+<input id="cymaticSlider" max="1.0" min="0" step="0.02" type="range" value="0.48"/>
+<output id="cymaticOut">48%</output>
+</div>
+</div>
+<!-- 2. Chakra & ND-Safe Alternative Colour + Frequency Matrix -->
+<div class="module">
+<div class="module-hdr">
+<span class="module-title">02 · Chakra &amp; ND-Safe Alternative Matrix</span>
+<button class="btn-top" id="paletteModeBtn">Mode: Primary Colour &amp; Hz</button>
+</div>
+<div class="chakra-list" id="chakraList"></div>
+</div>
+<!-- 3. Brain.fm Neural Phase-Locking & 4-7-8 Vagal Breath -->
+<div class="module">
+<div class="module-hdr">
+<span class="module-title">03 · Brain.fm Neural Phase-Locking &amp; Breath</span>
+<span class="module-sub">Raised-Cosine 22% AM · Zero Startle</span>
+</div>
+<div class="btn-grid-4" id="neuralButtons">
+<button class="ctrl-btn active" data-neural="smr">
+<strong>ADHD Focus</strong>
+<span>14.0 Hz SMR Beta</span>
+</button>
+<button class="ctrl-btn" data-neural="alpha">
+<strong>Present Moment</strong>
+<span>8.5 Hz Alpha Calm</span>
+</button>
+<button class="ctrl-btn" data-neural="theta">
+<strong>Deep Sanctuary</strong>
+<span>6.0 Hz Theta Clearing</span>
+</button>
+<button class="ctrl-btn" data-neural="breath">
+<strong>4-7-8 Vagal Breath</strong>
+<span>19.0 s Cycle Swell</span>
+</button>
+</div>
+</div>
+<!-- 4. Western Chamber WebAudio Telemetry & FFT Scope -->
+<div class="module">
+<div class="module-hdr">
+<span class="module-title">04 · Western Chamber + Bowl Telemetry</span>
+<span class="module-sub" id="voicingLabel">Cello + Felt Piano + Harp + Suede Bowl</span>
+</div>
+<div class="telemetry-grid">
+<div class="stat-box">
+<div class="k">Active Pitch</div>
+<div class="v" id="statHz">136.10 Hz</div>
+</div>
+<div class="stat-box">
+<div class="k">Phase-Lock</div>
+<div class="v" id="statNeural">8.5 Hz AM</div>
+</div>
+<div class="stat-box">
+<div class="k">AM Depth</div>
+<div class="v" id="statDepth">22% Smooth</div>
+</div>
+</div>
+<canvas height="76" id="scopeCanvas" width="720"></canvas>
+</div>
+<!-- 5. TouchDesigner / Unreal Engine 5.8 Live Bridge -->
+<div class="module">
+<div class="module-hdr">
+<span class="module-title">05 · TouchDesigner &amp; Unreal 5.8 Bridge</span>
+<span class="module-sub">TD :9980 HTTP / :9000 OSC · UE5.8 :30010</span>
+</div>
+<div class="osc-box" id="oscPayload"></div>
+<div class="bridge-actions">
+<button class="btn-top" id="copyOscBtn">Copy Bridge JSON</button>
+<button class="btn-top" id="pushTdBtn">Push to TD (:9980)</button>
+<button class="btn-top" id="pushUeBtn">Push to UE5.8 (:30010)</button>
+<span class="status-pill" id="bridgeStatus">Bridge ready (local endpoints optional)</span>
+</div>
+</div>
+</section>
+</main>
+<section class="cinema-wrap" id="residency-cinema">
+<div class="cinema-hdr">
+<div>
+<h2>Residency Showcase Reel &amp; Rendered Fulldome Cinema</h2>
+<p>Pre-rendered 2K/4K 180° equidistant domemasters, Blender architectural walkthroughs, and 48 kHz spatial audio stems ready for the Real Ideas 15m Fulldome Spatial R&D residency presentation and website embed.</p>
+</div>
+<a class="pill-link" download="" href="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4">Download Full Residency Reel (MP4)</a>
+</div>
+<!-- Featured 16:9 Residency Showcase Reel -->
+<div class="reel-card">
+<video class="reel-video" controls="" playsinline="" poster="assets/tawaf/01_sanctuary_hero_wide.png" preload="metadata">
+<source src="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4" type="video/mp4"/>
+</video>
+<div class="reel-meta">
+<h3>TAWAF Residency Showcase Reel (1080p · 48 kHz Stereo)</h3>
+<p>Complete presentation cut combining the 15m 15m Fulldome Sanctuary architectural walkthrough, Moroccan Zellige 180° domemaster, Azerbaijani Shabaka Girih domemaster, Cymatic Chakra journey, and orbital cutaway.</p>
+<div class="badge-row">
+<span class="spec-badge">1920×1080 · 30 fps</span>
+<span class="spec-badge">H.264 + AAC 48 kHz</span>
+<span class="spec-badge">FastStart Web Stream</span>
+</div>
+<div class="media-actions">
+<a class="btn-top btn-export" download="" href="assets/tawaf/TAWAF_Residency_Showcase_Reel_1080p.mp4">Download 1080p MP4</a>
+<button class="btn-top" id="copyReelEmbedBtn" type="button">Copy &lt;video&gt; Embed</button>
+<span class="status-pill" id="reelCopyStatus"></span>
+</div>
+</div>
+</div>
+<!-- 6 Individual Rendered MP4 Animations -->
+<div class="video-grid">
+<article class="media-card">
+<video controls="" loop="" playsinline="" poster="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_KeyFrame.png" preload="metadata">
+<source src="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_TealGold.mp4" type="video/mp4"/>
+</video>
+<h4>01 · Moroccan Zellige Teal &amp; Gold Domemaster</h4>
+<div class="sub">2048×2048 · 30 fps · 10.0s · 48 kHz AAC</div>
+<div class="media-actions">
+<a class="pill-link" download="" href="assets/tawaf/TAWAF_Domemaster_01_Moroccan_Zellige_TealGold.mp4">Download 2K MP4</a>
+</div>
+</article>
+<article class="media-card">
+<video controls="" loop="" playsinline="" poster="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_KeyFrame.png" preload="metadata">
+<source src="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_Girih.mp4" type="video/mp4"/>
+</video>
+<h4>02 · Azerbaijani Shabaka Girih Domemaster</h4>
+<div class="sub">2048×2048 · 30 fps · 10.0s · 48 kHz AAC</div>
+<div class="media-actions">
+<a class="pill-link" download="" href="assets/tawaf/TAWAF_Domemaster_02_Azerbaijan_Shabaka_Girih.mp4">Download 2K MP4</a>
+</div>
+</article>
+<article class="media-card">
+<video controls="" loop="" playsinline="" poster="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_KeyFrame.png" preload="metadata">
+<source src="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_Journey_Full.mp4" type="video/mp4"/>
+</video>
+<h4>03 · Cymatic Chakra Journey Domemaster</h4>
+<div class="sub">2048×2048 · 30 fps · 15.0s · 48 kHz AAC</div>
+<div class="media-actions">
+<a class="pill-link" download="" href="assets/tawaf/TAWAF_Domemaster_03_Cymatic_Chakra_Journey_Full.mp4">Download 2K MP4</a>
+</div>
+</article>
+<article class="media-card">
+<video controls="" loop="" playsinline="" poster="assets/tawaf/05_domemaster_180_fisheye.png" preload="metadata">
+<source src="assets/tawaf/07_tawaf_478_breathing_domemaster.mp4" type="video/mp4"/>
+</video>
+<h4>04 · 4-7-8 Vagal Breathing Domemaster</h4>
+<div class="sub">768×768 · 24 fps · 19.0s · 48 kHz AAC</div>
+<div class="media-actions">
+<a class="pill-link" download="" href="assets/tawaf/07_tawaf_478_breathing_domemaster.mp4">Download MP4</a>
+</div>
+</article>
+<article class="media-card wide">
+<video controls="" loop="" playsinline="" poster="assets/tawaf/01_sanctuary_hero_wide.png" preload="metadata">
+<source src="assets/tawaf/09_tawaf_immersive_walkthrough_with_audio.mp4" type="video/mp4"/>
+</video>
+<h4>05 · 15m Fulldome Sanctuary Walkthrough</h4>
+<div class="sub">1920×1080 · 24 fps · 24.0s · 48 kHz AAC</div>
+<div class="media-actions">
+<a class="pill-link" download="" href="assets/tawaf/09_tawaf_immersive_walkthrough_with_audio.mp4">Download 1080p MP4</a>
+</div>
+</article>
+<article class="media-card wide">
+<video controls="" loop="" playsinline="" poster="assets/tawaf/03_architectural_cutaway_isometric.png" preload="metadata">
+<source src="assets/tawaf/06_tawaf_architectural_orbit.mp4" type="video/mp4"/>
+</video>
+<h4>06 · Architectural Orbit Cutaway</h4>
+<div class="sub">1280×720 · 24 fps · 6.0s · 48 kHz AAC</div>
+<div class="media-actions">
+<a class="pill-link" download="" href="assets/tawaf/06_tawaf_architectural_orbit.mp4">Download 720p MP4</a>
+</div>
+</article>
+</div>
+<!-- 48 kHz Spatial Audio Stems -->
+<div class="audio-grid">
+<div class="audio-card">
+<h4>Neuro-Chamber Sound Bath (Brain.fm Phase-Locked · 48 kHz)</h4>
+<audio controls="" preload="metadata" src="assets/tawaf/TAWAF_BrainFM_Neuro_Chamber_SoundBath_48kHz.wav"></audio>
+</div>
+<div class="audio-card">
+<h4>TAWAF Therapeutic Soundscape Master (48 kHz)</h4>
+<audio controls="" preload="metadata" src="assets/tawaf/tawaf_therapeutic_soundscape.wav"></audio>
+</div>
+</div>
+<!-- 4K Keyframes, Architectural Blueprints & Sensory Boards -->
+<div class="still-grid">
+<div class="still-card">
+<a href="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png" rel="noopener" target="_blank">
+<img alt="4K Teal Gold Domemaster" loading="lazy" src="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png"/>
+</a>
+<div class="still-body">
+<span class="still-title">4K Teal &amp; Gold Domemaster (4096²)</span>
+<a class="pill-link" download="" href="assets/tawaf/TAWAF_Step1_TealGold_Domemaster_4K.png">4K PNG</a>
+</div>
+</div>
+<div class="still-card">
+<a href="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png" rel="noopener" target="_blank">
+<img alt="Domemaster Suite Overview Board" loading="lazy" src="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png"/>
+</a>
+<div class="still-body">
+<span class="still-title">Domemaster Suite Overview Board</span>
+<a class="pill-link" download="" href="assets/tawaf/TAWAF_Domemaster_Suite_Overview_Board.png">PNG</a>
+</div>
+</div>
+<div class="still-card">
+<a href="assets/tawaf/02_four_zones_dome_view.png" rel="noopener" target="_blank">
+<img alt="Four Therapeutic Zones Dome View" loading="lazy" src="assets/tawaf/02_four_zones_dome_view.png"/>
+</a>
+<div class="still-body">
+<span class="still-title">Four Therapeutic Zones (15m Dome)</span>
+<a class="pill-link" download="" href="assets/tawaf/02_four_zones_dome_view.png">PNG</a>
+</div>
+</div>
+<div class="still-card">
+<a href="assets/tawaf/08_tawaf_sensory_system_board.png" rel="noopener" target="_blank">
+<img alt="TAWAF Sensory System Board" loading="lazy" src="assets/tawaf/08_tawaf_sensory_system_board.png"/>
+</a>
+<div class="still-body">
+<span class="still-title">Sensory &amp; Haptic System Board</span>
+<a class="pill-link" download="" href="assets/tawaf/08_tawaf_sensory_system_board.png">PNG</a>
+</div>
+</div>
+<div class="still-card">
+<a href="assets/tawaf/04_floorplan_orthographic_blueprint.png" rel="noopener" target="_blank">
+<img alt="15m Fulldome Floorplan Blueprint" loading="lazy" src="assets/tawaf/04_floorplan_orthographic_blueprint.png"/>
+</a>
+<div class="still-body">
+<span class="still-title">Orthographic Floorplan Blueprint</span>
+<a class="pill-link" download="" href="assets/tawaf/04_floorplan_orthographic_blueprint.png">PNG</a>
+</div>
+</div>
+<div class="still-card">
+<a href="assets/tawaf/05_domemaster_180_fisheye.png" rel="noopener" target="_blank">
+<img alt="180 Fisheye Domemaster Render" loading="lazy" src="assets/tawaf/05_domemaster_180_fisheye.png"/>
+</a>
+<div class="still-body">
+<span class="still-title">180° Fisheye Sanctuary Render</span>
+<a class="pill-link" download="" href="assets/tawaf/05_domemaster_180_fisheye.png">PNG</a>
+</div>
+</div>
 
+
+</div>
+</section>
 <script>
 (() => {
   // -------------------------------------------------------------------------
