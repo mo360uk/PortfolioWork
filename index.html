@@ -558,48 +558,64 @@ nav{background:#0b0d11 !important;border-bottom:2px solid #1f242d !important;}
 }
 @media (max-width: 768px) {
   .hero{
-    min-height:auto !important;
-    display:block !important;
+    min-height:100svh !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-end !important;
     padding-top:72px !important;
     background:#08090c !important;
+    position:relative !important;
+    overflow:hidden !important;
   }
   .hero-bg{
-    position:relative !important;
-    inset:auto !important;
+    position:absolute !important;
+    top:72px !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
     width:100% !important;
-    aspect-ratio:16 / 9 !important;
     height:auto !important;
-    border-bottom:3px solid #F59E0B !important;
+    background:#08090c !important;
   }
   .hero-slide{
-    filter:brightness(0.95) contrast(1.04) !important;
-    background-size:cover !important;
-    background-position:center center !important;
+    position:absolute !important;
+    inset:0 !important;
+    background-size:100% auto !important;
+    background-repeat:no-repeat !important;
+    background-position:center top !important;
+    filter:brightness(0.76) contrast(1.08) !important;
     transform:none !important;
   }
   .hero-overlay{
-    display:none !important;
+    display:block !important;
+    position:absolute !important;
+    inset:0 !important;
+    background:linear-gradient(180deg, rgba(8,9,12,0.34) 0%, rgba(8,9,12,0.52) 26%, rgba(8,9,12,0.88) 44%, rgba(8,9,12,0.98) 58%, #08090c 100%) !important;
+    pointer-events:none !important;
   }
   .hero-content{
-    padding:18px 18px 28px !important;
+    position:relative !important;
+    z-index:2 !important;
+    padding:228px 18px 28px !important;
   }
   .patriots-referral-banner{
-    padding:9px 12px !important;
-    margin-bottom:14px !important;
-    font-size:.74rem !important;
+    padding:8px 12px !important;
+    margin-bottom:12px !important;
+    font-size:.72rem !important;
   }
   .hero-project-hud{
-    margin-bottom:14px !important;
+    margin-bottom:12px !important;
     padding:6px 10px !important;
   }
   .hero h1{
-    font-size:2.9rem !important;
-    margin-bottom:.9rem !important;
+    font-size:2.45rem !important;
+    line-height:0.98 !important;
+    margin-bottom:.75rem !important;
   }
   .hero-sub{
-    font-size:.86rem !important;
-    line-height:1.55 !important;
-    margin-bottom:1.25rem !important;
+    font-size:.84rem !important;
+    line-height:1.52 !important;
+    margin-bottom:1.15rem !important;
   }
 }
 
@@ -683,7 +699,7 @@ nav{background:#0b0d11 !important;border-bottom:2px solid #1f242d !important;}
     </div>
     <div class="metrics-strip">
       <div class="metric-cell"><div class="metric-val">14 SHIPS</div><div class="metric-lbl">Plymouth Chronicles 3D Figureheads &amp; Bows</div></div>
-      <div class="metric-cell"><div class="metric-val">15M DOME</div><div class="metric-lbl">Market Hall Fulldome &amp; TAWAF Sanctuary</div></div>
+      <div class="metric-cell"><div class="metric-val">15M DOME</div><div class="metric-lbl">Fulldome UK &amp; TAWAF Sanctuary</div></div>
       <div class="metric-cell"><div class="metric-val">360° VR</div><div class="metric-lbl">Tavistock Dementia Care &amp; Google Flow Tours</div></div>
       <div class="metric-cell"><div class="metric-val">TOP 30</div><div class="metric-lbl">Ars Electronica Future Innovator Summit</div></div>
       <div class="metric-cell"><div class="metric-val">5 COURSES</div><div class="metric-lbl">Mo360 Immersive Lab &amp; Creative Coding</div></div>
