@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mo360 Immersive Studio · Tavistock Archive 3D World Viewer (HunyuanWorld / WorldMirror PLY)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #08090c;
+      --surface: #15181f;
+      --surface-2: #1d212b;
+      --ochre: #F59E0B;
+      --ochre-hover: #fbbf24;
+      --white: #ffffff;
+      --muted: #b4b9c4;
+      --line: rgba(255, 255, 255, 0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+    .shell {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      width: 100%;
+    }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 2px solid var(--ochre);
+      padding: 0.65rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 0.32rem 0.6rem;
+    }
+    .back-link:hover {
+      background: var(--ochre);
+      color: var(--bg);
+      border-color: var(--ochre);
+    }
+    .brand-title {
+      font-weight: 700;
+      font-size: 0.96rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .badge {
+      background: var(--ochre);
+      color: var(--bg);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 0.22rem 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .toolbar {
+      background: #0d1016;
+      border-bottom: 1px solid var(--line);
+      padding: 0.55rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .scene-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: var(--surface);
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 0.45rem 0.8rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn:hover, .btn.active {
+      background: var(--ochre);
+      color: var(--bg);
+      border-color: var(--ochre);
+    }
+    #file-input { display: none; }
+    .stage {
+      flex: 1;
+      position: relative;
+      background: var(--bg);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .hud-overlay {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(21, 24, 31, 0.92);
+      border-left: 3px solid var(--ochre);
+      padding: 0.75rem 1rem;
+      max-width: 520px;
+      pointer-events: none;
+    }
+    .hud-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--ochre);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .hud-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .thumb-compare {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(21, 24, 31, 0.94);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--ochre);
+      padding: 0.55rem;
+      width: 240px;
+    }
+    .thumb-compare img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 0.35rem;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <a href="../" class="back-link">&larr; Media Lab</a>
+        <span class="brand-title">MO360 IMMERSIVE</span>
+        <span class="badge">TAVISTOCK 3D WORLD VIEWER</span>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--ochre);">
+        HISTORICAL B&amp;W ARCHIVE TO 3D WORLD · MO360IMMERSIVESTUDIO.CO.UK
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <div class="scene-pills">
+        <button id="btnAbbeyBw" class="btn active" onclick="loadPresetScene('abbey_bridge_1895_bw', this)">1. Abbey Bridge (1890 B&amp;W Archive)</button>
+        <button id="btnBedfordBw" class="btn" onclick="loadPresetScene('bedford_square_1895_bw', this)">2. Bedford Square (1895 B&amp;W Archive)</button>
+        <button id="btnViaductBw" class="btn" onclick="loadPresetScene('tavistock_viaduct_1895_bw', this)">3. St Eustachius &amp; Viaduct (1910 B&amp;W Archive)</button>
+        <button id="btnAbbeyCol" class="btn" onclick="loadPresetScene('abbey_bridge_1895_colour', this)">4. Abbey Bridge (Restored Colour)</button>
+      </div>
+      <div class="scene-pills">
+        <label for="file-input" class="btn" style="background:var(--surface-2);">+ Upload / Drag PLY or DRC</label>
+        <input id="file-input" type="file" accept=".ply,.drc" multiple />
+        <button id="rotate-toggle" class="btn">Pause Rotation</button>
+        <button id="reset-view" class="btn">Reset Camera</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div id="canvasHost" style="width:100%;height:100%;"></div>
+
+      <div class="thumb-compare">
+        <div class="hud-title">360° PANORAMA &amp; DEPTH PROXY</div>
+        <img id="panoThumb" src="tavistock_3d_output/abbey_bridge_1895_panorama.png" alt="360 Panorama" />
+        <img id="depthThumb" src="tavistock_3d_output/abbey_bridge_1895_depth.png" alt="Neural Depth Map" />
+      </div>
+
+      <div class="hud-overlay">
+        <div id="statusTitle" class="hud-title">LOADING 3D WORLD MESH...</div>
+        <div class="hud-desc">
+          Controls: <strong>WASD</strong> keys to walk inside the 3D Tavistock scene · <strong>Mouse Drag / Touch</strong> to look 360° around · <strong>Scroll Wheel</strong> to zoom.<br/>
+          Files in <code>./tavistock_3d_output/</code>: <code>mesh_layer0.ply</code>, <code>mesh_layer1.ply</code>, <code>gaussians.ply</code>, <code>panorama.png</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/PLYLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/DRACOLoader.js"></script>
+  <script>
+    const host = document.getElementById('canvasHost');
+    const statusTitle = document.getElementById('statusTitle');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x08090c);
+
+    const camera = new THREE.PerspectiveCamera(72, window.innerWidth / (window.innerHeight - 105), 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight - 105);
+    host.appendChild(renderer.domElement);
+
+    const loader = new THREE.PLYLoader();
+    const dracoLoader = new THREE.DRACOLoader();
+    dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/libs/draco/');
+
+    const moveSpeed = 0.025;
+    const maxDistance = 2.8;
+    const keys = { w: false, a: false, s: false, d: false };
+    let isMouseDown = false;
+    let prevMouse = { x: 0, y: 0 };
+    let isRotating = true;
+    let rotationSpeed = 0.0012;
+    let yaw = 0;
+    let pitch = 0;
+
+    function clearSceneMeshes() {
+      scene.children.slice().forEach(child => {
+        if (child instanceof THREE.Mesh || child instanceof THREE.Points) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) child.material.dispose();
+          scene.remove(child);
+        }
+      });
+    }
+
+    function addGeometryToScene(geometry) {
+      if (geometry.index && geometry.index.count > 0) {
+        geometry.computeVertexNormals();
+        const material = new THREE.MeshBasicMaterial({
+          side: THREE.DoubleSide,
+          vertexColors: true
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+      } else {
+        const material = new THREE.PointsMaterial({
+          size: 0.045,
+          vertexColors: true
+        });
+        const pts = new THREE.Points(geometry, material);
+        scene.add(pts);
+      }
+    }
+
+    async function loadPresetScene(sceneId, btnEl) {
+      document.querySelectorAll('.scene-pills .btn').forEach(b => {
+        if (b.id && b.id.startsWith('btn')) b.classList.remove('active');
+      });
+      if (btnEl) btnEl.classList.add('active');
+
+      statusTitle.textContent = 'LOADING ' + sceneId.toUpperCase() + ' (LAYER 0 + LAYER 1 PLY)...';
+      document.getElementById('panoThumb').src = 'tavistock_3d_output/' + sceneId + '_panorama.png';
+      document.getElementById('depthThumb').src = 'tavistock_3d_output/' + sceneId + '_depth.png';
+
+      clearSceneMeshes();
+      const urls = [
+        'tavistock_3d_output/' + sceneId + '_mesh_layer0.ply',
+        'tavistock_3d_output/' + sceneId + '_mesh_layer1.ply'
+      ];
+
+      let totalVerts = 0;
+      for (const u of urls) {
+        try {
+          const res = await fetch(u);
+          const buf = await res.arrayBuffer();
+          const geom = loader.parse(buf);
+          totalVerts += geom.attributes.position ? geom.attributes.position.count : 0;
+          addGeometryToScene(geom);
+        } catch (err) {
+          console.error('Failed loading', u, err);
+        }
+      }
+      resetCamera();
+      statusTitle.textContent = 'ACTIVE 3D WORLD: ' + sceneId.toUpperCase() + ' · ' + totalVerts.toLocaleString() + ' 3D VERTICES LOADED';
+    }
+
+    document.getElementById('file-input').addEventListener('change', function(e) {
+      const files = e.target.files;
+      if (!files || !files.length) return;
+      clearSceneMeshes();
+      statusTitle.textContent = 'LOADING CUSTOM PLY/DRC FILES...';
+      let done = 0;
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          if (file.name.endsWith('.ply')) {
+            const geom = loader.parse(evt.target.result);
+            addGeometryToScene(geom);
+          } else if (file.name.endsWith('.drc')) {
+            dracoLoader.decodeDracoFile(evt.target.result, function(geom) {
+              addGeometryToScene(geom);
+            });
+          }
+          done++;
+          if (done === files.length) {
+            resetCamera();
+            statusTitle.textContent = 'LOADED ' + files.length + ' CUSTOM 3D FILE(S)';
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    });
+
+    function resetCamera() {
+      scene.rotation.y = 0;
+      camera.position.set(0, 0, 0.8);
+      yaw = 0;
+      pitch = 0;
+      updateCameraLook();
+    }
+
+    function updateCameraLook() {
+      const target = new THREE.Vector3(
+        camera.position.x - Math.sin(yaw) * Math.cos(pitch),
+        camera.position.y + Math.sin(pitch),
+        camera.position.z - Math.cos(yaw) * Math.cos(pitch)
+      );
+      camera.lookAt(target);
+    }
+
+    renderer.domElement.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      isRotating = false;
+      document.getElementById('rotate-toggle').textContent = 'Start Rotation';
+      prevMouse = { x: e.clientX, y: e.clientY };
+    });
+    window.addEventListener('mouseup', () => { isMouseDown = false; });
+    window.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      const dx = e.clientX - prevMouse.x;
+      const dy = e.clientY - prevMouse.y;
+      yaw += dx * 0.0035;
+      pitch = Math.max(-0.85, Math.min(0.85, pitch + dy * 0.0035));
+      prevMouse = { x: e.clientX, y: e.clientY };
+      updateCameraLook();
+    });
+    renderer.domElement.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isMouseDown = true;
+        isRotating = false;
+        document.getElementById('rotate-toggle').textContent = 'Start Rotation';
+        prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    }, { passive: true });
+    window.addEventListener('touchend', () => { isMouseDown = false; });
+    renderer.domElement.addEventListener('touchmove', (e) => {
+      if (!isMouseDown || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - prevMouse.x;
+      const dy = e.touches[0].clientY - prevMouse.y;
+      yaw += dx * 0.0045;
+      pitch = Math.max(-0.85, Math.min(0.85, pitch + dy * 0.0045));
+      prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      updateCameraLook();
+    }, { passive: true });
+
+    renderer.domElement.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
+      camera.position.addScaledVector(forward, -e.deltaY * 0.0025);
+      updateCameraLook();
+    }, { passive: false });
+
+    document.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (k in keys) keys[k] = true;
+    });
+    document.addEventListener('keyup', (e) => {
+      const k = e.key.toLowerCase();
+      if (k in keys) keys[k] = false;
+    });
+
+    document.getElementById('rotate-toggle').addEventListener('click', function() {
+      isRotating = !isRotating;
+      this.textContent = isRotating ? 'Pause Rotation' : 'Start Rotation';
+    });
+    document.getElementById('reset-view').addEventListener('click', resetCamera);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (keys.w || keys.a || keys.s || keys.d) {
+        const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
+        const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
+        if (keys.w) camera.position.addScaledVector(forward, moveSpeed);
+        if (keys.s) camera.position.addScaledVector(forward, -moveSpeed);
+        if (keys.a) camera.position.addScaledVector(right, -moveSpeed);
+        if (keys.d) camera.position.addScaledVector(right, moveSpeed);
+        const r = Math.hypot(camera.position.x, camera.position.z);
+        if (r > maxDistance) {
+          camera.position.x *= maxDistance / r;
+          camera.position.z *= maxDistance / r;
+        }
+        updateCameraLook();
+      }
+      if (isRotating) {
+        scene.rotation.y = Math.sin(performance.now() * 0.00055) * 0.28;
+      }
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / (window.innerHeight - 105);
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight - 105);
+    });
+
+    loadPresetScene('abbey_bridge_1895_bw', document.getElementById('btnAbbeyBw'));
+    animate();
+  </script>
+</body>
+</html>
