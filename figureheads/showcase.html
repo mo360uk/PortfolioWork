@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mo360 Immersive Studio · High-Quality 3D Heritage Showcase</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #08090c; color: #f1f5f9;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    #stage { position: fixed; inset: 0; width: 100%; height: 100%; }
+    .hud-top {
+      position: fixed; top: 14px; left: 14px; right: 14px; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      pointer-events: none;
+    }
+    .brand {
+      pointer-events: auto;
+      background: rgba(16, 18, 24, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 2px solid #C87D28;
+      backdrop-filter: blur(12px);
+      border-radius: 10px;
+      padding: 9px 14px;
+    }
+    .brand-title { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .brand-title span { color: #C87D28; }
+    .brand-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .top-actions { pointer-events: auto; display: flex; gap: 8px; }
+    .btn {
+      background: rgba(37, 41, 52, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #f8fafc; border-radius: 8px;
+      padding: 8px 12px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      cursor: pointer; backdrop-filter: blur(10px);
+    }
+    .btn.accent { border-color: rgba(200, 125, 40, 0.75); }
+    .btn:hover { background: rgba(48, 54, 68, 0.95); }
+    .hud-bottom {
+      position: fixed; bottom: 14px; left: 14px; right: 14px; z-index: 20;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      pointer-events: none;
+    }
+    .model-strip {
+      pointer-events: auto;
+      max-width: 100%; overflow-x: auto;
+      display: flex; gap: 6px; padding: 6px 8px;
+      background: rgba(16, 18, 24, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px; backdrop-filter: blur(12px);
+      scrollbar-width: none;
+    }
+    .model-strip::-webkit-scrollbar { display: none; }
+    .pill {
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1; border-radius: 8px;
+      padding: 6px 11px; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .pill.active {
+      background: #252934; color: #ffffff;
+      border-color: rgba(200, 125, 40, 0.85);
+    }
+    .loader {
+      position: fixed; inset: 0; z-index: 15;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .loader-pill {
+      background: rgba(16, 18, 24, 0.9);
+      border: 1px solid rgba(200, 125, 40, 0.5);
+      border-radius: 999px; padding: 10px 18px;
+      font-size: 12px; color: #e2e8f0;
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/",
+      "@mkkellogg/gaussian-splats-3d": "https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.6/build/gaussian-splats-3d.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="stage"></div>
+  <div id="loader" class="loader"><div class="loader-pill" id="loaderText">Loading 3D Model...</div></div>
+
+  <div class="hud-top">
+    <div class="brand">
+      <div class="brand-title"><span>MO360 IMMERSIVE</span> · <span id="modelTitle" style="color:#fff">3D SHOWCASE</span></div>
+      <div class="brand-sub" id="modelSub">High-Quality 3D Heritage Archive · Drag to Orbit · Pinch/Scroll to Zoom</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="btnRotate" onclick="toggleRotate()">Pause Spin</button>
+      <button class="btn accent" id="btnCopy" onclick="copyDirectLink()">Copy Link</button>
+    </div>
+  </div>
+
+  <div class="hud-bottom">
+    <div class="model-strip" id="modelStrip"></div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
+
+    const MODELS = [
+      { id: 'tavistock', name: 'Tavistock Abbey (Cleaned 3DGS)', type: 'ply', url: './splats/tavistock_abbey_clean.ply', sub: 'Tencent HY-World 2.0 · 249,227 Cleaned 3D Gaussians · Drone Orbit' },
+      { id: 'royal-william', name: 'HMS Royal William', type: 'glb', url: './models/RoyalWilliam_clean.glb', sub: 'Cleaned Scaniverse 3D Mesh · The Box Plymouth Figurehead' },
+      { id: 'tamar', name: 'HMS Tamar', type: 'glb', url: './models/Tamar_clean.glb', sub: 'Cleaned Scaniverse 3D Mesh · The Box Plymouth Figurehead' },
+      { id: 'windsor-castle', name: 'HMS Windsor Castle', type: 'glb', url: './models/WindsorCastle.glb', sub: 'High-Res Scaniverse 3D Mesh · The Box Plymouth Figurehead' },
+      { id: 'sphinx', name: 'HMS Sphinx', type: 'glb', url: './models/sphinx.glb', sub: 'Cleaned 3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'aurora', name: 'HMS Aurora', type: 'glb', url: './models/aurora.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'basilisk', name: 'HMS Basilisk', type: 'glb', url: './models/basilisk.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'cadmus', name: 'HMS Cadmus', type: 'glb', url: './models/cadmus.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'calcutta', name: 'HMS Calcutta', type: 'glb', url: './models/calcutta.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'calliope', name: 'HMS Calliope', type: 'glb', url: './models/calliope.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'centaur', name: 'HMS Centaur', type: 'glb', url: './models/centaur.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'defiance', name: 'HMS Defiance', type: 'glb', url: './models/defiance.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'minerva', name: 'HMS Minerva', type: 'glb', url: './models/minerva.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'sybille', name: 'HMS Sybille', type: 'glb', url: './models/sybille.glb', sub: '3D Heritage Figurehead · The Box Plymouth' },
+      { id: 'topaze', name: 'HMS Topaze', type: 'glb', url: './models/topaze.glb', sub: '3D Heritage Figurehead · The Box Plymouth' }
+    ];
+
+    const params = new URLSearchParams(window.location.search);
+    const activeId = params.get('model') || 'royal-william';
+    const current = MODELS.find(m => m.id === activeId) || MODELS[0];
+
+    document.getElementById('modelTitle').textContent = current.name;
+    document.getElementById('modelSub').textContent = current.sub;
+    document.title = current.name + ' · Mo360 Immersive 3D Showcase';
+
+    const strip = document.getElementById('modelStrip');
+    MODELS.forEach(m => {
+      const btn = document.createElement('button');
+      btn.className = 'pill' + (m.id === current.id ? ' active' : '');
+      btn.textContent = m.name;
+      btn.onclick = () => {
+        const u = new URL(window.location.href);
+        u.searchParams.set('model', m.id);
+        window.location.href = u.toString();
+      };
+      strip.appendChild(btn);
+    });
+
+    let rotating = true;
+    window.toggleRotate = () => {
+      rotating = !rotating;
+      document.getElementById('btnRotate').textContent = rotating ? 'Pause Spin' : 'Resume Spin';
+    };
+    window.copyDirectLink = async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        const b = document.getElementById('btnCopy');
+        b.textContent = 'Copied!';
+        setTimeout(() => (b.textContent = 'Copy Link'), 1800);
+      } catch {}
+    };
+
+    const stage = document.getElementById('stage');
+    const loader = document.getElementById('loader');
+    const loaderText = document.getElementById('loaderText');
+
+    if (current.type === 'ply') {
+      loaderText.textContent = 'Loading Cleaned Tavistock 3D Gaussian Splat...';
+      const viewer = new GaussianSplats3D.Viewer({
+        rootElement: stage,
+        cameraUp: [0, -1, 0],
+        initialCameraPosition: [0, -0.05, -0.95],
+        initialCameraLookAt: [0, 0.02, 1.15],
+        sharedMemoryForWorkers: false,
+        gpuAcceleratedSort: false,
+        antialiased: true
+      });
+      viewer.addSplatScene(current.url, { splatAlphaRemovalThreshold: 5, showLoadingUI: false })
+        .then(() => {
+          viewer.start();
+          loader.style.display = 'none';
+          let t = 0, last = performance.now();
+          function tick(now) {
+            const dt = (now - last) / 1000;
+            last = now;
+            if (rotating && viewer.camera && viewer.controls) {
+              t = (t + dt * 0.12) % 1.0;
+              const angle = Math.sin(t * Math.PI * 2) * 0.72;
+              const z = -0.98 + (Math.cos(t * Math.PI * 2) * 0.5 + 0.5) * 0.65;
+              const y = -0.1 + Math.sin(t * Math.PI * 4) * 0.06;
+              viewer.camera.position.set(angle, y, z);
+              viewer.controls.target.set(0, 0.03, 1.18);
+              viewer.controls.update();
+            }
+            requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        })
+        .catch(err => { loaderText.textContent = 'Error: ' + err.message; });
+    } else {
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x08090c);
+      const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.05, 200);
+      camera.position.set(0, 0.6, 3.4);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.18;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      stage.appendChild(renderer.domElement);
+
+      // Museum 3-point PBR studio lighting
+      scene.add(new THREE.HemisphereLight(0xf8fafc, 0x1e293b, 1.35));
+      const keyLight = new THREE.DirectionalLight(0xfff3e0, 2.2);
+      keyLight.position.set(3.5, 5, 4);
+      scene.add(keyLight);
+      const fillLight = new THREE.DirectionalLight(0x93c5fd, 1.0);
+      fillLight.position.set(-4, 2, -2);
+      scene.add(fillLight);
+      const rimLight = new THREE.DirectionalLight(0xc87d28, 1.25);
+      rimLight.position.set(0, 3, -5);
+      scene.add(rimLight);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.6;
+
+      const gltfLoader = new GLTFLoader();
+      const draco = new DRACOLoader();
+      draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/libs/draco/');
+      gltfLoader.setDRACOLoader(draco);
+
+      gltfLoader.load(
+        current.url,
+        (gltf) => {
+          const obj = gltf.scene;
+          const box = new THREE.Box3().setFromObject(obj);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z) || 1;
+          const scale = 2.1 / maxDim;
+          obj.scale.setScalar(scale);
+          obj.position.sub(center.multiplyScalar(scale));
+          scene.add(obj);
+          loader.style.display = 'none';
+        },
+        (xhr) => {
+          if (xhr.total) {
+            loaderText.textContent = `Loading ${current.name}... ${Math.round((xhr.loaded / xhr.total) * 100)}%`;
+          }
+        },
+        (err) => {
+          loaderText.textContent = 'Failed to load model: ' + (err.message || err);
+        }
+      );
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.autoRotate = rotating;
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>
