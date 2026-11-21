@@ -113,6 +113,7 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
     import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 
     const MODELS = [
@@ -241,6 +242,7 @@
       const draco = new DRACOLoader();
       draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/libs/draco/');
       gltfLoader.setDRACOLoader(draco);
+      gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
       gltfLoader.load(
         current.url,
