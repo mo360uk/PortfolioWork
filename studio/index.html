@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COMMERCIAL BRANDING &amp; SPATIAL WEB // Mo360 Immersive Studio</title>
+    <title>Commercial Branding &amp; Spatial Web · Mo360 Immersive Studio</title>
     <meta name="description" content="Immersive 360° digital branding, luxury WebGL 3D web architecture, and executive self-branding by Mo360 Immersive Studio. Creator of Plymouth Patriots platform.">
 
     <!-- Fonts -->
@@ -497,13 +497,92 @@
         }
 
         /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .sector-dock { display: none; }
+        @media (max-width: 960px) {
+            .sector-dock { display: none !important; }
             .master-dock { width: calc(100% - 1.5rem); padding: 0.5rem 0.85rem; }
             .dock-brand-name { display: none; }
-            .flight-progress-container { width: 160px; }
-            .chamber-card { padding: 1.5rem; }
-            .chamber-title { font-size: 1.6rem; }
+            .spatial-overlay-anchor {
+                left: 50% !important;
+                top: 49% !important;
+                transform: translate(-50%, -50%) !important;
+                width: calc(100vw - 28px) !important;
+                max-width: 500px !important;
+                max-height: calc(100dvh - 148px);
+                overflow-y: auto;
+            }
+            .chamber-card {
+                padding: 1.35rem 1.25rem !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                border-radius: 2px !important;
+            }
+            .chamber-badge {
+                font-size: 0.64rem !important;
+                padding: 0.3rem 0.65rem !important;
+                margin-bottom: 0.85rem !important;
+                white-space: normal !important;
+            }
+            .chamber-title {
+                font-size: clamp(1.55rem, 6vw, 2rem) !important;
+                margin-bottom: 0.65rem !important;
+            }
+            .chamber-desc {
+                font-size: 0.88rem !important;
+                line-height: 1.55 !important;
+                margin-bottom: 1rem !important;
+            }
+            .chamber-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.5rem !important;
+                margin-bottom: 1.1rem !important;
+            }
+            .chamber-stat-box {
+                padding: 0.65rem 0.85rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 0.75rem !important;
+                border-radius: 2px !important;
+            }
+            .chamber-stat-box .k {
+                margin-bottom: 0 !important;
+                font-size: 0.62rem !important;
+            }
+            .chamber-stat-box .v {
+                font-size: 0.76rem !important;
+                text-align: right !important;
+                word-break: break-word !important;
+            }
+            .chamber-actions {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                gap: 0.55rem !important;
+            }
+            .btn-primary-3d,
+            .btn-secondary-3d {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 0.72rem 1rem !important;
+                border-radius: 2px !important;
+            }
+            .flight-hud-bottom {
+                bottom: 0.85rem !important;
+                width: calc(100vw - 28px) !important;
+                max-width: 500px !important;
+                justify-content: space-between !important;
+                gap: 0.75rem !important;
+                padding: 0.55rem 0.95rem !important;
+                border-radius: 2px !important;
+            }
+            .flight-progress-container {
+                width: auto !important;
+                flex: 1 !important;
+                gap: 0.65rem !important;
+            }
+            .flight-hud-bottom .btn-primary-3d,
+            .flight-hud-bottom .btn-secondary-3d {
+                width: auto !important;
+            }
         }
     </style>
 <!-- MO360_UNIFIED_THEME_HEAD -->
@@ -564,9 +643,9 @@
             <div class="chamber-card">
                 <div class="chamber-badge">
                     <i data-lucide="compass" style="width:14px;height:14px"></i>
-                    Chamber 01 // Commercial Spatial Threshold
+                    Chamber 01 · Commercial Spatial Studio
                 </div>
-                <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,147,69,0.12); border:1px solid rgba(212,147,69,0.35); border-radius:6px; padding:0.35rem 0.75rem; margin-bottom:1rem; font-family:'Space Mono'; font-size:0.72rem; color:var(--ochre-bright);">
+                <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,147,69,0.12); border:1px solid rgba(212,147,69,0.35); border-radius:2px; padding:0.35rem 0.75rem; margin-bottom:1rem; font-family:'Space Mono'; font-size:0.68rem; color:var(--ochre-bright);">
                     <i data-lucide="award" style="width:14px;height:14px"></i>
                     OFFICIAL CREATOR OF PLYMOUTH PATRIOTS BASKETBALL PLATFORM
                 </div>
@@ -575,12 +654,12 @@
                     <span>RESONATES.</span>
                 </h1>
                 <p class="chamber-desc">
-                    Welcome to the commercial studio of <strong>Mo360 Immersive Studio</strong>. We engineer high-converting digital platforms, bespoke company 360° visual identities, and executive self-branding for athletes and industry leaders.
+                    Welcome to the commercial studio of <strong>Mo360 Immersive Studio</strong>. We design high converting digital platforms, bespoke company 360° visual identities, and executive branding for sports clubs and cultural organisations.
                 </p>
                 <div class="chamber-grid">
                     <div class="chamber-stat-box">
                         <div class="k">Enterprise Platform</div>
-                        <div class="v">plymouthpatriotsbasketball.com</div>
+                        <div class="v">Plymouth Patriots Hub</div>
                     </div>
                     <div class="chamber-stat-box">
                         <div class="k">Design Systems</div>
@@ -608,14 +687,14 @@
             <div class="chamber-card" style="border-color: rgba(212,147,69,0.5);">
                 <div class="chamber-badge" style="background:rgba(212,147,69,0.2);">
                     <i data-lucide="zap" style="width:14px;height:14px"></i>
-                    Chamber 02 // Enterprise Showcase
+                    Chamber 02 · Enterprise Showcase
                 </div>
                 <h2 class="chamber-title">
                     PLYMOUTH CITY PATRIOTS
                     <span>OFFICIAL PLATFORM</span>
                 </h2>
                 <p class="chamber-desc">
-                    Complete digital platform architecture for pro basketball franchise <strong>Plymouth City Patriots</strong>. Engineered with interactive ticketing funnel integrations, roster database systems, corporate sponsor showcases, and fan engagement architecture.
+                    Complete digital platform architecture for pro basketball franchise <strong>Plymouth City Patriots</strong>. Built with interactive ticketing integrations, roster databases, corporate sponsor showcases, and fan engagement hubs.
                 </p>
                 <div class="chamber-grid">
                     <div class="chamber-stat-box">
@@ -624,11 +703,11 @@
                     </div>
                     <div class="chamber-stat-box">
                         <div class="k">Ticketing Funnel</div>
-                        <div class="v">High-Conversion UX</div>
+                        <div class="v">High Conversion UX</div>
                     </div>
                     <div class="chamber-stat-box">
                         <div class="k">Sponsor Ecosystem</div>
-                        <div class="v">Multi-Tier Integration</div>
+                        <div class="v">Multi Tier Integration</div>
                     </div>
                 </div>
                 <div class="chamber-actions">
@@ -637,7 +716,7 @@
                         <i data-lucide="external-link" style="width:16px;height:16px"></i>
                     </a>
                     <button class="btn-secondary-3d" onclick="window.leapToChamber(2)">
-                        <span>Next // Behance Design</span>
+                        <span>Next · Behance Design</span>
                     </button>
                 </div>
             </div>
@@ -648,14 +727,14 @@
             <div class="chamber-card">
                 <div class="chamber-badge">
                     <i data-lucide="layers" style="width:14px;height:14px"></i>
-                    Chamber 03 // Behance Design Series
+                    Chamber 03 · Behance Design Series
                 </div>
                 <h2 class="chamber-title">
                     BOLD COMMERCIAL BRANDING
                     <span>&amp; DESIGN SYSTEMS</span>
                 </h2>
                 <p class="chamber-desc">
-                    Explore our curated Behance visual identities and high-craft design systems across high-end consumer hardware, footwear, and luxury goods.
+                    Explore our curated Behance visual identities and design systems across consumer hardware, footwear, and luxury goods.
                 </p>
                 <div class="chamber-grid">
                     <div class="chamber-stat-box" style="cursor:pointer;" onclick="openProject('sneakers')">
@@ -688,14 +767,14 @@
             <div class="chamber-card">
                 <div class="chamber-badge">
                     <i data-lucide="film" style="width:14px;height:14px"></i>
-                    Chamber 04 // Dynamic Motion &amp; Video
+                    Chamber 04 · Dynamic Motion &amp; Video
                 </div>
                 <h2 class="chamber-title">
                     GAMEDAY MOTION
-                    <span>&amp; EXECUTIVE SELF-BRANDING</span>
+                    <span>&amp; EXECUTIVE BRANDING</span>
                 </h2>
                 <p class="chamber-desc">
-                    High-energy matchday cinematography, 4K promotional cinema, and bespoke digital self-branding for founders, professional athletes, and directors.
+                    Matchday cinematography, 4K promotional cinema, and bespoke digital branding for founders, professional athletes, and creative directors.
                 </p>
                 <div class="chamber-grid">
                     <div class="chamber-stat-box">
@@ -713,7 +792,7 @@
                 </div>
                 <div class="chamber-actions">
                     <button class="btn-primary-3d" onclick="window.leapToChamber(4)">
-                        <span>Initiate Project Consultation</span>
+                        <span>Book Project Consultation</span>
                         <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
                     </button>
                     <a href="../surveys/" class="btn-secondary-3d">
@@ -729,35 +808,35 @@
             <div class="chamber-card" style="text-align: center; max-width: 580px;">
                 <div class="chamber-badge" style="margin: 0 auto 1.25rem;">
                     <i data-lucide="radio" style="width:14px;height:14px"></i>
-                    Chamber 05 // Transmission Dock
+                    Chamber 05 · Direct Studio Contact
                 </div>
                 <h2 class="chamber-title">
-                    INITIATE COMMERCIAL
+                    START A COMMERCIAL
                     <span>COLLABORATION</span>
                 </h2>
                 <p class="chamber-desc">
-                    Elevate your business or executive presence with <strong>Mo360 Immersive Studio</strong>. Available for bespoke high-performance websites, 360° company branding, and sports/executive portfolios.
+                    Elevate your organisation or personal brand with <strong>Mo360 Immersive Studio</strong>. Available for bespoke websites, 360° visual identities, and executive portfolios.
                 </p>
-                <div style="background: rgba(22, 24, 31, 0.7); border: 1px solid var(--border-dark); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.75rem; text-align: left;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.75rem;">
-                        <span style="font-family:'Space Mono'; font-size:0.72rem; color:var(--text-dim);">DIRECT STUDIO CONTACT</span>
-                        <span style="font-family:'Space Mono'; font-size:0.72rem; color:var(--ochre-bright);">UK REGISTERED</span>
+                <div style="background: rgba(22, 24, 31, 0.7); border: 1px solid var(--border-dark); border-radius: 2px; padding: 1.25rem; margin-bottom: 1.35rem; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.55rem;">
+                        <span style="font-family:'Space Mono'; font-size:0.68rem; color:var(--text-dim);">DIRECT STUDIO CONTACT</span>
+                        <span style="font-family:'Space Mono'; font-size:0.68rem; color:var(--ochre-bright);">PLYMOUTH &amp; LONDON</span>
                     </div>
-                    <div style="font-family:'DM Sans'; font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom: 0.35rem;">
+                    <div style="font-family:'DM Sans'; font-size:1.05rem; font-weight:700; color:var(--text-main); margin-bottom: 0.35rem; word-break:break-all;">
                         info@mo360immersivestudio.co.uk
                     </div>
-                    <div style="font-family:'Space Mono'; font-size:0.85rem; color:var(--ochre-bright);">
-                        +44 7935 929850 // London &amp; Plymouth, UK
+                    <div style="font-family:'Space Mono'; font-size:0.82rem; color:var(--ochre-bright);">
+                        +44 7568 668918 · Plymouth, Devon, UK
                     </div>
                 </div>
                 <div class="chamber-actions" style="justify-content: center;">
                     <a href="mailto:info@mo360immersivestudio.co.uk" class="btn-primary-3d">
                         <i data-lucide="mail" style="width:16px;height:16px"></i>
-                        <span>Transmit Email</span>
+                        <span>Email Studio</span>
                     </a>
                     <button class="btn-secondary-3d" onclick="window.leapToChamber(0)">
                         <i data-lucide="rotate-ccw" style="width:15px;height:15px"></i>
-                        <span>Re-Traverse Chambers</span>
+                        <span>Back to Chamber 01</span>
                     </button>
                 </div>
             </div>
@@ -768,19 +847,19 @@
     <!-- SECTOR DOCK (RIGHT SIDE RADIAL HUD) -->
     <div class="sector-dock">
         <div class="sector-btn active" onclick="window.leapToChamber(0)">
-            <span>01 // THRESHOLD</span>
+            <span>01 · STUDIO OVERVIEW</span>
         </div>
         <div class="sector-btn" onclick="window.leapToChamber(1)">
-            <span>02 // PATRIOTS PLATFORM</span>
+            <span>02 · PATRIOTS PLATFORM</span>
         </div>
         <div class="sector-btn" onclick="window.leapToChamber(2)">
-            <span>03 // BEHANCE DESIGN</span>
+            <span>03 · BEHANCE DESIGN</span>
         </div>
         <div class="sector-btn" onclick="window.leapToChamber(3)">
-            <span>04 // MOTION &amp; REELS</span>
+            <span>04 · MOTION &amp; REELS</span>
         </div>
         <div class="sector-btn" onclick="window.leapToChamber(4)">
-            <span>05 // TRANSMISSION</span>
+            <span>05 · CONTACT</span>
         </div>
     </div>
 
