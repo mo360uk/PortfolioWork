@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tavistock 1895 · Interactive 3D Gaussian Splat Prototype | Mo360 Immersive Studio</title>
+  <meta name="description" content="Interactive browser-based 3D Gaussian Splat prototype of Bedford Square, Tavistock (1895) built by Mo360 Immersive Studio in Plymouth, UK." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #13151a;
+      --surface-elevated: rgba(16, 18, 24, 0.90);
+      --border: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(245, 158, 11, 0.42);
+      --amber: #F59E0B;
+      --amber-hover: #d97706;
+      --amber-soft: rgba(245, 158, 11, 0.14);
+      --text: #f4f4f2;
+      --text-muted: #a1a7b3;
+      --text-dim: #747b89;
+      --ok: #34d399;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow: 0 18px 46px rgba(0, 0, 0, 0.62);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Main interactive 3D stage */
+    #stage-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: radial-gradient(circle at 50% 42%, #171920 0%, #0a0a0a 78%);
+    }
+
+    #splat-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #splat-container canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    /* Video fallback / instant mobile mode overlay */
+    #video-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 96px 24px 96px;
+      background: radial-gradient(circle at 50% 45%, #16181f 0%, #0a0a0a 80%);
+    }
+
+    #video-stage.active {
+      display: flex;
+    }
+
+    .video-card {
+      width: 100%;
+      max-width: 960px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .video-card video {
+      display: block;
+      width: 100%;
+      max-height: 62vh;
+      background: #050506;
+      object-fit: contain;
+    }
+
+    .video-caption {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .video-caption strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Top editorial HUD bar */
+    .top-bar {
+      position: fixed;
+      top: 14px;
+      left: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 18px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--amber);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .brand-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .brand-eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--amber-soft);
+      border: 1px solid var(--border-strong);
+      color: var(--amber);
+      font-weight: 700;
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+    }
+
+    .page-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .nav-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .btn.primary {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #0a0a0a;
+      font-weight: 700;
+    }
+
+    .btn.primary:hover {
+      background: var(--amber-hover);
+      border-color: var(--amber-hover);
+    }
+
+    .btn.active-mode {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Loading progress card */
+    #loader-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(10, 10, 10, 0.72);
+      backdrop-filter: blur(8px);
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+
+    #loader-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-card {
+      width: 100%;
+      max-width: 440px;
+      padding: 24px 26px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--amber);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow);
+    }
+
+    .loader-kicker {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--amber);
+      margin-bottom: 6px;
+    }
+
+    .loader-title {
+      font-size: 1.06rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .loader-desc {
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      width: 6%;
+      height: 100%;
+      background: var(--amber);
+      border-radius: 999px;
+      transition: width 0.18s ease;
+    }
+
+    .loader-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .loader-actions {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Bottom controls dock */
+    .bottom-dock {
+      position: fixed;
+      bottom: 14px;
+      left: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .dock-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dock-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .hint-tag {
+      color: var(--text-dim);
+    }
+
+    /* Info drawer (collapsible technical notes) */
+    #info-panel {
+      position: fixed;
+      top: 86px;
+      right: 16px;
+      z-index: 19;
+      width: 330px;
+      max-width: calc(100vw - 32px);
+      padding: 16px 18px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    #info-panel.open {
+      display: block;
+    }
+
+    #info-panel h2 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    #info-panel p {
+      font-size: 0.79rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .spec-key {
+      color: var(--text-dim);
+    }
+
+    .spec-val {
+      color: var(--text);
+      text-align: right;
+    }
+
+    @media (max-width: 820px) {
+      .top-bar {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 10px 12px;
+      }
+      .page-title {
+        font-size: 0.92rem;
+      }
+      .bottom-dock {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 9px 12px;
+      }
+      .hint-tag {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-eyebrow">
+        <span>Mo360 Immersive Studio · Plymouth, UK</span>
+        <span class="status-pill">In development</span>
+      </div>
+      <h1 class="page-title">Tavistock 1895 · Interactive 3D Gaussian Splat Prototype (In development)</h1>
+    </div>
+    <nav class="nav-actions" aria-label="Viewer navigation">
+      <a class="btn" href="../index.html#latest-works">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <span>Back to Portfolio</span>
+      </a>
+      <a class="btn" href="tavistock-heritage-vr.html">Tavistock Heritage VR</a>
+      <button type="button" class="btn active-mode" id="btn-mode-3d">3D Gaussian Splat</button>
+      <button type="button" class="btn" id="btn-mode-video">Orbit Video (762 KB)</button>
+      <button type="button" class="btn" id="btn-info" aria-expanded="false" aria-controls="info-panel">Details</button>
+    </nav>
+  </header>
+
+  <aside id="info-panel" aria-label="Technical specifications">
+    <h2>About this 3D Heritage Prototype</h2>
+    <p>
+      Reconstructed from an archival 1895 photograph of Bedford Square, Tavistock (Devon, UK) using Apple SHARP monocular 3D Gaussian Splatting. The browser edition streams a 500,000-Gaussian web-optimised subset (6.13 MB) directly over static CDN hosting with zero cloud GPU runtime costs.
+    </p>
+    <p>
+      To inspect the uncompressed 1,179,648-Gaussian master file (66.1 MB .ply) locally, use the Load Local .PLY button in the bottom dock.
+    </p>
+    <div class="spec-grid">
+      <span class="spec-key">Source Model</span>
+      <span class="spec-val">Apple SHARP 3DGS</span>
+      <span class="spec-key">Web Stream</span>
+      <span class="spec-val">500,000 Gaussians (6.13 MB)</span>
+      <span class="spec-key">Master PLY</span>
+      <span class="spec-val">1,179,648 Gaussians (66.1 MB)</span>
+      <span class="spec-key">Renderer</span>
+      <span class="spec-val" id="spec-gpu">Checking GPU...</span>
+      <span class="spec-key">Hosting Cost</span>
+      <span class="spec-val">GBP 0 / month (Static CDN)</span>
+    </div>
+  </aside>
+
+  <main id="stage-wrap">
+    <div id="splat-container" aria-label="Interactive 3D Gaussian Splat canvas"></div>
+
+    <section id="video-stage" aria-label="Apple SHARP 3D Camera Orbit video preview">
+      <div class="video-card">
+        <video id="orbit-video" controls loop playsinline preload="metadata">
+          <source src="assets/tavistock_archive/tavistock_1895_sharp_orbit.mp4" type="video/mp4" />
+          Your browser does not support HTML5 video playback.
+        </video>
+        <div class="video-caption">
+          <div>
+            <strong>Bedford Square, Tavistock (1895) · Apple SHARP 3D Camera Orbit</strong>
+            <span> (762 KB MP4 preview for mobile &amp; low-bandwidth viewing)</span>
+          </div>
+          <button type="button" class="btn primary" id="btn-back-to-3d">Return to Interactive 3D Splat</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="loader-overlay" role="status" aria-live="polite">
+    <div class="loader-card">
+      <div class="loader-kicker">Mo360 Immersive Studio · Static Web 3D Stream</div>
+      <div class="loader-title" id="loader-title">Loading Tavistock 1895 3D Gaussian Splat...</div>
+      <div class="loader-desc" id="loader-desc">
+        Streaming 500,000 archival Gaussians (6.13 MB) directly into your browser GPU.
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="loader-meta">
+        <span id="loader-stage">Downloading compressed splat...</span>
+        <span id="loader-pct">0%</span>
+      </div>
+      <div class="loader-actions">
+        <button type="button" class="btn" id="btn-loader-video">Watch Instant Orbit Video (762 KB)</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bottom-dock">
+    <div class="dock-controls">
+      <button type="button" class="btn primary" id="btn-reset">Reset Camera</button>
+      <button type="button" class="btn" id="btn-orbit-toggle">Gentle Parallax: Off</button>
+      <button type="button" class="btn" id="btn-zoom-in">Zoom In</button>
+      <button type="button" class="btn" id="btn-zoom-out">Zoom Out</button>
+      <label class="btn" for="local-ply-input" title="Load a local .ply, .splat, or .ksplat file directly in your browser">
+        <span>Load Local .PLY / .SPLAT</span>
+        <input type="file" id="local-ply-input" accept=".ply,.splat,.ksplat" style="display:none" />
+      </label>
+    </div>
+    <div class="dock-meta">
+      <span><span class="live-dot" id="status-dot"></span><span id="status-text">Initialising 3D engine...</span></span>
+      <span class="hint-tag">Drag: Orbit · Scroll: Zoom · Right-drag: Pan</span>
+    </div>
+  </footer>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+      "@mkkellogg/gaussian-splats-3d": "https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.6/build/gaussian-splats-3d.module.js"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
+
+    const DEFAULT_WEB_SPLAT = 'assets/tavistock_archive/tavistock_1895_web.splat.gz';
+    const HERO_POS = [0.0, -0.04, 0.85];
+    const HERO_LOOK_AT = [0.0, -0.04, 14.0];
+
+    const splatContainer = document.getElementById('splat-container');
+    const videoStage = document.getElementById('video-stage');
+    const orbitVideo = document.getElementById('orbit-video');
+    const loaderOverlay = document.getElementById('loader-overlay');
+    const loaderTitle = document.getElementById('loader-title');
+    const loaderDesc = document.getElementById('loader-desc');
+    const loaderStage = document.getElementById('loader-stage');
+    const loaderPct = document.getElementById('loader-pct');
+    const progressFill = document.getElementById('progress-fill');
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-dot');
+    const specGpu = document.getElementById('spec-gpu');
+    const infoPanel = document.getElementById('info-panel');
+
+    const btnMode3d = document.getElementById('btn-mode-3d');
+    const btnModeVideo = document.getElementById('btn-mode-video');
+    const btnBackTo3d = document.getElementById('btn-back-to-3d');
+    const btnLoaderVideo = document.getElementById('btn-loader-video');
+    const btnReset = document.getElementById('btn-reset');
+    const btnOrbitToggle = document.getElementById('btn-orbit-toggle');
+    const btnZoomIn = document.getElementById('btn-zoom-in');
+    const btnZoomOut = document.getElementById('btn-zoom-out');
+    const btnInfo = document.getElementById('btn-info');
+    const localPlyInput = document.getElementById('local-ply-input');
+
+    let viewer = null;
+    let activeBlobUrl = null;
+    let gentleParallax = false;
+    let parallaxTime = 0;
+    let parallaxRaf = null;
+    let currentMode = '3d';
+
+    // Detect WebGPU / WebGL2 runtime capability honestly
+    async function detectGpuRuntime() {
+      let hasWebGPU = false;
+      if ('gpu' in navigator) {
+        try {
+          const adapter = await navigator.gpu.requestAdapter();
+          hasWebGPU = Boolean(adapter);
+        } catch {
+          hasWebGPU = false;
+        }
+      }
+      specGpu.textContent = hasWebGPU
+        ? 'WebGPU Ready · WebGL2 Splat'
+        : 'WebGL2 Splat Renderer';
+    }
+    detectGpuRuntime();
+
+    function setProgress(pct, stageLabel) {
+      const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+      progressFill.style.width = clamped + '%';
+      loaderPct.textContent = clamped + '%';
+      if (stageLabel) loaderStage.textContent = stageLabel;
+    }
+
+    function setStatus(msg, ok = true) {
+      statusText.textContent = msg;
+      statusDot.style.background = ok ? '#34d399' : '#F59E0B';
+    }
+
+    // Exact IEEE-754 float16 -> float32 conversion
+    function f16ToF32(h) {
+      const s = (h & 0x8000) >> 15;
+      const e = (h & 0x7C00) >> 10;
+      const f = h & 0x03FF;
+      if (e === 0) return (s ? -1 : 1) * Math.pow(2, -14) * (f / 1024);
+      if (e === 31) return f ? NaN : (s ? -Infinity : Infinity);
+      return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / 1024);
+    }
+
+    // Decompress compact M360 gzipped SoA splat into standard 32-byte antimatter15 .splat buffer
+    async function fetchAndUnpackM360Splat(url) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status + ' while fetching ' + url);
+      }
+      const totalBytes = Number(response.headers.get('content-length') || 0);
+      const reader = response.body.getReader();
+      const chunks = [];
+      let received = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.byteLength;
+        if (totalBytes > 0) {
+          const dlPct = (received / totalBytes) * 65;
+          const mbDone = (received / 1048576).toFixed(1);
+          const mbTotal = (totalBytes / 1048576).toFixed(1);
+          setProgress(dlPct, `Downloading ${mbDone} / ${mbTotal} MB...`);
+        } else {
+          setProgress(35, `Downloading ${(received / 1048576).toFixed(1)} MB...`);
+        }
+      }
+
+      setProgress(72, 'Decompressing gzip stream...');
+      const compressedBlob = new Blob(chunks);
+      const ds = new DecompressionStream('gzip');
+      const decompressedStream = compressedBlob.stream().pipeThrough(ds);
+      const rawBuf = await new Response(decompressedStream).arrayBuffer();
+
+      setProgress(84, 'Unpacking 3D Gaussians for GPU...');
+      const u8 = new Uint8Array(rawBuf);
+      const dv = new DataView(rawBuf);
+      const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+      if (magic !== 'M360') {
+        throw new Error('Unexpected compressed splat header: ' + magic);
+      }
+      const count = dv.getUint32(4, true);
+      let offset = 8;
+
+      const posBytes = count * 3 * 2;
+      const posU16 = new Uint16Array(rawBuf, offset, count * 3);
+      offset += posBytes;
+
+      const scU16 = new Uint16Array(rawBuf, offset, count * 3);
+      offset += posBytes;
+
+      const rPlane = u8.subarray(offset, offset + count); offset += count;
+      const gPlane = u8.subarray(offset, offset + count); offset += count;
+      const bPlane = u8.subarray(offset, offset + count); offset += count;
+      const aPlane = u8.subarray(offset, offset + count); offset += count;
+
+      const rot0 = u8.subarray(offset, offset + count); offset += count;
+      const rot1 = u8.subarray(offset, offset + count); offset += count;
+      const rot2 = u8.subarray(offset, offset + count); offset += count;
+      const rot3 = u8.subarray(offset, offset + count);
+
+      // Build standard 32-byte per splat buffer:
+      // 3x float32 pos (12B), 3x float32 scale (12B), 4x uint8 rgba (4B), 4x uint8 rot (4B)
+      const outBuf = new ArrayBuffer(count * 32);
+      const outF32 = new Float32Array(outBuf);
+      const outU8 = new Uint8Array(outBuf);
+
+      for (let i = 0; i < count; i++) {
+        const fBase = i * 8;
+        outF32[fBase + 0] = f16ToF32(posU16[i]);
+        outF32[fBase + 1] = f16ToF32(posU16[count + i]);
+        outF32[fBase + 2] = f16ToF32(posU16[2 * count + i]);
+
+        outF32[fBase + 3] = Math.exp(f16ToF32(scU16[i]));
+        outF32[fBase + 4] = Math.exp(f16ToF32(scU16[count + i]));
+        outF32[fBase + 5] = Math.exp(f16ToF32(scU16[2 * count + i]));
+
+        const bBase = i * 32 + 24;
+        outU8[bBase + 0] = rPlane[i];
+        outU8[bBase + 1] = gPlane[i];
+        outU8[bBase + 2] = bPlane[i];
+        outU8[bBase + 3] = aPlane[i];
+        outU8[bBase + 4] = rot0[i];
+        outU8[bBase + 5] = rot1[i];
+        outU8[bBase + 6] = rot2[i];
+        outU8[bBase + 7] = rot3[i];
+      }
+
+      const blob = new Blob([outBuf], { type: 'application/octet-stream' });
+      return { blobUrl: URL.createObjectURL(blob), count };
+    }
+
+    function stopParallax() {
+      gentleParallax = false;
+      btnOrbitToggle.textContent = 'Gentle Parallax: Off';
+      btnOrbitToggle.classList.remove('active-mode');
+      if (parallaxRaf) {
+        cancelAnimationFrame(parallaxRaf);
+        parallaxRaf = null;
+      }
+    }
+
+    function startParallax() {
+      if (!viewer || !viewer.camera) return;
+      gentleParallax = true;
+      btnOrbitToggle.textContent = 'Gentle Parallax: On';
+      btnOrbitToggle.classList.add('active-mode');
+      const step = () => {
+        if (!gentleParallax || !viewer || !viewer.camera) return;
+        parallaxTime += 0.012;
+        const x = Math.sin(parallaxTime) * 0.95;
+        const y = HERO_POS[1] + Math.sin(parallaxTime * 0.6) * 0.14;
+        const z = HERO_POS[2] + (Math.cos(parallaxTime) - 1) * 0.25;
+        viewer.camera.position.set(x, y, z);
+        if (viewer.controls) {
+          viewer.controls.target.set(HERO_LOOK_AT[0], HERO_LOOK_AT[1], HERO_LOOK_AT[2]);
+          viewer.controls.update();
+        }
+        parallaxRaf = requestAnimationFrame(step);
+      };
+      parallaxRaf = requestAnimationFrame(step);
+    }
+
+    function resetCamera() {
+      stopParallax();
+      if (!viewer || !viewer.camera) return;
+      viewer.camera.position.set(HERO_POS[0], HERO_POS[1], HERO_POS[2]);
+      viewer.camera.up.set(0, -1, 0);
+      if (viewer.controls) {
+        viewer.controls.target.set(HERO_LOOK_AT[0], HERO_LOOK_AT[1], HERO_LOOK_AT[2]);
+        viewer.controls.update();
+      }
+      setStatus('Camera reset to 1895 Bedford Square hero view');
+    }
+
+    function dollyCamera(delta) {
+      stopParallax();
+      if (!viewer || !viewer.camera || !viewer.controls) return;
+      const dir = new THREE.Vector3();
+      viewer.camera.getWorldDirection(dir);
+      viewer.camera.position.addScaledVector(dir, delta);
+      viewer.controls.update();
+    }
+
+    async function mountViewer(sceneUrl, sceneFormat, label) {
+      stopParallax();
+      loaderOverlay.classList.remove('hidden');
+      loaderTitle.textContent = 'Loading ' + label;
+
+      try {
+        if (viewer) {
+          await viewer.dispose();
+          viewer = null;
+        }
+        splatContainer.innerHTML = '';
+
+        viewer = new GaussianSplats3D.Viewer({
+          rootElement: splatContainer,
+          cameraUp: [0, -1, 0],
+          initialCameraPosition: HERO_POS,
+          initialCameraLookAt: HERO_LOOK_AT,
+          sharedMemoryForWorkers: false,
+          gpuAcceleratedSort: false,
+          dynamicScene: false,
+          antialiased: false,
+          sceneRevealMode: GaussianSplats3D.SceneRevealMode.Instant
+        });
+
+        setProgress(92, 'Uploading splats to GPU...');
+        const options = {
+          showLoadingUI: false,
+          splatAlphaRemovalThreshold: 5,
+          onProgress: (pct, msg) => {
+            if (typeof pct === 'number' && !Number.isNaN(pct)) {
+              setProgress(Math.max(92, Math.min(99, pct)), msg || 'Preparing splats...');
+            }
+          }
+        };
+        if (sceneFormat !== undefined && sceneFormat !== null) {
+          options.format = sceneFormat;
+        }
+
+        await viewer.addSplatScene(sceneUrl, options);
+
+        // Calibrate FOV cleanly inside the central Apple SHARP reconstruction cone
+        if (viewer.camera) {
+          viewer.camera.fov = 38;
+          viewer.camera.updateProjectionMatrix();
+        }
+        if (viewer.controls) {
+          viewer.controls.enableDamping = true;
+          viewer.controls.dampingFactor = 0.08;
+          viewer.controls.target.set(HERO_LOOK_AT[0], HERO_LOOK_AT[1], HERO_LOOK_AT[2]);
+          viewer.controls.update();
+        }
+
+        viewer.start();
+        setProgress(100, 'Ready');
+        setTimeout(() => loaderOverlay.classList.add('hidden'), 180);
+        setStatus('Live 3D Gaussian Splat: ' + label);
+
+        // Stop auto-parallax if user interacts directly with canvas
+        splatContainer.addEventListener('pointerdown', stopParallax, { once: false });
+      } catch (err) {
+        console.error('Splat load error:', err);
+        loaderTitle.textContent = '3D Splat could not load in this browser';
+        loaderDesc.textContent = 'Reason: ' + (err && err.message ? err.message : String(err)) + '. You can switch to the instant 762 KB orbit video or load a local .ply file below.';
+        setStatus('Fallback ready (see orbit video or local .ply)', false);
+      }
+    }
+
+    async function loadDefaultScene() {
+      const params = new URLSearchParams(window.location.search);
+      const customUrl = params.get('url');
+
+      if (customUrl) {
+        const lower = customUrl.toLowerCase();
+        const fmt = lower.endsWith('.ply')
+          ? GaussianSplats3D.SceneFormat.Ply
+          : lower.endsWith('.ksplat')
+            ? GaussianSplats3D.SceneFormat.KSplat
+            : GaussianSplats3D.SceneFormat.Splat;
+        await mountViewer(customUrl, fmt, customUrl.split('/').pop() || 'Remote 3D Splat');
+        return;
+      }
+
+      try {
+        setProgress(4, 'Connecting to static CDN...');
+        const { blobUrl, count } = await fetchAndUnpackM360Splat(DEFAULT_WEB_SPLAT);
+        if (activeBlobUrl) URL.revokeObjectURL(activeBlobUrl);
+        activeBlobUrl = blobUrl;
+        await mountViewer(
+          blobUrl,
+          GaussianSplats3D.SceneFormat.Splat,
+          `Tavistock 1895 (${count.toLocaleString('en-GB')} Gaussians)`
+        );
+      } catch (err) {
+        console.error('Compressed splat fetch error:', err);
+        loaderTitle.textContent = 'Unable to stream compressed 3D splat';
+        loaderDesc.textContent = (err && err.message ? err.message : String(err)) + '. Switch to the instant 762 KB Orbit Video or load a local .ply file.';
+        setStatus('Stream unavailable; Orbit Video ready', false);
+      }
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      if (mode === 'video') {
+        stopParallax();
+        videoStage.classList.add('active');
+        loaderOverlay.classList.add('hidden');
+        btnModeVideo.classList.add('active-mode');
+        btnMode3d.classList.remove('active-mode');
+        orbitVideo.play().catch(() => {});
+        setStatus('Playing Apple SHARP 3D Camera Orbit preview (762 KB)');
+      } else {
+        videoStage.classList.remove('active');
+        orbitVideo.pause();
+        btnMode3d.classList.add('active-mode');
+        btnModeVideo.classList.remove('active-mode');
+        setStatus(viewer ? 'Live 3D Gaussian Splat active' : 'Loading 3D Gaussian Splat...');
+      }
+    }
+
+    btnMode3d.addEventListener('click', () => setMode('3d'));
+    btnModeVideo.addEventListener('click', () => setMode('video'));
+    btnBackTo3d.addEventListener('click', () => setMode('3d'));
+    btnLoaderVideo.addEventListener('click', () => setMode('video'));
+
+    btnReset.addEventListener('click', () => {
+      if (currentMode !== '3d') setMode('3d');
+      resetCamera();
+    });
+
+    btnOrbitToggle.addEventListener('click', () => {
+      if (currentMode !== '3d') setMode('3d');
+      if (gentleParallax) stopParallax();
+      else startParallax();
+    });
+
+    btnZoomIn.addEventListener('click', () => dollyCamera(0.8));
+    btnZoomOut.addEventListener('click', () => dollyCamera(-0.8));
+
+    btnInfo.addEventListener('click', () => {
+      const open = infoPanel.classList.toggle('open');
+      btnInfo.setAttribute('aria-expanded', String(open));
+      btnInfo.classList.toggle('active-mode', open);
+    });
+
+    localPlyInput.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (currentMode !== '3d') setMode('3d');
+      if (activeBlobUrl) URL.revokeObjectURL(activeBlobUrl);
+      activeBlobUrl = URL.createObjectURL(file);
+      const lower = file.name.toLowerCase();
+      const fmt = lower.endsWith('.ply')
+        ? GaussianSplats3D.SceneFormat.Ply
+        : lower.endsWith('.ksplat')
+          ? GaussianSplats3D.SceneFormat.KSplat
+          : GaussianSplats3D.SceneFormat.Splat;
+      loaderDesc.textContent = `Loading local file (${(file.size / 1048576).toFixed(1)} MB) directly in your browser...`;
+      await mountViewer(activeBlobUrl, fmt, file.name);
+      e.target.value = '';
+    });
+
+    loadDefaultScene();
+  </script>
+</body>
+</html>
