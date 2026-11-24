@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive 3D Web Closet &amp; Virtual Showroom | Mo360 Immersive Studio</title>
+<meta name="description" content="Real-time WebGL 3D virtual closet and garment rail prototype built by Mo360 Immersive Studio in Plymouth, UK.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0d10;
+    --panel: rgba(14, 16, 20, 0.86);
+    --border: rgba(255, 255, 255, 0.12);
+    --amber: #F59E0B;
+    --text: #f5f5f0;
+    --muted: #9ca3af;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  /* Top Navigation Bar */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 22px;
+    background: linear-gradient(180deg, rgba(10,11,14,0.92) 0%, rgba(10,11,14,0.45) 100%);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.88rem;
+  }
+  .back-link:hover { color: var(--amber); }
+  .brand-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 11px; border: 1px solid rgba(245, 158, 11, 0.55);
+    background: rgba(245, 158, 11, 0.12); color: var(--amber);
+  }
+  .view-toggle {
+    display: inline-flex; border: 1px solid var(--border); background: rgba(15,17,22,0.85);
+  }
+  .view-toggle button {
+    border: none; background: transparent; color: var(--muted);
+    font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 13px; cursor: pointer;
+  }
+  .view-toggle button.active { background: var(--amber); color: #0a0a0a; }
+
+  /* 3D Canvas Stage */
+  #stage {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    touch-action: none; cursor: grab;
+  }
+  #stage:active { cursor: grabbing; }
+
+  /* Active Garment HUD Card (Left) */
+  .hud-card {
+    position: fixed; left: 22px; top: 82px; z-index: 25;
+    width: min(330px, calc(100vw - 44px));
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    padding: 18px 18px 16px; backdrop-filter: blur(14px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  }
+  .hud-kicker {
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--amber);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
+  }
+  .hud-title { font-size: 1.3rem; font-weight: 800; line-height: 1.15; margin-bottom: 6px; }
+  .hud-price { font-family: 'Space Mono', monospace; font-size: 0.96rem; font-weight: 700; color: #facc15; margin-bottom: 8px; }
+  .hud-desc { font-size: 0.84rem; color: #d1d5db; line-height: 1.5; margin-bottom: 14px; }
+  .hud-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-primary {
+    flex: 1; min-width: 120px; background: var(--amber); color: #0a0a0a; border: none;
+    font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 12px; cursor: pointer;
+  }
+  .btn-primary:hover { background: #fbbf24; }
+  .btn-sec {
+    background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border);
+    font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; padding: 10px 12px; cursor: pointer;
+  }
+  .btn-sec:hover { border-color: var(--amber); color: var(--amber); }
+  .hud-hint {
+    margin-top: 11px; padding-top: 9px; border-top: 1px solid var(--border);
+    font-family: 'Space Mono', monospace; font-size: 0.66rem; color: var(--muted);
+  }
+
+  /* Bottom Camera Anchor Pills */
+  .dock {
+    position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 25;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center;
+    max-width: calc(100vw - 24px);
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 7px 9px; backdrop-filter: blur(12px);
+  }
+  .dock button {
+    background: transparent; color: #d1d5db; border: 1px solid transparent;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 12px; cursor: pointer;
+  }
+  .dock button:hover { color: #ffffff; border-color: var(--border); }
+  .dock button.active { background: var(--amber); color: #0a0a0a; }
+
+  /* 2D Grid Fallback View */
+  #gridView {
+    position: fixed; inset: 0; z-index: 20; overflow-y: auto;
+    background: #0d0f13; padding: 92px 24px 48px; display: none;
+  }
+  #gridView.open { display: block; }
+  .grid-inner { max-width: 1120px; margin: 0 auto; }
+  .grid-head { margin-bottom: 22px; }
+  .grid-head h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 6px; }
+  .grid-head p { color: var(--muted); font-size: 0.92rem; }
+  .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+  .prod-tile {
+    background: #14171f; border: 1px solid var(--border); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .prod-tile img { width: 100%; aspect-ratio: 4/5; object-fit: contain; background: #e8e6e1; padding: 14px; }
+  .prod-tile-body { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .prod-tile-title { font-weight: 700; font-size: 1rem; }
+  .prod-tile-price { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--amber); }
+
+  /* Slide-Out Quick-Buy Drawer */
+  #drawerBackdrop {
+    position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.58);
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  }
+  #drawerBackdrop.open { opacity: 1; pointer-events: auto; }
+  #quickDrawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 45;
+    width: min(390px, 100vw); background: #111318; border-left: 1px solid var(--border);
+    padding: 24px 22px; display: flex; flex-direction: column; gap: 14px;
+    transform: translateX(100%); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow-y: auto;
+  }
+  #quickDrawer.open { transform: translateX(0); }
+  .drawer-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+  .drawer-close {
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+    font-family: 'Space Mono', monospace; font-size: 0.72rem; padding: 6px 10px; cursor: pointer;
+  }
+  .drawer-preview {
+    width: 100%; aspect-ratio: 4/3; background: #e8e6e1; display: flex; align-items: center; justify-content: center;
+    padding: 12px; border: 1px solid var(--border);
+  }
+  .drawer-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .size-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .size-pill {
+    min-width: 48px; padding: 9px 12px; background: #1a1d26; color: var(--text);
+    border: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 0.76rem; font-weight: 700; cursor: pointer;
+  }
+  .size-pill.active { background: var(--amber); color: #0a0a0a; border-color: var(--amber); }
+  .size-pill:disabled { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
+  .bag-toast {
+    display: none; padding: 10px 12px; background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(16, 185, 129, 0.5); color: #6ee7b7;
+    font-family: 'Space Mono', monospace; font-size: 0.74rem;
+  }
+  .bag-toast.show { display: block; }
+
+  @media (max-width: 720px) {
+    .hud-card { top: auto; bottom: 78px; left: 12px; right: 12px; width: auto; padding: 13px 14px; }
+    .hud-desc { display: none; }
+    .topbar { padding: 10px 12px; }
+    .brand-pill { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="back-link" href="../index.html#studio-commercial-work">&larr; Back to Mo360 Immersive Studio</a>
+  <span class="brand-pill">3D Web Closet R&amp;D Prototype</span>
+  <div class="view-toggle" role="tablist" aria-label="View mode">
+    <button id="btn3dView" class="active" type="button">3D Closet</button>
+    <button id="btn2dView" type="button">2D Grid</button>
+  </div>
+</header>
+
+<div id="stage" aria-label="Interactive 3D Virtual Closet Canvas"></div>
+
+<aside class="hud-card" id="hudCard">
+  <div class="hud-kicker" id="hudCategory">STUDIO CAPSULE · 01 / 06</div>
+  <h1 class="hud-title" id="hudTitle">Obsidian Aperture Heavyweight Tee</h1>
+  <div class="hud-price" id="hudPrice">&pound;38.00</div>
+  <p class="hud-desc" id="hudDesc">280gsm organic combed cotton boxy tee featuring tonal back print and Plymouth studio woven hem tab.</p>
+  <div class="hud-actions">
+    <button class="btn-primary" id="btnQuickBuy" type="button">Select Size / Quick Buy</button>
+    <button class="btn-sec" id="btnFlip" type="button">Flip Back</button>
+  </div>
+  <div class="hud-hint">Click any hanging garment · Drag to orbit 360° · Scroll to zoom</div>
+</aside>
+
+<nav class="dock" aria-label="Closet rail camera anchors">
+  <button type="button" class="active" data-anchor="all">Full Rail</button>
+  <button type="button" data-anchor="hoodies">Hoodies</button>
+  <button type="button" data-anchor="tees">Tees</button>
+  <button type="button" data-anchor="outerwear">Outerwear</button>
+  <button type="button" data-anchor="reset">Reset View</button>
+</nav>
+
+<section id="gridView" aria-label="2D Product Grid Fallback">
+  <div class="grid-inner">
+    <div class="grid-head">
+      <h1>Mo360 Immersive Virtual Closet (2D Catalogue)</h1>
+      <p>Accessible semantic grid view paired with the real-time WebGL garment rail. Built for Shopify Online Store 2.0 storefronts.</p>
+    </div>
+    <div class="prod-grid" id="prodGrid"></div>
+  </div>
+</section>
+
+<div id="drawerBackdrop"></div>
+<aside id="quickDrawer" aria-label="Quick Buy Drawer">
+  <div class="drawer-top">
+    <span style="font-family:'Space Mono',monospace;font-size:0.74rem;color:var(--amber);letter-spacing:0.08em;">QUICK BUY · DEMO DRAWER</span>
+    <button class="drawer-close" id="btnCloseDrawer" type="button">Close</button>
+  </div>
+  <div class="drawer-preview"><img id="drawerImg" alt="Selected garment preview"></div>
+  <div>
+    <div id="drawerTitle" style="font-size:1.2rem;font-weight:800;margin-bottom:4px;"></div>
+    <div id="drawerPrice" style="font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--amber);font-weight:700;"></div>
+  </div>
+  <p id="drawerDesc" style="font-size:0.86rem;color:#d1d5db;line-height:1.5;"></p>
+  <div>
+    <div style="font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:8px;">SELECT SIZE</div>
+    <div class="size-row" id="drawerSizes"></div>
+  </div>
+  <button class="btn-primary" id="btnAddBag" type="button" style="flex:none;padding:13px;">Add to Bag (Demo)</button>
+  <div class="bag-toast" id="bagToast"></div>
+  <div style="font-size:0.75rem;color:var(--muted);line-height:1.45;margin-top:auto;">
+    Commercial 3D Web R&amp;D prototype by Mo360 Immersive Studio. Connects directly to Shopify Ajax Cart API (<code>/cart/add.js</code>) when installed in a live store theme.
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(function() {
+  // Original copyright-safe Mo360 Immersive Studio apparel collection
+  const PRODUCTS = [
+    {
+      id: 'mo-tee-01', category: 'tees', label: 'Tees',
+      title: 'Obsidian Aperture Tee', price: '£38.00',
+      desc: '280gsm organic combed cotton boxy tee with subtle chest emblem and Studio Ochre architectural back print.',
+      silhouette: 'tee', primary: '#16181e', accent: '#F59E0B', textCol: '#f5f5f0',
+      frontMark: 'MO360', backMark: 'PLYMOUTH · STUDIO 01',
+      sizes: [{s:'S', ok:true}, {s:'M', ok:true}, {s:'L', ok:true}, {s:'XL', ok:true}]
+    },
+    {
+      id: 'mo-hoodie-02', category: 'hoodies', label: 'Hoodies',
+      title: 'Studio Ochre Heavy Hoodie', price: '£74.00',
+      desc: '480gsm heavyweight loopback fleece in signature warm amber-ochre with structured double-layer hood.',
+      silhouette: 'hoodie', primary: '#C87D28', accent: '#0a0a0a', textCol: '#0a0a0a',
+      frontMark: 'IMMERSIVE', backMark: 'DEVON · 50.3755 N',
+      sizes: [{s:'S', ok:true}, {s:'M', ok:true}, {s:'L', ok:true}, {s:'XL', ok:false}]
+    },
+    {
+      id: 'mo-hoodie-03', category: 'hoodies', label: 'Hoodies',
+      title: 'Sound Wave Slate Hoodie', price: '£78.00',
+      desc: 'Washed charcoal heavyweight hoodie inspired by Plymouth Sound coastal contours and generative line studies.',
+      silhouette: 'hoodie', primary: '#2b303a', accent: '#F59E0B', textCol: '#f5f5f0',
+      frontMark: 'SOUND // 360', backMark: 'SPATIAL MEDIA LAB',
+      sizes: [{s:'S', ok:true}, {s:'M', ok:true}, {s:'L', ok:true}, {s:'XL', ok:true}]
+    },
+    {
+      id: 'mo-tee-04', category: 'tees', label: 'Tees',
+      title: 'Chalk Grid Studio Tee', price: '£36.00',
+      desc: 'Warm off-white heavyweight jersey featuring clean monochrome typographic coordinates from Plymouth.',
+      silhouette: 'tee', primary: '#ece9e1', accent: '#14161b', textCol: '#14161b',
+      frontMark: 'STUDIO · UK', backMark: 'MO360 IMMERSIVE',
+      sizes: [{s:'S', ok:true}, {s:'M', ok:false}, {s:'L', ok:true}, {s:'XL', ok:true}]
+    },
+    {
+      id: 'mo-outer-05', category: 'outerwear', label: 'Outerwear',
+      title: 'Devon Field Work Jacket', price: '£118.00',
+      desc: 'Weather-resistant waxed olive canvas chore jacket built for coastal shoots, drone flights and studio days.',
+      silhouette: 'jacket', primary: '#384237', accent: '#F59E0B', textCol: '#f5f5f0',
+      frontMark: 'FIELD LAB', backMark: 'A2 COFC · DEVON',
+      sizes: [{s:'S', ok:true}, {s:'M', ok:true}, {s:'L', ok:true}, {s:'XL', ok:true}]
+    },
+    {
+      id: 'mo-outer-06', category: 'outerwear', label: 'Outerwear',
+      title: 'Nocturne Technical Overshirt', price: '£94.00',
+      desc: 'Matte black structured cotton-nylon overshirt with concealed chest zip pocket and tonal studio stitch.',
+      silhouette: 'jacket', primary: '#111318', accent: '#e5e7eb', textCol: '#f5f5f0',
+      frontMark: 'ARCH // 06', backMark: 'MO360 IMMERSIVE',
+      sizes: [{s:'S', ok:true}, {s:'M', ok:true}, {s:'L', ok:true}, {s:'XL', ok:true}]
+    }
+  ];
+
+  // Procedural crisp garment canvas textures (transparent PNG background)
+  function createGarmentCanvas(prod, isBack) {
+    const c = document.createElement('canvas');
+    c.width = 768; c.height = 960;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    // Subtle soft drop shadow for fabric depth
+    ctx.save();
+    ctx.fillStyle = prod.primary;
+    ctx.strokeStyle = 'rgba(0,0,0,0.22)';
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+    if (prod.silhouette === 'tee') {
+      ctx.moveTo(275, 110);
+      ctx.quadraticCurveTo(384, isBack ? 132 : 175, 493, 110);
+      ctx.lineTo(665, 200);
+      ctx.lineTo(620, 390);
+      ctx.lineTo(548, 360);
+      ctx.lineTo(548, 860);
+      ctx.lineTo(220, 860);
+      ctx.lineTo(220, 360);
+      ctx.lineTo(148, 390);
+      ctx.lineTo(103, 200);
+      ctx.closePath();
+    } else if (prod.silhouette === 'hoodie') {
+      // Hood
+      ctx.moveTo(270, 125);
+      ctx.quadraticCurveTo(384, 30, 498, 125);
+      ctx.lineTo(665, 225);
+      ctx.lineTo(680, 620);
+      ctx.lineTo(595, 625);
+      ctx.lineTo(560, 370);
+      ctx.lineTo(560, 865);
+      ctx.lineTo(208, 865);
+      ctx.lineTo(208, 370);
+      ctx.lineTo(173, 625);
+      ctx.lineTo(88, 620);
+      ctx.lineTo(103, 225);
+      ctx.closePath();
+    } else {
+      // Jacket / Overshirt
+      ctx.moveTo(290, 96);
+      ctx.lineTo(478, 96);
+      ctx.lineTo(665, 195);
+      ctx.lineTo(676, 635);
+      ctx.lineTo(592, 635);
+      ctx.lineTo(558, 365);
+      ctx.lineTo(558, 872);
+      ctx.lineTo(210, 872);
+      ctx.lineTo(210, 365);
+      ctx.lineTo(176, 635);
+      ctx.lineTo(92, 635);
+      ctx.lineTo(103, 195);
+      ctx.closePath();
+    }
+    ctx.fill();
+    ctx.stroke();
+
+    // Subtle fabric vertical lighting gradient for realistic drape
+    ctx.clip();
+    const grad = ctx.createLinearGradient(150, 0, 610, 0);
+    grad.addColorStop(0, 'rgba(0,0,0,0.22)');
+    grad.addColorStop(0.28, 'rgba(255,255,255,0.09)');
+    grad.addColorStop(0.55, 'rgba(255,255,255,0.03)');
+    grad.addColorStop(0.82, 'rgba(0,0,0,0.12)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.26)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 768, 960);
+
+    // Subtle drape folds
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fillRect(288, 220, 14, 640);
+    ctx.fillRect(462, 220, 12, 640);
+
+    // Collar / front zipper / pocket details
+    if (!isBack) {
+      if (prod.silhouette === 'hoodie') {
+        // Kangaroo pocket & drawstrings
+        ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(272, 610, 224, 150);
+        ctx.strokeStyle = prod.accent;
+        ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(356, 160); ctx.lineTo(352, 290); ctx.moveTo(412, 160); ctx.lineTo(416, 290); ctx.stroke();
+      } else if (prod.silhouette === 'jacket') {
+        // Centre placket & chest pockets
+        ctx.fillStyle = 'rgba(0,0,0,0.26)';
+        ctx.fillRect(376, 110, 16, 760);
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(245, 290, 96, 110);
+        ctx.strokeRect(427, 290, 96, 110);
+      }
+      // Front studio mark
+      ctx.fillStyle = prod.accent;
+      ctx.fillRect(256, 250, 256, 6);
+      ctx.fillStyle = prod.textCol;
+      ctx.font = '700 42px "Space Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(prod.frontMark, 384, 326);
+      ctx.fillStyle = prod.accent;
+      ctx.font = '700 20px "Space Mono", monospace';
+      ctx.fillText('PLYMOUTH · UK', 384, 366);
+    } else {
+      // Back architectural graphic
+      ctx.strokeStyle = prod.accent;
+      ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.arc(384, 390, 118, 0, Math.PI * 2); ctx.stroke();
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(384, 390, 84, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(234, 390); ctx.lineTo(534, 390);
+      ctx.moveTo(384, 240); ctx.lineTo(384, 540);
+      ctx.stroke();
+
+      ctx.fillStyle = prod.textCol;
+      ctx.font = '700 32px "Space Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(prod.backMark, 384, 595);
+      ctx.fillStyle = prod.accent;
+      ctx.font = '700 18px "Space Mono", monospace';
+      ctx.fillText('EDITION 01 · STUDIO ARCHIVE', 384, 635);
+    }
+
+    // Bottom hem rib
+    ctx.fillStyle = 'rgba(0,0,0,0.16)';
+    ctx.fillRect(200, 825, 368, 48);
+    ctx.restore();
+    return c;
+  }
+
+  // Generate data URLs & Three textures once
+  const garmentAssets = PRODUCTS.map((p) => {
+    const fc = createGarmentCanvas(p, false);
+    const bc = createGarmentCanvas(p, true);
+    const fTex = new THREE.CanvasTexture(fc);
+    const bTex = new THREE.CanvasTexture(bc);
+    fTex.colorSpace = THREE.SRGBColorSpace;
+    bTex.colorSpace = THREE.SRGBColorSpace;
+    return { prod: p, frontUrl: fc.toDataURL('image/png'), backUrl: bc.toDataURL('image/png'), frontTex: fTex, backTex: bTex };
+  });
+
+  // Populate 2D grid fallback
+  const prodGrid = document.getElementById('prodGrid');
+  garmentAssets.forEach((item, idx) => {
+    const el = document.createElement('article');
+    el.className = 'prod-tile';
+    el.innerHTML = `
+      <img src="${item.frontUrl}" alt="${item.prod.title}">
+      <div class="prod-tile-body">
+        <div class="prod-tile-title">${item.prod.title}</div>
+        <div class="prod-tile-price">${item.prod.price}</div>
+        <p style="font-size:0.82rem;color:#9ca3af;line-height:1.45;margin-bottom:8px;">${item.prod.desc}</p>
+        <button class="btn-primary" type="button" style="margin-top:auto;">Select Size / Quick Buy</button>
+      </div>`;
+    el.querySelector('button').addEventListener('click', () => { selectProduct(idx); openDrawer(); });
+    prodGrid.appendChild(el);
+  });
+
+  // Three.js Virtual Architectural Closet Scene
+  const stage = document.getElementById('stage');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xdedbd4);
+  scene.fog = new THREE.Fog(0xdedbd4, 14, 30);
+
+  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 60);
+  camera.position.set(0.4, 2.05, 7.6);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.06;
+  stage.appendChild(renderer.domElement);
+
+  // Studio Lighting
+  const hemi = new THREE.HemisphereLight(0xfffdf8, 0x7b756c, 1.05);
+  scene.add(hemi);
+
+  const keyLight = new THREE.DirectionalLight(0xfff6e5, 1.35);
+  keyLight.position.set(4.5, 8.2, 6.2);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  keyLight.shadow.camera.near = 1; keyLight.shadow.camera.far = 22;
+  keyLight.shadow.camera.left = -7; keyLight.shadow.camera.right = 7;
+  keyLight.shadow.camera.top = 5; keyLight.shadow.camera.bottom = -5;
+  scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0xffcf77, 0.45);
+  rimLight.position.set(-5, 4.5, -4);
+  scene.add(rimLight);
+
+  // Minimalist Concrete & Warm Oak Showroom Architecture
+  const floorMat = new THREE.MeshStandardMaterial({ color: 0xc8c3ba, roughness: 0.72, metalness: 0.06 });
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(36, 26), floorMat);
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0xe6e3dc, roughness: 0.92 });
+  const backWall = new THREE.Mesh(new THREE.PlaneGeometry(32, 12), wallMat);
+  backWall.position.set(0, 6, -3.6);
+  backWall.receiveShadow = true;
+  scene.add(backWall);
+
+  // Architectural wall plinth + amber accent cove strip
+  const plinth = new THREE.Mesh(new THREE.BoxGeometry(10.8, 0.14, 2.2), new THREE.MeshStandardMaterial({ color: 0x1a1c22, roughness: 0.6 }));
+  plinth.position.set(0, 0.07, 0);
+  plinth.receiveShadow = true;
+  scene.add(plinth);
+
+  const coveStrip = new THREE.Mesh(new THREE.BoxGeometry(9.6, 0.05, 0.06), new THREE.MeshBasicMaterial({ color: 0xF59E0B }));
+  coveStrip.position.set(0, 3.65, -3.55);
+  scene.add(coveStrip);
+
+  // Brushed Steel & Oak Garment Rail
+  const steelMat = new THREE.MeshStandardMaterial({ color: 0x3b3f48, roughness: 0.28, metalness: 0.88 });
+  const oakMat = new THREE.MeshStandardMaterial({ color: 0x8b6239, roughness: 0.62 });
+
+  const railBar = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 9.2, 24), steelMat);
+  railBar.rotation.z = Math.PI / 2;
+  railBar.position.set(0, 3.05, 0);
+  railBar.castShadow = true;
+  scene.add(railBar);
+
+  [-4.55, 4.55].forEach((xPos) => {
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 3.05, 20), steelMat);
+    post.position.set(xPos, 1.525, 0);
+    post.castShadow = true;
+    scene.add(post);
+    const foot = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.12, 1.05), oakMat);
+    foot.position.set(xPos, 0.19, 0);
+    foot.castShadow = true;
+    scene.add(foot);
+  });
+
+  // Hang all 6 garments along X axis
+  const spacing = 1.48;
+  const startX = -((PRODUCTS.length - 1) * spacing) / 2;
+  const hangerGroups = [];
+  const pickMeshes = [];
+
+  garmentAssets.forEach((item, idx) => {
+    const g = new THREE.Group();
+    const baseX = startX + idx * spacing;
+    g.position.set(baseX, 0, 0);
+    g.userData = { index: idx, baseX, targetX: baseX, targetZ: 0, targetScale: 1, targetRotY: 0, flipped: false };
+
+    // Metal hook + oak hanger triangle
+    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 8, 16, Math.PI * 1.4), steelMat);
+    hook.position.set(0, 3.03, 0);
+    g.add(hook);
+
+    const shoulderL = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.025, 0.03), oakMat);
+    shoulderL.position.set(-0.17, 2.86, 0); shoulderL.rotation.z = 0.34;
+    g.add(shoulderL);
+    const shoulderR = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.025, 0.03), oakMat);
+    shoulderR.position.set(0.17, 2.86, 0); shoulderR.rotation.z = -0.34;
+    g.add(shoulderR);
+
+    // Front & Back garment planes (double-plane with slight thickness so flip shows real back design!)
+    const planeGeo = new THREE.PlaneGeometry(1.36, 1.70);
+    const frontMat = new THREE.MeshStandardMaterial({ map: item.frontTex, transparent: true, alphaTest: 0.45, roughness: 0.85, side: THREE.FrontSide });
+    const backMat = new THREE.MeshStandardMaterial({ map: item.backTex, transparent: true, alphaTest: 0.45, roughness: 0.85, side: THREE.FrontSide });
+
+    const frontMesh = new THREE.Mesh(planeGeo, frontMat);
+    frontMesh.position.set(0, 2.02, 0.012);
+    frontMesh.castShadow = true;
+    frontMesh.userData.productIndex = idx;
+    g.add(frontMesh);
+
+    const backMesh = new THREE.Mesh(planeGeo, backMat);
+    backMesh.position.set(0, 2.02, -0.012);
+    backMesh.rotation.y = Math.PI;
+    backMesh.castShadow = true;
+    backMesh.userData.productIndex = idx;
+    g.add(backMesh);
+
+    pickMeshes.push(frontMesh, backMesh);
+    hangerGroups.push(g);
+    scene.add(g);
+  });
+
+  // Camera & Interaction State
+  let selectedIdx = 0;
+  let camTargetPos = new THREE.Vector3(0.4, 2.05, 7.6);
+  let camTargetLook = new THREE.Vector3(0, 1.95, 0);
+  const currentLook = new THREE.Vector3(0, 1.95, 0);
+  let orbitYaw = 0.06, orbitPitch = 0.02, orbitDist = 7.6;
+  let targetYaw = 0.06, targetPitch = 0.02, targetDist = 7.6;
+  let targetFocusX = 0;
+
+  function selectProduct(idx, focusCamera = true) {
+    selectedIdx = idx;
+    const item = garmentAssets[idx];
+    const p = item.prod;
+
+    document.getElementById('hudCategory').textContent = `${p.label.toUpperCase()} · 0${idx + 1} / 0${PRODUCTS.length}`;
+    document.getElementById('hudTitle').textContent = p.title;
+    document.getElementById('hudPrice').textContent = p.price;
+    document.getElementById('hudDesc').textContent = p.desc;
+
+    hangerGroups.forEach((g, i) => {
+      if (i === idx) {
+        g.userData.targetX = g.userData.baseX;
+        g.userData.targetZ = 0.72;
+        g.userData.targetScale = 1.12;
+      } else {
+        const push = i < idx ? -0.26 : 0.26;
+        g.userData.targetX = g.userData.baseX + push;
+        g.userData.targetZ = -0.15;
+        g.userData.targetScale = 0.96;
+        g.userData.flipped = false;
+        g.userData.targetRotY = 0;
+      }
+    });
+    document.getElementById('btnFlip').textContent = hangerGroups[idx].userData.flipped ? 'Flip Front' : 'Flip Back';
+    if (focusCamera) {
+      targetFocusX = hangerGroups[idx].userData.baseX * 0.78;
+      targetDist = 5.4;
+      targetYaw = 0.08;
+      targetPitch = 0.02;
+    }
+  }
+
+  document.getElementById('btnFlip').addEventListener('click', () => {
+    const g = hangerGroups[selectedIdx];
+    g.userData.flipped = !g.userData.flipped;
+    g.userData.targetRotY = g.userData.flipped ? Math.PI : 0;
+    document.getElementById('btnFlip').textContent = g.userData.flipped ? 'Flip Front' : 'Flip Back';
+  });
+
+  // Camera Anchor Pills
+  const dockBtns = Array.from(document.querySelectorAll('.dock button'));
+  dockBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      dockBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const a = btn.dataset.anchor;
+      if (a === 'all' || a === 'reset') {
+        targetFocusX = 0; targetDist = 7.6; targetYaw = 0.06; targetPitch = 0.02;
+        hangerGroups.forEach(g => { g.userData.targetX = g.userData.baseX; g.userData.targetZ = 0; g.userData.targetScale = 1; g.userData.flipped = false; g.userData.targetRotY = 0; });
+      } else if (a === 'tees') {
+        selectProduct(0, true);
+      } else if (a === 'hoodies') {
+        selectProduct(1, true);
+      } else if (a === 'outerwear') {
+        selectProduct(4, true);
+      }
+    });
+  });
+
+  // View Mode Toggle (3D Closet vs 2D Grid)
+  const btn3d = document.getElementById('btn3dView');
+  const btn2d = document.getElementById('btn2dView');
+  const gridView = document.getElementById('gridView');
+  btn3d.addEventListener('click', () => {
+    btn3d.classList.add('active'); btn2d.classList.remove('active');
+    gridView.classList.remove('open');
+  });
+  btn2d.addEventListener('click', () => {
+    btn2d.classList.add('active'); btn3d.classList.remove('active');
+    gridView.classList.add('open');
+  });
+
+  // Quick-Buy Drawer
+  const drawer = document.getElementById('quickDrawer');
+  const backdrop = document.getElementById('drawerBackdrop');
+  const bagToast = document.getElementById('bagToast');
+  let activeSize = 'M';
+
+  function openDrawer() {
+    const item = garmentAssets[selectedIdx];
+    const p = item.prod;
+    document.getElementById('drawerImg').src = hangerGroups[selectedIdx].userData.flipped ? item.backUrl : item.frontUrl;
+    document.getElementById('drawerTitle').textContent = p.title;
+    document.getElementById('drawerPrice').textContent = p.price;
+    document.getElementById('drawerDesc').textContent = p.desc;
+    bagToast.classList.remove('show');
+    const sizesWrap = document.getElementById('drawerSizes');
+    sizesWrap.innerHTML = '';
+    activeSize = p.sizes.find(x => x.ok)?.s || 'M';
+    p.sizes.forEach((sz) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'size-pill' + (sz.s === activeSize ? ' active' : '');
+      b.textContent = sz.s;
+      b.disabled = !sz.ok;
+      b.addEventListener('click', () => {
+        activeSize = sz.s;
+        sizesWrap.querySelectorAll('.size-pill').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+      sizesWrap.appendChild(b);
+    });
+    drawer.classList.add('open');
+    backdrop.classList.add('open');
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+  }
+  document.getElementById('btnQuickBuy').addEventListener('click', openDrawer);
+  document.getElementById('btnCloseDrawer').addEventListener('click', closeDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+  document.getElementById('btnAddBag').addEventListener('click', () => {
+    const p = PRODUCTS[selectedIdx];
+    bagToast.textContent = `Added ${p.title} (Size ${activeSize}) to demo bag.`;
+    bagToast.classList.add('show');
+  });
+
+  // Pointer Drag (>6px) vs Click/Tap (<=6px) Raycasting
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  let isDown = false, startPx = 0, startPy = 0, lastPx = 0, lastPy = 0, dragDist = 0;
+
+  stage.addEventListener('pointerdown', (e) => {
+    isDown = true; startPx = lastPx = e.clientX; startPy = lastPy = e.clientY; dragDist = 0;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!isDown) return;
+    const dx = e.clientX - lastPx, dy = e.clientY - lastPy;
+    dragDist += Math.hypot(dx, dy);
+    lastPx = e.clientX; lastPy = e.clientY;
+    targetYaw = Math.max(-0.85, Math.min(0.85, targetYaw - dx * 0.0045));
+    targetPitch = Math.max(-0.18, Math.min(0.32, targetPitch + dy * 0.003));
+  });
+  window.addEventListener('pointerup', (e) => {
+    if (!isDown) return;
+    isDown = false;
+    if (dragDist <= 6) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(pickMeshes, false);
+      if (hits.length > 0) {
+        selectProduct(hits[0].object.userData.productIndex, true);
+      }
+    }
+  });
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    targetDist = Math.max(3.6, Math.min(9.5, targetDist + e.deltaY * 0.004));
+  }, { passive: false });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // Initialise with full rail overview + Hoodie highlighted subtly
+  selectProduct(1, false);
+  targetFocusX = 0; targetDist = 7.4; targetYaw = 0.10; targetPitch = 0.02;
+
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    orbitYaw += (targetYaw - orbitYaw) * 0.08;
+    orbitPitch += (targetPitch - orbitPitch) * 0.08;
+    orbitDist += (targetDist - orbitDist) * 0.08;
+    currentLook.x += (targetFocusX - currentLook.x) * 0.08;
+
+    camera.position.x = currentLook.x + Math.sin(orbitYaw) * orbitDist;
+    camera.position.y = 2.02 + Math.sin(orbitPitch) * orbitDist * 0.6;
+    camera.position.z = Math.cos(orbitYaw) * orbitDist;
+    camera.lookAt(currentLook);
+
+    hangerGroups.forEach((g, i) => {
+      g.position.x += (g.userData.targetX - g.position.x) * 0.10;
+      g.position.z += (g.userData.targetZ - g.position.z) * 0.10;
+      const s = g.scale.x + (g.userData.targetScale - g.scale.x) * 0.10;
+      g.scale.set(s, s, s);
+      const sway = Math.sin(t * 1.1 + i * 0.9) * 0.015;
+      g.rotation.y += ((g.userData.targetRotY + sway) - g.rotation.y) * 0.10;
+    });
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>
