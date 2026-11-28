@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The WBS Transforma | Interactive Web3D &amp; Print Inspection | Mo360 Immersive Studio</title>
-  <meta name="description" content="Interactive Web3D and print inspection showcase for Mohamed Elwakil's repaired 2014 sculpture The WBS Transforma, developed during PhD research at Cardiff and exhibited at National Museum Wales." />
+  <title>The WBS Transforma | Interactive 3D Exhibition &amp; Turntable | Mo360 Immersive Studio</title>
+  <meta name="description" content="Interactive 3D exhibition and studio lighting turntable for Mohamed Elwakil's 2014 sculpture The WBS Transforma, developed during PhD research at Cardiff and exhibited at National Museum Wales." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -488,10 +488,10 @@
   <main class="wbs-wrap">
     <header class="wbs-head">
       <div>
-        <div class="wbs-kicker">WEB3D + DRACO GLB + 2014 PHD HERITAGE RECONSTRUCTION</div>
+        <div class="wbs-kicker">2014 PHD EXHIBITION · NATIONAL MUSEUM WALES · INTERACTIVE 3D</div>
         <h1 class="wbs-h1">THE <span>WBS TRANSFORMA</span></h1>
         <p class="wbs-sub">
-          Developed during Mohamed Elwakil's 2014 PhD research at Cardiff (University of Wales) and exhibited at National Museum Wales (Amgueddfa Cymru). Inspired by the Ancient Egyptian Ushabti figure, the raw 2014 sculptural mesh has now been repaired into watertight 2026 print masters and a 318.8 KB Draco WebGL asset.
+          Created during Mohamed Elwakil's 2014 PhD research at Cardiff (University of Wales) and exhibited at National Museum Wales (Amgueddfa Cymru). Inspired by the Ancient Egyptian Ushabti servant figure, the stacked sculptural sequence is presented here as an interactive 3D studio piece and 360-degree lighting film, prepared at 260 mm exhibition scale and 180 mm ceramic scale.
         </p>
       </div>
       <div class="wbs-head-actions">
@@ -500,19 +500,19 @@
       </div>
     </header>
 
-    <section class="wbs-stage-card" aria-label="Interactive WBS Transforma 3D &amp; Print Inspection Stage">
+    <section class="wbs-stage-card" aria-label="Interactive WBS Transforma 3D Exhibition Stage">
       <div id="wbsCanvasWrap">
         <div class="wbs-hud-top">
           <span class="wbs-pill" id="wbsShaderPill">SHADER · GLAZED OCHRE CERAMIC</span>
-          <span class="wbs-pill wbs-pill-neutral" id="wbsModelPill">DRACO GLB · 318.8 KB · +Y UP</span>
+          <span class="wbs-pill wbs-pill-neutral" id="wbsModelPill">DIGITAL SCULPTURE · 3D VIEW</span>
         </div>
         <div class="wbs-hud-bottom">
-          <span class="wbs-pill" id="wbsSlicePill">Z SLICE · 100% FULL SOLID</span>
+          <span class="wbs-pill" id="wbsSlicePill">CROSS SECTION · 100% FULL VIEW</span>
           <span class="wbs-pill wbs-pill-neutral" id="wbsLightPill">RAKING LIGHT · 42° AZIMUTH</span>
         </div>
         <div class="wbs-loader" id="wbsLoader">
           <div class="wbs-loader-box" id="wbsLoaderText">
-            LOADING DRACO GLB · 318.8 KB ...
+            LOADING 3D SCULPTURE ...
           </div>
         </div>
       </div>
@@ -522,7 +522,7 @@
           <div class="wbs-mode-group" role="group" aria-label="Material and Shader Modes">
             <button type="button" class="wbs-btn active" data-shader="ceramic">01 Glazed Ochre Ceramic</button>
             <button type="button" class="wbs-btn" data-shader="sandstone">02 Matt Raw Sandstone</button>
-            <button type="button" class="wbs-btn" data-shader="wireframe">03 Technical Wireframe</button>
+            <button type="button" class="wbs-btn" data-shader="wireframe">03 Wireframe Mesh</button>
           </div>
           <div class="wbs-view-group">
             <button type="button" class="wbs-btn" id="wbsOrbitBtn">Pause Orbit</button>
@@ -541,7 +541,7 @@
 
           <div class="wbs-slider-box">
             <div class="wbs-slider-top">
-              <label for="zSliceSlider">Print Readiness Z Slice Cross Section (0% to 100%)</label>
+              <label for="zSliceSlider">Vertical Cross Section View (0% to 100%)</label>
               <span class="wbs-slider-val" id="zSliceVal">100%</span>
             </div>
             <input id="zSliceSlider" class="wbs-range" type="range" min="0" max="100" value="100" />
@@ -550,83 +550,83 @@
 
         <div class="wbs-telemetry-bar">
           <div class="wbs-stat">
-            <div class="wbs-stat-label">Raw 2014 STL</div>
-            <div class="wbs-stat-value">801,771 FACES</div>
-            <div class="wbs-stat-sub">329,704 vertices · 190,324 non-manifold edges · 39,381 boundary edges</div>
+            <div class="wbs-stat-label">Exhibition Year</div>
+            <div class="wbs-stat-value">2014 CARDIFF</div>
+            <div class="wbs-stat-sub">University of Wales PhD &amp; National Museum Wales</div>
           </div>
           <div class="wbs-stat">
-            <div class="wbs-stat-label">Repaired 2026 Masters</div>
-            <div class="wbs-stat-value ochre">0 MESH ERRORS</div>
-            <div class="wbs-stat-sub">651,316 faces · 0 non-manifold edges · 0 open boundary edges</div>
+            <div class="wbs-stat-label">Cultural Reference</div>
+            <div class="wbs-stat-value ochre">USHABTI FORM</div>
+            <div class="wbs-stat-sub">Sequential sculptural fan inspired by Ancient Egyptian figure</div>
           </div>
           <div class="wbs-stat">
-            <div class="wbs-stat-label">Fabrication Bounds</div>
+            <div class="wbs-stat-label">Physical Editions</div>
             <div class="wbs-stat-value">260 / 180 MM</div>
-            <div class="wbs-stat-sub">260.0 x 251.8 x 222.3 mm sandstone &amp; 180 mm ceramic</div>
+            <div class="wbs-stat-sub">260 mm exhibition sandstone &amp; 180 mm ceramic clay editions</div>
           </div>
           <div class="wbs-stat">
-            <div class="wbs-stat-label">Web GLB Payload</div>
-            <div class="wbs-stat-value">318.8 KB</div>
-            <div class="wbs-stat-sub">318,788 bytes · +Y Up Draco compressed manifold</div>
+            <div class="wbs-stat-label">Browser 3D Stream</div>
+            <div class="wbs-stat-value">DRACO 3D GLB</div>
+            <div class="wbs-stat-sub">Interactive real time WebGL turntable in the browser</div>
           </div>
         </div>
 
         <div class="wbs-status-note" id="wbsStatusNote">
-          Drag or pinch to orbit around The WBS Transforma. Switch surface shaders, rotate the gallery raking light, or drag the Z Slice slider below 100% to inspect the watertight interior geometry and flattened base bed pad.
+          Drag or pinch to orbit around The WBS Transforma. Switch surface finishes, rotate the gallery key light, or slide the cross section control to study the sequential form from every angle.
         </div>
       </div>
     </section>
 
-    <h2 class="wbs-section-title">HERITAGE PROVENANCE, MESH REPAIR &amp; TURNTABLE INSPECTION</h2>
+    <h2 class="wbs-section-title">EXHIBITION PROVENANCE, FABRICATION EDITIONS &amp; STUDIO FILM</h2>
     <section class="wbs-grid">
       <article class="wbs-card">
-        <img src="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" alt="Mohamed Elwakil 2014 archive photograph of The WBS Transforma digital sculpture" loading="eager" />
+        <img src="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" alt="Mohamed Elwakil 2014 exhibition visual of The WBS Transforma digital sculpture" loading="eager" />
         <div class="wbs-card-body">
           <div class="wbs-card-tag">2014 ARCHIVE · NATIONAL MUSEUM WALES</div>
           <h3 class="wbs-card-title">Cardiff PhD Research &amp; Ushabti Form</h3>
           <p class="wbs-card-desc">
-            Created in 2014 during doctoral research at Cardiff (University of Wales) and shown at National Museum Wales (Amgueddfa Cymru). The stacked, twisting form reinterprets the Ancient Egyptian Ushabti servant figure as a continuous digital sequence.
+            Created in 2014 as part of doctoral research in Cardiff, Wales and exhibited at National Museum Wales (Amgueddfa Cymru). Inspired by an Ancient Egyptian Ushabti figurine from the museum collection, the work fans and stacks multiple silhouettes into a continuous ascending sculpture.
           </p>
         </div>
       </article>
 
       <article class="wbs-card">
         <div class="wbs-card-body">
-          <div class="wbs-card-tag">2026 FABRICATION TELEMETRY</div>
-          <h3 class="wbs-card-title">Watertight Manifold Audit</h3>
+          <div class="wbs-card-tag">GALLERY FINISH &amp; FABRICATION EDITIONS</div>
+          <h3 class="wbs-card-title">Sandstone &amp; Ceramic Print Editions</h3>
           <p class="wbs-card-desc">
-            The original 2014 STL file was unprintable due to intersecting Ushabti shells and open seams. Remeshing and base planarisation produced two verified print masters plus this lightweight Web3D twin.
+            Prepared as unified solid studio print masters in upright museum orientation, preserving the carved relief and continuous spiralling base for powder sandstone and ceramic fabrication.
           </p>
           <ul class="wbs-spec-list">
             <li>
-              <strong>Raw 2014 STL · ushabti_Art Work_STL File.stl</strong>
-              801,771 faces · 329,704 vertices · 190,324 non-manifold edges · 39,381 open boundary edges (260.0 x 251.8 x 222.3 mm).
+              <strong>260 mm Sandstone / Powder Edition</strong>
+              Full gallery scale (`260 x 251.8 x 222 mm`) prepared as a unified continuous surface for high-detail powder printing.
             </li>
             <li>
-              <strong>2026 Print Masters · 260 mm Sandstone &amp; 180 mm Ceramic</strong>
-              wbs_transforma_watertight_260mm_sandstone.stl &amp; 180mm_ceramic.stl · 651,316 faces · 0 non-manifold edges · 0 boundary edges · flat base contact pad.
+              <strong>180 mm Ceramic / Clay Studio Edition</strong>
+              Scaled edition calibrated for clay extrusion and ceramic firing stability, resting level on its coiled base.
             </li>
             <li>
-              <strong>Web GLB Asset · ./assets/wbs_transforma_web.glb</strong>
-              318,788 bytes (318.8 KB) · +Y Up Draco compressed mesh.
+              <strong>Interactive Digital Edition</strong>
+              Lightweight upright GLB with real time ceramic glaze, sandstone finish, and interactive studio lighting.
             </li>
           </ul>
         </div>
       </article>
 
       <article class="wbs-card" id="turntableCard">
-        <video id="wbsTurntableVideo" poster="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" preload="none" controls playsinline data-src="./assets/wbs_transforma_turntable.mp4"></video>
+        <video id="wbsTurntableVideo" src="./assets/wbs_transforma_turntable.mp4" poster="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" preload="metadata" controls playsinline loop></video>
         <div class="wbs-card-body">
-          <div class="wbs-card-tag">TURNTABLE RENDER · MP4 PREVIEW SLOT</div>
-          <h3 class="wbs-card-title">Studio Turntable Playback</h3>
+          <div class="wbs-card-tag">STUDIO TURNTABLE FILM · 360° LIGHTING</div>
+          <h3 class="wbs-card-title">Studio Lighting Turntable Video</h3>
           <p class="wbs-card-desc">
-            Prepared for the Blender 360 degree turntable render of the repaired 2026 sculptural master, framed with the 2014 archival exhibition still as poster artwork.
+            180-frame 360-degree gallery turntable of The WBS Transforma in glazed Studio Ochre ceramic finish under moving key illumination.
           </p>
           <div class="wbs-video-note" id="turntableStatus">
-            Poster active from 2014 archive. Click below to load ./assets/wbs_transforma_turntable.mp4 once rendered and uploaded.
+            360-degree turntable video ready for playback directly above.
           </div>
           <div class="wbs-video-actions">
-            <button type="button" class="wbs-btn wbs-btn-ochre" id="loadTurntableBtn">Load Turntable Render</button>
+            <button type="button" class="wbs-btn wbs-btn-ochre" id="loadTurntableBtn">Play Turntable Film</button>
           </div>
         </div>
       </article>
@@ -786,7 +786,7 @@
         })
       },
       wireframe: {
-        label: 'SHADER · TECHNICAL WIREFRAME',
+        label: 'SHADER · WIREFRAME MESH',
         material: new THREE.MeshStandardMaterial({
           color: 0xf59e0b,
           emissive: 0x5c3404,
@@ -830,14 +830,14 @@
       if (pct >= 100) {
         clipPlane.constant = state.maxY + 0.15;
         sliceGuide.visible = false;
-        slicePill.textContent = 'Z SLICE · 100% FULL SOLID';
+        slicePill.textContent = 'CROSS SECTION · 100% FULL VIEW';
       } else {
         const minHeight = state.minY + 0.015;
         const cutY = minHeight + (state.maxY - minHeight) * (pct / 100);
         clipPlane.constant = cutY;
         sliceGuide.position.y = cutY;
         sliceGuide.visible = true;
-        slicePill.textContent = `Z SLICE · ${pct}% CROSS SECTION`;
+        slicePill.textContent = `CROSS SECTION · ${pct}% CUT`;
       }
     }
 
@@ -895,18 +895,18 @@
         updateZSlice(state.slicePct);
         updateRakingLight(state.azimuthDeg);
 
-        modelPill.textContent = 'DRACO GLB · WATERTIGHT MANIFOLD · 318.8 KB';
+        modelPill.textContent = 'DIGITAL SCULPTURE · 3D EXHIBITION VIEW';
         loaderOverlay.classList.add('hidden');
       },
       (progress) => {
         if (progress.total > 0) {
           const pct = Math.min(100, Math.round((progress.loaded / progress.total) * 100));
-          loaderText.textContent = `LOADING DRACO GLB · ${pct}%`;
+          loaderText.textContent = `LOADING 3D SCULPTURE · ${pct}%`;
         }
       },
       (err) => {
-        loaderText.textContent = '3D ASSET LOAD ERROR · CHECK ./assets/wbs_transforma_web.glb';
-        statusNote.textContent = `Could not load ./assets/wbs_transforma_web.glb (${err?.message || 'load error'}).`;
+        loaderText.textContent = '3D ASSET LOAD ERROR';
+        statusNote.textContent = `Could not load 3D sculpture (${err?.message || 'load error'}).`;
       }
     );
 
@@ -942,28 +942,19 @@
       controls.update();
     });
 
-    // Safe on-demand Turntable MP4 loader (prevents automatic 404 console noise before upload)
-    turntableVideo.addEventListener('error', () => {
-      turntableStatus.textContent = 'Turntable MP4 render is not uploaded yet. Use the live interactive WebGL sculpture above to orbit, relight, and inspect the Z slice cross section.';
-      loadTurntableBtn.textContent = 'Render Pending Upload';
-      loadTurntableBtn.disabled = false;
-    });
-
+    // Turntable MP4 playback controls
     turntableVideo.addEventListener('loadeddata', () => {
-      turntableStatus.textContent = 'Turntable MP4 render loaded and ready for playback.';
-      loadTurntableBtn.textContent = 'Play Turntable Render';
-      loadTurntableBtn.disabled = false;
+      turntableStatus.textContent = '360-degree studio lighting turntable film ready.';
     });
 
     loadTurntableBtn.addEventListener('click', () => {
-      const targetSrc = turntableVideo.dataset.src;
-      if (!turntableVideo.getAttribute('src')) {
-        loadTurntableBtn.textContent = 'Loading Render...';
-        turntableStatus.textContent = 'Checking ./assets/wbs_transforma_turntable.mp4 ...';
-        turntableVideo.src = targetSrc;
-        turntableVideo.load();
+      if (turntableVideo.paused) {
+        turntableVideo.play().catch(() => {});
+        loadTurntableBtn.textContent = 'Pause Turntable Film';
+      } else {
+        turntableVideo.pause();
+        loadTurntableBtn.textContent = 'Play Turntable Film';
       }
-      turntableVideo.play().catch(() => {});
     });
 
     window.addEventListener('resize', () => {
