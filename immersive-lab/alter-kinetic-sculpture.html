@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTÆR Kinetic Light Sculpture | Mo360 Immersive Studio</title>
+  <meta name="description" content="Interactive Web3D kinetic light sculpture prototype by Mohamed Elwakil: 128 suspended light rods driven by live Plymouth Beryl Bikes urban mobility telemetry." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/mo360-unified-theme.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --alt-bg: #0a0a0a;
+      --alt-surface: #14161b;
+      --alt-surface-2: #1c2028;
+      --alt-ochre: #F59E0B;
+      --alt-ochre-deep: #C87D28;
+      --alt-cyan: #67E8F9;
+      --alt-crimson: #EF4444;
+      --alt-muted: #b4bac6;
+      --alt-border: rgba(255, 255, 255, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--alt-bg);
+      color: #ffffff;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .alt-wrap {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 96px 24px 68px;
+    }
+
+    .alt-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .alt-kicker {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--alt-ochre);
+      color: #08090c;
+      padding: 6px 12px;
+      margin-bottom: 10px;
+    }
+
+    .alt-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      line-height: 0.96;
+      margin: 0 0 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .alt-sub {
+      color: var(--alt-muted);
+      margin: 0;
+      max-width: 720px;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .alt-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .alt-stage-card {
+      background: var(--alt-surface);
+      border: 1px solid var(--alt-border);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    #altaerCanvasWrap {
+      position: relative;
+      width: 100%;
+      height: 580px;
+      background: radial-gradient(circle at 50% 45%, #131c28 0%, #0a0b0f 58%, #070709 100%);
+      cursor: grab;
+      overflow: hidden;
+    }
+
+    #altaerCanvasWrap:active { cursor: grabbing; }
+    #altaerCanvasWrap canvas { display: block; width: 100%; height: 100%; }
+
+    .alt-hud-top {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .alt-pill {
+      background: rgba(10, 10, 12, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--alt-ochre);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .alt-pill-cyan {
+      color: var(--alt-cyan);
+    }
+
+    .alt-hud-bottom {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .alt-controls {
+      padding: 20px;
+      background: var(--alt-surface);
+      border-top: 1px solid var(--alt-border);
+      display: grid;
+      gap: 18px;
+    }
+
+    .alt-control-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .alt-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .alt-btn {
+      background: var(--alt-surface-2);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 11px 15px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .alt-btn:hover {
+      background: #282d38;
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .alt-btn.active,
+    .alt-btn-ochre {
+      background: var(--alt-ochre);
+      color: #08090c;
+      border-color: var(--alt-ochre);
+    }
+
+    .alt-btn-ochre:hover {
+      background: var(--alt-ochre-deep);
+      border-color: var(--alt-ochre-deep);
+      color: #08090c;
+    }
+
+    .alt-btn-cyan {
+      background: rgba(103, 232, 249, 0.14);
+      color: var(--alt-cyan);
+      border-color: rgba(103, 232, 249, 0.45);
+    }
+
+    .alt-btn-cyan:hover {
+      background: rgba(103, 232, 249, 0.24);
+    }
+
+    .alt-sliders {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding-top: 6px;
+      border-top: 1px solid var(--alt-border);
+    }
+
+    .alt-slider-box {
+      background: #0f1116;
+      border: 1px solid var(--alt-border);
+      padding: 14px 16px;
+    }
+
+    .alt-slider-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .alt-slider-val {
+      color: var(--alt-ochre);
+      font-weight: 700;
+    }
+
+    .alt-range {
+      width: 100%;
+      accent-color: var(--alt-ochre);
+      cursor: pointer;
+    }
+
+    .alt-telemetry-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    .alt-stat {
+      background: #0f1116;
+      border: 1px solid var(--alt-border);
+      padding: 12px 14px;
+    }
+
+    .alt-stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #8b93a3;
+      margin-bottom: 4px;
+    }
+
+    .alt-stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.65rem;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      line-height: 1.05;
+    }
+
+    .alt-stat-sub {
+      font-size: 0.78rem;
+      color: var(--alt-muted);
+      margin-top: 2px;
+    }
+
+    .alt-status-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--alt-muted);
+      background: #0f1116;
+      border-left: 3px solid var(--alt-ochre);
+      padding: 10px 14px;
+      line-height: 1.5;
+    }
+
+    .alt-section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 14px;
+    }
+
+    .alt-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 18px;
+    }
+
+    .alt-card {
+      background: var(--alt-surface);
+      border: 1px solid var(--alt-border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alt-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .alt-card-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .alt-card-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--alt-ochre);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .alt-card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.45rem;
+      margin: 0;
+      letter-spacing: 0.03em;
+    }
+
+    .alt-card-desc {
+      color: var(--alt-muted);
+      font-size: 0.9rem;
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .alt-footer {
+      border-top: 1px solid #222630;
+      padding: 26px 24px 44px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--alt-muted);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 960px) {
+      .alt-grid { grid-template-columns: 1fr; }
+      .alt-telemetry-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #altaerCanvasWrap { height: 470px; }
+    }
+
+    @media (max-width: 640px) {
+      .alt-wrap { padding: 86px 16px 52px; }
+      #altaerCanvasWrap { height: 390px; }
+      .alt-sliders { grid-template-columns: 1fr; }
+      .alt-telemetry-bar { grid-template-columns: 1fr; }
+      .alt-presets { width: 100%; }
+      .alt-presets .alt-btn { flex: 1 1 calc(50% - 8px); }
+      .alt-head-actions, .alt-head-actions .alt-btn { width: 100%; }
+      .alt-control-row .alt-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="mo360-nav" aria-label="ALTÆR Kinetic Sculpture Navigation">
+    <a href="../index.html" class="mo360-nav-brand">
+      <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Immersive Studio Emblem" />
+      <span class="mo360-brand-stack">
+        <span class="mo360-brand-row">
+          <span class="mo360-brand-main">MO360 IMMERSIVE</span>
+          <span class="mo360-brand-badge">STUDIO</span>
+        </span>
+        <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+      </span>
+    </a>
+    <ul class="mo360-nav-links">
+      <li><a href="../index.html#latest-works">Projects</a></li>
+      <li><a href="../films/">Screening Room</a></li>
+      <li><a href="../immersive-lab/" class="active">Media Lab</a></li>
+      <li><a href="../index.html#contact" class="cta">Book / Contact</a></li>
+    </ul>
+    <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mo360-drawer" id="mo360Drawer">
+    <a href="../index.html">Mo360 Immersive Studio Home</a>
+    <a href="../immersive-lab/">Mo360 Immersive Media Lab</a>
+    <a href="../immersive-lab/alter-kinetic-sculpture.html" class="active">ALTÆR Kinetic Light Sculpture</a>
+    <a href="../immersive-lab/tawaf-3d-sanctuary.html">TAWAF 3D WebGL Sanctuary</a>
+    <a href="../films/">Moving Image &amp; Screening Room</a>
+    <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Commission or Exhibit</a>
+  </div>
+
+  <main class="alt-wrap">
+    <div class="alt-head">
+      <div>
+        <div class="alt-kicker">WEBGL + BLENDER 4.2 + PLYMOUTH BERYL GBFS V2.2</div>
+        <h1 class="alt-h1">ALTÆR / ALTER: KINETIC LIGHT SCULPTURE</h1>
+        <p class="alt-sub">
+          An interactive architectural light column pairing 64 rising plinth rods and 64 suspended ceiling rods around a luminous central void. Drive the choreography manually or stream live Plymouth Beryl cycle mobility data directly into the sculpture.
+        </p>
+      </div>
+      <div class="alt-head-actions">
+        <button type="button" class="alt-btn alt-btn-cyan" id="berylFetchBtn">Live Plymouth Beryl Bikes Feed</button>
+        <a href="../immersive-lab/" class="alt-btn alt-btn-ochre">Back to Media Lab &rarr;</a>
+      </div>
+    </div>
+
+    <section class="alt-stage-card" aria-label="Interactive ALTÆR 3D Stage">
+      <div id="altaerCanvasWrap">
+        <div class="alt-hud-top">
+          <span class="alt-pill" id="altPresetPill">SCENE 02 · MORNING PULSE</span>
+          <span class="alt-pill alt-pill-cyan" id="altModelPill">LOADING BLENDER GLB · 128 RODS</span>
+        </div>
+        <div class="alt-hud-bottom">
+          <span class="alt-pill" id="altVoidPill">VOID CLEARANCE · 0.72 M</span>
+          <span class="alt-pill alt-pill-cyan" id="altSourcePill">SOURCE · INTERACTIVE STUDIO PRESET</span>
+        </div>
+      </div>
+
+      <div class="alt-controls">
+        <div class="alt-control-row">
+          <div class="alt-presets" role="group" aria-label="Performance Scene Presets">
+            <button type="button" class="alt-btn" data-preset="still">01 Still Grid</button>
+            <button type="button" class="alt-btn active" data-preset="morning">02 Morning Pulse</button>
+            <button type="button" class="alt-btn" data-preset="peak">03 Peak Compression</button>
+            <button type="button" class="alt-btn" data-preset="interchange">04 Interchange Release</button>
+            <button type="button" class="alt-btn" data-preset="asleep">05 City Asleep</button>
+          </div>
+          <button type="button" class="alt-btn" id="altOrbitBtn">Pause Orbit</button>
+        </div>
+
+        <div class="alt-sliders">
+          <div class="alt-slider-box">
+            <div class="alt-slider-top">
+              <label for="flowSlider">Mobility Flow Rate</label>
+              <span class="alt-slider-val" id="flowValLabel">48%</span>
+            </div>
+            <input id="flowSlider" class="alt-range" type="range" min="0" max="100" value="48" />
+          </div>
+          <div class="alt-slider-box">
+            <div class="alt-slider-top">
+              <label for="congestionSlider">Peak Congestion &amp; Void Compression</label>
+              <span class="alt-slider-val" id="congestionValLabel">36%</span>
+            </div>
+            <input id="congestionSlider" class="alt-range" type="range" min="0" max="100" value="36" />
+          </div>
+        </div>
+
+        <div class="alt-telemetry-bar">
+          <div class="alt-stat">
+            <div class="alt-stat-label">Kinetic Matrix</div>
+            <div class="alt-stat-value" id="statRods">128 RODS</div>
+            <div class="alt-stat-sub">8x8 lower + 8x8 upper</div>
+          </div>
+          <div class="alt-stat">
+            <div class="alt-stat-label">Plymouth Beryl Stations</div>
+            <div class="alt-stat-value" id="statStations">STUDIO MODE</div>
+            <div class="alt-stat-sub" id="statFleetSub">Tap Live Feed to poll GBFS</div>
+          </div>
+          <div class="alt-stat">
+            <div class="alt-stat-label">Mobility Activity</div>
+            <div class="alt-stat-value" id="statActivity">48%</div>
+            <div class="alt-stat-sub">Wave cadence multiplier</div>
+          </div>
+          <div class="alt-stat">
+            <div class="alt-stat-label">Void Compression</div>
+            <div class="alt-stat-value" id="statCompression">36%</div>
+            <div class="alt-stat-sub">Cyan to Ochre &amp; Crimson</div>
+          </div>
+        </div>
+
+        <div class="alt-status-note" id="berylStatusNote">
+          Ready. Drag or pinch to orbit around the ALTÆR column. Select a performance preset or click "Live Plymouth Beryl Bikes Feed" to drive the 128 rods from live Plymouth dock telemetry.
+        </div>
+      </div>
+    </section>
+
+    <h2 class="alt-section-title">CONCEPT VISUAL &amp; PRODUCTION PIPELINE</h2>
+    <section class="alt-grid">
+      <article class="alt-card">
+        <img src="../assets/artist_archive/archive_08_alter_kinetic_light_sculpture_work_i.jpg" alt="Mohamed Elwakil ALTÆR kinetic light sculpture concept study" loading="eager" />
+        <div class="alt-card-body">
+          <div class="alt-card-tag">ARCHIVE VISUAL · WORK I</div>
+          <h3 class="alt-card-title">Original Spatial Composition</h3>
+          <p class="alt-card-desc">
+            Dark architectural gallery monolith with 64 opposing floor and ceiling light columns framing the central ALTÆR suspension void.
+          </p>
+        </div>
+      </article>
+
+      <article class="alt-card">
+        <div class="alt-card-body">
+          <div class="alt-card-tag">BLENDER 4.2 · DRACO GLB</div>
+          <h3 class="alt-card-title">Procedural 128-Rod Assembly</h3>
+          <p class="alt-card-desc">
+            Built procedurally in Blender 4.2 with stepped plinth and ceiling housings, dual-material frosted shafts and emitter tips, a 120-frame cyclic wave rig, and +Y Up Draco GLB compression for fast browser loading.
+          </p>
+          <div class="alt-card-tag" style="margin-top:auto;">ASSET · ./assets/altaer_kinetic_sculpture.glb</div>
+        </div>
+      </article>
+
+      <article class="alt-card">
+        <div class="alt-card-body">
+          <div class="alt-card-tag">TOUCHDESIGNER &amp; UE 5.8 OSC</div>
+          <h3 class="alt-card-title">Live Plymouth Mobility Bridge</h3>
+          <p class="alt-card-desc">
+            Python bridge script polls the public Plymouth Beryl GBFS v2.2 station feed, computes normalized flow, congestion, and 8-zone energy vectors, and streams UDP OSC packets to TouchDesigner (:9000) and Unreal Engine 5.8 (:8000).
+          </p>
+          <div class="alt-card-tag" style="margin-top:auto;">FEED · PLYMOUTH BERYL GBFS V2.2</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="alt-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM
+  </footer>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+    const BERYL_GBFS_URL = 'https://beryl-gbfs-production.web.app/v2_2/Plymouth/station_status.json';
+
+    const PRESETS = {
+      still: {
+        label: 'SCENE 01 · STILL GRID',
+        flow: 12,
+        congestion: 15,
+        mode: 'still',
+        hueBias: 0.0
+      },
+      morning: {
+        label: 'SCENE 02 · MORNING PULSE',
+        flow: 48,
+        congestion: 36,
+        mode: 'wave',
+        hueBias: 0.12
+      },
+      peak: {
+        label: 'SCENE 03 · PEAK COMPRESSION',
+        flow: 82,
+        congestion: 88,
+        mode: 'compress',
+        hueBias: 0.42
+      },
+      interchange: {
+        label: 'SCENE 04 · INTERCHANGE RELEASE',
+        flow: 74,
+        congestion: 52,
+        mode: 'radial',
+        hueBias: 0.24
+      },
+      asleep: {
+        label: 'SCENE 05 · CITY ASLEEP',
+        flow: 18,
+        congestion: 12,
+        mode: 'breathe',
+        hueBias: -0.08
+      }
+    };
+
+    const state = {
+      preset: 'morning',
+      flow: 0.48,
+      congestion: 0.36,
+      autoOrbit: true,
+      liveSource: 'INTERACTIVE STUDIO PRESET',
+      zoneEnergies: [0.45, 0.52, 0.48, 0.60, 0.44, 0.50, 0.56, 0.42],
+      glbLoaded: false
+    };
+
+    const wrap = document.getElementById('altaerCanvasWrap');
+    const presetPill = document.getElementById('altPresetPill');
+    const modelPill = document.getElementById('altModelPill');
+    const voidPill = document.getElementById('altVoidPill');
+    const sourcePill = document.getElementById('altSourcePill');
+    const flowSlider = document.getElementById('flowSlider');
+    const congestionSlider = document.getElementById('congestionSlider');
+    const flowValLabel = document.getElementById('flowValLabel');
+    const congestionValLabel = document.getElementById('congestionValLabel');
+    const statStations = document.getElementById('statStations');
+    const statFleetSub = document.getElementById('statFleetSub');
+    const statActivity = document.getElementById('statActivity');
+    const statCompression = document.getElementById('statCompression');
+    const statusNote = document.getElementById('berylStatusNote');
+    const berylFetchBtn = document.getElementById('berylFetchBtn');
+    const orbitBtn = document.getElementById('altOrbitBtn');
+
+    // Three.js Renderer & Gallery Scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0b0f);
+    scene.fog = new THREE.FogExp2(0x0a0b0f, 0.085);
+
+    const camera = new THREE.PerspectiveCamera(45, wrap.clientWidth / wrap.clientHeight, 0.1, 60);
+    camera.position.set(-4.25, 2.22, 5.95);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+    wrap.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 2.18, 0);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 2.4;
+    controls.maxDistance = 10.5;
+    controls.minPolarAngle = 0.25;
+    controls.maxPolarAngle = Math.PI * 0.56;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.55;
+
+    // Moody Gallery Lighting
+    const hemi = new THREE.HemisphereLight(0xa3d8f4, 0x161922, 1.05);
+    scene.add(hemi);
+
+    const keySpot = new THREE.SpotLight(0xd8f3ff, 34, 18, Math.PI * 0.36, 0.65, 1.2);
+    keySpot.position.set(-3.2, 5.4, 3.6);
+    keySpot.target.position.set(0, 2.1, 0);
+    scene.add(keySpot, keySpot.target);
+
+    const rimLight = new THREE.DirectionalLight(0x67e8f9, 0.75);
+    rimLight.position.set(3.5, 3.2, -3.5);
+    scene.add(rimLight);
+
+    const voidLight = new THREE.PointLight(0x67e8f9, 5.2, 6.5, 1.5);
+    voidLight.position.set(0, 2.10, 0);
+    scene.add(voidLight);
+
+    const plinthGlow = new THREE.PointLight(0xf59e0b, 2.2, 4.5, 1.6);
+    plinthGlow.position.set(0, 0.72, 0);
+    scene.add(plinthGlow);
+
+    // Subtle dark gallery floor pad
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0x0d0f14,
+      roughness: 0.42,
+      metalness: 0.12
+    });
+    const floorMesh = new THREE.Mesh(new THREE.CircleGeometry(7.5, 48), floorMat);
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.y = 0;
+    scene.add(floorMesh);
+
+    const floorRingMat = new THREE.MeshBasicMaterial({
+      color: 0x67e8f9,
+      transparent: true,
+      opacity: 0.16,
+      side: THREE.DoubleSide
+    });
+    const floorRing = new THREE.Mesh(new THREE.RingGeometry(1.12, 1.15, 64), floorRingMat);
+    floorRing.rotation.x = -Math.PI / 2;
+    floorRing.position.y = 0.005;
+    scene.add(floorRing);
+
+    const sculptureRoot = new THREE.Group();
+    scene.add(sculptureRoot);
+
+    const rodEntries = [];
+    let wordmarkGroup = null;
+
+    function buildProceduralFallback() {
+      const housingMat = new THREE.MeshStandardMaterial({ color: 0x111318, metalness: 0.4, roughness: 0.55 });
+      const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.46, 0.54, 1.46), housingMat);
+      plinth.position.y = 0.27;
+      const upper = new THREE.Mesh(new THREE.BoxGeometry(1.46, 0.54, 1.46), housingMat);
+      upper.position.y = 3.93;
+      sculptureRoot.add(plinth, upper);
+
+      const rodGeo = new THREE.CylinderGeometry(0.021, 0.021, 1.65, 12);
+      const pitch = 0.145;
+      const half = 3.5 * pitch;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const x = c * pitch - half;
+          const z = r * pitch - half;
+          for (const isUpper of [false, true]) {
+            const mat = new THREE.MeshStandardMaterial({
+              color: 0xd8ecf2,
+              emissive: 0x67e8f9,
+              emissiveIntensity: 1.5,
+              roughness: 0.22
+            });
+            const m = new THREE.Mesh(rodGeo, mat);
+            m.position.set(x, isUpper ? 2.75 + 0.825 : 1.45 - 0.825, z);
+            sculptureRoot.add(m);
+            rodEntries.push({
+              obj: m,
+              row: r,
+              col: c,
+              isUpper,
+              yOffset: isUpper ? 0.825 : -0.825,
+              shaftMats: [mat],
+              tipMats: [mat]
+            });
+          }
+        }
+      }
+      modelPill.textContent = 'PROCEDURAL FALLBACK · 128 RODS';
+    }
+
+    function registerLoadedGLB(gltfScene) {
+      sculptureRoot.add(gltfScene);
+      const rodPattern = /^(Lower|Upper)Rod_(\d+)_(\d+)$/;
+
+      gltfScene.traverse((node) => {
+        if (node.name === 'AltaerVoidWordmark') {
+          wordmarkGroup = node;
+          node.traverse((child) => {
+            if (child.isMesh && child.material) {
+              child.material = child.material.clone();
+              child.material.emissive = new THREE.Color(0xe6f8ff);
+              child.material.emissiveIntensity = 2.4;
+            }
+          });
+          return;
+        }
+
+        const match = rodPattern.exec(node.name || '');
+        if (!match) return;
+
+        const isUpper = match[1] === 'Upper';
+        const row = parseInt(match[2], 10);
+        const col = parseInt(match[3], 10);
+        const shaftMats = [];
+        const tipMats = [];
+
+        node.traverse((child) => {
+          if (!child.isMesh) return;
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          const cloned = mats.map((m) => (m ? m.clone() : new THREE.MeshStandardMaterial()));
+          child.material = Array.isArray(child.material) ? cloned : cloned[0];
+          cloned.forEach((m) => {
+            if ((m.name || '').includes('RodTip')) {
+              tipMats.push(m);
+            } else {
+              shaftMats.push(m);
+            }
+          });
+        });
+
+        rodEntries.push({
+          obj: node,
+          row,
+          col,
+          isUpper,
+          yOffset: 0.0,
+          shaftMats,
+          tipMats
+        });
+      });
+
+      state.glbLoaded = rodEntries.length === 128;
+      modelPill.textContent = `BLENDER 4.2 GLB · ${rodEntries.length} RODS ACTIVE`;
+    }
+
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
+
+    gltfLoader.load(
+      './assets/altaer_kinetic_sculpture.glb',
+      (gltf) => {
+        registerLoadedGLB(gltf.scene);
+      },
+      undefined,
+      () => {
+        buildProceduralFallback();
+      }
+    );
+
+    const CYAN = new THREE.Color(0x67e8f9);
+    const OCHRE = new THREE.Color(0xf59e0b);
+    const CRIMSON = new THREE.Color(0xef4444);
+    const tmpColor = new THREE.Color();
+
+    function sampleKineticColor(t01) {
+      const k = Math.max(0, Math.min(1, t01));
+      if (k < 0.55) {
+        tmpColor.lerpColors(CYAN, OCHRE, k / 0.55);
+      } else {
+        tmpColor.lerpColors(OCHRE, CRIMSON, (k - 0.55) / 0.45);
+      }
+      return tmpColor;
+    }
+
+    function applyPreset(name) {
+      const p = PRESETS[name] || PRESETS.morning;
+      state.preset = name;
+      state.flow = p.flow / 100;
+      state.congestion = p.congestion / 100;
+      flowSlider.value = String(p.flow);
+      congestionSlider.value = String(p.congestion);
+      syncReadouts();
+      presetPill.textContent = p.label;
+      document.querySelectorAll('.alt-presets .alt-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.preset === name);
+      });
+    }
+
+    function syncReadouts() {
+      const fPct = Math.round(state.flow * 100);
+      const cPct = Math.round(state.congestion * 100);
+      flowValLabel.textContent = `${fPct}%`;
+      congestionValLabel.textContent = `${cPct}%`;
+      statActivity.textContent = `${fPct}%`;
+      statCompression.textContent = `${cPct}%`;
+    }
+
+    document.querySelectorAll('.alt-presets .alt-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.liveSource = 'INTERACTIVE STUDIO PRESET';
+        sourcePill.textContent = `SOURCE · ${state.liveSource}`;
+        applyPreset(btn.dataset.preset);
+      });
+    });
+
+    flowSlider.addEventListener('input', () => {
+      state.flow = parseInt(flowSlider.value, 10) / 100;
+      syncReadouts();
+    });
+
+    congestionSlider.addEventListener('input', () => {
+      state.congestion = parseInt(congestionSlider.value, 10) / 100;
+      syncReadouts();
+    });
+
+    orbitBtn.addEventListener('click', () => {
+      state.autoOrbit = !state.autoOrbit;
+      controls.autoRotate = state.autoOrbit;
+      orbitBtn.textContent = state.autoOrbit ? 'Pause Orbit' : 'Resume Orbit';
+    });
+
+    berylFetchBtn.addEventListener('click', async () => {
+      berylFetchBtn.disabled = true;
+      berylFetchBtn.textContent = 'Polling Plymouth Beryl GBFS...';
+      statusNote.textContent = 'Requesting live Plymouth Beryl Bikes GBFS v2.2 station status...';
+
+      try {
+        const res = await fetch(BERYL_GBFS_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const stations = data?.data?.stations || [];
+        if (!stations.length) throw new Error('Zero stations returned');
+
+        const active = stations.filter((s) => s.is_installed !== false && s.is_renting !== false);
+        const list = active.length ? active : stations;
+        let bikes = 0;
+        let docks = 0;
+        let stressed = 0;
+        const zSum = new Array(8).fill(0);
+        const zCnt = new Array(8).fill(0);
+
+        list.forEach((st, idx) => {
+          const b = Number(st.num_bikes_available || 0);
+          const d = Number(st.num_docks_available || 0);
+          const cap = Math.max(1, b + d);
+          bikes += b;
+          docks += d;
+          if (b === 0 || d === 0) stressed += 1;
+          const z = idx % 8;
+          zSum[z] += d / cap;
+          zCnt[z] += 1;
+        });
+
+        const capacity = Math.max(1, bikes + docks);
+        const fleetOut = docks / capacity;
+        const imbalance = stressed / list.length;
+        state.zoneEnergies = zSum.map((s, i) => Math.max(0, Math.min(1, s / Math.max(1, zCnt[i]))));
+        const spread = Math.max(...state.zoneEnergies) - Math.min(...state.zoneEnergies);
+
+        state.flow = Math.max(0.08, Math.min(1, 0.65 * fleetOut + 0.35 * Math.min(1, spread * 2.2)));
+        state.congestion = Math.max(0.08, Math.min(1, 0.55 * imbalance + 0.45 * fleetOut));
+
+        flowSlider.value = String(Math.round(state.flow * 100));
+        congestionSlider.value = String(Math.round(state.congestion * 100));
+        syncReadouts();
+
+        state.liveSource = 'LIVE PLYMOUTH BERYL GBFS V2.2';
+        sourcePill.textContent = `SOURCE · ${state.liveSource}`;
+        presetPill.textContent = 'LIVE TELEMETRY · PLYMOUTH NETWORK';
+        statStations.textContent = `${list.length} ACTIVE`;
+        statFleetSub.textContent = `${bikes} bikes docked · ${docks} open docks`;
+        statusNote.textContent = `Live Plymouth Beryl feed connected (${list.length} active bays, ${bikes} available bikes, ${docks} open docks, ${stressed} imbalanced hubs).`;
+      } catch (err) {
+        // Honest fallback notice if browser is offline or CORS-blocked
+        state.liveSource = 'OFFLINE FALLBACK TELEMETRY';
+        sourcePill.textContent = `SOURCE · ${state.liveSource}`;
+        statStations.textContent = '134 SIMULATED';
+        statFleetSub.textContent = 'Live feed unavailable in current browser context';
+        statusNote.textContent = `Live Plymouth Beryl fetch could not complete (${err.message}). Reverted cleanly to deterministic Plymouth simulation curves.`;
+      } finally {
+        berylFetchBtn.disabled = false;
+        berylFetchBtn.textContent = 'Refresh Plymouth Beryl Feed';
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (!wrap.clientWidth || !wrap.clientHeight) return;
+      camera.aspect = wrap.clientWidth / wrap.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    });
+
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+      const presetCfg = PRESETS[state.preset] || PRESETS.morning;
+
+      const speed = 0.35 + state.flow * 2.15;
+      const amp = presetCfg.mode === 'still' ? 0.045 : (0.10 + state.flow * 0.24);
+      const compression = state.congestion * 0.34;
+
+      let lowestUpper = 4.0;
+      let highestLower = 0.0;
+
+      for (let i = 0; i < rodEntries.length; i++) {
+        const rod = rodEntries[i];
+        const nx = (rod.col - 3.5) / 3.5;
+        const nz = (rod.row - 3.5) / 3.5;
+        const distNorm = Math.min(1.0, Math.hypot(nx, nz) / 1.414);
+        const zoneEnergy = state.zoneEnergies[rod.col % 8];
+
+        let wave = 0;
+        if (presetCfg.mode === 'radial') {
+          wave = Math.sin(t * speed * 1.4 - distNorm * 4.4);
+        } else if (presetCfg.mode === 'breathe') {
+          wave = Math.sin(t * 0.65 - distNorm * 1.4) * 0.65;
+        } else {
+          wave = Math.sin(t * speed - distNorm * 2.4 - rod.row * 0.34 - rod.col * 0.22);
+        }
+
+        const harmonic = 0.28 * Math.cos(t * speed * 0.7 + (rod.row + rod.col) * 0.45);
+        const centerEnvelope = (1.0 - distNorm) * 0.24;
+
+        let tipY;
+        if (!rod.isUpper) {
+          tipY = 1.36 + centerEnvelope * 0.72 + compression * 0.34 + (wave + harmonic) * amp * 0.65;
+          tipY = Math.max(1.24, Math.min(1.76, tipY));
+          if (tipY > highestLower) highestLower = tipY;
+        } else {
+          const upperWave = Math.sin(t * speed - distNorm * 2.4 - rod.row * 0.34 - rod.col * 0.22 + 0.55);
+          tipY = 2.84 - centerEnvelope * 0.72 - compression * 0.34 - (upperWave + harmonic) * amp * 0.65;
+          tipY = Math.max(2.44, Math.min(3.10, tipY));
+          if (tipY < lowestUpper) lowestUpper = tipY;
+        }
+
+        rod.obj.position.y = tipY + rod.yOffset;
+
+        // Map congestion + wave + Plymouth zone energy into Cyan -> Studio Ochre -> Crimson
+        const colorMix = Math.max(
+          0,
+          Math.min(
+            1,
+            state.congestion * 0.62 +
+              zoneEnergy * 0.22 +
+              (wave * 0.5 + 0.5) * 0.24 +
+              presetCfg.hueBias
+          )
+        );
+        const col = sampleKineticColor(colorMix);
+
+        for (let m = 0; m < rod.shaftMats.length; m++) {
+          rod.shaftMats[m].emissive.copy(col);
+          rod.shaftMats[m].emissiveIntensity = 0.45 + state.flow * 0.45;
+        }
+        for (let m = 0; m < rod.tipMats.length; m++) {
+          rod.tipMats[m].emissive.copy(col);
+          rod.tipMats[m].emissiveIntensity = 2.2 + state.flow * 1.4 + (wave * 0.5 + 0.5) * 0.8;
+        }
+      }
+
+      if (rodEntries.length > 0) {
+        const clearance = Math.max(0.20, lowestUpper - highestLower);
+        voidPill.textContent = `VOID CLEARANCE · ${clearance.toFixed(2)} M`;
+      }
+
+      const globalCol = sampleKineticColor(Math.min(1, state.congestion * 0.78 + state.flow * 0.22));
+      voidLight.color.copy(globalCol);
+      voidLight.intensity = 3.8 + state.flow * 2.8;
+      plinthGlow.color.copy(globalCol);
+      floorRingMat.color.copy(globalCol);
+
+      if (wordmarkGroup) {
+        wordmarkGroup.position.y = 2.10 + Math.sin(t * 0.9) * 0.015;
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    syncReadouts();
+    animate();
+  </script>
+</body>
+</html>

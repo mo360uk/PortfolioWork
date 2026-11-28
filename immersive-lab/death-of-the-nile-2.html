@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Death of the Nile 2.0 · Interactive WebGPU / WebGL2 Co-Creator | Mo360 Immersive Studio</title>
+  <meta name="description" content="Interactive browser-based Nile Basin hydrological co-creator and 180-degree fulldome preview prototype by Mo360 Immersive Studio in Plymouth, UK." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #13151a;
+      --surface-elevated: rgba(16, 18, 24, 0.90);
+      --border: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(245, 158, 11, 0.45);
+      --amber: #F59E0B;
+      --amber-deep: #C87D28;
+      --amber-hover: #d97706;
+      --amber-soft: rgba(245, 158, 11, 0.14);
+      --text: #f4f4f2;
+      --text-muted: #a1a7b3;
+      --text-dim: #747b89;
+      --ok: #34d399;
+      --cyan: #38bdf8;
+      --danger: #f87171;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow: 0 18px 46px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      max-width: 100vw;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Fullscreen 3D stage */
+    #stage-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: radial-gradient(circle at 50% 42%, #171920 0%, #0a0a0a 80%);
+    }
+
+    #nile-canvas-wrap {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #nile-canvas-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+      touch-action: none;
+    }
+
+    /* Fulldome 180-degree Market Hall 15m Dome Mask Overlay */
+    #dome-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.dome-preview #dome-mask {
+      opacity: 1;
+    }
+
+    .dome-aperture {
+      position: relative;
+      width: min(86vmin, calc(100vw - 24px));
+      height: min(86vmin, calc(100vh - 150px));
+      max-width: min(86vw, 760px);
+      max-height: min(86vw, 760px);
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      box-shadow: 0 0 0 9999px rgba(3, 4, 6, 0.94);
+      border: 2px solid rgba(245, 158, 11, 0.72);
+    }
+
+    .dome-rim-15 {
+      position: absolute;
+      inset: 8.3%;
+      border-radius: 50%;
+      border: 1px dashed rgba(245, 158, 11, 0.38);
+    }
+
+    .dome-zenith {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(245, 158, 11, 0.45);
+    }
+
+    .dome-zenith::before,
+    .dome-zenith::after {
+      content: '';
+      position: absolute;
+      background: rgba(245, 158, 11, 0.45);
+    }
+
+    .dome-zenith::before {
+      left: 50%;
+      top: -6px;
+      width: 1px;
+      height: 26px;
+      transform: translateX(-50%);
+    }
+
+    .dome-zenith::after {
+      top: 50%;
+      left: -6px;
+      height: 1px;
+      width: 26px;
+      transform: translateY(-50%);
+    }
+
+    .dome-cardinal {
+      position: absolute;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: rgba(245, 158, 11, 0.85);
+      background: rgba(10, 10, 10, 0.78);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .dome-n { top: 6px; left: 50%; transform: translateX(-50%); }
+    .dome-s { bottom: 6px; left: 50%; transform: translateX(-50%); }
+    .dome-w { left: 8px; top: 50%; transform: translateY(-50%); }
+    .dome-e { right: 8px; top: 50%; transform: translateY(-50%); }
+
+    .dome-rim-note {
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    /* Top editorial HUD bar */
+    .top-bar {
+      position: fixed;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      z-index: 25;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--amber);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      max-width: calc(100vw - 28px);
+    }
+
+    .brand-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .brand-eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.67rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--amber-soft);
+      border: 1px solid var(--border-strong);
+      color: var(--amber);
+      font-weight: 700;
+      font-size: 0.63rem;
+      letter-spacing: 0.06em;
+    }
+
+    .gpu-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+      font-weight: 700;
+      font-size: 0.63rem;
+      letter-spacing: 0.05em;
+    }
+
+    .page-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .nav-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .btn.primary {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #0a0a0a;
+      font-weight: 700;
+    }
+
+    .btn.primary:hover {
+      background: var(--amber-hover);
+      border-color: var(--amber-hover);
+    }
+
+    .btn.active-mode {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .btn.frozen-on {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--cyan);
+      color: #bae6fd;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.28);
+    }
+
+    .btn svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    /* Basin telemetry + Freeze confirmation badge */
+    .telemetry-bar {
+      position: fixed;
+      top: 86px;
+      left: 14px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: min(330px, calc(100vw - 28px));
+      pointer-events: none;
+    }
+
+    .telemetry-card {
+      pointer-events: auto;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .telemetry-kicker {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .basin-heading {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .basin-desc {
+      font-size: 0.76rem;
+      line-height: 1.42;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    .metric-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-lbl {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.59rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+    }
+
+    .metric-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    #freeze-banner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(14, 42, 62, 0.92);
+      border: 1px solid var(--cyan);
+      color: #e0f2fe;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow);
+    }
+
+    #freeze-banner.visible {
+      display: flex;
+    }
+
+    .freeze-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      flex-shrink: 0;
+    }
+
+    /* Right-side Co-Creator Hydro Sliders & Gamepad Drawer */
+    .cocreator-panel {
+      position: fixed;
+      top: 86px;
+      right: 14px;
+      z-index: 21;
+      width: 310px;
+      max-width: calc(100vw - 28px);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 13px 15px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.69rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+
+    .pad-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .pad-badge.connected {
+      border-color: rgba(52, 211, 153, 0.5);
+      background: rgba(52, 211, 153, 0.14);
+      color: #6ee7b7;
+    }
+
+    .pill-group-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      margin-bottom: 5px;
+    }
+
+    .pill-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .season-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .pill-btn {
+      padding: 7px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
+    .pill-btn.active {
+      background: var(--amber-soft);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slider-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .slider-head strong {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.71rem;
+      color: var(--text);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--amber);
+      border: 2px solid #0a0a0a;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--amber);
+      border: 2px solid #0a0a0a;
+      cursor: pointer;
+    }
+
+    .pad-legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-dim);
+    }
+
+    .pad-legend span b {
+      color: var(--amber);
+    }
+
+    /* Bottom Co-Creator Action Dock */
+    .bottom-dock {
+      position: fixed;
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+      z-index: 25;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      max-width: calc(100vw - 28px);
+    }
+
+    .dock-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dock-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* Info Drawer */
+    #info-panel {
+      position: fixed;
+      top: 86px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      width: 390px;
+      max-width: calc(100vw - 28px);
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+      padding: 18px;
+      background: rgba(15, 17, 23, 0.96);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    #info-panel.open {
+      display: block;
+    }
+
+    #info-panel h2 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    #info-panel p {
+      font-size: 0.79rem;
+      line-height: 1.52;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .spec-key { color: var(--text-dim); }
+    .spec-val { color: var(--text); text-align: right; }
+
+    /* Mobile toggle button for Co-Creator panel */
+    #btn-mobile-controls {
+      display: none;
+    }
+
+    /* Fulldome mode compact framing: keep HUD tucked away from circular centre */
+    body.dome-preview .telemetry-bar {
+      top: auto;
+      bottom: 72px;
+      left: 14px;
+      max-width: 260px;
+    }
+
+    body.dome-preview .telemetry-bar .basin-desc {
+      display: none;
+    }
+
+    body.dome-preview .cocreator-panel {
+      top: auto;
+      bottom: 72px;
+      right: 14px;
+      width: 270px;
+    }
+
+    body.dome-preview .cocreator-panel .pad-legend {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .top-bar {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        max-width: calc(100vw - 16px);
+        padding: 9px 11px;
+        gap: 8px;
+      }
+
+      .page-title {
+        font-size: 0.86rem;
+      }
+
+      .nav-actions .btn {
+        padding: 6px 9px;
+        font-size: 0.72rem;
+      }
+
+      .telemetry-bar {
+        top: auto;
+        bottom: 134px;
+        left: 8px;
+        right: 8px;
+        max-width: calc(100vw - 16px);
+      }
+
+      .telemetry-bar .basin-desc {
+        display: none;
+      }
+
+      #btn-mobile-controls {
+        display: inline-flex;
+      }
+
+      .cocreator-panel {
+        display: none;
+        top: 96px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-width: calc(100vw - 16px);
+        max-height: calc(100vh - 220px);
+        overflow-y: auto;
+      }
+
+      .cocreator-panel.mobile-open {
+        display: flex;
+      }
+
+      .bottom-dock {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        max-width: calc(100vw - 16px);
+        padding: 8px 10px;
+        gap: 7px;
+      }
+
+      .bottom-dock .btn {
+        padding: 6px 9px;
+        font-size: 0.72rem;
+      }
+
+      .dock-meta {
+        width: 100%;
+        justify-content: space-between;
+        font-size: 0.62rem;
+      }
+
+      .hint-desktop {
+        display: none;
+      }
+
+      body.dome-preview .telemetry-bar {
+        bottom: 134px;
+        left: 8px;
+        right: 8px;
+        max-width: calc(100vw - 16px);
+      }
+
+      body.dome-preview .cocreator-panel.mobile-open {
+        top: 96px;
+        bottom: auto;
+        left: 8px;
+        right: 8px;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-eyebrow">
+        <span>Mo360 Immersive Studio · Plymouth, UK</span>
+        <span class="status-pill">Co-Creator Prototype</span>
+        <span class="gpu-pill" id="gpu-badge">Checking GPU...</span>
+      </div>
+      <h1 class="page-title">Death of the Nile 2.0 · Interactive Basin &amp; Fulldome Simulator</h1>
+    </div>
+    <nav class="nav-actions" aria-label="Viewer navigation">
+      <a class="btn" href="../index.html#latest-works">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <span>Portfolio</span>
+      </a>
+      <a class="btn" href="../projects/death-of-the-nile/">Original Film (2022)</a>
+      <button type="button" class="btn" id="btn-dome-mask" aria-pressed="false">Fulldome 180°</button>
+      <button type="button" class="btn" id="btn-mobile-controls" aria-expanded="false">Co-Creator Controls</button>
+      <button type="button" class="btn" id="btn-info" aria-expanded="false" aria-controls="info-panel">Details</button>
+    </nav>
+  </header>
+
+  <section class="telemetry-bar" aria-label="Nile Basin hydrological readout">
+    <div id="freeze-banner" role="status" aria-live="polite">
+      <span class="freeze-dot"></span>
+      <span>Collapse Frozen · Intervention Locked (A / Space)</span>
+    </div>
+    <div class="telemetry-card">
+      <div class="telemetry-kicker">
+        <span id="era-label">Modern Hydro Era</span>
+        <span id="season-label">Akhet · Flood</span>
+      </div>
+      <div class="basin-heading" id="basin-title">Blue Nile Gorge &amp; GERD</div>
+      <p class="basin-desc" id="basin-desc">Deep 1,600 m Ethiopian gorge bisected by the Grand Ethiopian Renaissance Dam. Adjust Highland Rain and Outflow to observe upstream storage versus downstream scarcity.</p>
+      <div class="metrics-row">
+        <div class="metric-cell">
+          <span class="metric-lbl">Basin Vol</span>
+          <span class="metric-val" id="val-volume">78%</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-lbl">Water Level</span>
+          <span class="metric-val" id="val-level">+1.8 m</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-lbl" id="lbl-stress">Channel Width</span>
+          <span class="metric-val" id="val-stress">Wide</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="cocreator-panel" id="cocreator-panel" aria-label="Hydrological and Gamepad Co-Creator Controls">
+    <div class="panel-header">
+      <span class="panel-title">Nile Co-Creator Deck</span>
+      <span class="pad-badge" id="gamepad-badge">Gamepad: Standby</span>
+    </div>
+
+    <div>
+      <div class="pill-group-label">1. Select Nile Basin Diorama (LB / RB)</div>
+      <div class="pill-grid" role="group" aria-label="Nile Basin Selector">
+        <button type="button" class="pill-btn active" data-basin="blue_nile">Blue Nile &amp; GERD</button>
+        <button type="button" class="pill-btn" data-basin="aswan">Aswan &amp; Nasser</button>
+        <button type="button" class="pill-btn" data-basin="delta">Nile Delta</button>
+        <button type="button" class="pill-btn" data-basin="cairo">Cairo-Giza</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="pill-group-label">2. Nile Season (D-Pad Left / Right)</div>
+      <div class="season-grid" role="group" aria-label="Nile Season Selector">
+        <button type="button" class="pill-btn active" data-season="akhet">Akhet</button>
+        <button type="button" class="pill-btn" data-season="peret">Peret</button>
+        <button type="button" class="pill-btn" data-season="shemu">Shemu</button>
+      </div>
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-head">
+        <label for="slider-rain">Highland Rain (LT)</label>
+        <strong id="readout-rain">68%</strong>
+      </div>
+      <input type="range" id="slider-rain" min="0" max="100" value="68" />
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-head">
+        <label for="slider-heat">Evaporation Heat (RT)</label>
+        <strong id="readout-heat">32%</strong>
+      </div>
+      <input type="range" id="slider-heat" min="0" max="100" value="32" />
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-head">
+        <label for="slider-outflow">Dam Outflow</label>
+        <strong id="readout-outflow">55%</strong>
+      </div>
+      <input type="range" id="slider-outflow" min="0" max="100" value="55" />
+    </div>
+
+    <div class="pad-legend">
+      <span><b>A / Space</b> Freeze</span>
+      <span><b>B</b> Kemet / Modern</span>
+      <span><b>X</b> Reset Flow</span>
+      <span><b>Y</b> Khamsin Dust</span>
+      <span><b>LT / RT</b> Rain / Heat</span>
+      <span><b>D-Pad</b> Seasons</span>
+    </div>
+  </aside>
+
+  <aside id="info-panel" aria-label="Technical specifications">
+    <h2>Death of the Nile 2.0 · Co-Creator Architecture</h2>
+    <p>
+      Interactive browser edition extending Mo360 Immersive Studio's 2022 Fulldome UK work into a real-time hydrological diorama. Visitors or a Baton Steward using an Xbox controller steer basin drawdown, seasonal flooding, and climate intervention live.
+    </p>
+    <p>
+      Terrain vertex colours shift dynamically across submerged silt, lush green riparian soil, exposed ochre riverbeds, and coastal salt-crust intrusion in the Delta. Enable Fulldome 180° to preview Market Hall 15m dome framing with perimeter telemetry tucked below the 15-degree rim.
+    </p>
+    <div class="spec-grid">
+      <span class="spec-key">Target Datasets</span>
+      <span class="spec-val">Copernicus GLO-30 · JRC Water</span>
+      <span class="spec-key">Basins Modeled</span>
+      <span class="spec-val">4 Interactive Dioramas</span>
+      <span class="spec-key">Controller API</span>
+      <span class="spec-val">W3C Gamepad + Touch + Keys</span>
+      <span class="spec-key">Dome Target</span>
+      <span class="spec-val">Market Hall 15m (180° / 15° Rim)</span>
+      <span class="spec-key">GPU Runtime</span>
+      <span class="spec-val" id="spec-gpu">Detecting...</span>
+    </div>
+  </aside>
+
+  <main id="stage-wrap">
+    <div id="nile-canvas-wrap" aria-label="Interactive 3D Nile Basin Diorama"></div>
+  </main>
+
+  <div id="dome-mask" aria-hidden="true">
+    <div class="dome-aperture">
+      <div class="dome-rim-15"></div>
+      <div class="dome-zenith"></div>
+      <span class="dome-cardinal dome-n">N · NORTH</span>
+      <span class="dome-cardinal dome-s">S · UPSTREAM</span>
+      <span class="dome-cardinal dome-w">W</span>
+      <span class="dome-cardinal dome-e">E</span>
+      <span class="dome-rim-note">Market Hall 15m Dome · 15° Rim Boundary</span>
+    </div>
+  </div>
+
+  <footer class="bottom-dock">
+    <div class="dock-controls">
+      <button type="button" class="btn primary" id="btn-freeze" aria-pressed="false">Freeze Collapse (A)</button>
+      <button type="button" class="btn" id="btn-era" aria-pressed="false">Era: Modern Hydro (B)</button>
+      <button type="button" class="btn" id="btn-khamsin" aria-pressed="false">Khamsin Dust: Off (Y)</button>
+      <button type="button" class="btn" id="btn-reset">Reset Basin (X)</button>
+    </div>
+    <div class="dock-meta">
+      <span><span class="live-dot" id="status-dot"></span><span id="status-text">Live simulation active</span></span>
+      <span class="hint-desktop">Drag: Orbit · Scroll: Zoom · Space/A: Freeze · D: Dome 180°</span>
+    </div>
+  </footer>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const BASINS = {
+      blue_nile: {
+        id: 'blue_nile',
+        titleModern: 'Blue Nile Gorge & GERD',
+        titleKemet: 'Upper Nile Basalt Gorge (Kemet)',
+        descModern: 'Deep 1,600 m Ethiopian gorge bisected by the Grand Ethiopian Renaissance Dam. Adjust Highland Rain and Dam Outflow to watch reservoir drawdown and canyon exposure.',
+        descKemet: 'Unconfined basalt gorge carved by seasonal Ethiopian highland monsoons before modern concrete impoundment.',
+        cameraPos: [34, 29, 44],
+        cameraTarget: [0, 1.5, 2],
+        baseWaterY: 2.2,
+        minWaterY: -2.2,
+        maxWaterY: 4.5,
+        damZ: 5.0
+      },
+      aswan: {
+        id: 'aswan',
+        titleModern: 'Aswan High Dam & Lake Nasser',
+        titleKemet: 'First Cataract & Elephantine Nilometer',
+        descModern: 'Broad Lake Nasser reservoir behind the Aswan High Dam rock-fill barrier. High evaporation lowers storage across Nubian sandstone shorelines.',
+        descKemet: 'Ancient granite boulders of the First Cataract regulating seasonal inundation past Elephantine Island.',
+        cameraPos: [38, 25, 42],
+        cameraTarget: [0, 1.0, 4],
+        baseWaterY: 2.1,
+        minWaterY: -1.8,
+        maxWaterY: 4.0,
+        damZ: 9.0
+      },
+      delta: {
+        id: 'delta',
+        titleModern: 'Nile Delta (Rosetta & Damietta)',
+        titleKemet: 'Delta Marshes of Lower Kemet',
+        descModern: 'Bifurcated Rosetta and Damietta distributaries meeting the Mediterranean coast. When river outflow drops, coastal salt intrusion crusts the northern plain.',
+        descKemet: 'Lush papyrus wetlands fed by annual Akhet flood silt fanning across Lower Egypt toward the sea.',
+        cameraPos: [0, 34, 52],
+        cameraTarget: [0, 0.2, 4],
+        baseWaterY: 1.35,
+        minWaterY: -0.95,
+        maxWaterY: 2.6,
+        damZ: null
+      },
+      cairo: {
+        id: 'cairo',
+        titleModern: 'Cairo-Giza Corridor',
+        titleKemet: 'Memphite Valley & Giza Plateau',
+        descModern: 'Narrowed urban channel between Cairo riverbanks and the western Giza plateau. Receding water reveals mid-stream sandbars and dry riparian edges.',
+        descKemet: 'Sacred Memphite floodplain below the limestone Giza escarpment, shifting seasonally between flood and harvest.',
+        cameraPos: [36, 24, 38],
+        cameraTarget: [0, 1.2, 0],
+        baseWaterY: 1.85,
+        minWaterY: -1.35,
+        maxWaterY: 3.6,
+        damZ: null
+      }
+    };
+
+    const SEASONS = {
+      akhet: {
+        id: 'akhet',
+        label: 'Akhet · Flood',
+        rainBias: 0.22,
+        heatBias: -0.10,
+        siltTint: new THREE.Color('#1f5e52'),
+        deepTint: new THREE.Color('#0c3b4a'),
+        sunColor: 0xffd28a,
+        sunIntensity: 2.3
+      },
+      peret: {
+        id: 'peret',
+        label: 'Peret · Emergence',
+        rainBias: 0.0,
+        heatBias: 0.0,
+        siltTint: new THREE.Color('#176e7a'),
+        deepTint: new THREE.Color('#0b3f5c'),
+        sunColor: 0xfff0d6,
+        sunIntensity: 2.5
+      },
+      shemu: {
+        id: 'shemu',
+        label: 'Shemu · Low Harvest',
+        rainBias: -0.24,
+        heatBias: 0.26,
+        siltTint: new THREE.Color('#5a5a32'),
+        deepTint: new THREE.Color('#1a3d42'),
+        sunColor: 0xffa94d,
+        sunIntensity: 2.9
+      }
+    };
+
+    const state = {
+      basin: 'blue_nile',
+      season: 'akhet',
+      era: 'modern', // 'modern' | 'kemet'
+      frozen: false,
+      khamsin: false,
+      domeMask: false,
+      rain: 68,
+      heat: 32,
+      outflow: 55,
+      volume: 0.78, // 0..1
+      waterY: 2.2,
+      elapsed: 0
+    };
+
+    // DOM refs
+    const canvasWrap = document.getElementById('nile-canvas-wrap');
+    const gpuBadge = document.getElementById('gpu-badge');
+    const specGpu = document.getElementById('spec-gpu');
+    const eraLabel = document.getElementById('era-label');
+    const seasonLabel = document.getElementById('season-label');
+    const basinTitle = document.getElementById('basin-title');
+    const basinDesc = document.getElementById('basin-desc');
+    const valVolume = document.getElementById('val-volume');
+    const valLevel = document.getElementById('val-level');
+    const lblStress = document.getElementById('lbl-stress');
+    const valStress = document.getElementById('val-stress');
+    const freezeBanner = document.getElementById('freeze-banner');
+    const gamepadBadge = document.getElementById('gamepad-badge');
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-dot');
+
+    const sliderRain = document.getElementById('slider-rain');
+    const sliderHeat = document.getElementById('slider-heat');
+    const sliderOutflow = document.getElementById('slider-outflow');
+    const readoutRain = document.getElementById('readout-rain');
+    const readoutHeat = document.getElementById('readout-heat');
+    const readoutOutflow = document.getElementById('readout-outflow');
+
+    const btnFreeze = document.getElementById('btn-freeze');
+    const btnEra = document.getElementById('btn-era');
+    const btnKhamsin = document.getElementById('btn-khamsin');
+    const btnReset = document.getElementById('btn-reset');
+    const btnDomeMask = document.getElementById('btn-dome-mask');
+    const btnInfo = document.getElementById('btn-info');
+    const infoPanel = document.getElementById('info-panel');
+    const btnMobileControls = document.getElementById('btn-mobile-controls');
+    const cocreatorPanel = document.getElementById('cocreator-panel');
+
+    const basinButtons = Array.from(document.querySelectorAll('[data-basin]'));
+    const seasonButtons = Array.from(document.querySelectorAll('[data-season]'));
+
+    // Detect WebGPU / WebGL2 honestly
+    async function detectGpu() {
+      let webgpuReady = false;
+      if ('gpu' in navigator) {
+        try {
+          const adapter = await navigator.gpu.requestAdapter();
+          webgpuReady = Boolean(adapter);
+        } catch {
+          webgpuReady = false;
+        }
+      }
+      const label = webgpuReady
+        ? 'WebGPU Ready · WebGL2 Shader'
+        : 'WebGL2 Shader Pipeline';
+      gpuBadge.textContent = label;
+      specGpu.textContent = webgpuReady
+        ? 'navigator.gpu adapter verified (WebGL2 fallback active)'
+        : 'WebGL2 active (navigator.gpu unavailable)';
+    }
+    detectGpu();
+
+    // Three.js Scene Setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#090b10');
+    const baseFogColor = new THREE.Color('#141923');
+    scene.fog = new THREE.FogExp2(baseFogColor.getHex(), 0.0065);
+
+    const camera = new THREE.PerspectiveCamera(
+      46,
+      window.innerWidth / window.innerHeight,
+      0.2,
+      400
+    );
+    camera.position.set(...BASINS.blue_nile.cameraPos);
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    canvasWrap.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.maxPolarAngle = Math.PI * 0.47;
+    controls.minDistance = 16;
+    controls.maxDistance = 105;
+    controls.target.set(...BASINS.blue_nile.cameraTarget);
+    controls.update();
+
+    // Lighting
+    const hemiLight = new THREE.HemisphereLight(0x9bb8d6, 0x3b2c1a, 0.9);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight(0xffd28a, 2.3);
+    sunLight.position.set(42, 48, -28);
+    scene.add(sunLight);
+
+    const rimLight = new THREE.DirectionalLight(0x4b7fa8, 0.65);
+    rimLight.position.set(-36, 18, 40);
+    scene.add(rimLight);
+
+    // Deterministic smooth noise helpers
+    function hash2(x, z) {
+      const s = Math.sin(x * 127.1 + z * 311.7) * 43758.5453123;
+      return s - Math.floor(s);
+    }
+
+    function valueNoise(x, z) {
+      const ix = Math.floor(x);
+      const iz = Math.floor(z);
+      const fx = x - ix;
+      const fz = z - iz;
+      const ux = fx * fx * (3 - 2 * fx);
+      const uz = fz * fz * (3 - 2 * fz);
+      const a = hash2(ix, iz);
+      const b = hash2(ix + 1, iz);
+      const c = hash2(ix, iz + 1);
+      const d = hash2(ix + 1, iz + 1);
+      return a + (b - a) * ux + (c - a) * uz + (a - b - c + d) * ux * uz;
+    }
+
+    function fbm(x, z) {
+      let v = 0;
+      let amp = 0.5;
+      let freq = 1;
+      for (let i = 0; i < 4; i++) {
+        v += amp * valueNoise(x * freq, z * freq);
+        freq *= 2.05;
+        amp *= 0.5;
+      }
+      return v;
+    }
+
+    function smoothstep(edge0, edge1, x) {
+      const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+      return t * t * (3 - 2 * t);
+    }
+
+    // Terrain Geometry (150 x 150 grid over 116 x 116 world units)
+    const WORLD_SIZE = 116;
+    const SEGMENTS = 148;
+    const terrainGeo = new THREE.PlaneGeometry(WORLD_SIZE, WORLD_SIZE, SEGMENTS, SEGMENTS);
+    terrainGeo.rotateX(-Math.PI / 2);
+
+    const posAttr = terrainGeo.attributes.position;
+    const vertCount = posAttr.count;
+    const colorArray = new Float32Array(vertCount * 3);
+    terrainGeo.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+    const terrainMat = new THREE.MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 0.88,
+      metalness: 0.04,
+      flatShading: false
+    });
+    const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
+    scene.add(terrainMesh);
+
+    // Cache per-vertex metadata for fast colour updates
+    const terrainBaseY = new Float32Array(vertCount);
+    const terrainSaltWeight = new Float32Array(vertCount);
+
+    // Water Geometry with per-vertex terrain elevation attribute for GPU shoreline foam
+    const waterGeo = new THREE.PlaneGeometry(WORLD_SIZE - 1.5, WORLD_SIZE - 1.5, SEGMENTS, SEGMENTS);
+    waterGeo.rotateX(-Math.PI / 2);
+    const waterPosAttr = waterGeo.attributes.position;
+    const waterTerrainY = new Float32Array(waterPosAttr.count);
+    waterGeo.setAttribute('aTerrainY', new THREE.BufferAttribute(waterTerrainY, 1));
+
+    const waterUniforms = {
+      uTime: { value: 0 },
+      uWaterY: { value: state.waterY },
+      uShallowColor: { value: new THREE.Color('#1f5e52') },
+      uDeepColor: { value: new THREE.Color('#0c3b4a') },
+      uFoamColor: { value: new THREE.Color('#e2dfd5') },
+      uSaltTint: { value: new THREE.Color('#a5f3fc') },
+      uSaltFactor: { value: 0.0 },
+      uDamZ: { value: 5.0 },
+      uHasDam: { value: 1.0 },
+      uSunDir: { value: new THREE.Vector3(0.6, 0.72, -0.35).normalize() }
+    };
+
+    const waterMat = new THREE.ShaderMaterial({
+      uniforms: waterUniforms,
+      transparent: true,
+      depthWrite: false,
+      vertexShader: `
+        attribute float aTerrainY;
+        uniform float uTime;
+        uniform float uWaterY;
+        uniform float uDamZ;
+        uniform float uHasDam;
+        varying float vDepth;
+        varying float vRipple;
+        varying vec3 vWorldPos;
+        varying vec2 vUv;
+
+        void main() {
+          vUv = uv;
+          vec3 p = position;
+          float downstreamBoost = uHasDam > 0.5 ? smoothstep(uDamZ - 1.5, uDamZ + 6.0, p.z) * (1.0 - smoothstep(uDamZ + 6.0, uDamZ + 22.0, p.z)) : 0.0;
+          float waveA = sin(p.x * 0.42 + uTime * 2.0) * 0.055;
+          float waveB = cos(p.z * 0.36 - uTime * 2.5) * 0.055;
+          float waveC = sin((p.x + p.z) * 0.85 - uTime * 3.4) * (0.025 + downstreamBoost * 0.09);
+          p.y = uWaterY + waveA + waveB + waveC;
+
+          // Slightly lower downstream level when dam holds upstream storage
+          if (uHasDam > 0.5) {
+            float downDrop = smoothstep(uDamZ - 0.6, uDamZ + 2.2, p.z) * 1.45;
+            p.y -= downDrop;
+          }
+
+          vDepth = p.y - aTerrainY;
+          vRipple = waveA + waveB + waveC;
+          vec4 worldPosition = modelMatrix * vec4(p, 1.0);
+          vWorldPos = worldPosition.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform vec3 uShallowColor;
+        uniform vec3 uDeepColor;
+        uniform vec3 uFoamColor;
+        uniform vec3 uSaltTint;
+        uniform float uSaltFactor;
+        uniform vec3 uSunDir;
+        varying float vDepth;
+        varying float vRipple;
+        varying vec3 vWorldPos;
+        varying vec2 vUv;
+
+        void main() {
+          if (vDepth <= -0.02) discard;
+
+          float depthT = clamp(vDepth / 4.2, 0.0, 1.0);
+          vec3 baseCol = mix(uShallowColor, uDeepColor, depthT);
+
+          // Coastal saltwater wedge tint for Nile Delta northern edge
+          float coastT = smoothstep(22.0, 52.0, vWorldPos.z) * uSaltFactor;
+          baseCol = mix(baseCol, uSaltTint, coastT * 0.55);
+
+          // Subtle wave highlight & Fresnel sheen
+          vec3 n = normalize(vec3(-vRipple * 2.2, 1.0, -vRipple * 1.8));
+          vec3 viewDir = normalize(cameraPosition - vWorldPos);
+          float fresnel = pow(1.0 - max(dot(viewDir, n), 0.0), 3.0);
+          vec3 halfDir = normalize(uSunDir + viewDir);
+          float spec = pow(max(dot(n, halfDir), 0.0), 42.0) * 0.65;
+
+          // Shoreline foam band
+          float foam = (1.0 - smoothstep(0.0, 0.34, vDepth)) * 0.72;
+          vec3 finalCol = mix(baseCol, vec3(0.75, 0.87, 0.96), fresnel * 0.32) + vec3(1.0, 0.92, 0.75) * spec;
+          finalCol = mix(finalCol, uFoamColor, foam);
+
+          float alpha = smoothstep(-0.02, 0.25, vDepth) * (0.76 + depthT * 0.18);
+          gl_FragColor = vec4(finalCol, alpha);
+        }
+      `
+    });
+    const waterMesh = new THREE.Mesh(waterGeo, waterMat);
+    scene.add(waterMesh);
+
+    // Context Structures Group (Dams, Cataract Boulders, Cairo Banks, Giza Pyramids)
+    const structuresGroup = new THREE.Group();
+    scene.add(structuresGroup);
+
+    function clearStructures() {
+      while (structuresGroup.children.length > 0) {
+        const child = structuresGroup.children[0];
+        structuresGroup.remove(child);
+        if (child.geometry) child.geometry.dispose();
+        if (child.material) {
+          if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+          else child.material.dispose();
+        }
+      }
+    }
+
+    function buildStructuresForBasin(basinId, era) {
+      clearStructures();
+      const concreteMat = new THREE.MeshStandardMaterial({ color: 0x6f747d, roughness: 0.75, metalness: 0.1 });
+      const rockMat = new THREE.MeshStandardMaterial({ color: 0x5c4b3c, roughness: 0.92 });
+      const ochreMat = new THREE.MeshStandardMaterial({ color: 0xc89d5c, roughness: 0.85 });
+      const urbanMat = new THREE.MeshStandardMaterial({ color: 0x454a54, roughness: 0.8 });
+      const accentMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0x5c3605, roughness: 0.5 });
+
+      if (basinId === 'blue_nile') {
+        if (era === 'modern') {
+          // Curved GERD concrete gravity dam spanning rock-to-rock across the gorge at z=5
+          const damWall = new THREE.Mesh(new THREE.BoxGeometry(68, 9.2, 2.6), concreteMat);
+          damWall.position.set(2, 1.8, 5.0);
+          structuresGroup.add(damWall);
+          // Spillway crest beacon line
+          const crest = new THREE.Mesh(new THREE.BoxGeometry(68.4, 0.5, 2.8), accentMat);
+          crest.position.set(2, 6.5, 5.0);
+          structuresGroup.add(crest);
+          // Side buttresses
+          for (const sx of [-21, -13, -5, 3, 11, 19, 27]) {
+            const pier = new THREE.Mesh(new THREE.BoxGeometry(1.3, 8.8, 3.8), concreteMat);
+            pier.position.set(sx, 1.7, 5.4);
+            structuresGroup.add(pier);
+          }
+        } else {
+          // Ancient basalt gorge rapids rocks
+          for (let i = 0; i < 10; i++) {
+            const boulder = new THREE.Mesh(new THREE.DodecahedronGeometry(0.9 + (i % 3) * 0.45, 0), rockMat);
+            boulder.position.set(-7 + i * 1.55, 0.4 + (i % 2) * 0.4, 4.5 + Math.sin(i) * 1.5);
+            structuresGroup.add(boulder);
+          }
+        }
+      } else if (basinId === 'aswan') {
+        if (era === 'modern') {
+          // Aswan High Dam rock-fill embankment at z=9
+          const embankment = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 4.2, 46, 4), concreteMat);
+          embankment.rotation.z = Math.PI / 2;
+          embankment.rotation.x = Math.PI / 4;
+          embankment.position.set(0, 2.1, 9.0);
+          structuresGroup.add(embankment);
+          const roadStrip = new THREE.Mesh(new THREE.BoxGeometry(46, 0.35, 1.4), accentMat);
+          roadStrip.position.set(0, 4.6, 9.0);
+          structuresGroup.add(roadStrip);
+        } else {
+          // Elephantine Island Nilometer & First Cataract granite outcrops
+          const nilometer = new THREE.Mesh(new THREE.BoxGeometry(2.2, 4.2, 2.2), ochreMat);
+          nilometer.position.set(-2.5, 2.4, 8.5);
+          structuresGroup.add(nilometer);
+          for (let i = 0; i < 14; i++) {
+            const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(1.1 + (i % 3) * 0.5, 0), rockMat);
+            rock.position.set(-16 + i * 2.5, 0.7, 8.2 + Math.cos(i * 1.3) * 2.2);
+            structuresGroup.add(rock);
+          }
+        }
+      } else if (basinId === 'cairo') {
+        // Giza Pyramids on Western Escarpment (x < -20)
+        const pyramidSpecs = [
+          { x: -31, z: -6, r: 4.8, h: 5.6 },
+          { x: -26, z: 3, r: 4.2, h: 4.9 },
+          { x: -22, z: 11, r: 2.5, h: 3.1 }
+        ];
+        for (const p of pyramidSpecs) {
+          const pyr = new THREE.Mesh(new THREE.ConeGeometry(p.r, p.h, 4), ochreMat);
+          pyr.rotation.y = Math.PI / 4;
+          pyr.position.set(p.x, 4.4 + p.h * 0.45, p.z);
+          structuresGroup.add(pyr);
+        }
+
+        if (era === 'modern') {
+          // Urban Cairo bank skyline indicators (east & west bank blocks)
+          for (let i = 0; i < 24; i++) {
+            const side = i % 2 === 0 ? 1 : -1;
+            const bx = side * (9.5 + (i % 4) * 2.8);
+            const bz = -28 + i * 2.5;
+            const bh = 1.4 + ((i * 7) % 5) * 0.65;
+            const bldg = new THREE.Mesh(new THREE.BoxGeometry(2.1, bh, 2.1), urbanMat);
+            bldg.position.set(bx, 2.1 + bh * 0.5, bz);
+            structuresGroup.add(bldg);
+          }
+        } else {
+          // Ancient Memphite obelisks / temple colonnade markers
+          for (let i = 0; i < 6; i++) {
+            const col = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.6, 3.6, 8), ochreMat);
+            col.position.set(11.5 + (i % 2) * 3.0, 3.8, -10 + Math.floor(i / 2) * 8);
+            structuresGroup.add(col);
+          }
+        }
+      } else if (basinId === 'delta') {
+        if (era === 'modern') {
+          // Rosetta & Damietta coastal barrage markers
+          const barrageW = new THREE.Mesh(new THREE.BoxGeometry(8, 1.4, 1.1), concreteMat);
+          barrageW.position.set(-18, 1.0, 26);
+          barrageW.rotation.y = 0.35;
+          structuresGroup.add(barrageW);
+          const barrageE = new THREE.Mesh(new THREE.BoxGeometry(8, 1.4, 1.1), concreteMat);
+          barrageE.position.set(18, 1.0, 26);
+          barrageE.rotation.y = -0.35;
+          structuresGroup.add(barrageE);
+        }
+      }
+    }
+
+    // Khamsin Dust Storm Particles
+    const DUST_COUNT = 1600;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPositions = new Float32Array(DUST_COUNT * 3);
+    for (let i = 0; i < DUST_COUNT; i++) {
+      dustPositions[i * 3 + 0] = (Math.random() - 0.5) * 116;
+      dustPositions[i * 3 + 1] = Math.random() * 20;
+      dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 116;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    const dustMat = new THREE.PointsMaterial({
+      color: 0xd99b4e,
+      size: 0.48,
+      transparent: true,
+      opacity: 0.0,
+      depthWrite: false
+    });
+    const dustPoints = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustPoints);
+
+    // Basin Height Functions
+    function evaluateBasinPoint(basinId, x, z) {
+      const nx = x / (WORLD_SIZE * 0.5); // -1..1
+      const nz = z / (WORLD_SIZE * 0.5); // -1..1
+      const n1 = fbm(nx * 3.4 + 4.1, nz * 3.4 + 2.7);
+      const n2 = fbm(nx * 8.0 - 1.3, nz * 8.0 + 5.2);
+      let y = 0;
+      let saltWeight = 0;
+
+      if (basinId === 'blue_nile') {
+        const meander = Math.sin(nz * 3.6) * 0.16 + Math.cos(nz * 1.8) * 0.08;
+        const distFromRiver = Math.abs(nx - meander);
+        const gorgeWall = smoothstep(0.08, 0.55, distFromRiver) * 18.5;
+        const stepTerrace = Math.floor(smoothstep(0.16, 0.85, distFromRiver) * 4.0) * 1.1;
+        const upstreamSlope = nz < 0.08 ? smoothstep(0.08, -0.9, nz) * 1.4 : -smoothstep(0.08, 0.9, nz) * 1.6;
+        y = -3.4 + gorgeWall + stepTerrace + upstreamSlope + (n1 - 0.5) * 4.2 + (n2 - 0.5) * 1.4;
+      } else if (basinId === 'aswan') {
+        const isUpstream = nz < 0.16;
+        const meander = Math.sin(nz * 2.2) * 0.12;
+        const distFromChannel = Math.abs(nx - meander);
+        const valleyHalfWidth = isUpstream
+          ? 0.42 + smoothstep(0.16, -0.8, nz) * 0.28
+          : 0.14;
+        const rim = smoothstep(valleyHalfWidth * 0.6, valleyHalfWidth + 0.34, distFromChannel) * 11.5;
+        // Nubian granite islands inside Lake Nasser
+        const islandNoise = isUpstream ? smoothstep(0.68, 0.84, n1) * 4.2 : 0;
+        const downDrop = nz > 0.15 ? -smoothstep(0.15, 0.45, nz) * 1.5 : 0;
+        y = -2.7 + rim + islandNoise + downDrop + (n1 - 0.5) * 2.6 + (n2 - 0.5) * 0.9;
+      } else if (basinId === 'delta') {
+        // Fan splitting from (0, -0.45) into Rosetta (west) & Damietta (east)
+        const forkT = smoothstep(-0.55, 0.9, nz);
+        const rosettaX = -0.58 * forkT + Math.sin(nz * 5.0) * 0.04;
+        const damiettaX = 0.56 * forkT + Math.cos(nz * 4.6) * 0.04;
+        const stemX = Math.sin(nz * 4.0) * 0.04;
+
+        const dStem = nz < -0.35 ? Math.abs(nx - stemX) : 9.0;
+        const dRosetta = nz >= -0.45 ? Math.abs(nx - rosettaX) : 9.0;
+        const dDamietta = nz >= -0.45 ? Math.abs(nx - damiettaX) : 9.0;
+        const dChannel = Math.min(dStem, dRosetta, dDamietta);
+
+        const channelCut = (1.0 - smoothstep(0.03, 0.16, dChannel)) * 2.6;
+        const seaDip = smoothstep(0.58, 0.98, nz) * 1.9;
+        const desertFlank = smoothstep(0.45, 0.96, Math.abs(nx)) * (1.0 - smoothstep(0.1, 0.7, nz)) * 4.8;
+        y = 1.8 - channelCut - seaDip + desertFlank + (n1 - 0.5) * 0.9 + (n2 - 0.5) * 0.35;
+        saltWeight = smoothstep(0.12, 0.78, nz) * (1.0 - smoothstep(0.55, 0.98, Math.abs(nx)));
+      } else if (basinId === 'cairo') {
+        const meander = Math.sin(nz * 2.8) * 0.07;
+        const distFromRiver = Math.abs(nx - meander);
+        // Mid-stream Gezira sandbank near centre
+        const sandbar = Math.exp(-Math.pow((nx - meander) / 0.045, 2)) * Math.exp(-Math.pow((nz - 0.05) / 0.24, 2)) * 1.45;
+        const floodplain = smoothstep(0.10, 0.24, distFromRiver) * 2.2;
+        const escarpment = smoothstep(0.32, 0.56, distFromRiver) * 6.8;
+        y = -2.2 + sandbar + floodplain + escarpment + (n1 - 0.5) * 1.8 + (n2 - 0.5) * 0.6;
+      }
+
+      return { y, saltWeight };
+    }
+
+    function rebuildBasinGeometry(basinId) {
+      for (let i = 0; i < vertCount; i++) {
+        const x = posAttr.getX(i);
+        const z = posAttr.getZ(i);
+        const { y, saltWeight } = evaluateBasinPoint(basinId, x, z);
+        posAttr.setY(i, y);
+        terrainBaseY[i] = y;
+        terrainSaltWeight[i] = saltWeight;
+      }
+      posAttr.needsUpdate = true;
+      terrainGeo.computeVertexNormals();
+
+      // Sync terrain height attribute on water mesh for shoreline foam
+      for (let i = 0; i < waterPosAttr.count; i++) {
+        const wx = waterPosAttr.getX(i);
+        const wz = waterPosAttr.getZ(i);
+        const { y } = evaluateBasinPoint(basinId, wx, wz);
+        waterTerrainY[i] = y;
+      }
+      waterGeo.attributes.aTerrainY.needsUpdate = true;
+
+      const b = BASINS[basinId];
+      waterUniforms.uHasDam.value = b.damZ !== null && state.era === 'modern' ? 1.0 : 0.0;
+      waterUniforms.uDamZ.value = b.damZ !== null ? b.damZ : 0.0;
+
+      buildStructuresForBasin(basinId, state.era);
+      updateTerrainColors();
+    }
+
+    // Reusable colour scratch objects (zero allocations per frame)
+    const cSubmerged = new THREE.Color('#233529');
+    const cLushSilt = new THREE.Color('#2c6b3f');
+    const cOchreBed = new THREE.Color('#b87c2c');
+    const cDesert = new THREE.Color('#9c7b4d');
+    const cHighland = new THREE.Color('#4d4238');
+    const cSaltCrust = new THREE.Color('#d8e2dc');
+    const cScratch = new THREE.Color();
+
+    function updateTerrainColors() {
+      const drought = 1.0 - state.volume;
+      const evapNorm = state.heat / 100;
+      const riparianReach = Math.max(0.28, 1.55 - drought * 0.95 - evapNorm * 0.35);
+      const isBlueNile = state.basin === 'blue_nile';
+      const isDelta = state.basin === 'delta';
+      const kemetShift = state.era === 'kemet' ? 0.12 : 0.0;
+
+      const b = BASINS[state.basin];
+      const hasDamDrop = b.damZ !== null && state.era === 'modern';
+
+      for (let i = 0; i < vertCount; i++) {
+        const y = terrainBaseY[i];
+        const z = posAttr.getZ(i);
+        let localWaterY = state.waterY;
+        if (hasDamDrop && z > b.damZ) {
+          localWaterY -= smoothstep(b.damZ - 0.6, b.damZ + 2.2, z) * 1.45;
+        }
+        const above = y - localWaterY;
+
+        if (above < 0.0) {
+          // Submerged bed
+          cScratch.copy(cSubmerged).lerp(cOchreBed, drought * 0.35);
+        } else if (above < riparianReach) {
+          // Lush green riparian silt fading to dry ochre bed as volume drops
+          const edgeT = above / riparianReach;
+          cScratch.copy(cLushSilt).lerp(cOchreBed, edgeT * (0.45 + drought * 0.55));
+        } else {
+          // Arid slopes & gorge walls
+          const aridT = Math.min(1.0, (above - riparianReach) / 7.5);
+          const upperTarget = isBlueNile ? cHighland : cDesert;
+          cScratch.copy(cOchreBed).lerp(upperTarget, 0.35 + aridT * 0.65);
+        }
+
+        // Delta coastal salt-crust intrusion when river volume drops
+        if (isDelta && above >= -0.08 && above < 2.1) {
+          const saltInt = terrainSaltWeight[i] * Math.max(0, 1.0 - state.volume * 1.15);
+          cScratch.lerp(cSaltCrust, Math.min(0.88, saltInt * 1.25));
+        }
+
+        // Slight warm sandstone boost in Ancient Kemet lighting mode
+        if (kemetShift > 0) {
+          cScratch.lerp(cOchreBed, kemetShift);
+        }
+
+        colorArray[i * 3 + 0] = cScratch.r;
+        colorArray[i * 3 + 1] = cScratch.g;
+        colorArray[i * 3 + 2] = cScratch.b;
+      }
+      terrainGeo.attributes.color.needsUpdate = true;
+    }
+
+    function applyEraAndSeasonVisuals() {
+      const s = SEASONS[state.season];
+      const isKemet = state.era === 'kemet';
+
+      sunLight.color.setHex(isKemet ? 0xffb85c : s.sunColor);
+      sunLight.intensity = isKemet ? s.sunIntensity + 0.3 : s.sunIntensity;
+      hemiLight.intensity = isKemet ? 0.78 : 0.92;
+
+      waterUniforms.uShallowColor.value.copy(s.siltTint);
+      waterUniforms.uDeepColor.value.copy(s.deepTint);
+      waterUniforms.uSaltFactor.value = state.basin === 'delta' ? Math.max(0.15, 1.0 - state.volume) : 0.0;
+
+      const targetFog = state.khamsin
+        ? new THREE.Color('#9a6830')
+        : new THREE.Color(isKemet ? '#211911' : '#111620');
+      scene.fog.color.copy(targetFog);
+      scene.fog.density = state.khamsin ? 0.0175 : 0.0058;
+      dustMat.opacity = state.khamsin ? 0.78 : 0.0;
+    }
+
+    function updateHudUI() {
+      const b = BASINS[state.basin];
+      const s = SEASONS[state.season];
+      const isKemet = state.era === 'kemet';
+
+      eraLabel.textContent = isKemet ? 'Ancient Kemet Era' : 'Modern Hydro Era';
+      seasonLabel.textContent = s.label;
+      basinTitle.textContent = isKemet ? b.titleKemet : b.titleModern;
+      basinDesc.textContent = isKemet ? b.descKemet : b.descModern;
+
+      const pct = Math.round(state.volume * 100);
+      valVolume.textContent = pct + '%';
+      valVolume.style.color = pct < 32 ? '#f87171' : pct < 58 ? '#F59E0B' : '#34d399';
+
+      const levelSign = state.waterY >= 0 ? '+' : '';
+      valLevel.textContent = `${levelSign}${state.waterY.toFixed(1)} m`;
+
+      if (state.basin === 'delta') {
+        lblStress.textContent = 'Salt Intrusion';
+        const saltPct = Math.round(Math.max(5, (1 - state.volume) * 85));
+        valStress.textContent = saltPct + '%';
+        valStress.style.color = saltPct > 45 ? '#f87171' : '#f4f4f2';
+      } else {
+        lblStress.textContent = 'Channel Width';
+        valStress.textContent = pct > 66 ? 'Wide' : pct > 36 ? 'Narrowing' : 'Critical';
+        valStress.style.color = pct < 36 ? '#f87171' : '#f4f4f2';
+      }
+
+      readoutRain.textContent = Math.round(state.rain) + '%';
+      readoutHeat.textContent = Math.round(state.heat) + '%';
+      readoutOutflow.textContent = Math.round(state.outflow) + '%';
+      sliderRain.value = Math.round(state.rain);
+      sliderHeat.value = Math.round(state.heat);
+      sliderOutflow.value = Math.round(state.outflow);
+
+      freezeBanner.classList.toggle('visible', state.frozen);
+      btnFreeze.classList.toggle('frozen-on', state.frozen);
+      btnFreeze.setAttribute('aria-pressed', String(state.frozen));
+      btnFreeze.textContent = state.frozen ? 'Collapse Frozen (A)' : 'Freeze Collapse (A)';
+
+      btnEra.classList.toggle('active-mode', isKemet);
+      btnEra.setAttribute('aria-pressed', String(isKemet));
+      btnEra.textContent = isKemet ? 'Era: Ancient Kemet (B)' : 'Era: Modern Hydro (B)';
+
+      btnKhamsin.classList.toggle('active-mode', state.khamsin);
+      btnKhamsin.setAttribute('aria-pressed', String(state.khamsin));
+      btnKhamsin.textContent = state.khamsin ? 'Khamsin Dust: On (Y)' : 'Khamsin Dust: Off (Y)';
+
+      btnDomeMask.classList.toggle('active-mode', state.domeMask);
+      btnDomeMask.setAttribute('aria-pressed', String(state.domeMask));
+      document.body.classList.toggle('dome-preview', state.domeMask);
+
+      basinButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.basin === state.basin));
+      seasonButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.season === state.season));
+
+      if (state.frozen) {
+        statusText.textContent = 'Collapse frozen · intervention locked';
+        statusDot.style.background = '#38bdf8';
+      } else if (state.volume < 0.30) {
+        statusText.textContent = 'Severe drawdown · press A or Space to freeze';
+        statusDot.style.background = '#f87171';
+      } else {
+        statusText.textContent = 'Live hydrological drawdown active';
+        statusDot.style.background = '#34d399';
+      }
+    }
+
+    function selectBasin(basinId, moveCamera = true) {
+      if (!BASINS[basinId]) return;
+      state.basin = basinId;
+      const b = BASINS[basinId];
+      state.waterY = THREE.MathUtils.lerp(b.minWaterY, b.maxWaterY, state.volume);
+      waterUniforms.uWaterY.value = state.waterY;
+      rebuildBasinGeometry(basinId);
+      if (moveCamera) {
+        const aspect = window.innerWidth / Math.max(1, window.innerHeight);
+        const portraitScale = aspect < 0.8 ? 1.42 : 1.0;
+        camera.position.set(
+          b.cameraPos[0] * portraitScale,
+          b.cameraPos[1] * (aspect < 0.8 ? 1.28 : 1.0),
+          b.cameraPos[2] * portraitScale
+        );
+        controls.target.set(...b.cameraTarget);
+        controls.update();
+      }
+      applyEraAndSeasonVisuals();
+      updateHudUI();
+    }
+
+    function selectSeason(seasonId) {
+      if (!SEASONS[seasonId]) return;
+      state.season = seasonId;
+      if (seasonId === 'akhet') {
+        state.rain = 82;
+        state.heat = 24;
+      } else if (seasonId === 'peret') {
+        state.rain = 58;
+        state.heat = 38;
+      } else {
+        state.rain = 24;
+        state.heat = 78;
+      }
+      applyEraAndSeasonVisuals();
+      updateHudUI();
+    }
+
+    function toggleFreeze() {
+      state.frozen = !state.frozen;
+      updateHudUI();
+    }
+
+    function toggleEra() {
+      state.era = state.era === 'modern' ? 'kemet' : 'modern';
+      rebuildBasinGeometry(state.basin);
+      applyEraAndSeasonVisuals();
+      updateHudUI();
+    }
+
+    function toggleKhamsin() {
+      state.khamsin = !state.khamsin;
+      applyEraAndSeasonVisuals();
+      updateHudUI();
+    }
+
+    function toggleDomeMask() {
+      state.domeMask = !state.domeMask;
+      camera.fov = state.domeMask ? 66 : 46;
+      camera.updateProjectionMatrix();
+      updateHudUI();
+    }
+
+    function resetBasin() {
+      state.frozen = false;
+      state.khamsin = false;
+      state.season = 'akhet';
+      state.rain = 74;
+      state.heat = 28;
+      state.outflow = 52;
+      state.volume = 0.80;
+      selectBasin(state.basin, true);
+    }
+
+    // Bind UI Event Listeners
+    basinButtons.forEach(btn => {
+      btn.addEventListener('click', () => selectBasin(btn.dataset.basin));
+    });
+
+    seasonButtons.forEach(btn => {
+      btn.addEventListener('click', () => selectSeason(btn.dataset.season));
+    });
+
+    sliderRain.addEventListener('input', (e) => {
+      state.rain = Number(e.target.value);
+      updateHudUI();
+    });
+
+    sliderHeat.addEventListener('input', (e) => {
+      state.heat = Number(e.target.value);
+      updateHudUI();
+    });
+
+    sliderOutflow.addEventListener('input', (e) => {
+      state.outflow = Number(e.target.value);
+      updateHudUI();
+    });
+
+    btnFreeze.addEventListener('click', toggleFreeze);
+    btnEra.addEventListener('click', toggleEra);
+    btnKhamsin.addEventListener('click', toggleKhamsin);
+    btnReset.addEventListener('click', resetBasin);
+    btnDomeMask.addEventListener('click', toggleDomeMask);
+
+    btnInfo.addEventListener('click', () => {
+      const open = infoPanel.classList.toggle('open');
+      btnInfo.setAttribute('aria-expanded', String(open));
+      btnInfo.classList.toggle('active-mode', open);
+    });
+
+    btnMobileControls.addEventListener('click', () => {
+      const open = cocreatorPanel.classList.toggle('mobile-open');
+      btnMobileControls.setAttribute('aria-expanded', String(open));
+      btnMobileControls.classList.toggle('active-mode', open);
+    });
+
+    // Keyboard shortcuts matching Xbox Co-Creator map
+    window.addEventListener('keydown', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      const key = e.key.toLowerCase();
+      if (e.code === 'Space' || key === 'a') {
+        e.preventDefault();
+        toggleFreeze();
+      } else if (key === 'b') {
+        toggleEra();
+      } else if (key === 'x') {
+        resetBasin();
+      } else if (key === 'y') {
+        toggleKhamsin();
+      } else if (key === 'd' || key === 'f') {
+        toggleDomeMask();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const order = ['akhet', 'peret', 'shemu'];
+        const idx = order.indexOf(state.season);
+        const nextIdx = (idx + (e.key === 'ArrowRight' ? 1 : order.length - 1)) % order.length;
+        selectSeason(order[nextIdx]);
+      }
+    });
+
+    // Live Xbox Gamepad Polling (W3C Gamepad API)
+    const prevPadButtons = {};
+    const BASIN_ORDER = ['blue_nile', 'aswan', 'delta', 'cairo'];
+    const SEASON_ORDER = ['akhet', 'peret', 'shemu'];
+
+    function pollGamepad(dt) {
+      if (!navigator.getGamepads) return;
+      const pads = navigator.getGamepads();
+      let activePad = null;
+      for (let i = 0; i < pads.length; i++) {
+        if (pads[i] && pads[i].connected) {
+          activePad = pads[i];
+          break;
+        }
+      }
+
+      if (!activePad) {
+        if (gamepadBadge.classList.contains('connected')) {
+          gamepadBadge.classList.remove('connected');
+          gamepadBadge.textContent = 'Gamepad: Standby';
+        }
+        return;
+      }
+
+      if (!gamepadBadge.classList.contains('connected')) {
+        gamepadBadge.classList.add('connected');
+        const shortName = activePad.id.toLowerCase().includes('xbox') ? 'Xbox Connected' : 'Gamepad Active';
+        gamepadBadge.textContent = shortName;
+      }
+
+      const justPressed = (idx) => {
+        const pressed = Boolean(activePad.buttons[idx] && activePad.buttons[idx].pressed);
+        const was = Boolean(prevPadButtons[idx]);
+        prevPadButtons[idx] = pressed;
+        return pressed && !was;
+      };
+
+      // A (0): Freeze Collapse, B (1): Era, X (2): Reset, Y (3): Khamsin
+      if (justPressed(0)) toggleFreeze();
+      if (justPressed(1)) toggleEra();
+      if (justPressed(2)) resetBasin();
+      if (justPressed(3)) toggleKhamsin();
+
+      // LB (4) / RB (5): Cycle basins
+      if (justPressed(4)) {
+        const idx = (BASIN_ORDER.indexOf(state.basin) + BASIN_ORDER.length - 1) % BASIN_ORDER.length;
+        selectBasin(BASIN_ORDER[idx]);
+      }
+      if (justPressed(5)) {
+        const idx = (BASIN_ORDER.indexOf(state.basin) + 1) % BASIN_ORDER.length;
+        selectBasin(BASIN_ORDER[idx]);
+      }
+
+      // D-Pad Left (14) / Right (15): Seasons
+      if (justPressed(14)) {
+        const idx = (SEASON_ORDER.indexOf(state.season) + SEASON_ORDER.length - 1) % SEASON_ORDER.length;
+        selectSeason(SEASON_ORDER[idx]);
+      }
+      if (justPressed(15)) {
+        const idx = (SEASON_ORDER.indexOf(state.season) + 1) % SEASON_ORDER.length;
+        selectSeason(SEASON_ORDER[idx]);
+      }
+
+      // LT (6) Highland Rain & RT (7) Evaporation Heat analog triggers
+      const ltVal = activePad.buttons[6] ? activePad.buttons[6].value : 0;
+      const rtVal = activePad.buttons[7] ? activePad.buttons[7].value : 0;
+      if (ltVal > 0.12) {
+        state.rain = Math.min(100, state.rain + ltVal * 32 * dt);
+        updateHudUI();
+      }
+      if (rtVal > 0.12) {
+        state.heat = Math.min(100, state.heat + rtVal * 32 * dt);
+        updateHudUI();
+      }
+
+      // Left stick (axes 0, 1) orbits camera smoothly
+      const ax = Math.abs(activePad.axes[0] || 0) > 0.18 ? activePad.axes[0] : 0;
+      const ay = Math.abs(activePad.axes[1] || 0) > 0.18 ? activePad.axes[1] : 0;
+      if (ax !== 0 || ay !== 0) {
+        const offset = camera.position.clone().sub(controls.target);
+        const spherical = new THREE.Spherical().setFromVector3(offset);
+        spherical.theta -= ax * 1.35 * dt;
+        spherical.phi = THREE.MathUtils.clamp(spherical.phi + ay * 0.9 * dt, 0.25, Math.PI * 0.46);
+        offset.setFromSpherical(spherical);
+        camera.position.copy(controls.target).add(offset);
+        controls.update();
+      }
+    }
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Main Animation & Hydrological Simulation Loop
+    let lastTime = performance.now();
+    let colorTick = 0;
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      lastTime = now;
+      state.elapsed += dt;
+
+      pollGamepad(dt);
+
+      if (!state.frozen) {
+        const s = SEASONS[state.season];
+        const rainIn = state.rain / 100 + s.rainBias;
+        const heatLoss = state.heat / 100 + s.heatBias;
+        const outflowLoss = (state.outflow / 100) * 0.35;
+        // Slow baseline extraction & climate drawdown bias (-0.012/s)
+        const netRate = (rainIn * 0.55 - heatLoss * 0.52 - outflowLoss * 0.45 - 0.014) * 0.095;
+        state.volume = THREE.MathUtils.clamp(state.volume + netRate * dt, 0.05, 1.0);
+
+        const b = BASINS[state.basin];
+        const targetY = THREE.MathUtils.lerp(b.minWaterY, b.maxWaterY, state.volume);
+        state.waterY = THREE.MathUtils.lerp(state.waterY, targetY, Math.min(1, dt * 3.5));
+        waterUniforms.uWaterY.value = state.waterY;
+        waterUniforms.uSaltFactor.value = state.basin === 'delta' ? Math.max(0.15, 1.0 - state.volume) : 0.0;
+
+        colorTick += dt;
+        if (colorTick > 0.14) {
+          colorTick = 0;
+          updateTerrainColors();
+          updateHudUI();
+        }
+      }
+
+      // Animate Khamsin dust particles
+      if (state.khamsin) {
+        const dArr = dustGeo.attributes.position.array;
+        for (let i = 0; i < DUST_COUNT; i++) {
+          let x = dArr[i * 3 + 0] + 18 * dt;
+          let y = dArr[i * 3 + 1] + Math.sin(state.elapsed * 2 + i) * 0.4 * dt;
+          let z = dArr[i * 3 + 2] + 9 * dt;
+          if (x > 58) x = -58;
+          if (z > 58) z = -58;
+          if (y < 0.2) y = 18;
+          dArr[i * 3 + 0] = x;
+          dArr[i * 3 + 1] = y;
+          dArr[i * 3 + 2] = z;
+        }
+        dustGeo.attributes.position.needsUpdate = true;
+      }
+
+      waterUniforms.uTime.value = state.elapsed;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Boot initial basin
+    selectBasin('blue_nile', true);
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

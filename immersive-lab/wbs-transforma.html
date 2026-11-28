@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The WBS Transforma | Interactive Web3D &amp; Print Inspection | Mo360 Immersive Studio</title>
+  <meta name="description" content="Interactive Web3D and print inspection showcase for Mohamed Elwakil's repaired 2014 sculpture The WBS Transforma, developed during PhD research at Cardiff and exhibited at National Museum Wales." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/mo360-unified-theme.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --wbs-bg: #0a0a0a;
+      --wbs-surface: #13151a;
+      --wbs-surface-2: #1c2028;
+      --wbs-ochre: #F59E0B;
+      --wbs-ochre-deep: #C87D28;
+      --wbs-muted: #b4bac6;
+      --wbs-border: rgba(255, 255, 255, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--wbs-bg);
+      color: #ffffff;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .wbs-wrap {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 40px 24px 68px;
+    }
+
+    .wbs-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .wbs-kicker {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--wbs-ochre);
+      color: #08090c;
+      padding: 6px 12px;
+      margin-bottom: 10px;
+    }
+
+    .wbs-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5.2vw, 4.4rem);
+      line-height: 0.96;
+      margin: 0 0 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .wbs-h1 span {
+      color: var(--wbs-ochre);
+    }
+
+    .wbs-sub {
+      color: var(--wbs-muted);
+      margin: 0;
+      max-width: 740px;
+      font-size: 0.98rem;
+      line-height: 1.62;
+    }
+
+    .wbs-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .wbs-stage-card {
+      background: var(--wbs-surface);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    #wbsCanvasWrap {
+      position: relative;
+      width: 100%;
+      height: 580px;
+      background: radial-gradient(circle at 50% 42%, #191d26 0%, #0d0f14 58%, #07080a 100%);
+      cursor: grab;
+      overflow: hidden;
+    }
+
+    #wbsCanvasWrap:active { cursor: grabbing; }
+    #wbsCanvasWrap canvas { display: block; width: 100%; height: 100%; }
+
+    .wbs-hud-top,
+    .wbs-hud-bottom {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .wbs-hud-top { top: 14px; }
+    .wbs-hud-bottom { bottom: 14px; }
+
+    .wbs-pill {
+      background: rgba(10, 10, 12, 0.88);
+      border-left: 3px solid var(--wbs-ochre);
+      color: var(--wbs-ochre);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .wbs-pill-neutral {
+      border-left-color: rgba(255, 255, 255, 0.35);
+      color: #e5e7eb;
+    }
+
+    .wbs-loader {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 11, 15, 0.78);
+      z-index: 6;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      padding: 20px;
+    }
+
+    .wbs-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .wbs-loader-box {
+      background: #13151a;
+      border-left: 3px solid var(--wbs-ochre);
+      padding: 18px 22px;
+      max-width: 360px;
+      width: 100%;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .wbs-controls {
+      padding: 20px;
+      background: var(--wbs-surface);
+      display: grid;
+      gap: 18px;
+    }
+
+    .wbs-control-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .wbs-mode-group,
+    .wbs-view-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .wbs-btn {
+      background: var(--wbs-surface-2) !important;
+      color: #ffffff !important;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 11px 15px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+
+    .wbs-btn:hover {
+      background: #2b313e !important;
+      color: var(--wbs-ochre) !important;
+    }
+
+    .wbs-btn.active,
+    .wbs-btn-ochre {
+      background: var(--wbs-ochre) !important;
+      color: #08090c !important;
+    }
+
+    .wbs-btn-ochre:hover,
+    .wbs-btn.active:hover {
+      background: var(--wbs-ochre-deep) !important;
+      color: #08090c !important;
+    }
+
+    .wbs-sliders {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .wbs-slider-box {
+      background: #0f1116;
+      padding: 14px 16px;
+    }
+
+    .wbs-slider-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .wbs-slider-val {
+      color: var(--wbs-ochre);
+      font-weight: 700;
+    }
+
+    .wbs-range {
+      width: 100%;
+      accent-color: var(--wbs-ochre);
+      cursor: pointer;
+    }
+
+    .wbs-telemetry-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .wbs-stat {
+      background: #0f1116;
+      padding: 14px;
+    }
+
+    .wbs-stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 5px;
+    }
+
+    .wbs-stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.65rem;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      line-height: 1.05;
+    }
+
+    .wbs-stat-value.ochre {
+      color: var(--wbs-ochre);
+    }
+
+    .wbs-stat-sub {
+      font-size: 0.78rem;
+      color: var(--wbs-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .wbs-status-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--wbs-muted);
+      background: #0f1116;
+      border-left: 3px solid var(--wbs-ochre);
+      padding: 11px 14px;
+      line-height: 1.5;
+    }
+
+    .wbs-section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.03em;
+      margin: 0 0 14px;
+    }
+
+    .wbs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .wbs-card {
+      background: var(--wbs-surface);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wbs-card img,
+    .wbs-card video {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      background: #08090c;
+    }
+
+    .wbs-card-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .wbs-card-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--wbs-ochre);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .wbs-card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      margin: 0;
+      letter-spacing: 0.03em;
+      line-height: 1.05;
+    }
+
+    .wbs-card-desc {
+      color: var(--wbs-muted);
+      font-size: 0.9rem;
+      margin: 0;
+      line-height: 1.56;
+    }
+
+    .wbs-spec-list {
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .wbs-spec-list li {
+      background: #0f1116;
+      padding: 9px 11px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #e5e7eb;
+    }
+
+    .wbs-spec-list strong {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--wbs-ochre);
+      margin-bottom: 2px;
+    }
+
+    .wbs-video-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 4px;
+    }
+
+    .wbs-video-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--wbs-muted);
+      line-height: 1.45;
+      background: #0f1116;
+      padding: 9px 11px;
+    }
+
+    .wbs-footer {
+      border-top: 1px solid #222630;
+      padding: 26px 24px 44px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--wbs-muted);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 960px) {
+      .wbs-grid { grid-template-columns: 1fr; }
+      .wbs-telemetry-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #wbsCanvasWrap { height: 470px; }
+    }
+
+    @media (max-width: 640px) {
+      .wbs-wrap { padding: 26px 16px 52px; }
+      #wbsCanvasWrap { height: 430px; }
+      .wbs-pill { font-size: 9px; padding: 6px 9px; }
+      .wbs-sliders { grid-template-columns: 1fr; }
+      .wbs-telemetry-bar { grid-template-columns: 1fr; }
+      .wbs-mode-group,
+      .wbs-view-group,
+      .wbs-head-actions { width: 100%; }
+      .wbs-mode-group .wbs-btn,
+      .wbs-view-group .wbs-btn,
+      .wbs-head-actions .wbs-btn { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="mo360-nav" aria-label="The WBS Transforma Navigation">
+    <a href="../index.html" class="mo360-nav-brand">
+      <img src="../assets/brand_logos/mo360_emblem_official_clean.png" alt="Mo360 Immersive Studio Emblem" />
+      <span class="mo360-brand-stack">
+        <span class="mo360-brand-row">
+          <span class="mo360-brand-main">MO360 IMMERSIVE</span>
+          <span class="mo360-brand-badge">STUDIO</span>
+        </span>
+        <span class="mo360-brand-sub">Plymouth · United Kingdom</span>
+      </span>
+    </a>
+    <ul class="mo360-nav-links">
+      <li><a href="../index.html#latest-works">Projects</a></li>
+      <li><a href="../films/">Screening Room</a></li>
+      <li><a href="../immersive-lab/" class="active">Media Lab</a></li>
+      <li><a href="../index.html#contact" class="cta">Book / Contact</a></li>
+    </ul>
+    <button class="mo360-ham" type="button" aria-label="Toggle Menu" onclick="document.getElementById('mo360Drawer').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mo360-drawer" id="mo360Drawer">
+    <a href="../index.html">Mo360 Immersive Studio Home</a>
+    <a href="../immersive-lab/">Mo360 Immersive Media Lab</a>
+    <a href="../immersive-lab/wbs-transforma.html" class="active">The WBS Transforma</a>
+    <a href="../immersive-lab/alter-kinetic-sculpture.html">ALTÆR Kinetic Light Sculpture</a>
+    <a href="../immersive-lab/tawaf-3d-sanctuary.html">TAWAF 3D WebGL Sanctuary</a>
+    <a href="../films/">Moving Image &amp; Screening Room</a>
+    <a href="../index.html#contact" style="background:#F59E0B;color:#08090c;">Commission or Exhibit</a>
+  </div>
+
+  <main class="wbs-wrap">
+    <header class="wbs-head">
+      <div>
+        <div class="wbs-kicker">WEB3D + DRACO GLB + 2014 PHD HERITAGE RECONSTRUCTION</div>
+        <h1 class="wbs-h1">THE <span>WBS TRANSFORMA</span></h1>
+        <p class="wbs-sub">
+          Developed during Mohamed Elwakil's 2014 PhD research at Cardiff (University of Wales) and exhibited at National Museum Wales (Amgueddfa Cymru). Inspired by the Ancient Egyptian Ushabti figure, the raw 2014 sculptural mesh has now been repaired into watertight 2026 print masters and a 318.8 KB Draco WebGL asset.
+        </p>
+      </div>
+      <div class="wbs-head-actions">
+        <a href="../archive/" class="wbs-btn">Artist Archive</a>
+        <a href="../immersive-lab/" class="wbs-btn wbs-btn-ochre">Back to Media Lab &rarr;</a>
+      </div>
+    </header>
+
+    <section class="wbs-stage-card" aria-label="Interactive WBS Transforma 3D &amp; Print Inspection Stage">
+      <div id="wbsCanvasWrap">
+        <div class="wbs-hud-top">
+          <span class="wbs-pill" id="wbsShaderPill">SHADER · GLAZED OCHRE CERAMIC</span>
+          <span class="wbs-pill wbs-pill-neutral" id="wbsModelPill">DRACO GLB · 318.8 KB · +Y UP</span>
+        </div>
+        <div class="wbs-hud-bottom">
+          <span class="wbs-pill" id="wbsSlicePill">Z SLICE · 100% FULL SOLID</span>
+          <span class="wbs-pill wbs-pill-neutral" id="wbsLightPill">RAKING LIGHT · 42° AZIMUTH</span>
+        </div>
+        <div class="wbs-loader" id="wbsLoader">
+          <div class="wbs-loader-box" id="wbsLoaderText">
+            LOADING DRACO GLB · 318.8 KB ...
+          </div>
+        </div>
+      </div>
+
+      <div class="wbs-controls">
+        <div class="wbs-control-row">
+          <div class="wbs-mode-group" role="group" aria-label="Material and Shader Modes">
+            <button type="button" class="wbs-btn active" data-shader="ceramic">01 Glazed Ochre Ceramic</button>
+            <button type="button" class="wbs-btn" data-shader="sandstone">02 Matt Raw Sandstone</button>
+            <button type="button" class="wbs-btn" data-shader="wireframe">03 Technical Wireframe</button>
+          </div>
+          <div class="wbs-view-group">
+            <button type="button" class="wbs-btn" id="wbsOrbitBtn">Pause Orbit</button>
+            <button type="button" class="wbs-btn" id="wbsResetBtn">Reset View</button>
+          </div>
+        </div>
+
+        <div class="wbs-sliders">
+          <div class="wbs-slider-box">
+            <div class="wbs-slider-top">
+              <label for="lightAzimuthSlider">Gallery Raking Light Azimuth (0° to 360°)</label>
+              <span class="wbs-slider-val" id="lightAzimuthVal">42°</span>
+            </div>
+            <input id="lightAzimuthSlider" class="wbs-range" type="range" min="0" max="360" value="42" />
+          </div>
+
+          <div class="wbs-slider-box">
+            <div class="wbs-slider-top">
+              <label for="zSliceSlider">Print Readiness Z Slice Cross Section (0% to 100%)</label>
+              <span class="wbs-slider-val" id="zSliceVal">100%</span>
+            </div>
+            <input id="zSliceSlider" class="wbs-range" type="range" min="0" max="100" value="100" />
+          </div>
+        </div>
+
+        <div class="wbs-telemetry-bar">
+          <div class="wbs-stat">
+            <div class="wbs-stat-label">Raw 2014 STL</div>
+            <div class="wbs-stat-value">801,771 FACES</div>
+            <div class="wbs-stat-sub">329,704 vertices · 190,324 non-manifold edges · 39,381 boundary edges</div>
+          </div>
+          <div class="wbs-stat">
+            <div class="wbs-stat-label">Repaired 2026 Masters</div>
+            <div class="wbs-stat-value ochre">0 MESH ERRORS</div>
+            <div class="wbs-stat-sub">651,316 faces · 0 non-manifold edges · 0 open boundary edges</div>
+          </div>
+          <div class="wbs-stat">
+            <div class="wbs-stat-label">Fabrication Bounds</div>
+            <div class="wbs-stat-value">260 / 180 MM</div>
+            <div class="wbs-stat-sub">260.0 x 251.8 x 222.3 mm sandstone &amp; 180 mm ceramic</div>
+          </div>
+          <div class="wbs-stat">
+            <div class="wbs-stat-label">Web GLB Payload</div>
+            <div class="wbs-stat-value">318.8 KB</div>
+            <div class="wbs-stat-sub">318,788 bytes · +Y Up Draco compressed manifold</div>
+          </div>
+        </div>
+
+        <div class="wbs-status-note" id="wbsStatusNote">
+          Drag or pinch to orbit around The WBS Transforma. Switch surface shaders, rotate the gallery raking light, or drag the Z Slice slider below 100% to inspect the watertight interior geometry and flattened base bed pad.
+        </div>
+      </div>
+    </section>
+
+    <h2 class="wbs-section-title">HERITAGE PROVENANCE, MESH REPAIR &amp; TURNTABLE INSPECTION</h2>
+    <section class="wbs-grid">
+      <article class="wbs-card">
+        <img src="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" alt="Mohamed Elwakil 2014 archive photograph of The WBS Transforma digital sculpture" loading="eager" />
+        <div class="wbs-card-body">
+          <div class="wbs-card-tag">2014 ARCHIVE · NATIONAL MUSEUM WALES</div>
+          <h3 class="wbs-card-title">Cardiff PhD Research &amp; Ushabti Form</h3>
+          <p class="wbs-card-desc">
+            Created in 2014 during doctoral research at Cardiff (University of Wales) and shown at National Museum Wales (Amgueddfa Cymru). The stacked, twisting form reinterprets the Ancient Egyptian Ushabti servant figure as a continuous digital sequence.
+          </p>
+        </div>
+      </article>
+
+      <article class="wbs-card">
+        <div class="wbs-card-body">
+          <div class="wbs-card-tag">2026 FABRICATION TELEMETRY</div>
+          <h3 class="wbs-card-title">Watertight Manifold Audit</h3>
+          <p class="wbs-card-desc">
+            The original 2014 STL file was unprintable due to intersecting Ushabti shells and open seams. Remeshing and base planarisation produced two verified print masters plus this lightweight Web3D twin.
+          </p>
+          <ul class="wbs-spec-list">
+            <li>
+              <strong>Raw 2014 STL · ushabti_Art Work_STL File.stl</strong>
+              801,771 faces · 329,704 vertices · 190,324 non-manifold edges · 39,381 open boundary edges (260.0 x 251.8 x 222.3 mm).
+            </li>
+            <li>
+              <strong>2026 Print Masters · 260 mm Sandstone &amp; 180 mm Ceramic</strong>
+              wbs_transforma_watertight_260mm_sandstone.stl &amp; 180mm_ceramic.stl · 651,316 faces · 0 non-manifold edges · 0 boundary edges · flat base contact pad.
+            </li>
+            <li>
+              <strong>Web GLB Asset · ./assets/wbs_transforma_web.glb</strong>
+              318,788 bytes (318.8 KB) · +Y Up Draco compressed mesh.
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="wbs-card" id="turntableCard">
+        <video id="wbsTurntableVideo" poster="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" preload="none" controls playsinline data-src="./assets/wbs_transforma_turntable.mp4"></video>
+        <div class="wbs-card-body">
+          <div class="wbs-card-tag">TURNTABLE RENDER · MP4 PREVIEW SLOT</div>
+          <h3 class="wbs-card-title">Studio Turntable Playback</h3>
+          <p class="wbs-card-desc">
+            Prepared for the Blender 360 degree turntable render of the repaired 2026 sculptural master, framed with the 2014 archival exhibition still as poster artwork.
+          </p>
+          <div class="wbs-video-note" id="turntableStatus">
+            Poster active from 2014 archive. Click below to load ./assets/wbs_transforma_turntable.mp4 once rendered and uploaded.
+          </div>
+          <div class="wbs-video-actions">
+            <button type="button" class="wbs-btn wbs-btn-ochre" id="loadTurntableBtn">Load Turntable Render</button>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="wbs-footer">
+    MO360 IMMERSIVE STUDIO · MOHAMED ELWAKIL · PLYMOUTH, DEVON, UNITED KINGDOM
+  </footer>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+    const wrap = document.getElementById('wbsCanvasWrap');
+    const loaderOverlay = document.getElementById('wbsLoader');
+    const loaderText = document.getElementById('wbsLoaderText');
+    const shaderPill = document.getElementById('wbsShaderPill');
+    const modelPill = document.getElementById('wbsModelPill');
+    const slicePill = document.getElementById('wbsSlicePill');
+    const lightPill = document.getElementById('wbsLightPill');
+    const statusNote = document.getElementById('wbsStatusNote');
+
+    const azimuthSlider = document.getElementById('lightAzimuthSlider');
+    const azimuthVal = document.getElementById('lightAzimuthVal');
+    const sliceSlider = document.getElementById('zSliceSlider');
+    const sliceVal = document.getElementById('zSliceVal');
+    const orbitBtn = document.getElementById('wbsOrbitBtn');
+    const resetBtn = document.getElementById('wbsResetBtn');
+
+    const turntableVideo = document.getElementById('wbsTurntableVideo');
+    const loadTurntableBtn = document.getElementById('loadTurntableBtn');
+    const turntableStatus = document.getElementById('turntableStatus');
+
+    const state = {
+      shader: 'ceramic',
+      azimuthDeg: 42,
+      slicePct: 100,
+      autoOrbit: true,
+      minY: 0.0,
+      maxY: 0.89,
+      targetY: 0.44
+    };
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0b0f);
+    scene.fog = new THREE.FogExp2(0x0a0b0f, 0.14);
+
+    const initialAspect = wrap.clientWidth / Math.max(1, wrap.clientHeight);
+    const camera = new THREE.PerspectiveCamera(initialAspect < 1 ? 48 : 40, initialAspect, 0.05, 30);
+    const defaultCamPos = new THREE.Vector3(1.38, 0.84, 1.64);
+    camera.position.copy(defaultCamPos);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.12;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.localClippingEnabled = true;
+    wrap.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, state.targetY, 0);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 0.75;
+    controls.maxDistance = 3.8;
+    controls.minPolarAngle = 0.18;
+    controls.maxPolarAngle = Math.PI * 0.56;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.75;
+
+    // Gallery lighting rig
+    const hemiLight = new THREE.HemisphereLight(0xd9e6f2, 0x161820, 0.75);
+    scene.add(hemiLight);
+
+    const rakingLight = new THREE.SpotLight(0xffe1a8, 16, 12, Math.PI * 0.28, 0.55, 1.3);
+    rakingLight.castShadow = true;
+    rakingLight.shadow.mapSize.set(1024, 1024);
+    rakingLight.shadow.bias = -0.0005;
+    rakingLight.target.position.set(0, 0.42, 0);
+    scene.add(rakingLight, rakingLight.target);
+
+    const rimFill = new THREE.DirectionalLight(0x88b4d8, 0.65);
+    rimFill.position.set(-1.8, 1.6, -1.6);
+    scene.add(rimFill);
+
+    const underBounce = new THREE.PointLight(0xf59e0b, 0.85, 3.2, 1.8);
+    underBounce.position.set(0, 0.14, 0.55);
+    scene.add(underBounce);
+
+    // Architectural gallery plinth & floor
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0x0d0f14,
+      roughness: 0.48,
+      metalness: 0.15
+    });
+    const floorMesh = new THREE.Mesh(new THREE.CircleGeometry(3.6, 64), floorMat);
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.y = -0.002;
+    floorMesh.receiveShadow = true;
+    scene.add(floorMesh);
+
+    const plinthRingMat = new THREE.MeshBasicMaterial({
+      color: 0xf59e0b,
+      transparent: true,
+      opacity: 0.28,
+      side: THREE.DoubleSide
+    });
+    const plinthRing = new THREE.Mesh(new THREE.RingGeometry(0.62, 0.635, 72), plinthRingMat);
+    plinthRing.rotation.x = -Math.PI / 2;
+    plinthRing.position.y = 0.001;
+    scene.add(plinthRing);
+
+    // Z-Slice clipping plane & visible section guide ring
+    const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 2.0);
+    const sliceGuideMat = new THREE.MeshBasicMaterial({
+      color: 0xf59e0b,
+      transparent: true,
+      opacity: 0.72,
+      side: THREE.DoubleSide
+    });
+    const sliceGuide = new THREE.Mesh(new THREE.RingGeometry(0.56, 0.578, 72), sliceGuideMat);
+    sliceGuide.rotation.x = -Math.PI / 2;
+    sliceGuide.visible = false;
+    scene.add(sliceGuide);
+
+    // Material presets
+    const MATERIALS = {
+      ceramic: {
+        label: 'SHADER · GLAZED OCHRE CERAMIC',
+        material: new THREE.MeshPhysicalMaterial({
+          color: 0xd98a1e,
+          roughness: 0.22,
+          metalness: 0.08,
+          clearcoat: 0.92,
+          clearcoatRoughness: 0.12,
+          reflectivity: 0.85,
+          side: THREE.DoubleSide,
+          clippingPlanes: [clipPlane],
+          clipShadows: true
+        })
+      },
+      sandstone: {
+        label: 'SHADER · MATT RAW SANDSTONE',
+        material: new THREE.MeshStandardMaterial({
+          color: 0xd8c3a2,
+          roughness: 0.88,
+          metalness: 0.02,
+          side: THREE.DoubleSide,
+          clippingPlanes: [clipPlane],
+          clipShadows: true
+        })
+      },
+      wireframe: {
+        label: 'SHADER · TECHNICAL WIREFRAME',
+        material: new THREE.MeshStandardMaterial({
+          color: 0xf59e0b,
+          emissive: 0x5c3404,
+          emissiveIntensity: 0.45,
+          roughness: 0.35,
+          metalness: 0.15,
+          wireframe: true,
+          side: THREE.DoubleSide,
+          clippingPlanes: [clipPlane],
+          clipShadows: false
+        })
+      }
+    };
+
+    const sculptureRoot = new THREE.Group();
+    scene.add(sculptureRoot);
+    const sculptureMeshes = [];
+
+    function updateRakingLight(deg) {
+      state.azimuthDeg = deg;
+      const rad = (deg * Math.PI) / 180;
+      const radius = 2.45;
+      rakingLight.position.set(
+        Math.cos(rad) * radius,
+        1.28,
+        Math.sin(rad) * radius
+      );
+      rimFill.position.set(
+        -Math.cos(rad) * 2.1,
+        1.45,
+        -Math.sin(rad) * 2.1
+      );
+      azimuthVal.textContent = `${deg}°`;
+      lightPill.textContent = `RAKING LIGHT · ${deg}° AZIMUTH`;
+    }
+
+    function updateZSlice(pct) {
+      state.slicePct = pct;
+      sliceVal.textContent = `${pct}%`;
+
+      if (pct >= 100) {
+        clipPlane.constant = state.maxY + 0.15;
+        sliceGuide.visible = false;
+        slicePill.textContent = 'Z SLICE · 100% FULL SOLID';
+      } else {
+        const minHeight = state.minY + 0.015;
+        const cutY = minHeight + (state.maxY - minHeight) * (pct / 100);
+        clipPlane.constant = cutY;
+        sliceGuide.position.y = cutY;
+        sliceGuide.visible = true;
+        slicePill.textContent = `Z SLICE · ${pct}% CROSS SECTION`;
+      }
+    }
+
+    function applyShaderMode(mode) {
+      const entry = MATERIALS[mode] || MATERIALS.ceramic;
+      state.shader = mode;
+      sculptureMeshes.forEach((mesh) => {
+        mesh.material = entry.material;
+      });
+      shaderPill.textContent = entry.label;
+      document.querySelectorAll('.wbs-mode-group .wbs-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.shader === mode);
+      });
+    }
+
+    // Load Draco-compressed GLB
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
+
+    gltfLoader.load(
+      './assets/wbs_transforma_web.glb',
+      (gltf) => {
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+
+        // Centre X/Z and place base cleanly on y = 0
+        model.position.x -= center.x;
+        model.position.z -= center.z;
+        model.position.y -= box.min.y;
+
+        model.traverse((node) => {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+            node.material = MATERIALS[state.shader].material;
+            sculptureMeshes.push(node);
+          }
+        });
+
+        sculptureRoot.add(model);
+
+        const fittedBox = new THREE.Box3().setFromObject(sculptureRoot);
+        state.minY = fittedBox.min.y;
+        state.maxY = fittedBox.max.y;
+        state.targetY = (fittedBox.min.y + fittedBox.max.y) * 0.48;
+
+        controls.target.set(0, state.targetY, 0);
+        rakingLight.target.position.set(0, state.targetY, 0);
+        controls.update();
+
+        updateZSlice(state.slicePct);
+        updateRakingLight(state.azimuthDeg);
+
+        modelPill.textContent = 'DRACO GLB · WATERTIGHT MANIFOLD · 318.8 KB';
+        loaderOverlay.classList.add('hidden');
+      },
+      (progress) => {
+        if (progress.total > 0) {
+          const pct = Math.min(100, Math.round((progress.loaded / progress.total) * 100));
+          loaderText.textContent = `LOADING DRACO GLB · ${pct}%`;
+        }
+      },
+      (err) => {
+        loaderText.textContent = '3D ASSET LOAD ERROR · CHECK ./assets/wbs_transforma_web.glb';
+        statusNote.textContent = `Could not load ./assets/wbs_transforma_web.glb (${err?.message || 'load error'}).`;
+      }
+    );
+
+    // Event bindings
+    document.querySelectorAll('.wbs-mode-group .wbs-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        applyShaderMode(btn.dataset.shader);
+      });
+    });
+
+    azimuthSlider.addEventListener('input', () => {
+      updateRakingLight(parseInt(azimuthSlider.value, 10));
+    });
+
+    sliceSlider.addEventListener('input', () => {
+      updateZSlice(parseInt(sliceSlider.value, 10));
+    });
+
+    orbitBtn.addEventListener('click', () => {
+      state.autoOrbit = !state.autoOrbit;
+      controls.autoRotate = state.autoOrbit;
+      orbitBtn.textContent = state.autoOrbit ? 'Pause Orbit' : 'Resume Orbit';
+    });
+
+    resetBtn.addEventListener('click', () => {
+      camera.position.copy(defaultCamPos);
+      controls.target.set(0, state.targetY, 0);
+      azimuthSlider.value = '42';
+      sliceSlider.value = '100';
+      updateRakingLight(42);
+      updateZSlice(100);
+      applyShaderMode('ceramic');
+      controls.update();
+    });
+
+    // Safe on-demand Turntable MP4 loader (prevents automatic 404 console noise before upload)
+    turntableVideo.addEventListener('error', () => {
+      turntableStatus.textContent = 'Turntable MP4 render is not uploaded yet. Use the live interactive WebGL sculpture above to orbit, relight, and inspect the Z slice cross section.';
+      loadTurntableBtn.textContent = 'Render Pending Upload';
+      loadTurntableBtn.disabled = false;
+    });
+
+    turntableVideo.addEventListener('loadeddata', () => {
+      turntableStatus.textContent = 'Turntable MP4 render loaded and ready for playback.';
+      loadTurntableBtn.textContent = 'Play Turntable Render';
+      loadTurntableBtn.disabled = false;
+    });
+
+    loadTurntableBtn.addEventListener('click', () => {
+      const targetSrc = turntableVideo.dataset.src;
+      if (!turntableVideo.getAttribute('src')) {
+        loadTurntableBtn.textContent = 'Loading Render...';
+        turntableStatus.textContent = 'Checking ./assets/wbs_transforma_turntable.mp4 ...';
+        turntableVideo.src = targetSrc;
+        turntableVideo.load();
+      }
+      turntableVideo.play().catch(() => {});
+    });
+
+    window.addEventListener('resize', () => {
+      if (!wrap.clientWidth || !wrap.clientHeight) return;
+      const aspect = wrap.clientWidth / wrap.clientHeight;
+      camera.fov = aspect < 1 ? 48 : 40;
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
+      renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    });
+
+    updateRakingLight(state.azimuthDeg);
+    updateZSlice(state.slicePct);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

@@ -317,6 +317,12 @@
       gap: 1.75rem;
     }
 
+    .web3d-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
     .rd-card {
       background: var(--surface);
       border-top: 3px solid var(--ochre);
@@ -723,7 +729,8 @@
         display: flex;
       }
 
-      .rd-grid {
+      .rd-grid,
+      .web3d-grid {
         grid-template-columns: 1fr;
       }
 
@@ -886,6 +893,83 @@
               <div class="rd-footer">
                 <span class="status-note">Proprietary in house Android APK. Private demonstrations available on request.</span>
                 <a class="btn-secondary" href="../index.html#contact">Request Private Demo</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="web3d-prototypes">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Live Browser Builds</span>
+          <h2>Interactive Web3D &amp; Co-Creator Lab Builds</h2>
+          <p>
+            Three interactive WebGL2 and Three.js prototypes built by Mo360 Immersive Studio in Plymouth, pairing archival sculptural works with real-time browser inspection, kinetic telemetry, and fulldome preview modes.
+          </p>
+        </div>
+
+        <div class="web3d-grid">
+          <article class="rd-card">
+            <div class="rd-media">
+              <img alt="Death of the Nile 2.0 interactive Web3D prototype poster" src="../assets/artist_archive/archive_04_the_death_of_the_nile.jpg" loading="lazy" />
+            </div>
+            <div class="rd-body">
+              <span class="card-kicker">Lab Build 01</span>
+              <h3>Death of the Nile 2.0</h3>
+              <p>
+                Interactive browser-based Nile Basin hydrological co-creator and 180-degree fulldome preview built with WebGPU and WebGL2 shaders.
+              </p>
+              <ul class="rd-points">
+                <li>Real-time river flow, sediment, and acoustic resonance controls</li>
+                <li>180-degree dome framing toggle for shared spatial cinema</li>
+              </ul>
+              <div class="rd-footer">
+                <span class="status-note">Live Web3D Prototype</span>
+                <a class="btn-primary" href="./death-of-the-nile-2.html">Launch Prototype</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="rd-card">
+            <div class="rd-media">
+              <img alt="ALTÆR Alter Kinetic Light Sculpture Web3D prototype poster" src="../assets/artist_archive/archive_08_alter_kinetic_light_sculpture_work_i.jpg" loading="lazy" />
+            </div>
+            <div class="rd-body">
+              <span class="card-kicker">Lab Build 02</span>
+              <h3>ALT&AElig;R / Alter (Kinetic Light Sculpture)</h3>
+              <p>
+                Interactive Web3D kinetic light sculpture with 128 suspended light rods driven by live Plymouth Beryl Bikes urban mobility telemetry.
+              </p>
+              <ul class="rd-points">
+                <li>Real-time Draco GLB assembly with animated ochre and cyan light rods</li>
+                <li>Live city telemetry modes and gallery camera presets</li>
+              </ul>
+              <div class="rd-footer">
+                <span class="status-note">Live Web3D Prototype</span>
+                <a class="btn-primary" href="./alter-kinetic-sculpture.html">Launch Prototype</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="rd-card">
+            <div class="rd-media">
+              <img alt="The WBS- Transforma 2014 to 2026 Web3D inspection poster" src="../assets/artist_archive/archive_09_the_wbs_transforma.jpg" loading="lazy" />
+            </div>
+            <div class="rd-body">
+              <span class="card-kicker">Lab Build 03</span>
+              <h3>The WBS- Transforma (2014 &rarr; 2026)</h3>
+              <p>
+                Interactive Web3D and print inspection showcase for the repaired 2014 Cardiff PhD sculpture exhibited at National Museum Wales.
+              </p>
+              <ul class="rd-points">
+                <li>Watertight 3D mesh inspection with 318.8 KB Draco GLB model</li>
+                <li>Embedded 180-frame 360-degree gallery lighting turntable video</li>
+              </ul>
+              <div class="rd-footer">
+                <span class="status-note">Live Web3D Prototype</span>
+                <a class="btn-primary" href="./wbs-transforma.html">Launch Prototype</a>
               </div>
             </div>
           </article>
